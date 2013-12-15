@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import android.app.Activity;
 
 import app.philm.in.fragments.CollectionListFragment;
+import app.philm.in.fragments.LoginFragment;
 
 public class Display {
 
@@ -23,7 +24,11 @@ public class Display {
     }
 
     public void showLogin() {
+        LoginFragment fragment = new LoginFragment();
 
+        mActivity.getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .commit();
     }
 
 }

@@ -11,7 +11,8 @@ import app.philm.in.controllers.UserController;
 import app.philm.in.state.ApplicationState;
 
 
-public class PhilmActivity extends Activity implements MovieController.MovieControllerProvider {
+public class PhilmActivity extends Activity implements MovieController.MovieControllerProvider,
+        UserController.UserControllerProvider {
 
     private MainController mMainController;
 
@@ -47,5 +48,10 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
     @Override
     public MovieController getMovieController() {
         return mMainController.getMovieController();
+    }
+
+    @Override
+    public UserController getUserController() {
+        return mMainController.getUserController();
     }
 }

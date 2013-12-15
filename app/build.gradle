@@ -22,6 +22,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            runProguard false
+        }
+
         release {
             runProguard false
             proguardFile getDefaultProguardFile('proguard-android.txt')

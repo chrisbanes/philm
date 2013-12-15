@@ -2,17 +2,14 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
-public abstract class BaseController {
+abstract class BaseController {
 
     private boolean mInited;
 
-    public BaseController() {
-    }
-
-    public final boolean init() {
+    public final void init() {
         Preconditions.checkState(mInited == false, "Already inited");
         mInited = true;
-        return onInited();
+        onInited();
     }
 
     public final void suspend() {
@@ -25,9 +22,7 @@ public abstract class BaseController {
         return mInited;
     }
 
-    protected boolean onInited() {
-        return true;
-    }
+    protected void onInited() {}
 
     protected void onSuspended() {}
 

@@ -17,6 +17,10 @@ public class UserController extends BaseUiController<UserController.UserUi,
         void login(String username, String password);
     }
 
+    public interface UserControllerProvider {
+        UserController getUserController();
+    }
+
     private final UserState mUserState;
     private final Display mDisplay;
 
@@ -27,16 +31,9 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     @Override
-    protected boolean onInited() {
+    protected void onInited() {
         super.onInited();
         mUserState.registerForEvents(this);
-
-        if (!validCredentials()) {
-            mDisplay.showLogin();
-            return false;
-        }
-
-        return true;
     }
 
     private boolean validCredentials() {

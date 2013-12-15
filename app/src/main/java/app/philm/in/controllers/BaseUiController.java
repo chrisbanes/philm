@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Bus;
 
-public abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
+abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         extends BaseController {
 
     public interface Ui<UC> {
@@ -15,7 +15,6 @@ public abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     private U mUi;
 
     public BaseUiController() {
-        super();
         mUiCallbacks = createUiCallbacks();
     }
 
@@ -41,11 +40,10 @@ public abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         return mUi;
     }
 
-    protected boolean onInited() {
+    protected void onInited() {
         if (mUi != null) {
             populateUi();
         }
-        return true;
     }
 
     protected void populateUi() {}

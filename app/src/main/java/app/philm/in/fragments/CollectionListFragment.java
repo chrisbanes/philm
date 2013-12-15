@@ -31,7 +31,7 @@ public class CollectionListFragment extends ListFragment implements MovieControl
     public void onResume() {
         super.onResume();
         ((MovieController.MovieControllerProvider) getActivity())
-                .getMovieController().detachUi(this);
+                .getMovieController().attachUi(this);
     }
 
     @Override

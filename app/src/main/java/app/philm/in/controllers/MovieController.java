@@ -57,8 +57,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Override
     protected void populateUi() {
-        if (getUi() != null) {
-            getUi().setCollection(mMoviesState.getCollection());
+        MovieUi ui = getUi();
+        if (ui != null) {
+            ui.setCollection(mMoviesState.getCollection());
         }
     }
 

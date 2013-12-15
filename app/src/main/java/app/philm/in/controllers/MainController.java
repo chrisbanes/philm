@@ -15,16 +15,22 @@ public class MainController extends BaseController {
     }
 
     @Override
-    protected boolean onInited() {
-        return mUserController.init() && mMovieController.init();
+    protected void onInited() {
+        mUserController.init();
+        mMovieController.init();
     }
 
     @Override
     protected void onSuspended() {
+        mUserController.suspend();
         mMovieController.suspend();
     }
 
     public final MovieController getMovieController() {
         return mMovieController;
+    }
+
+    public final UserController getUserController() {
+        return mUserController;
     }
 }

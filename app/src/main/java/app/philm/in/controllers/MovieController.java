@@ -7,6 +7,7 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import app.philm.in.Display;
 import app.philm.in.state.MoviesState;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
@@ -19,15 +20,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface MovieUiCallbacks {
     }
 
-    private final MovieUiCallbacks mUiCallbacks;
+    public interface MovieControllerProvider {
+        MovieController getMovieController();
+    }
+
     private final MoviesState mMoviesState;
+    private final Display mDisplay;
 
-    public MovieController(MoviesState movieState) {
+    public MovieController(Display display, MoviesState movieState) {
         super();
+        mDisplay = Preconditions.checkNotNull(display, "display cannot be null");
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
-
-        mUiCallbacks = new MovieUiCallbacks() {
-        };
     }
 
     @Override
@@ -47,8 +50,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Override
-    protected MovieUiCallbacks getUiCallbacks() {
-        return mUiCallbacks;
+    protected MovieUiCallbacks createUiCallbacks() {
+        return new MovieUiCallbacks() {
+        };
     }
 
     @Override

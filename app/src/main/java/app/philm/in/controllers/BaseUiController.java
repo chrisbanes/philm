@@ -12,16 +12,18 @@ public abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     }
 
     private U mUi;
+    private UC mUiCallbacks;
 
     public BaseUiController() {
         super();
+        mUiCallbacks = createUiCallbacks();
     }
 
     public final void attachUi(U ui) {
         Preconditions.checkState(mUi == null, "UI is already attached");
         Preconditions.checkArgument(ui != null, "ui cannot be null");
         mUi = ui;
-        mUi.setCallbacks(getUiCallbacks());
+        mUi.setCallbacks(mUiCallbacks);
 
         if (isInited()) {
             populateUi();
@@ -47,6 +49,6 @@ public abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
     protected void populateUi() {}
 
-    protected abstract UC getUiCallbacks();
+    protected abstract UC createUiCallbacks();
 
 }

@@ -2,7 +2,6 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
-import com.jakewharton.trakt.Trakt;
 import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Subscribe;
 
@@ -11,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 
 import app.philm.in.Display;
 import app.philm.in.state.MoviesState;
+import app.philm.in.trakt.Trakt;
 import app.philm.in.util.BackgroundRunnable;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
@@ -87,7 +87,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private class FetchLibraryRunnable extends BackgroundRunnable<List<Movie>> {
         @Override
         public List<Movie> runAsync() {
-            return mTraktClient.userService().watchlistMovies("chrisbanes");
+            return mTraktClient.moviesService().trending();
         }
 
         @Override

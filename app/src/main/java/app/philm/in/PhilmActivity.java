@@ -1,6 +1,5 @@
 package app.philm.in;
 
-import com.jakewharton.trakt.Trakt;
 import com.squareup.otto.Bus;
 
 import android.app.Activity;
@@ -12,6 +11,7 @@ import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.controllers.UserController;
 import app.philm.in.state.ApplicationState;
+import app.philm.in.trakt.Trakt;
 
 
 public class PhilmActivity extends Activity implements MovieController.MovieControllerProvider,

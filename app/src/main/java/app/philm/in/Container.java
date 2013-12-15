@@ -2,7 +2,6 @@ package app.philm.in;
 
 import com.google.common.base.Preconditions;
 
-import com.jakewharton.trakt.Trakt;
 import com.squareup.otto.Bus;
 
 import android.content.Context;
@@ -10,6 +9,7 @@ import android.content.Context;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import app.philm.in.trakt.Trakt;
 import app.philm.in.util.Sha1;
 
 public class Container {

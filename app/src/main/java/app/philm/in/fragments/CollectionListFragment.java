@@ -11,7 +11,6 @@ import java.util.List;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 
-
 public class CollectionListFragment extends ListFragment implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
@@ -31,12 +30,14 @@ public class CollectionListFragment extends ListFragment implements MovieControl
     @Override
     public void onResume() {
         super.onResume();
-        ((MovieController.MovieControllerProvider) getActivity()).getMovieController().detachUi(this);
+        ((MovieController.MovieControllerProvider) getActivity())
+                .getMovieController().detachUi(this);
     }
 
     @Override
     public void onPause() {
-        ((MovieController.MovieControllerProvider) getActivity()).getMovieController().detachUi(this);
+        ((MovieController.MovieControllerProvider) getActivity())
+                .getMovieController().detachUi(this);
         super.onPause();
     }
 

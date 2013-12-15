@@ -11,8 +11,8 @@ public abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         void setCallbacks(UC callbacks);
     }
 
+    private final UC mUiCallbacks;
     private U mUi;
-    private UC mUiCallbacks;
 
     public BaseUiController() {
         super();
@@ -41,10 +41,11 @@ public abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         return mUi;
     }
 
-    protected void onInited() {
+    protected boolean onInited() {
         if (mUi != null) {
             populateUi();
         }
+        return true;
     }
 
     protected void populateUi() {}

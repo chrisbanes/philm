@@ -2,8 +2,6 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
-import com.squareup.otto.Bus;
-
 public abstract class BaseController {
 
     private boolean mInited;
@@ -11,10 +9,10 @@ public abstract class BaseController {
     public BaseController() {
     }
 
-    public final void init() {
+    public final boolean init() {
         Preconditions.checkState(mInited == false, "Already inited");
         mInited = true;
-        onInited();
+        return onInited();
     }
 
     public final void suspend() {
@@ -27,7 +25,9 @@ public abstract class BaseController {
         return mInited;
     }
 
-    protected void onInited() {}
+    protected boolean onInited() {
+        return true;
+    }
 
     protected void onSuspended() {}
 

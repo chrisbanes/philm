@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.controllers.UserController;
 import app.philm.in.state.ApplicationState;
 
 
@@ -25,9 +26,10 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
         Display display = new Display(this);
         ApplicationState state = new ApplicationState(bus);
 
+        UserController userController = new UserController(display, state);
         MovieController movieController = new MovieController(display, state);
 
-        mMainController = new MainController(movieController);
+        mMainController = new MainController(userController, movieController);
     }
 
     @Override

@@ -22,4 +22,8 @@ public class Display {
                 .commit();
     }
 
+    public void showLogin() {
+
+    }
+
 }

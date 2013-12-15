@@ -6,15 +6,12 @@ import java.util.List;
 
 public interface MoviesState extends BaseState {
 
-    public List<Movie> getCollection();
+    public List<Movie> getLibrary();
 
-    public void setCollection(List<Movie> collection);
+    public void setLibrary(List<Movie> library);
 
-    public boolean hasCollection();
+    public boolean hasLibrary();
 
-
-
-    public static class CollectionChangedEvent {}
-
+    public static class LibraryChangedEvent {}
 
 }

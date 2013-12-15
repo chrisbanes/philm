@@ -23,8 +23,6 @@ public class CollectionListFragment extends ListFragment implements MovieControl
 
         mMovieGridAdapter = new MovieGridAdapter(getActivity());
         setListAdapter(mMovieGridAdapter);
-
-        setListShown(false);
     }
 
     @Override
@@ -44,6 +42,7 @@ public class CollectionListFragment extends ListFragment implements MovieControl
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setListShown(false);
     }
 
     @Override

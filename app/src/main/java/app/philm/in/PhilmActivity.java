@@ -1,9 +1,12 @@
 package app.philm.in;
 
+import com.jakewharton.trakt.Trakt;
 import com.squareup.otto.Bus;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import java.util.concurrent.ExecutorService;
 
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
@@ -22,13 +25,15 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
 
         setContentView(R.layout.activity_main);
 
-        final Bus bus = Container.getInstance(this).getEventBus();
+        Bus bus = Container.getInstance(this).getEventBus();
+        Trakt trakt = Container.getInstance(this).getTraktClient();
+        ExecutorService service = Container.getInstance(this).getExecutor();
 
         Display display = new Display(this);
         ApplicationState state = new ApplicationState(bus);
 
         UserController userController = new UserController(display, state);
-        MovieController movieController = new MovieController(display, state);
+        MovieController movieController = new MovieController(display, state, trakt, service);
 
         mMainController = new MainController(userController, movieController);
     }

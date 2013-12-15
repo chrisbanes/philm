@@ -15,7 +15,7 @@ public class Display {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
     }
 
-    public void showCollection() {
+    public void showLibrary() {
         CollectionListFragment fragment = new CollectionListFragment();
 
         mActivity.getFragmentManager().beginTransaction()

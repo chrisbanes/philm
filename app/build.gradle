@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.0"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 19
+    }
+
+    buildTypes {
+        release {
+            runProguard false
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+    productFlavors {
+        defaultFlavor {
+            proguardFile 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:+'
+    compile 'com.squareup.okhttp:okhttp:1.2.1'
+    compile 'com.squareup.retrofit:retrofit:1.2.2'
+    compile 'com.squareup.picasso:picasso:2.1.1'
+    compile 'com.squareup:otto:1.3.4'
+    compile 'com.google.guava:guava:15.0'
+    compile fileTree(dir: 'libs', include: '*.jar')
+}

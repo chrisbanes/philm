@@ -11,7 +11,7 @@ import java.util.List;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 
-public class LibraryListFragment extends ListFragment implements MovieController.MovieUi {
+public class TrendingListFragment extends ListFragment implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
 
@@ -58,6 +58,6 @@ public class LibraryListFragment extends ListFragment implements MovieController
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        return MovieController.MovieQueryType.LIBRARY;
+        return MovieController.MovieQueryType.TRENDING;
     }
 }

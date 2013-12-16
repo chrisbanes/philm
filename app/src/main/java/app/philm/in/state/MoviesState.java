@@ -12,6 +12,14 @@ public interface MoviesState extends BaseState {
 
     public boolean hasLibrary();
 
+    public List<Movie> getTrending();
+
+    public void setTrending(List<Movie> trending);
+
+    public boolean hasTrending();
+
     public static class LibraryChangedEvent {}
+
+    public static class TrendingChangedEvent {}
 
 }

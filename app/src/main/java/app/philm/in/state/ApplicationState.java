@@ -12,6 +12,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private final Bus mEventBus;
 
     private List<Movie> mLibrary;
+    private List<Movie> mTrending;
 
     private String mUsername, mHashedPassword;
 
@@ -41,14 +42,30 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public void setLibrary(List<Movie> collection) {
-        mLibrary = collection;
+    public void setLibrary(List<Movie> items) {
+        mLibrary = items;
         mEventBus.post(new LibraryChangedEvent());
     }
 
     @Override
     public boolean hasLibrary() {
         return mLibrary != null && !mLibrary.isEmpty();
+    }
+
+    @Override
+    public List<Movie> getTrending() {
+        return mTrending;
+    }
+
+    @Override
+    public void setTrending(List<Movie> items) {
+        mTrending = items;
+        mEventBus.post(new TrendingChangedEvent());
+    }
+
+    @Override
+    public boolean hasTrending() {
+        return mTrending != null && !mTrending.isEmpty();
     }
 
     ///////////////////////////

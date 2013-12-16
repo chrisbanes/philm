@@ -16,8 +16,13 @@ import app.philm.in.util.BackgroundRunnable;
 public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
 
+    public static enum MovieQueryType {
+        LIBRARY, TRENDING;
+    }
+
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
-        void setCollection(List<Movie> collection);
+        void setItems(List<Movie> items);
+        MovieQueryType getMovieQueryType();
     }
 
     public interface MovieUiCallbacks {
@@ -63,25 +68,51 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Override
     protected void populateUi() {
-        List<Movie> library = mMoviesState.getLibrary();
+        switch (getUi().getMovieQueryType()) {
+            case TRENDING:
+                populateTrendingUi();
+                break;
+            case LIBRARY:
+                populateLibraryUi();
+                break;
+        }
+    }
 
+    private void populateLibraryUi() {
+        List<Movie> library = mMoviesState.getLibrary();
         if (library == null || library.isEmpty()) {
             fetchLibrary();
         }
+        getUi().setItems(library);
+    }
 
-        getUi().setCollection(library);
+    private void populateTrendingUi() {
+        List<Movie> items = mMoviesState.getTrending();
+        if (items == null || items.isEmpty()) {
+            fetchTrending();
+        }
+        getUi().setItems(items);
     }
 
     private void fetchLibrary() {
-        mExecutor.execute(new FetchLibraryRunnable());
+        // TODO
+    }
+
+    private void fetchTrending() {
+        mExecutor.execute(new FetchTrendingRunnable());
     }
 
     @Subscribe
-    public void onCollectionChange(MoviesState.LibraryChangedEvent event) {
-        populateUi();
+    public void onLibraryChanged(MoviesState.LibraryChangedEvent event) {
+        populateLibraryUi();
     }
 
-    private class FetchLibraryRunnable extends BackgroundRunnable<List<Movie>> {
+    @Subscribe
+    public void onTrendingChanged(MoviesState.TrendingChangedEvent event) {
+        populateTrendingUi();
+    }
+
+    private class FetchTrendingRunnable extends BackgroundRunnable<List<Movie>> {
         @Override
         public List<Movie> runAsync() {
             return mTraktClient.moviesService().trending();
@@ -89,7 +120,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void postExecute(List<Movie> result) {
-            mMoviesState.setLibrary(result);
+            mMoviesState.setTrending(result);
         }
     }
 }

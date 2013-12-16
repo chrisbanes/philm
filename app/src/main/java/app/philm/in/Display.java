@@ -6,6 +6,7 @@ import android.app.Activity;
 
 import app.philm.in.fragments.LibraryListFragment;
 import app.philm.in.fragments.LoginFragment;
+import app.philm.in.fragments.TrendingListFragment;
 
 public class Display {
 
@@ -24,7 +25,7 @@ public class Display {
     }
 
     public void showTrending() {
-        LibraryListFragment fragment = new LibraryListFragment();
+        TrendingListFragment fragment = new TrendingListFragment();
 
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)

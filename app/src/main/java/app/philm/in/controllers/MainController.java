@@ -17,8 +17,8 @@ public class MainController extends BaseUiController<MainController.MainControll
     private static final String LOG_TAG = MainController.class.getSimpleName();
 
     public static enum SideMenuItem {
-        TRENDING(R.string.side_menu_trending_title),
-        LIBRARY(R.string.side_menu_library_title);
+        TRENDING(R.string.trending_title),
+        LIBRARY(R.string.library_title);
 
         private final int mTitleResId;
 

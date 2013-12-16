@@ -22,6 +22,8 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
+
+        setActionBarTitle(R.string.library_title);
     }
 
     public void showTrending() {
@@ -30,6 +32,8 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
+
+        setActionBarTitle(R.string.trending_title);
     }
 
     public void showLogin() {
@@ -38,6 +42,10 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
+    }
+
+    private void setActionBarTitle(int titleResId) {
+        mActivity.getActionBar().setTitle(titleResId);
     }
 
 }

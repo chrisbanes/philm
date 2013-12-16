@@ -1,8 +1,11 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo">
-        <!-- Customize your theme here. -->
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
+
+    </style>
+
+
+    <style name="Theme.Philm" parent="Theme.Base.Philm">
     </style>
 
 </resources>

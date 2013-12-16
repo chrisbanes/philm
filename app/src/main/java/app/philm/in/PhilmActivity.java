@@ -15,7 +15,7 @@ import app.philm.in.trakt.Trakt;
 
 
 public class PhilmActivity extends Activity implements MovieController.MovieControllerProvider,
-        UserController.UserControllerProvider {
+        UserController.UserControllerProvider, MainController.MainControllerProvider {
 
     private MainController mMainController;
 
@@ -35,7 +35,7 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
         UserController userController = new UserController(display, state);
         MovieController movieController = new MovieController(display, state, trakt, service);
 
-        mMainController = new MainController(userController, movieController);
+        mMainController = new MainController(userController, movieController, display);
     }
 
     @Override
@@ -58,5 +58,10 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
     @Override
     public UserController getUserController() {
         return mMainController.getUserController();
+    }
+
+    @Override
+    public MainController getMainController() {
+        return mMainController;
     }
 }

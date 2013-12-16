@@ -11,7 +11,7 @@ import java.util.List;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 
-public class CollectionListFragment extends ListFragment implements MovieController.MovieUi {
+public class LibraryListFragment extends ListFragment implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
 

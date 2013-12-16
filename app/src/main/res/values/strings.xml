@@ -4,4 +4,7 @@
     <string name="app_name">Philm</string>
     <string name="title_film_detail">Film Detail</string>
 
+    <string name="side_menu_trending_title">Trending</string>
+    <string name="side_menu_library_title">Library</string>
+
 </resources>

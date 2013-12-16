@@ -47,12 +47,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     protected void onInited() {
         super.onInited();
         mMoviesState.registerForEvents(this);
-
-        if (!mMoviesState.hasLibrary()) {
-            fetchLibrary();
-        }
-
-        mDisplay.showLibrary();
     }
 
     @Override
@@ -69,10 +63,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Override
     protected void populateUi() {
-        MovieUi ui = getUi();
-        if (ui != null) {
-            ui.setCollection(mMoviesState.getLibrary());
+        List<Movie> library = mMoviesState.getLibrary();
+
+        if (library == null || library.isEmpty()) {
+            fetchLibrary();
         }
+
+        getUi().setCollection(library);
     }
 
     private void fetchLibrary() {

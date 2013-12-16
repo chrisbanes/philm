@@ -75,6 +75,7 @@ public class MainController extends BaseUiController<MainController.MainControll
         return new MainControllerUiCallbacks() {
             @Override
             public void onSideMenuItemSelected(SideMenuItem item) {
+                mDisplay.closeDrawerLayout();
                 showUiItem(item);
             }
         };

@@ -3,7 +3,11 @@ package app.philm.in;
 import com.squareup.otto.Bus;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
 
 import java.util.concurrent.ExecutorService;
 
@@ -16,6 +20,8 @@ import app.philm.in.trakt.Trakt;
 
 public class PhilmActivity extends Activity implements MovieController.MovieControllerProvider,
         UserController.UserControllerProvider, MainController.MainControllerProvider {
+
+    private ActionBarDrawerToggle mDrawerToggle;
 
     private MainController mMainController;
 
@@ -36,6 +42,24 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
         MovieController movieController = new MovieController(display, state, trakt, service);
 
         mMainController = new MainController(userController, movieController, display);
+
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawerLayout != null) {
+            mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer,
+                    R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
+
+            drawerLayout.setDrawerListener(mDrawerToggle);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (mDrawerToggle != null) {
+            mDrawerToggle.syncState();
+        }
     }
 
     @Override
@@ -48,6 +72,22 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
     protected void onPause() {
         mMainController.suspend();
         super.onPause();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mDrawerToggle != null) {
+            mDrawerToggle.onConfigurationChanged(newConfig);
+        }
     }
 
     @Override

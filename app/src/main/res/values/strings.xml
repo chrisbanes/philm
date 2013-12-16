@@ -7,4 +7,7 @@
     <string name="trending_title">Trending</string>
     <string name="library_title">Library</string>
 
+    <string name="drawer_open_content_desc">Drawer open</string>
+    <string name="drawer_closed_content_desc">Drawer closed</string>
+
 </resources>

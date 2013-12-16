@@ -61,13 +61,23 @@ public class MovieGridAdapter extends BaseAdapter {
 
         final Movie movie = getItem(position);
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
+        final TextView title = (TextView) view.findViewById(R.id.textview_title);
+        title.setText(movie.title);
+
+        final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
         Picasso.with(mActivity)
                 .load(mTraktImageHelper.getPosterUrl(movie))
-                .into(imageView);
+                .into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        title.setVisibility(View.GONE);
+                    }
 
-        TextView title = (TextView) view.findViewById(R.id.textview_title);
-        title.setText(movie.title);
+                    @Override
+                    public void onError() {
+                        title.setVisibility(View.VISIBLE);
+                    }
+                });
 
         return view;
     }

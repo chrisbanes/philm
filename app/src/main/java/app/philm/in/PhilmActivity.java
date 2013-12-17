@@ -31,17 +31,18 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
 
         setContentView(R.layout.activity_main);
 
-        Bus bus = Container.getInstance(this).getEventBus();
-        Trakt trakt = Container.getInstance(this).getTraktClient();
-        ExecutorService service = Container.getInstance(this).getExecutor();
-
-        Display display = new Display(this);
-        ApplicationState state = new ApplicationState(bus);
+        final Container container = Container.getInstance(this);
+        final Display display = new Display(this);
+        final ApplicationState state = new ApplicationState(container.getEventBus());
 
         UserController userController = new UserController(display, state);
-        MovieController movieController = new MovieController(display, state, trakt, service);
+        MovieController movieController = new MovieController(
+                display,
+                state,
+                container.getTraktClient(),
+                container.getExecutor());
 
-        mMainController = new MainController(userController, movieController, display);
+        mMainController = new MainController(display, userController, movieController);
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawerLayout != null) {

@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Movie;
 
 import android.content.res.Resources;
-import android.net.Uri;
 import android.text.TextUtils;
 
 import app.philm.in.R;

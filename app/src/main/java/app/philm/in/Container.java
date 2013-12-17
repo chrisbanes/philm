@@ -10,7 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import app.philm.in.trakt.Trakt;
-import app.philm.in.util.Sha1;
 
 public class Container {
 

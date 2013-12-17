@@ -2,8 +2,6 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
-import com.squareup.otto.Bus;
-
 abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         extends BaseController {
 

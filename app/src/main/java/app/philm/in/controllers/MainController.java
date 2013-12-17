@@ -4,9 +4,6 @@ import com.google.common.base.Preconditions;
 
 import android.util.Log;
 
-import java.util.Arrays;
-import java.util.List;
-
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.R;
@@ -47,9 +44,10 @@ public class MainController extends BaseUiController<MainController.MainControll
     private final MovieController mMovieController;
     private final Display mDisplay;
 
-    public MainController(UserController userController,
-            MovieController movieController,
-            Display display) {
+    public MainController(Display display,
+            UserController userController,
+            MovieController movieController) {
+        super();
         mUserController = Preconditions.checkNotNull(userController,
                 "userController cannot be null");
         mMovieController = Preconditions.checkNotNull(movieController,

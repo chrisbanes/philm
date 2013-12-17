@@ -11,7 +11,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import app.philm.in.R;
-import app.philm.in.controllers.MainController.*;
+import app.philm.in.controllers.MainController.MainControllerProvider;
+import app.philm.in.controllers.MainController.MainControllerUi;
+import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
+import app.philm.in.controllers.MainController.SideMenuItem;
 
 public class SideMenuFragment extends ListFragment implements MainControllerUi {
 

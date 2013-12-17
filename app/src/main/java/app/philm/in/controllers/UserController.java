@@ -24,7 +24,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
     private final UserState mUserState;
     private final Display mDisplay;
 
-    public UserController(Display display, UserState userState) {
+    public UserController(Display display,
+            UserState userState) {
         super();
         mDisplay = Preconditions.checkNotNull(display, "display cannot be null");
         mUserState = Preconditions.checkNotNull(userState, "userState cannot be null");

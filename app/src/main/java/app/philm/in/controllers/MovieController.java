@@ -37,7 +37,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final ExecutorService mExecutor;
     private final Trakt mTraktClient;
 
-    public MovieController(Display display,
+    public MovieController(
+            Display display,
             MoviesState movieState,
             Trakt traktClient,
             ExecutorService executor) {

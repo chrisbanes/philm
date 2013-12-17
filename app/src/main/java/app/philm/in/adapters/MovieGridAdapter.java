@@ -5,7 +5,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import app.philm.in.Constants;
-import app.philm.in.Container;
 import app.philm.in.R;
 import app.philm.in.util.TraktImageHelper;
 

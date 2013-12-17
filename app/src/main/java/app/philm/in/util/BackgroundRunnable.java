@@ -1,6 +1,7 @@
 package app.philm.in.util;
 
-import android.os.*;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
 
 public abstract class BackgroundRunnable<R> implements Runnable {

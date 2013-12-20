@@ -9,14 +9,14 @@ import android.text.TextUtils;
 
 import app.philm.in.R;
 
-/**
- * Created by chris on 16/12/2013.
- */
 public class TraktImageHelper {
 
     public static final int TYPE_SMALL = 0;
     public static final int TYPE_LARGE = 1;
     public static final int TYPE_UNCOMPRESSED = 2;
+
+    private static final String POSTER_SMALL_SUFFIX = "-138";
+    private static final String POSTER_LARGE_SUFFIX = "-300";
 
     private final Resources mResources;
 
@@ -24,33 +24,34 @@ public class TraktImageHelper {
         mResources = Preconditions.checkNotNull(resources, "resources cannot be null");
     }
 
-    public String getPosterUrl(Movie movie, final int type) {
-        final String rawPosterUrl = movie.images.poster;
-
-        if (type != TYPE_UNCOMPRESSED && !TextUtils.isEmpty(rawPosterUrl)) {
-            final int lastDot = rawPosterUrl.lastIndexOf('.');
-
-            if (lastDot != 0) {
-                StringBuilder url = new StringBuilder(rawPosterUrl.substring(0, lastDot));
-                switch (type) {
-                    case TYPE_LARGE:
-                        url.append("-300");
-                        break;
-                    case TYPE_SMALL:
-                        url.append("-138");
-                        break;
-                }
-                url.append(rawPosterUrl.substring(lastDot));
-                return url.toString();
-            }
-        }
-
-        return rawPosterUrl;
-    }
-
-    public String getPosterUrl(Movie movie) {
+    public String getPosterUrl(final Movie movie) {
         return getPosterUrl(movie, mResources.getInteger(R.integer.trakt_image_size));
     }
 
+    public String getPosterUrl(final Movie movie, final int type) {
+        final String rawPosterUrl = movie.images.poster;
+        switch (type) {
+            case TYPE_LARGE:
+                return modifyUrl(rawPosterUrl, POSTER_LARGE_SUFFIX);
+            case TYPE_SMALL:
+                return modifyUrl(rawPosterUrl, POSTER_SMALL_SUFFIX);
+            case TYPE_UNCOMPRESSED:
+            default:
+                return rawPosterUrl;
+        }
+    }
+
+    private static String modifyUrl(final String originalUrl, final String suffix) {
+        if (!TextUtils.isEmpty(originalUrl)) {
+            final int lastDot = originalUrl.lastIndexOf('.');
+            if (lastDot != 0) {
+                StringBuilder url = new StringBuilder(originalUrl.substring(0, lastDot));
+                url.append(suffix);
+                url.append(originalUrl.substring(lastDot));
+                return url.toString();
+            }
+        }
+        return originalUrl;
+    }
 
 }

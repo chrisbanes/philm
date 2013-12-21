@@ -4,12 +4,14 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Bus;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import app.philm.in.trakt.Trakt;
+import app.philm.in.util.AccountManagerHelper;
 
 public class Container {
 
@@ -27,6 +29,7 @@ public class Container {
     private Bus mEventBus;
     private ExecutorService mThreadPoolExecutor;
     private Trakt mTrakt;
+    private AccountManagerHelper mAccountManagerHelper;
 
     private Container(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
@@ -54,6 +57,13 @@ public class Container {
             mTrakt.setIsDebug(Constants.DEBUG);
         }
         return mTrakt;
+    }
+
+    public AccountManagerHelper getAccountManagerHelper() {
+        if (mAccountManagerHelper == null) {
+            mAccountManagerHelper = new AccountManagerHelper(AccountManager.get(mContext));
+        }
+        return mAccountManagerHelper;
     }
 
 }

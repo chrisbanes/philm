@@ -1,6 +1,7 @@
 package app.philm.in;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -12,9 +13,13 @@ import app.philm.in.controllers.MainController;
 
 public class PhilmActivity extends Activity {
 
+    public static final String ACTION_LOGIN = "philm.intent.action.LOGIN";
+
     private ActionBarDrawerToggle mDrawerToggle;
 
     private MainController mMainController;
+
+    private Intent mLaunchIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,14 @@ public class PhilmActivity extends Activity {
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
         }
+
+        mLaunchIntent = getIntent();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        mLaunchIntent = intent;
     }
 
     @Override
@@ -47,6 +60,11 @@ public class PhilmActivity extends Activity {
     protected void onPostResume() {
         super.onPostResume();
         mMainController.init();
+
+        if (mLaunchIntent != null) {
+            mMainController.handleIntent(mLaunchIntent);
+            mLaunchIntent = null;
+        }
     }
 
     @Override

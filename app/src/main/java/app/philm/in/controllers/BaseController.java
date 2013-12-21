@@ -2,6 +2,8 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
+import android.content.Intent;
+
 import app.philm.in.Display;
 
 abstract class BaseController {
@@ -29,11 +31,19 @@ abstract class BaseController {
 
     protected void onSuspended() {}
 
+    public boolean handleIntent(Intent intent) {
+        return false;
+    }
+
     public void setDisplay(Display display) {
         mDisplay = display;
     }
 
     public final Display getDisplay() {
         return mDisplay;
+    }
+
+    protected final void assertInited() {
+        Preconditions.checkState(mInited, "Must be init'ed to perform action");
     }
 }

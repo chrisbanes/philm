@@ -25,7 +25,12 @@ public class PhilmApplication extends Application {
         final Container container = Container.getInstance(this);
         mApplicationState = new ApplicationState(container.getEventBus());
 
-        UserController userController = new UserController(mApplicationState);
+        UserController userController = new UserController(
+                mApplicationState,
+                container.getTraktClient(),
+                container.getExecutor(),
+                container.getAccountManagerHelper());
+
         MovieController movieController = new MovieController(
                 mApplicationState,
                 container.getTraktClient(),

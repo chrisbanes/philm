@@ -5,7 +5,13 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Bus;
 
+import android.accounts.Account;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import app.philm.in.controllers.MovieController;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
 
@@ -13,7 +19,9 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private List<Movie> mLibrary;
     private List<Movie> mTrending;
+    private Set<MovieController.Filter> mFilters;
 
+    private Account mAccount;
     private String mUsername, mHashedPassword;
 
     public ApplicationState(Bus eventBus) {
@@ -68,11 +76,32 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
         return mTrending != null && !mTrending.isEmpty();
     }
 
+    @Override
+    public Set<MovieController.Filter> getFilters() {
+        if (mFilters == null) {
+            mFilters = new HashSet<MovieController.Filter>();
+        }
+        return mFilters;
+    }
+
     ///////////////////////////
     //
     // UserState
     //
     ///////////////////////////
+
+    @Override
+    public void setCurrentAccount(Account account) {
+        if (mAccount != account) {
+            mAccount = account;
+            mEventBus.post(new AccountChangedEvent());
+        }
+    }
+
+    @Override
+    public Account getCurrentAccount() {
+        return mAccount;
+    }
 
     @Override
     public String getUsername() {

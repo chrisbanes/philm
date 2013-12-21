@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_filter"
+          android:title="@string/menu_filter"
+          android:showAsAction="ifRoom">
+
+        <menu>
+            <item android:id="@+id/menu_filter_watched"
+                  android:title="@string/menu_filter_watched"
+                  android:checkable="true"/>
+        </menu>
+
+    </item>
+
+</menu>

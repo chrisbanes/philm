@@ -10,4 +10,11 @@
     <string name="drawer_open_content_desc">Drawer open</string>
     <string name="drawer_closed_content_desc">Drawer closed</string>
 
+    <string name="account_username_hint">Username</string>
+    <string name="account_password_hint">Password</string>
+    <string name="account_login">Login</string>
+
+    <string name="menu_filter">Filter</string>
+    <string name="menu_filter_watched">Watched</string>
+
 </resources>

@@ -5,9 +5,9 @@ import com.google.common.base.Preconditions;
 import android.app.Activity;
 import android.support.v4.widget.DrawerLayout;
 
-import app.philm.in.fragments.LibraryListFragment;
+import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.LoginFragment;
-import app.philm.in.fragments.TrendingListFragment;
+import app.philm.in.fragments.MovieGridFragment;
 
 public class Display {
 
@@ -18,7 +18,8 @@ public class Display {
     }
 
     public void showLibrary() {
-        LibraryListFragment fragment = new LibraryListFragment();
+        MovieGridFragment fragment = MovieGridFragment
+                .create(MovieController.MovieQueryType.LIBRARY);
 
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
@@ -28,7 +29,8 @@ public class Display {
     }
 
     public void showTrending() {
-        TrendingListFragment fragment = new TrendingListFragment();
+        MovieGridFragment fragment = MovieGridFragment
+                .create(MovieController.MovieQueryType.TRENDING);
 
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
@@ -38,7 +40,7 @@ public class Display {
     }
 
     public void showLogin() {
-        LoginFragment fragment = new LoginFragment();
+        LoginFragment fragment = LoginFragment.create();
 
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)

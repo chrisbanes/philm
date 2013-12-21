@@ -1,4 +1,4 @@
-package app.philm.in.fragments;
+package app.philm.in.fragments.base;
 
 import android.app.Fragment;
 import android.content.Context;

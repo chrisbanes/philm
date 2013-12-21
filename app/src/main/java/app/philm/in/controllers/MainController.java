@@ -2,6 +2,7 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
+import android.content.Intent;
 import android.util.Log;
 
 import app.philm.in.Constants;
@@ -50,6 +51,20 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     @Override
+    public boolean handleIntent(Intent intent) {
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "handleIntent: " + intent);
+        }
+
+        if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+            showUiItem(SideMenuItem.TRENDING);
+            return true;
+        }
+
+        return mUserController.handleIntent(intent) || mMovieController.handleIntent(intent);
+    }
+
+    @Override
      protected void onInited() {
         super.onInited();
         mUserController.init();
@@ -59,7 +74,6 @@ public class MainController extends BaseUiController<MainController.MainControll
     @Override
     protected void populateUi() {
         getUi().setSideMenuItems(SideMenuItem.values());
-        showUiItem(SideMenuItem.TRENDING);
     }
 
     @Override

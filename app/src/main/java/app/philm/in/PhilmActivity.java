@@ -1,7 +1,5 @@
 package app.philm.in;
 
-import com.squareup.otto.Bus;
-
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -9,17 +7,10 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 
-import java.util.concurrent.ExecutorService;
-
 import app.philm.in.controllers.MainController;
-import app.philm.in.controllers.MovieController;
-import app.philm.in.controllers.UserController;
-import app.philm.in.state.ApplicationState;
-import app.philm.in.trakt.Trakt;
 
 
-public class PhilmActivity extends Activity implements MovieController.MovieControllerProvider,
-        UserController.UserControllerProvider, MainController.MainControllerProvider {
+public class PhilmActivity extends Activity {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -28,21 +19,10 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
-        final Container container = Container.getInstance(this);
-        final Display display = new Display(this);
-        final ApplicationState state = new ApplicationState(container.getEventBus());
-
-        UserController userController = new UserController(display, state);
-        MovieController movieController = new MovieController(
-                display,
-                state,
-                container.getTraktClient(),
-                container.getExecutor());
-
-        mMainController = new MainController(display, userController, movieController);
+        mMainController = PhilmApplication.from(this).getMainController();
+        mMainController.setDisplay(new Display(this));
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawerLayout != null) {
@@ -92,17 +72,8 @@ public class PhilmActivity extends Activity implements MovieController.MovieCont
     }
 
     @Override
-    public MovieController getMovieController() {
-        return mMainController.getMovieController();
-    }
-
-    @Override
-    public UserController getUserController() {
-        return mMainController.getUserController();
-    }
-
-    @Override
-    public MainController getMainController() {
-        return mMainController;
+    protected void onDestroy() {
+        mMainController.setDisplay(null);
+        super.onDestroy();
     }
 }

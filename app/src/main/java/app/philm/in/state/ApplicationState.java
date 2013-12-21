@@ -21,7 +21,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public void registerForEvents(Object receiver) {
+     public void registerForEvents(Object receiver) {
         mEventBus.register(receiver);
     }
 

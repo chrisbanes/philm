@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.UserController;
 
@@ -24,12 +25,12 @@ public class LoginFragment extends Fragment implements UserController.UserUi {
     @Override
     public void onResume() {
         super.onResume();
-        ((UserController.UserControllerProvider) getActivity()).getUserController().attachUi(this);
+        getController().attachUi(this);
     }
 
     @Override
     public void onPause() {
-        ((UserController.UserControllerProvider) getActivity()).getUserController().detachUi(this);
+        getController().detachUi(this);
         super.onPause();
     }
 
@@ -37,4 +38,9 @@ public class LoginFragment extends Fragment implements UserController.UserUi {
     public void setCallbacks(UserController.UserUiCallbacks callbacks) {
         mCallbacks = callbacks;
     }
+
+    UserController getController() {
+        return PhilmApplication.from(getActivity()).getMainController().getUserController();
+    }
+
 }

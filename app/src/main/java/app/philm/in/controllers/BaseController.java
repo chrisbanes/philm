@@ -2,8 +2,11 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
+import app.philm.in.Display;
+
 abstract class BaseController {
 
+    private Display mDisplay;
     private boolean mInited;
 
     public final void init() {
@@ -26,4 +29,11 @@ abstract class BaseController {
 
     protected void onSuspended() {}
 
+    public void setDisplay(Display display) {
+        mDisplay = display;
+    }
+
+    public final Display getDisplay() {
+        return mDisplay;
+    }
 }

@@ -8,6 +8,7 @@ import android.view.View;
 
 import java.util.List;
 
+import app.philm.in.PhilmApplication;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 
@@ -34,14 +35,12 @@ public class LibraryListFragment extends ListFragment implements MovieController
     @Override
     public void onResume() {
         super.onResume();
-        ((MovieController.MovieControllerProvider) getActivity())
-                .getMovieController().attachUi(this);
+        getController().attachUi(this);
     }
 
     @Override
     public void onPause() {
-        ((MovieController.MovieControllerProvider) getActivity())
-                .getMovieController().detachUi(this);
+        getController().detachUi(this);
         super.onPause();
     }
 
@@ -59,5 +58,9 @@ public class LibraryListFragment extends ListFragment implements MovieController
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
         return MovieController.MovieQueryType.LIBRARY;
+    }
+
+    private MovieController getController() {
+        return PhilmApplication.from(getActivity()).getMainController().getMovieController();
     }
 }

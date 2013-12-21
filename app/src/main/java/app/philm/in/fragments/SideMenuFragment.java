@@ -10,8 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.controllers.MainController.MainControllerProvider;
+import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
@@ -29,12 +30,12 @@ public class SideMenuFragment extends ListFragment implements MainControllerUi {
     @Override
     public void onResume() {
         super.onResume();
-        ((MainControllerProvider) getActivity()).getMainController().attachUi(this);
+        getController().attachUi(this);
     }
 
     @Override
     public void onPause() {
-        ((MainControllerProvider) getActivity()).getMainController().detachUi(this);
+        getController().detachUi(this);
         super.onPause();
     }
 
@@ -92,4 +93,9 @@ public class SideMenuFragment extends ListFragment implements MainControllerUi {
             return view;
         }
     }
+
+    private MainController getController() {
+        return PhilmApplication.from(getActivity()).getMainController();
+    }
+
 }

@@ -36,15 +36,10 @@ public class MainController extends BaseUiController<MainController.MainControll
         void onSideMenuItemSelected(SideMenuItem item);
     }
 
-    public interface MainControllerProvider {
-        MainController getMainController();
-    }
-
     private final UserController mUserController;
     private final MovieController mMovieController;
-    private final Display mDisplay;
 
-    public MainController(Display display,
+    public MainController(
             UserController userController,
             MovieController movieController) {
         super();
@@ -52,11 +47,10 @@ public class MainController extends BaseUiController<MainController.MainControll
                 "userController cannot be null");
         mMovieController = Preconditions.checkNotNull(movieController,
                 "movieController cannot be null");
-        mDisplay = Preconditions.checkNotNull(display, "display cannot be null");
     }
 
     @Override
-    protected void onInited() {
+     protected void onInited() {
         super.onInited();
         mUserController.init();
         mMovieController.init();
@@ -73,7 +67,10 @@ public class MainController extends BaseUiController<MainController.MainControll
         return new MainControllerUiCallbacks() {
             @Override
             public void onSideMenuItemSelected(SideMenuItem item) {
-                mDisplay.closeDrawerLayout();
+                Display display = getDisplay();
+                if (display != null) {
+                    display.closeDrawerLayout();
+                }
                 showUiItem(item);
             }
         };
@@ -83,13 +80,17 @@ public class MainController extends BaseUiController<MainController.MainControll
         if (Constants.DEBUG) {
             Log.d(LOG_TAG, "showUiItem: " + item.name());
         }
-        switch (item) {
-            case TRENDING:
-                mDisplay.showTrending();
-                break;
-            case LIBRARY:
-                mDisplay.showLibrary();
-                break;
+
+        Display display = getDisplay();
+        if (display != null) {
+            switch (item) {
+                case TRENDING:
+                    display.showTrending();
+                    break;
+                case LIBRARY:
+                    display.showLibrary();
+                    break;
+            }
         }
     }
 
@@ -97,6 +98,13 @@ public class MainController extends BaseUiController<MainController.MainControll
     protected void onSuspended() {
         mUserController.suspend();
         mMovieController.suspend();
+    }
+
+    @Override
+    public void setDisplay(Display display) {
+        super.setDisplay(display);
+        mMovieController.setDisplay(display);
+        mUserController.setDisplay(display);
     }
 
     public final MovieController getMovieController() {

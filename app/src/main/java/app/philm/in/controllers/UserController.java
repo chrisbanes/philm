@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 
 import android.text.TextUtils;
 
-import app.philm.in.Display;
 import app.philm.in.state.UserState;
 
 public class UserController extends BaseUiController<UserController.UserUi,
@@ -17,17 +16,10 @@ public class UserController extends BaseUiController<UserController.UserUi,
         void login(String username, String password);
     }
 
-    public interface UserControllerProvider {
-        UserController getUserController();
-    }
-
     private final UserState mUserState;
-    private final Display mDisplay;
 
-    public UserController(Display display,
-            UserState userState) {
+    public UserController(UserState userState) {
         super();
-        mDisplay = Preconditions.checkNotNull(display, "display cannot be null");
         mUserState = Preconditions.checkNotNull(userState, "userState cannot be null");
     }
 

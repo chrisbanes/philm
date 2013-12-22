@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Subscribe;
 
+import android.accounts.Account;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,9 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import app.philm.in.Constants;
 import app.philm.in.network.NetworkError;
 import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.MoviesState;
+import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
@@ -312,6 +315,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Subscribe
     public void onTrendingChanged(MoviesState.TrendingChangedEvent event) {
         populateTrendingUi();
+    }
+
+    @Subscribe
+    public void onAccountChanged(UserState.AccountChangedEvent event) {
+        // Nuke all Movie State...
+        mMoviesState.setLibrary(null);
+        mMoviesState.setTrending(null);
     }
 
     private class FetchTrendingRunnable extends TraktNetworkCallRunnable<List<Movie>> {

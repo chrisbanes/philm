@@ -88,7 +88,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     @Override
     public void setCurrentAccount(Account account) {
-        if (mAccount != account) {
+        if (!Objects.equal(mAccount, account)) {
             mAccount = account;
             mEventBus.post(new AccountChangedEvent());
         }

@@ -14,10 +14,14 @@
     <string name="account_password_hint">Password</string>
     <string name="account_login">Login</string>
 
+    <string name="menu_refresh">Refresh</string>
+
     <string name="menu_filter">Filter</string>
     <string name="menu_filter_collection">In collection</string>
     <string name="menu_filter_watched">Watched</string>
     <string name="menu_filter_unwatched">Unwatched</string>
     <string name="menu_filter_clear">Clear</string>
+
+    <string name="empty_missing_account">%1$s could not be retrieved as you are not logged in.</string>
 
 </resources>

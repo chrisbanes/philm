@@ -83,7 +83,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void setItems(List<Movie> items);
         MovieQueryType getMovieQueryType();
         void showError(Error error);
-
+        void showLoadingProgress(boolean visible);
         void setFiltersVisibility(boolean visible);
         void showActiveFilters(Set<Filter> filters);
     }
@@ -94,6 +94,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void removeFilter(Filter filter);
 
         void clearFilters();
+
+        void refresh();
     }
 
     private final MoviesState mMoviesState;
@@ -146,6 +148,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (!mMoviesState.getFilters().isEmpty()) {
                     mMoviesState.getFilters().clear();
                     populateUi();
+                }
+            }
+
+            @Override
+            public void refresh() {
+                switch (getUi().getMovieQueryType()) {
+                    case TRENDING:
+                        fetchTrending();
+                        break;
+                    case LIBRARY:
+                        fetchLibrary();
+                        break;
                 }
             }
         };
@@ -212,6 +226,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             items = filterMovies(items);
         }
         getUi().setItems(items);
+        getUi().showLoadingProgress(false);
     }
 
     private void populateTrendingUi() {
@@ -220,6 +235,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             items = filterMovies(items);
         }
         getUi().setItems(items);
+        getUi().showLoadingProgress(false);
     }
 
     private boolean requireFiltering() {
@@ -250,7 +266,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchLibrary() {
-        mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
+        if (isLoggedIn()) {
+            showLoadingProgress(true);
+            mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
+        }
     }
 
     private void fetchLibraryIfNeeded() {
@@ -260,6 +279,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchTrending() {
+        showLoadingProgress(true);
         mExecutor.execute(new FetchTrendingRunnable());
     }
 
@@ -275,6 +295,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             for (Filter mutualFilter : mutuallyExclusives) {
                 mMoviesState.getFilters().remove(mutualFilter);
             }
+        }
+    }
+
+    private void showLoadingProgress(boolean show) {
+        MovieUi ui = getUi();
+        if (ui != null) {
+            ui.showLoadingProgress(show);
         }
     }
 

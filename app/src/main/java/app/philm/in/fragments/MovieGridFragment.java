@@ -111,6 +111,11 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
                     mCallbacks.clearFilters();
                 }
                 return true;
+            case R.id.menu_refresh:
+                if (mCallbacks != null) {
+                    mCallbacks.refresh();
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -145,7 +150,6 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     @Override
     public void setItems(List<Movie> items) {
         mMovieGridAdapter.setItems(items);
-        setGridShown(true);
     }
 
     @Override
@@ -156,8 +160,28 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
 
     @Override
     public void showError(MovieController.Error error) {
-        // TODO: Fix
-        Toast.makeText(getActivity(), "Error: " + error.name(), Toast.LENGTH_SHORT).show();
+        setGridShown(true);
+
+        switch (error) {
+            case REQUIRE_LOGIN:
+                setEmptyText(getString(R.string.empty_missing_account, getTitle()));
+                break;
+        }
+    }
+
+    @Override
+    public void showLoadingProgress(boolean visible) {
+        setGridShown(!visible);
+    }
+
+    private String getTitle() {
+        switch (getMovieQueryType()) {
+            case LIBRARY:
+                return getString(R.string.library_title);
+            case TRENDING:
+                return getString(R.string.trending_title);
+        }
+        return null;
     }
 
     @Override

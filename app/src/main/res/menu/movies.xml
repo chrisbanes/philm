@@ -10,6 +10,13 @@
             <item android:id="@+id/menu_filter_watched"
                   android:title="@string/menu_filter_watched"
                   android:checkable="true"/>
+
+            <item android:id="@+id/menu_filter_unwatched"
+                  android:title="@string/menu_filter_unwatched"
+                  android:checkable="true"/>
+
+            <item android:id="@+id/menu_filter_clear"
+                  android:title="@string/menu_filter_clear" />
         </menu>
 
     </item>

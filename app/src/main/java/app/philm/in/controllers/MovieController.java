@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -25,11 +26,40 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum Filter {
-        WATCHED
+        WATCHED, UNWATCHED;
+
+        public boolean isMovieFiltered(Movie movie) {
+            return isMovieFiltered(movie, this);
+        }
+
+        public List<Filter> getMutuallyExclusiveFilters() {
+            switch (this) {
+                case WATCHED:
+                    return Arrays.asList(UNWATCHED);
+                case UNWATCHED:
+                    return Arrays.asList(WATCHED);
+            }
+            return null;
+        }
+
+        private static boolean isMovieFiltered(Movie movie, Filter filter) {
+            switch (filter) {
+                case WATCHED:
+                    if (movie.watched != null) {
+                        return movie.watched;
+                    } else if (movie.plays != null) {
+                        return movie.plays > 0;
+                    }
+                    break;
+                case UNWATCHED:
+                    return !isMovieFiltered(movie, WATCHED);
+            }
+            return false;
+        }
     }
 
     public static enum MovieQueryType {
-        LIBRARY, TRENDING;
+        LIBRARY, TRENDING
     }
 
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
@@ -44,6 +74,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void addFilter(Filter filter);
 
         void removeFilter(Filter filter);
+
+        void clearFilters();
     }
 
     private final MoviesState mMoviesState;
@@ -79,6 +111,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @Override
             public void addFilter(Filter filter) {
                 if (mMoviesState.getFilters().add(filter)) {
+                    removeMutuallyExclusiveFilters(filter);
                     populateUi();
                 }
             }
@@ -86,6 +119,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @Override
             public void removeFilter(Filter filter) {
                 if (mMoviesState.getFilters().remove(filter)) {
+                    populateUi();
+                }
+            }
+
+            @Override
+            public void clearFilters() {
+                if (!mMoviesState.getFilters().isEmpty()) {
+                    mMoviesState.getFilters().clear();
                     populateUi();
                 }
             }
@@ -142,7 +183,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         for (Movie movie : movies) {
             boolean filtered = true;
             for (Filter filter : filters) {
-                if (!isMovieFiltered(movie, filter)) {
+                if (!filter.isMovieFiltered(movie)) {
                     filtered = false;
                     break;
                 }
@@ -154,25 +195,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return filteredMovies;
     }
 
-    private static boolean isMovieFiltered(Movie movie, Filter filter) {
-        switch (filter) {
-            case WATCHED:
-                if (movie.watched != null) {
-                    return movie.watched;
-                } else if (movie.plays != null) {
-                    return movie.plays > 0;
-                }
-                return false;
-        }
-        return false;
-    }
-
     private void fetchLibrary() {
         mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
     }
 
     private void fetchTrending() {
         mExecutor.execute(new FetchTrendingRunnable());
+    }
+
+    private void removeMutuallyExclusiveFilters(final Filter filter) {
+        List<Filter> mutuallyExclusives = filter.getMutuallyExclusiveFilters();
+        if (mutuallyExclusives != null && !mutuallyExclusives.isEmpty()) {
+            for (Filter mutualFilter : mutuallyExclusives) {
+                mMoviesState.getFilters().remove(mutualFilter);
+            }
+        }
     }
 
     @Subscribe

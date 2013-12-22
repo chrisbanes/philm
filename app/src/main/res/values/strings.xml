@@ -16,5 +16,7 @@
 
     <string name="menu_filter">Filter</string>
     <string name="menu_filter_watched">Watched</string>
+    <string name="menu_filter_unwatched">Unwatched</string>
+    <string name="menu_filter_clear">Clear</string>
 
 </resources>

@@ -1,11 +1,13 @@
 package app.philm.in.state;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Bus;
 
 import android.accounts.Account;
+import android.text.TextUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -51,13 +53,10 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     @Override
     public void setLibrary(List<Movie> items) {
-        mLibrary = items;
-        mEventBus.post(new LibraryChangedEvent());
-    }
-
-    @Override
-    public boolean hasLibrary() {
-        return mLibrary != null && !mLibrary.isEmpty();
+        if (!Objects.equal(items, mLibrary)) {
+            mLibrary = items;
+            mEventBus.post(new LibraryChangedEvent());
+        }
     }
 
     @Override
@@ -67,13 +66,10 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     @Override
     public void setTrending(List<Movie> items) {
-        mTrending = items;
-        mEventBus.post(new TrendingChangedEvent());
-    }
-
-    @Override
-    public boolean hasTrending() {
-        return mTrending != null && !mTrending.isEmpty();
+        if (!Objects.equal(items, mTrending)) {
+            mTrending = items;
+            mEventBus.post(new TrendingChangedEvent());
+        }
     }
 
     @Override
@@ -117,6 +113,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     public void setCredentials(String username, String hashedPassword) {
         mUsername = username;
         mHashedPassword = hashedPassword;
-        mEventBus.post(new UserCredentialsConfirmedEvent());
+        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(hashedPassword)) {
+            mEventBus.post(new UserCredentialsConfirmedEvent());
+        }
     }
 }

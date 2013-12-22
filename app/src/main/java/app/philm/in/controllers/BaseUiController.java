@@ -23,6 +23,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         mUi.setCallbacks(mUiCallbacks);
 
         if (isInited()) {
+            onUiAttached();
             populateUi();
         }
     }
@@ -30,6 +31,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     public final void detachUi(Ui ui) {
         Preconditions.checkArgument(ui != null, "ui cannot be null");
         Preconditions.checkState(mUi == ui, "ui is not attached");
+        onUiDetached();
         mUi.setCallbacks(null);
         mUi = null;
     }
@@ -40,9 +42,14 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
     protected void onInited() {
         if (mUi != null) {
+            onUiAttached();
             populateUi();
         }
     }
+
+    protected void onUiAttached() {}
+
+    protected void onUiDetached() {}
 
     protected void populateUi() {}
 

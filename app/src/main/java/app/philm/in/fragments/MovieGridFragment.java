@@ -2,10 +2,8 @@ package app.philm.in.fragments;
 
 import com.jakewharton.trakt.entities.Movie;
 
-import android.animation.LayoutTransition;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,8 +11,6 @@ import android.view.View;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +20,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.GridFragment;
+import app.philm.in.util.PhilmCollections;
 
 public class MovieGridFragment extends GridFragment implements MovieController.MovieUi {
 
@@ -79,6 +76,9 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     public void onPrepareOptionsMenu(Menu menu) {
         updateItemCheckedState(menu, R.id.menu_filter_watched, MovieController.Filter.WATCHED);
         updateItemCheckedState(menu, R.id.menu_filter_unwatched, MovieController.Filter.UNWATCHED);
+
+        // Update the clear button depending if there are active filters
+        menu.findItem(R.id.menu_filter_clear).setVisible(!PhilmCollections.isEmpty(mFilters));
     }
 
     @Override
@@ -145,15 +145,17 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     }
 
     @Override
-    public void setActiveFilters(Set<MovieController.Filter> filters) {
+    public void showActiveFilters(Set<MovieController.Filter> filters) {
         mFilters = filters;
         getActivity().invalidateOptionsMenu();
     }
 
     private void updateItemCheckedState(Menu menu, int itemId, MovieController.Filter filter) {
-        MenuItem item = menu.findItem(itemId);
-        if (item != null) {
-            item.setChecked(mFilters.contains(filter));
+        if (!PhilmCollections.isEmpty(mFilters)) {
+            MenuItem item = menu.findItem(itemId);
+            if (item != null) {
+                item.setChecked(mFilters.contains(filter));
+            }
         }
     }
 

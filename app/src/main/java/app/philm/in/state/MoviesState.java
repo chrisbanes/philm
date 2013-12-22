@@ -13,13 +13,9 @@ public interface MoviesState extends BaseState {
 
     public void setLibrary(List<Movie> library);
 
-    public boolean hasLibrary();
-
     public List<Movie> getTrending();
 
     public void setTrending(List<Movie> trending);
-
-    public boolean hasTrending();
 
     public Set<MovieController.Filter> getFilters();
 

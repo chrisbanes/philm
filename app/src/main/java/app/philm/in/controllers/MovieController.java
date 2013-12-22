@@ -6,7 +6,6 @@ import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Subscribe;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import app.philm.in.state.MoviesState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.BackgroundRunnable;
+import app.philm.in.util.PhilmCollections;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
@@ -59,7 +59,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        LIBRARY, TRENDING
+        LIBRARY, TRENDING;
+
+        public boolean requireLogin() {
+            switch (this) {
+                case LIBRARY:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
@@ -67,7 +76,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieQueryType getMovieQueryType();
         void showError(Error error);
 
-        void setActiveFilters(Set<Filter> filters);
+        void showActiveFilters(Set<Filter> filters);
     }
 
     public interface MovieUiCallbacks {
@@ -134,10 +143,31 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Override
-    protected void populateUi() {
-        getUi().setActiveFilters(mMoviesState.getFilters());
+    protected void onUiAttached() {
+        super.onUiAttached();
 
         switch (getUi().getMovieQueryType()) {
+            case TRENDING:
+                fetchTrendingIfNeeded();
+                break;
+            case LIBRARY:
+                fetchLibraryIfNeeded();
+                break;
+        }
+    }
+
+    @Override
+    protected void populateUi() {
+        final MovieQueryType queryType = getUi().getMovieQueryType();
+
+        if (queryType.requireLogin() && TextUtils.isEmpty(mMoviesState.getUsername())) {
+            getUi().showError(Error.REQUIRE_LOGIN);
+            return;
+        }
+
+        getUi().showActiveFilters(mMoviesState.getFilters());
+
+        switch (queryType) {
             case TRENDING:
                 populateTrendingUi();
                 break;
@@ -148,36 +178,31 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void populateLibraryUi() {
-        if (TextUtils.isEmpty(mMoviesState.getUsername())) {
-            getUi().showError(Error.REQUIRE_LOGIN);
-        } else {
-            List<Movie> library = mMoviesState.getLibrary();
-            if (library == null || library.isEmpty()) {
-                fetchLibrary();
-            } else {
-                library = filterMovies(library);
-            }
-            getUi().setItems(library);
-        }
-    }
-
-    private void populateTrendingUi() {
-        List<Movie> items = mMoviesState.getTrending();
-        if (items == null || items.isEmpty()) {
-            fetchTrending();
-        } else {
+        List<Movie> items = mMoviesState.getLibrary();
+        if (requireFiltering()) {
             items = filterMovies(items);
         }
         getUi().setItems(items);
     }
 
-    private List<Movie> filterMovies(List<Movie> movies) {
-        Log.d("MovieController", "filterMovies");
-
-        Set<Filter> filters = mMoviesState.getFilters();
-        if (filters == null || filters.isEmpty()) {
-            return movies;
+    private void populateTrendingUi() {
+        List<Movie> items = mMoviesState.getTrending();
+        if (requireFiltering()) {
+            items = filterMovies(items);
         }
+        getUi().setItems(items);
+    }
+
+    private boolean requireFiltering() {
+        return !PhilmCollections.isEmpty(mMoviesState.getFilters());
+    }
+
+    private List<Movie> filterMovies(List<Movie> movies) {
+        Preconditions.checkNotNull(movies, "movies cannot be null");
+
+        final Set<Filter> filters = mMoviesState.getFilters();
+        Preconditions.checkNotNull(filters, "filters cannot be null");
+        Preconditions.checkState(!filters.isEmpty(), "filters cannot be empty");
 
         ArrayList<Movie> filteredMovies = new ArrayList<Movie>();
         for (Movie movie : movies) {
@@ -199,13 +224,25 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
     }
 
+    private void fetchLibraryIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
+            fetchLibrary();
+        }
+    }
+
     private void fetchTrending() {
         mExecutor.execute(new FetchTrendingRunnable());
     }
 
+    private void fetchTrendingIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getTrending())) {
+            fetchTrending();
+        }
+    }
+
     private void removeMutuallyExclusiveFilters(final Filter filter) {
         List<Filter> mutuallyExclusives = filter.getMutuallyExclusiveFilters();
-        if (mutuallyExclusives != null && !mutuallyExclusives.isEmpty()) {
+        if (!PhilmCollections.isEmpty(mutuallyExclusives)) {
             for (Filter mutualFilter : mutuallyExclusives) {
                 mMoviesState.getFilters().remove(mutualFilter);
             }

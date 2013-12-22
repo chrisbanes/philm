@@ -61,10 +61,24 @@ public class UserController extends BaseUiController<UserController.UserUi,
         super.onInited();
         mUserState.registerForEvents(this);
 
-        if (mUserState.getCurrentAccount() == null) {
-            Account[] accounts = mAccountManagerHelper.getAccounts();
+        Account account = mUserState.getCurrentAccount();
+        Account[] accounts = mAccountManagerHelper.getAccounts();
+
+        if (account == null) {
             if (accounts.length > 0) {
                 mUserState.setCurrentAccount(accounts[0]);
+            }
+        } else {
+            // Try and find account in account list, if removed remove our reference
+            boolean found = false;
+            for (int i = 0, z = accounts.length ; i < z ; i++) {
+                if (accounts[i] == account) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                mUserState.setCurrentAccount(null);
             }
         }
     }

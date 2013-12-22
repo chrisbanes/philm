@@ -6,6 +6,7 @@ import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Subscribe;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,8 @@ import app.philm.in.util.PhilmCollections;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
+
+    private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     public static enum Error {
         REQUIRE_LOGIN
@@ -150,7 +153,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     protected void onUiAttached() {
         super.onUiAttached();
 
-        switch (getUi().getMovieQueryType()) {
+        final MovieQueryType queryType = getUi().getMovieQueryType();
+
+        if (queryType.requireLogin() && !isLoggedIn()) {
+            Log.i(LOG_TAG, queryType.name() + " UI Attached but not logged in");
+            return;
+        }
+
+        switch (queryType) {
             case TRENDING:
                 fetchTrendingIfNeeded();
                 break;
@@ -164,7 +174,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     protected void populateUi() {
         final MovieQueryType queryType = getUi().getMovieQueryType();
 
-        if (queryType.requireLogin() && TextUtils.isEmpty(mMoviesState.getUsername())) {
+        if (queryType.requireLogin() && !isLoggedIn()) {
             getUi().showError(Error.REQUIRE_LOGIN);
             return;
         }
@@ -179,6 +189,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 populateLibraryUi();
                 break;
         }
+    }
+
+    private boolean isLoggedIn() {
+        return !TextUtils.isEmpty(mMoviesState.getUsername())
+                && !TextUtils.isEmpty(mMoviesState.getHashedPassword());
     }
 
     private void populateLibraryUi() {

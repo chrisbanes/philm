@@ -26,7 +26,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum Filter {
-        WATCHED, UNWATCHED;
+        COLLECTION, WATCHED, UNWATCHED;
 
         public boolean isMovieFiltered(Movie movie) {
             return isMovieFiltered(movie, this);
@@ -44,6 +44,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         private static boolean isMovieFiltered(Movie movie, Filter filter) {
             switch (filter) {
+                case COLLECTION:
+                    if (movie.inCollection != null) {
+                        return movie.inCollection;
+                    }
                 case WATCHED:
                     if (movie.watched != null) {
                         return movie.watched;

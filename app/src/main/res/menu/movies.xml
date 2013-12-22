@@ -7,6 +7,11 @@
           android:showAsAction="ifRoom">
 
         <menu>
+
+            <item android:id="@+id/menu_filter_collection"
+                  android:title="@string/menu_filter_collection"
+                  android:checkable="true"/>
+
             <item android:id="@+id/menu_filter_watched"
                   android:title="@string/menu_filter_watched"
                   android:checkable="true"/>
@@ -17,6 +22,7 @@
 
             <item android:id="@+id/menu_filter_clear"
                   android:title="@string/menu_filter_clear" />
+
         </menu>
 
     </item>

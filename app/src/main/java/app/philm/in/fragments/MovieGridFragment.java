@@ -74,6 +74,7 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        updateItemCheckedState(menu, R.id.menu_filter_collection, MovieController.Filter.COLLECTION);
         updateItemCheckedState(menu, R.id.menu_filter_watched, MovieController.Filter.WATCHED);
         updateItemCheckedState(menu, R.id.menu_filter_unwatched, MovieController.Filter.UNWATCHED);
 
@@ -84,6 +85,9 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_filter_collection:
+                updateFilterState(MovieController.Filter.COLLECTION, !item.isChecked());
+                return true;
             case R.id.menu_filter_watched:
                 updateFilterState(MovieController.Filter.WATCHED, !item.isChecked());
                 return true;

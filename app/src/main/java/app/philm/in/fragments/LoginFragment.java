@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -51,6 +52,11 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     public void onPause() {
         getController().detachUi(this);
         super.onPause();
+    }
+
+    @Override
+    public void showError(UserController.Error error) {
+        Toast.makeText(getActivity(), "Error: " + error.name(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

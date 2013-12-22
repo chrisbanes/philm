@@ -25,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+        </activity>
+
+        <activity android:name=".AccountActivity">
+
             <intent-filter>
                 <action android:name="philm.intent.action.LOGIN" />
                 <category android:name="android.intent.category.DEFAULT" />

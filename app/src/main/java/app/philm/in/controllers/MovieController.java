@@ -16,8 +16,9 @@ import java.util.concurrent.ExecutorService;
 
 import app.philm.in.state.MoviesState;
 import app.philm.in.trakt.Trakt;
-import app.philm.in.util.BackgroundRunnable;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.util.TraktNetworkCallRunnable;
+import retrofit.RetrofitError;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
@@ -278,33 +279,56 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         populateTrendingUi();
     }
 
-    private class FetchTrendingRunnable extends BackgroundRunnable<List<Movie>> {
-        @Override
-        public List<Movie> runAsync() {
-            return mTraktClient.moviesService().trending();
+    private class FetchTrendingRunnable extends TraktNetworkCallRunnable<List<Movie>> {
+        public FetchTrendingRunnable() {
+            super(mTraktClient);
         }
 
         @Override
-        public void postExecute(List<Movie> result) {
+        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.moviesService().trending();
+        }
+
+        @Override
+        public void onSuccess(List<Movie> result) {
             mMoviesState.setTrending(result);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                // TODO: Correct Error
+                ui.showError(Error.REQUIRE_LOGIN);
+            }
         }
     }
 
-    private class FetchLibraryRunnable extends BackgroundRunnable<List<Movie>> {
+    private class FetchLibraryRunnable extends TraktNetworkCallRunnable<List<Movie>> {
         private final String mUsername;
 
         FetchLibraryRunnable(String username) {
+            super(mTraktClient);
             mUsername = Preconditions.checkNotNull(username, "username cannot be null");
         }
 
         @Override
-        public List<Movie> runAsync() {
-            return mTraktClient.philmUserService().libraryMoviesAll(mUsername);
+        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.philmUserService().libraryMoviesAll(mUsername);
         }
 
         @Override
-        public void postExecute(List<Movie> result) {
+        public void onSuccess(List<Movie> result) {
             mMoviesState.setLibrary(result);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                // TODO: Correct Error
+                ui.showError(Error.REQUIRE_LOGIN);
+            }
         }
     }
 }

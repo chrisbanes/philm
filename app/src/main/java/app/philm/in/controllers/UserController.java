@@ -7,26 +7,38 @@ import com.squareup.otto.Subscribe;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.concurrent.ExecutorService;
 
+import app.philm.in.AccountActivity;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.PhilmActivity;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AccountManagerHelper;
-import app.philm.in.util.BackgroundRunnable;
 import app.philm.in.util.Sha1;
+import app.philm.in.util.TraktNetworkCallRunnable;
+import retrofit.RetrofitError;
 
 public class UserController extends BaseUiController<UserController.UserUi,
         UserController.UserUiCallbacks> {
 
     private static final String LOG_TAG = UserController.class.getSimpleName();
 
+    public static enum Error {
+        BAD_AUTH
+    }
+
+    interface ControllerCallbacks {
+        void onAddAccountCompleted(Bundle extras);
+    }
+
     public interface UserUi extends BaseUiController.Ui<UserUiCallbacks> {
+        void showError(Error error);
     }
 
     public interface UserUiCallbacks {
@@ -42,6 +54,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
     private final ExecutorService mExecutor;
     private final Trakt mTraktClient;
     private final AccountManagerHelper mAccountManagerHelper;
+
+    private ControllerCallbacks mControllerCallbacks;
 
     public UserController(
             UserState userState,
@@ -105,11 +119,15 @@ public class UserController extends BaseUiController<UserController.UserUi,
     @Override
     public boolean handleIntent(Intent intent) {
         final Display display = getDisplay();
-        if (display != null && PhilmActivity.ACTION_LOGIN.equals(intent.getAction())) {
+        if (display != null && AccountActivity.ACTION_LOGIN.equals(intent.getAction())) {
             display.showLogin();
             return true;
         }
         return super.handleIntent(intent);
+    }
+
+    void setControllerCallbacks(ControllerCallbacks controllerCallbacks) {
+        mControllerCallbacks = controllerCallbacks;
     }
 
     @Override
@@ -143,29 +161,31 @@ public class UserController extends BaseUiController<UserController.UserUi,
         };
     }
 
-    private class CheckUserCredentialsRunnable extends BackgroundRunnable<Intent> {
+    private class CheckUserCredentialsRunnable extends TraktNetworkCallRunnable<Boolean> {
         private final String mUsername, mPassword;
 
         CheckUserCredentialsRunnable(String username, String password) {
+            super(mTraktClient);
             mUsername = Preconditions.checkNotNull(username, "username cannot be null");
             mPassword = Preconditions.checkNotNull(password, "password cannot be null");
         }
 
         @Override
-        public Intent runAsync() {
-            mTraktClient.setAuthentication(mUsername, mPassword);
-            if ("success".equals(mTraktClient.accountService().test().status)) {
-                Intent res = new Intent();
-                res.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
-                res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.TRAKT_ACCOUNT_TYPE);
-                res.putExtra(AccountManager.KEY_AUTHTOKEN, Constants.TRAKT_AUTHTOKEN_PASSWORD_TYPE);
-                return res;
-            }
-            return null;
+        public Boolean doTraktCall(Trakt trakt) {
+            trakt.setAuthentication(mUsername, mPassword);
+            return "success".equals(trakt.accountService().test());
         }
 
         @Override
-        public void postExecute(Intent result) {
+        public void onSuccess(Boolean result) {
+            if (!result) {
+                UserUi ui = getUi();
+                if (ui != null) {
+                    ui.showError(Error.BAD_AUTH);
+                }
+                return;
+            }
+
             Account[] accounts = mAccountManagerHelper.getAccounts();
             Account existingAccount = null;
             for (int i = 0, count = accounts.length; i < count; i++) {
@@ -174,6 +194,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 }
             }
 
+            Bundle callbackResult = new Bundle();
+
             if (existingAccount == null) {
                 final Account account = new Account(mUsername, Constants.TRAKT_ACCOUNT_TYPE);
                 mAccountManagerHelper.addAccount(account, mPassword);
@@ -181,6 +203,23 @@ public class UserController extends BaseUiController<UserController.UserUi,
                         Constants.TRAKT_AUTHTOKEN_PASSWORD_TYPE);
             } else {
                 mAccountManagerHelper.setPassword(existingAccount, mPassword);
+            }
+
+            callbackResult.putString(AccountManager.KEY_ACCOUNT_NAME, mUsername);
+            callbackResult.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.TRAKT_ACCOUNT_TYPE);
+            callbackResult.putString(AccountManager.KEY_AUTHTOKEN, mPassword);
+
+            if (mControllerCallbacks != null) {
+                // TODO: Shouldn't always finish
+                mControllerCallbacks.onAddAccountCompleted(callbackResult);
+            }
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            UserUi ui = getUi();
+            if (ui != null) {
+                ui.showError(Error.BAD_AUTH);
             }
         }
     }

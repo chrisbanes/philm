@@ -3,6 +3,7 @@ package app.philm.in.controllers;
 import com.google.common.base.Preconditions;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import app.philm.in.Constants;
@@ -29,6 +30,12 @@ public class MainController extends BaseUiController<MainController.MainControll
         }
     }
 
+    public interface HostCallbacks {
+        void finish();
+
+        void setAccountAuthenticatorResult(Bundle bundle);
+    }
+
     public interface MainControllerUi extends BaseUiController.Ui<MainControllerUiCallbacks> {
         void setSideMenuItems(SideMenuItem... items);
     }
@@ -40,6 +47,8 @@ public class MainController extends BaseUiController<MainController.MainControll
     private final UserController mUserController;
     private final MovieController mMovieController;
 
+    private HostCallbacks mHostCallbacks;
+
     public MainController(
             UserController userController,
             MovieController movieController) {
@@ -48,6 +57,16 @@ public class MainController extends BaseUiController<MainController.MainControll
                 "userController cannot be null");
         mMovieController = Preconditions.checkNotNull(movieController,
                 "movieController cannot be null");
+
+        mUserController.setControllerCallbacks(new UserController.ControllerCallbacks() {
+            @Override
+            public void onAddAccountCompleted(Bundle result) {
+                if (mHostCallbacks != null) {
+                    mHostCallbacks.setAccountAuthenticatorResult(result);
+                    mHostCallbacks.finish();
+                }
+            }
+        });
     }
 
     @Override
@@ -119,6 +138,10 @@ public class MainController extends BaseUiController<MainController.MainControll
         super.setDisplay(display);
         mMovieController.setDisplay(display);
         mUserController.setDisplay(display);
+    }
+
+    public void setHostCallbacks(HostCallbacks hostCallbacks) {
+        mHostCallbacks = hostCallbacks;
     }
 
     public final MovieController getMovieController() {

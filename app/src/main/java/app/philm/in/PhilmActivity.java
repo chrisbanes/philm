@@ -10,10 +10,7 @@ import android.view.MenuItem;
 
 import app.philm.in.controllers.MainController;
 
-
-public class PhilmActivity extends Activity {
-
-    public static final String ACTION_LOGIN = "philm.intent.action.LOGIN";
+public class PhilmActivity extends Activity implements MainController.HostCallbacks {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -27,7 +24,6 @@ public class PhilmActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mMainController = PhilmApplication.from(this).getMainController();
-        mMainController.setDisplay(new Display(this));
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawerLayout != null) {
@@ -59,6 +55,9 @@ public class PhilmActivity extends Activity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
+
+        mMainController.setDisplay(new Display(this));
+        mMainController.setHostCallbacks(this);
         mMainController.init();
 
         if (mLaunchIntent != null) {
@@ -70,6 +69,8 @@ public class PhilmActivity extends Activity {
     @Override
     protected void onPause() {
         mMainController.suspend();
+        mMainController.setHostCallbacks(null);
+        mMainController.setDisplay(null);
         super.onPause();
     }
 
@@ -90,8 +91,7 @@ public class PhilmActivity extends Activity {
     }
 
     @Override
-    protected void onDestroy() {
-        mMainController.setDisplay(null);
-        super.onDestroy();
+    public void setAccountAuthenticatorResult(Bundle bundle) {
+        // NO-OP
     }
 }

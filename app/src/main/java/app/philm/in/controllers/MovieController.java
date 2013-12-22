@@ -84,6 +84,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieQueryType getMovieQueryType();
         void showError(Error error);
 
+        void setFiltersVisibility(boolean visible);
         void showActiveFilters(Set<Filter> filters);
     }
 
@@ -173,14 +174,20 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Override
     protected void populateUi() {
-        final MovieQueryType queryType = getUi().getMovieQueryType();
+        final MovieUi ui = getUi();
 
-        if (queryType.requireLogin() && !isLoggedIn()) {
-            getUi().showError(Error.REQUIRE_LOGIN);
-            return;
+        final MovieQueryType queryType = ui.getMovieQueryType();
+
+        if (isLoggedIn()) {
+            ui.setFiltersVisibility(true);
+            ui.showActiveFilters(mMoviesState.getFilters());
+        } else {
+            ui.setFiltersVisibility(false);
+            if (queryType.requireLogin()) {
+                ui.showError(Error.REQUIRE_LOGIN);
+                return;
+            }
         }
-
-        getUi().showActiveFilters(mMoviesState.getFilters());
 
         switch (queryType) {
             case TRENDING:

@@ -31,6 +31,8 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
 
     private MovieGridAdapter mMovieGridAdapter;
 
+    private boolean mFiltersItemVisible;
+
     public static MovieGridFragment create(MovieController.MovieQueryType type) {
         Bundle bundle = new Bundle();
         bundle.putInt(KEY_QUERY_TYPE, type.ordinal());
@@ -70,16 +72,26 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.movies, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_filter);
+        if (item != null && item.isVisible() != mFiltersItemVisible) {
+            item.setVisible(mFiltersItemVisible);
+        }
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        updateItemCheckedState(menu, R.id.menu_filter_collection, MovieController.Filter.COLLECTION);
-        updateItemCheckedState(menu, R.id.menu_filter_watched, MovieController.Filter.WATCHED);
-        updateItemCheckedState(menu, R.id.menu_filter_unwatched, MovieController.Filter.UNWATCHED);
+        if (mFiltersItemVisible) {
+            updateItemCheckedState(menu, R.id.menu_filter_collection,
+                    MovieController.Filter.COLLECTION);
+            updateItemCheckedState(menu, R.id.menu_filter_watched,
+                    MovieController.Filter.WATCHED);
+            updateItemCheckedState(menu, R.id.menu_filter_unwatched,
+                    MovieController.Filter.UNWATCHED);
 
-        // Update the clear button depending if there are active filters
-        menu.findItem(R.id.menu_filter_clear).setVisible(!PhilmCollections.isEmpty(mFilters));
+            // Update the clear button depending if there are active filters
+            menu.findItem(R.id.menu_filter_clear).setVisible(!PhilmCollections.isEmpty(mFilters));
+        }
     }
 
     @Override
@@ -146,6 +158,14 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     public void showError(MovieController.Error error) {
         // TODO: Fix
         Toast.makeText(getActivity(), "Error: " + error.name(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setFiltersVisibility(boolean visible) {
+        if (mFiltersItemVisible != visible) {
+            mFiltersItemVisible = visible;
+            getActivity().invalidateOptionsMenu();
+        }
     }
 
     @Override

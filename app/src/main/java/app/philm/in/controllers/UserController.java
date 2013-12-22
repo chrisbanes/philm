@@ -17,11 +17,11 @@ import java.util.concurrent.ExecutorService;
 import app.philm.in.AccountActivity;
 import app.philm.in.Constants;
 import app.philm.in.Display;
+import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AccountManagerHelper;
 import app.philm.in.util.Sha1;
-import app.philm.in.network.TraktNetworkCallRunnable;
 import retrofit.RetrofitError;
 
 public class UserController extends BaseUiController<UserController.UserUi,

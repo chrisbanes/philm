@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +19,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.GridFragment;
+import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 
 public class MovieGridFragment extends GridFragment implements MovieController.MovieUi {
@@ -159,12 +159,17 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     }
 
     @Override
-    public void showError(MovieController.Error error) {
+    public void showError(NetworkError error) {
         setGridShown(true);
-
         switch (error) {
-            case REQUIRE_LOGIN:
+            case UNAUTHORIZED:
                 setEmptyText(getString(R.string.empty_missing_account, getTitle()));
+                break;
+            case NETWORK_ERROR:
+                setEmptyText(getString(R.string.empty_network_error, getTitle()));
+                break;
+            case UNKNOWN:
+                setEmptyText(getString(R.string.empty_unknown_error, getTitle()));
                 break;
         }
     }

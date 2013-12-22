@@ -14,10 +14,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import app.philm.in.network.NetworkError;
+import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.MoviesState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.network.TraktNetworkCallRunnable;
 import retrofit.RetrofitError;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
@@ -25,9 +26,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
-    public static enum Error {
-        REQUIRE_LOGIN
-    }
+
 
     public static enum Filter {
         COLLECTION, WATCHED, UNWATCHED;
@@ -82,7 +81,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
         void setItems(List<Movie> items);
         MovieQueryType getMovieQueryType();
-        void showError(Error error);
+        void showError(NetworkError error);
         void showLoadingProgress(boolean visible);
         void setFiltersVisibility(boolean visible);
         void showActiveFilters(Set<Filter> filters);
@@ -200,7 +199,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         } else {
             ui.setFiltersVisibility(false);
             if (queryType.requireLogin()) {
-                ui.showError(Error.REQUIRE_LOGIN);
+                ui.showError(NetworkError.UNAUTHORIZED);
                 return;
             }
         }
@@ -334,8 +333,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         public void onError(RetrofitError re) {
             MovieUi ui = getUi();
             if (ui != null) {
-                // TODO: Correct Error
-                ui.showError(Error.REQUIRE_LOGIN);
+                ui.showError(NetworkError.from(re));
             }
         }
     }
@@ -362,8 +360,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         public void onError(RetrofitError re) {
             MovieUi ui = getUi();
             if (ui != null) {
-                // TODO: Correct Error
-                ui.showError(Error.REQUIRE_LOGIN);
+                ui.showError(NetworkError.from(re));
             }
         }
     }

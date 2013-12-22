@@ -23,5 +23,7 @@
     <string name="menu_filter_clear">Clear</string>
 
     <string name="empty_missing_account">%1$s could not be retrieved as you are not logged in.</string>
+    <string name="empty_network_error">%1$s could not be retrieved due to an network error. Check your internet connection and try again.</string>
+    <string name="empty_unknown_error">%1$s could not be retrieved due to an unknown error.</string>
 
 </resources>

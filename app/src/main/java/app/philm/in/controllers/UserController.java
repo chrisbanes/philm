@@ -161,7 +161,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         };
     }
 
-    private class CheckUserCredentialsRunnable extends TraktNetworkCallRunnable<Boolean> {
+    private class CheckUserCredentialsRunnable extends TraktNetworkCallRunnable<String> {
         private final String mUsername, mPassword;
 
         CheckUserCredentialsRunnable(String username, String password) {
@@ -171,14 +171,14 @@ public class UserController extends BaseUiController<UserController.UserUi,
         }
 
         @Override
-        public Boolean doTraktCall(Trakt trakt) {
+        public String doTraktCall(Trakt trakt) {
             trakt.setAuthentication(mUsername, mPassword);
-            return "success".equals(trakt.accountService().test());
+            return trakt.accountService().test().status;
         }
 
         @Override
-        public void onSuccess(Boolean result) {
-            if (!result) {
+        public void onSuccess(String result) {
+            if (!"success".equals(result)) {
                 UserUi ui = getUi();
                 if (ui != null) {
                     ui.showError(Error.BAD_AUTH);

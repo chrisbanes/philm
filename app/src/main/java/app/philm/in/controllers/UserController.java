@@ -1,5 +1,6 @@
 package app.philm.in.controllers;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Subscribe;
@@ -16,12 +17,11 @@ import java.util.concurrent.ExecutorService;
 import app.philm.in.AccountActivity;
 import app.philm.in.Constants;
 import app.philm.in.Display;
-import app.philm.in.PhilmActivity;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AccountManagerHelper;
 import app.philm.in.util.Sha1;
-import app.philm.in.util.TraktNetworkCallRunnable;
+import app.philm.in.network.TraktNetworkCallRunnable;
 import retrofit.RetrofitError;
 
 public class UserController extends BaseUiController<UserController.UserUi,
@@ -73,6 +73,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     @Override
     protected void onInited() {
         super.onInited();
+
         mUserState.registerForEvents(this);
 
         Account account = mUserState.getCurrentAccount();
@@ -86,7 +87,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
             // Try and find account in account list, if removed remove our reference
             boolean found = false;
             for (int i = 0, z = accounts.length ; i < z ; i++) {
-                if (accounts[i] == account) {
+                if (Objects.equal(accounts[i].name, account.name)) {
                     found = true;
                     break;
                 }
@@ -105,10 +106,10 @@ public class UserController extends BaseUiController<UserController.UserUi,
                     mAccountManagerHelper.getPassword(currentAccount));
         } else {
             mUserState.setCredentials(null, null);
-
             // TODO: Also nuke rest of state
         }
 
+        // Update TraktClient
         mTraktClient.setAuthentication(mUserState.getUsername(), mUserState.getHashedPassword());
 
         if (Constants.DEBUG) {

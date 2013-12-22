@@ -1,4 +1,4 @@
-package app.philm.in.util;
+package app.philm.in.network;
 
 import com.google.common.base.Preconditions;
 

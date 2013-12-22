@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import app.philm.in.R;
-import app.philm.in.util.TraktImageHelper;
+import app.philm.in.trakt.TraktImageHelper;
 
 public class MovieGridAdapter extends BaseAdapter {
 

@@ -1,4 +1,4 @@
-package app.philm.in.util;
+package app.philm.in.trakt;
 
 import com.google.common.base.Preconditions;
 

@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutorService;
 import app.philm.in.state.MoviesState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.util.TraktNetworkCallRunnable;
+import app.philm.in.network.TraktNetworkCallRunnable;
 import retrofit.RetrofitError;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
@@ -174,6 +174,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Override
     protected void populateUi() {
+        super.populateUi();
+
         final MovieUi ui = getUi();
 
         final MovieQueryType queryType = ui.getMovieQueryType();

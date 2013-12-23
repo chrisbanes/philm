@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.R;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.MoviesState;
@@ -50,7 +51,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             return mTitle;
         }
 
-        public boolean isMovieFiltered(Movie movie) {
+        public boolean isMovieFiltered(PhilmMovie movie) {
             return isMovieFiltered(movie, this);
         }
 
@@ -64,43 +65,39 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             return null;
         }
 
-        private static boolean isMovieFiltered(Movie movie, Filter filter) {
+        private static boolean isMovieFiltered(PhilmMovie movie, Filter filter) {
+            // TODO: Move dependent methods to PhilmMovie
+            final Movie unpacked = movie.getMovie();
+
             switch (filter) {
                 case COLLECTION:
-                    if (movie.inCollection != null) {
-                        return movie.inCollection;
-                    }
+                    return movie.inCollection();
                 case WATCHED:
-                    if (movie.watched != null) {
-                        return movie.watched;
-                    } else if (movie.plays != null) {
-                        return movie.plays > 0;
-                    }
-                    break;
+                    return movie.isWatched();
                 case UNWATCHED:
-                    return !isMovieFiltered(movie, WATCHED);
+                    return !movie.isWatched();
                 case IN_FUTURE:
-                    if (movie.released != null) {
-                        return movie.released.getTime() >= System.currentTimeMillis();
+                    if (unpacked.released != null) {
+                        return unpacked.released.getTime() >= System.currentTimeMillis();
                     }
                     break;
                 case UPCOMING:
-                    if (movie.released != null) {
-                        final long time = movie.released.getTime();
+                    if (unpacked.released != null) {
+                        final long time = unpacked.released.getTime();
                         return  time - Constants.FUTURE_SOON_THRESHOLD >= System.currentTimeMillis();
                     }
                     break;
                 case SOON:
-                    if (movie.released != null) {
-                        final long time = movie.released.getTime();
+                    if (unpacked.released != null) {
+                        final long time = unpacked.released.getTime();
                         return time >= System.currentTimeMillis()
                                 && time - Constants.FUTURE_SOON_THRESHOLD < System
                                 .currentTimeMillis();
                     }
                     break;
                 case RELEASED:
-                    if (movie.released != null) {
-                        return movie.released.getTime() < System.currentTimeMillis();
+                    if (unpacked.released != null) {
+                        return unpacked.released.getTime() < System.currentTimeMillis();
                     }
                     break;
             }
@@ -139,14 +136,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieListUi extends MovieUi {
-        void setItems(List<Movie> items);
-        void setItemsWithSections(List<Movie> items, List<Filter> sections);
+        void setItems(List<PhilmMovie> items);
+        void setItemsWithSections(List<PhilmMovie> items, List<Filter> sections);
         void setFiltersVisibility(boolean visible);
         void showActiveFilters(Set<Filter> filters);
     }
 
     public interface MovieDetailUi extends MovieUi {
-        void setMovie(Movie movie);
+        void setMovie(PhilmMovie movie);
     }
 
     public interface MovieUiCallbacks {
@@ -158,7 +155,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void refresh();
 
-        void showMovieDetail(Movie movie);
+        void showMovieDetail(PhilmMovie movie);
     }
 
     private final MoviesState mMoviesState;
@@ -230,10 +227,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showMovieDetail(Movie movie) {
+            public void showMovieDetail(PhilmMovie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showMovieDetailFragment(movie.tmdbId);
+                    display.showMovieDetailFragment(movie.getTmdbId());
                 }
             }
         };
@@ -296,7 +293,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             ui.setFiltersVisibility(false);
         }
 
-        List<Movie> items;
+        List<PhilmMovie> items;
 
         switch (queryType) {
             case TRENDING:
@@ -331,7 +328,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         ui.setMovie(getMovie(ui.getRequestParameter()));
     }
 
-    private Movie getMovie(String tmdbId) {
+    private PhilmMovie getMovie(String tmdbId) {
         return mMoviesState.getMovies().get(tmdbId);
     }
 
@@ -344,15 +341,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return !PhilmCollections.isEmpty(mMoviesState.getFilters());
     }
 
-    private List<Movie> filterMovies(List<Movie> movies) {
+    private List<PhilmMovie> filterMovies(List<PhilmMovie> movies) {
         Preconditions.checkNotNull(movies, "movies cannot be null");
 
         final Set<Filter> filters = mMoviesState.getFilters();
         Preconditions.checkNotNull(filters, "filters cannot be null");
         Preconditions.checkState(!filters.isEmpty(), "filters cannot be empty");
 
-        ArrayList<Movie> filteredMovies = new ArrayList<Movie>();
-        for (Movie movie : movies) {
+        ArrayList<PhilmMovie> filteredMovies = new ArrayList<PhilmMovie>();
+        for (PhilmMovie movie : movies) {
             boolean filtered = true;
             for (Filter filter : filters) {
                 if (!filter.isMovieFiltered(movie)) {
@@ -408,7 +405,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchDetailMovieIfNeeded() {
-        Movie cached = getMovie(getUi().getRequestParameter());
+        PhilmMovie cached = getMovie(getUi().getRequestParameter());
         if (cached == null) {
             fetchDetailMovie();
         }
@@ -451,16 +448,31 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState.setLibrary(null);
         mMoviesState.setTrending(null);
         mMoviesState.setWatchlist(null);
+        mMoviesState.getMovies().clear();
     }
 
-    void addMoviesToCache(List<Movie> movies) {
-        Map<String, Movie> cache = mMoviesState.getMovies();
-        for (Movie movie : movies) {
-            final String key = movie.tmdbId;
-            if (!cache.containsKey(key)) {
-                cache.put(key, movie);
-            }
+    List<PhilmMovie> mapTraktMoviesFromState(List<Movie> rawMovies) {
+        final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(rawMovies.size());
+        for (Movie rawMovie : rawMovies) {
+            movies.add(mapTraktMovieFromState(rawMovie));
         }
+        return movies;
+    }
+
+    PhilmMovie mapTraktMovieFromState(Movie rawMovie) {
+        final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
+
+        PhilmMovie movie = stateMovies.get(rawMovie.tmdbId);
+        if (movie != null) {
+            // We already have a movie, so just update it wrapped value
+            movie.setMovie(rawMovie);
+        } else {
+            // No movie, so create one
+            movie = new PhilmMovie(rawMovie);
+            stateMovies.put(movie.getTmdbId(), movie);
+        }
+
+        return movie;
     }
 
     private class FetchTrendingRunnable extends TraktNetworkCallRunnable<List<Movie>> {
@@ -475,8 +487,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(List<Movie> result) {
-            mMoviesState.setTrending(result);
-            addMoviesToCache(result);
+            if (!PhilmCollections.isEmpty(result)) {
+                mMoviesState.setTrending(mapTraktMoviesFromState(result));
+            } else {
+                mMoviesState.setTrending(null);
+            }
         }
 
         @Override
@@ -503,8 +518,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(List<Movie> result) {
-            mMoviesState.setLibrary(result);
-            addMoviesToCache(result);
+            if (!PhilmCollections.isEmpty(result)) {
+                mMoviesState.setLibrary(mapTraktMoviesFromState(result));
+            } else {
+                mMoviesState.setLibrary(null);
+            }
         }
 
         @Override
@@ -531,7 +549,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(List<Movie> result) {
-            mMoviesState.setWatchlist(result);
+            if (!PhilmCollections.isEmpty(result)) {
+                mMoviesState.setWatchlist(mapTraktMoviesFromState(result));
+            } else {
+                mMoviesState.setWatchlist(null);
+            }
         }
 
         @Override
@@ -558,8 +580,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(Movie result) {
-            // Should do something better here
-            mMoviesState.getMovies().put(result.tmdbId, result);
+            mapTraktMovieFromState(result);
+
+            // TODO: Should do something better here
             populateUi();
         }
 

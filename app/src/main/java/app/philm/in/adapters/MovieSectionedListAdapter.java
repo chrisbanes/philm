@@ -15,12 +15,12 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import app.philm.in.Constants;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
 
@@ -34,10 +34,10 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
         public static final int TYPE_SECTION = 1;
 
         final int type;
-        final Movie movie;
+        final PhilmMovie movie;
         final int titleResId;
 
-        Item(Movie movie) {
+        Item(PhilmMovie movie) {
             type = TYPE_ITEM;
             this.movie = movie;
             titleResId = 0;
@@ -53,7 +53,7 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
             return type;
         }
 
-        public Movie getMovie() {
+        public PhilmMovie getMovie() {
             return movie;
         }
     }
@@ -70,22 +70,22 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
         mDateFormat = android.text.format.DateFormat.getMediumDateFormat(activity);
     }
 
-    public void setItems(List<Movie> items) {
+    public void setItems(List<PhilmMovie> items) {
         setItems(items, null);
     }
 
-    public void setItems(List<Movie> items, List<MovieController.Filter> sections) {
+    public void setItems(List<PhilmMovie> items, List<MovieController.Filter> sections) {
         if (PhilmCollections.isEmpty(items)) {
             mItems = null;
         } else {
             mItems = new ArrayList<Item>();
 
             if (!PhilmCollections.isEmpty(sections)) {
-                HashSet<Movie> movies = new HashSet<Movie>(items);
+                HashSet<PhilmMovie> movies = new HashSet<PhilmMovie>(items);
                 for (MovieController.Filter filter : sections) {
                     boolean addedHeader = false;
-                    for (Iterator<Movie> i = movies.iterator(); i.hasNext(); ) {
-                        Movie movie = i.next();
+                    for (Iterator<PhilmMovie> i = movies.iterator(); i.hasNext(); ) {
+                        PhilmMovie movie = i.next();
                         if (filter.isMovieFiltered(movie)) {
                             if (!addedHeader) {
                                 mItems.add(new Item(filter.getTitle()));
@@ -97,7 +97,7 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                     }
                 }
             } else {
-                for (Movie movie : items) {
+                for (PhilmMovie movie : items) {
                     mItems.add(new Item(movie));
                 }
             }
@@ -176,24 +176,24 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
         switch (item.type) {
             case Item.TYPE_ITEM: {
-                Movie movie = item.movie;
+                PhilmMovie movie = item.movie;
 
                 final TextView title = (TextView) view.findViewById(R.id.textview_title);
-                title.setText(mActivity.getString(R.string.movie_title_year, movie.title,
-                        movie.year));
+                title.setText(mActivity.getString(R.string.movie_title_year, movie.getTitle(),
+                        movie.getYear()));
 
                 final TextView rating = (TextView) view.findViewById(R.id.textview_rating);
                 rating.setText(mActivity.getString(R.string.movie_rating_votes,
-                        movie.ratings.percentage,
-                        movie.ratings.votes));
+                        movie.getMovie().ratings.percentage,
+                        movie.getMovie().ratings.votes));
 
                 final TextView release = (TextView) view.findViewById(R.id.textview_release);
                 release.setText(mActivity.getString(R.string.movie_release_date,
-                        mDateFormat.format(movie.released)));
+                        mDateFormat.format(movie.getMovie().released)));
 
                 final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
                 Picasso.with(mActivity)
-                        .load(mTraktImageHelper.getPosterUrl(item.movie))
+                        .load(mTraktImageHelper.getPosterUrl(item.movie.getMovie()))
                         .into(imageView);
 
                 break;

@@ -1,28 +1,27 @@
 package app.philm.in.state;
 
-import com.jakewharton.trakt.entities.Movie;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.PhilmMovie;
 
 public interface MoviesState extends BaseState {
 
-    public Map<String, Movie> getMovies();
+    public Map<String, PhilmMovie> getMovies();
 
-    public List<Movie> getLibrary();
+    public List<PhilmMovie> getLibrary();
 
-    public void setLibrary(List<Movie> library);
+    public void setLibrary(List<PhilmMovie> library);
 
-    public List<Movie> getTrending();
+    public List<PhilmMovie> getTrending();
 
-    public void setTrending(List<Movie> trending);
+    public void setTrending(List<PhilmMovie> trending);
 
-    public List<Movie> getWatchlist();
+    public List<PhilmMovie> getWatchlist();
 
-    public void setWatchlist(List<Movie> watchlist);
+    public void setWatchlist(List<PhilmMovie> watchlist);
 
     public Set<MovieController.Filter> getFilters();
 

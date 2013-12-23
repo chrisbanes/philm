@@ -2,7 +2,6 @@ package app.philm.in.fragments;
 
 import com.google.common.base.Preconditions;
 
-import com.jakewharton.trakt.entities.Movie;
 import com.squareup.picasso.Picasso;
 
 import android.app.Fragment;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
 
@@ -26,7 +26,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     private static final String KEY_QUERY_TYPE = "query_type";
 
     private MovieController.MovieUiCallbacks mCallbacks;
-    private Movie mMovie;
+    private PhilmMovie mMovie;
 
     private TraktImageHelper mTraktImageHelper;
 
@@ -83,7 +83,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     }
 
     @Override
-    public void setMovie(Movie movie) {
+    public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
     }
@@ -115,10 +115,11 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         }
 
         Picasso.with(getActivity())
-                .load(mTraktImageHelper.getFanartUrl(mMovie))
+                .load(mTraktImageHelper.getFanartUrl(mMovie.getMovie()))
                 .into(mFanartImageView);
 
-        mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.title, mMovie.year));
+        mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
+                mMovie.getYear()));
     }
 
     private MovieController getController() {

@@ -1,7 +1,6 @@
 package app.philm.in.fragments;
 
 import com.hb.views.PinnedSectionListView;
-import com.jakewharton.trakt.entities.Movie;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.HashSet;
@@ -21,6 +19,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.MovieSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmListFragment;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 
@@ -153,12 +152,13 @@ public class MovieListFragment extends PhilmListFragment implements MovieControl
     }
 
     @Override
-    public void setItems(List<Movie> items) {
+    public void setItems(List<PhilmMovie> items) {
         mMovieListAdapter.setItems(items);
     }
 
     @Override
-    public void setItemsWithSections(List<Movie> items, List<MovieController.Filter> sections) {
+    public void setItemsWithSections(List<PhilmMovie> items,
+            List<MovieController.Filter> sections) {
         mMovieListAdapter.setItems(items, sections);
     }
 

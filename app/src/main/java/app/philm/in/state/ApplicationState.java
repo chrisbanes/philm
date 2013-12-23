@@ -3,7 +3,6 @@ package app.philm.in.state;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Bus;
 
 import android.accounts.Account;
@@ -16,15 +15,16 @@ import java.util.Map;
 import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.PhilmMovie;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
 
     private final Bus mEventBus;
 
-    private Map<String, Movie> mMovies;
-    private List<Movie> mLibrary;
-    private List<Movie> mTrending;
-    private List<Movie> mWatchlist;
+    private Map<String, PhilmMovie> mMovies;
+    private List<PhilmMovie> mLibrary;
+    private List<PhilmMovie> mTrending;
+    private List<PhilmMovie> mWatchlist;
     private Set<MovieController.Filter> mFilters;
 
     private Account mAccount;
@@ -52,20 +52,20 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
 
     @Override
-    public Map<String, Movie> getMovies() {
+    public Map<String, PhilmMovie> getMovies() {
         if (mMovies == null) {
-            mMovies = new ArrayMap<String, Movie>();
+            mMovies = new ArrayMap<String, PhilmMovie>();
         }
         return mMovies;
     }
 
     @Override
-    public List<Movie> getLibrary() {
+    public List<PhilmMovie> getLibrary() {
         return mLibrary;
     }
 
     @Override
-    public void setLibrary(List<Movie> items) {
+    public void setLibrary(List<PhilmMovie> items) {
         if (!Objects.equal(items, mLibrary)) {
             mLibrary = items;
             mEventBus.post(new LibraryChangedEvent());
@@ -73,12 +73,12 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public List<Movie> getTrending() {
+    public List<PhilmMovie> getTrending() {
         return mTrending;
     }
 
     @Override
-    public void setTrending(List<Movie> items) {
+    public void setTrending(List<PhilmMovie> items) {
         if (!Objects.equal(items, mTrending)) {
             mTrending = items;
             mEventBus.post(new TrendingChangedEvent());
@@ -94,12 +94,12 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public List<Movie> getWatchlist() {
+    public List<PhilmMovie> getWatchlist() {
         return mWatchlist;
     }
 
     @Override
-    public void setWatchlist(List<Movie> watchlist) {
+    public void setWatchlist(List<PhilmMovie> watchlist) {
         if (!Objects.equal(mWatchlist, watchlist)) {
             mWatchlist = watchlist;
             mEventBus.post(new WatchlistChangedEvent());

@@ -2,8 +2,8 @@
 
 <app.philm.in.view.ParallaxContentScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <ImageView
             android:id="@+id/imageview_fanart"
@@ -24,8 +24,26 @@
                 android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.Philm.Movie.Title"/>
 
-        <View android:layout_height="800dp"
-              android:layout_width="match_parent" />
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="?android:buttonBarStyle">
+
+            <Button
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:text="Favourite"/>
+
+            <Button
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:text="Watchlist"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

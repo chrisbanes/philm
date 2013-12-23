@@ -1,6 +1,5 @@
 package app.philm.in.adapters;
 
-import com.jakewharton.trakt.entities.Movie;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import app.philm.in.R;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 
 public class MovieGridAdapter extends BaseAdapter {
@@ -22,14 +22,14 @@ public class MovieGridAdapter extends BaseAdapter {
 
     private final Activity mActivity;
     private final TraktImageHelper mTraktImageHelper;
-    private List<Movie> mItems;
+    private List<PhilmMovie> mItems;
 
     public MovieGridAdapter(Activity activity) {
         mActivity = activity;
         mTraktImageHelper = new TraktImageHelper(activity.getResources());
     }
 
-    public void setItems(List<Movie> items) {
+    public void setItems(List<PhilmMovie> items) {
         mItems = items;
         notifyDataSetChanged();
     }
@@ -40,13 +40,13 @@ public class MovieGridAdapter extends BaseAdapter {
     }
 
     @Override
-    public Movie getItem(int position) {
+    public PhilmMovie getItem(int position) {
         return mItems.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).tmdbId.hashCode();
+        return getItem(position).getMovie().tmdbId.hashCode();
     }
 
     @Override
@@ -56,14 +56,14 @@ public class MovieGridAdapter extends BaseAdapter {
             view = mActivity.getLayoutInflater().inflate(R.layout.item_grid_movie, viewGroup, false);
         }
 
-        final Movie movie = getItem(position);
+        final PhilmMovie movie = getItem(position);
 
         final TextView title = (TextView) view.findViewById(R.id.textview_title);
-        title.setText(movie.title);
+        title.setText(movie.getTitle());
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
         Picasso.with(mActivity)
-                .load(mTraktImageHelper.getPosterUrl(movie))
+                .load(mTraktImageHelper.getPosterUrl(movie.getMovie()))
                 .into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {

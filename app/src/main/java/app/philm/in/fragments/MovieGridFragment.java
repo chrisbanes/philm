@@ -1,7 +1,5 @@
 package app.philm.in.fragments;
 
-import com.jakewharton.trakt.entities.Movie;
-
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +17,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.GridFragment;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 
@@ -98,7 +97,7 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     @Override
     public void onListItemClick(GridView l, View v, int position, long id) {
         if (mCallbacks != null) {
-            Movie movie = (Movie) l.getItemAtPosition(position);
+            PhilmMovie movie = (PhilmMovie) l.getItemAtPosition(position);
             mCallbacks.showMovieDetail(movie);
         }
     }
@@ -157,12 +156,13 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     }
 
     @Override
-    public void setItems(List<Movie> items) {
+    public void setItems(List<PhilmMovie> items) {
         mMovieGridAdapter.setItems(items);
     }
 
     @Override
-    public void setItemsWithSections(List<Movie> items, List<MovieController.Filter> sections) {
+    public void setItemsWithSections(List<PhilmMovie> items,
+            List<MovieController.Filter> sections) {
         mMovieGridAdapter.setItems(items);
     }
 

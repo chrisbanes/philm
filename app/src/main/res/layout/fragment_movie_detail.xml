@@ -6,9 +6,10 @@
               android:layout_height="match_parent">
 
     <ImageView
+            android:id="@+id/imageview_fanart"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"/>
+            android:scaleType="centerCrop"/>
 
     <LinearLayout
             android:orientation="vertical"
@@ -22,6 +23,9 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:textAppearance="@style/TextAppearance.Philm.Movie.Title"/>
+
+        <View android:layout_height="800dp"
+              android:layout_width="match_parent" />
 
     </LinearLayout>
 

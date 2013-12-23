@@ -7,10 +7,12 @@ import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Bus;
 
 import android.accounts.Account;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
@@ -19,6 +21,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private final Bus mEventBus;
 
+    private Map<String, Movie> mMovies;
     private List<Movie> mLibrary;
     private List<Movie> mTrending;
     private List<Movie> mWatchlist;
@@ -46,6 +49,15 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     // MovieState
     //
     ///////////////////////////
+
+
+    @Override
+    public Map<String, Movie> getMovies() {
+        if (mMovies == null) {
+            mMovies = new ArrayMap<String, Movie>();
+        }
+        return mMovies;
+    }
 
     @Override
     public List<Movie> getLibrary() {

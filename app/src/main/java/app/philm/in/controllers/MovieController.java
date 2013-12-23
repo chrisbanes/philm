@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
@@ -108,7 +109,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        LIBRARY, TRENDING, WATCHLIST;
+        LIBRARY, TRENDING, WATCHLIST, DETAIL;
 
         public boolean requireLogin() {
             switch (this) {
@@ -130,14 +131,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
-        void setItems(List<Movie> items);
-        void setItemsWithSections(List<Movie> items, List<Filter> sections);
-        MovieQueryType getMovieQueryType();
+    interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
         void showError(NetworkError error);
         void showLoadingProgress(boolean visible);
+        MovieQueryType getMovieQueryType();
+        String getRequestParameter();
+    }
+
+    public interface MovieListUi extends MovieUi {
+        void setItems(List<Movie> items);
+        void setItemsWithSections(List<Movie> items, List<Filter> sections);
         void setFiltersVisibility(boolean visible);
         void showActiveFilters(Set<Filter> filters);
+    }
+
+    public interface MovieDetailUi extends MovieUi {
+        void setMovie(Movie movie);
     }
 
     public interface MovieUiCallbacks {
@@ -224,7 +233,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void showMovieDetail(Movie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showMovieDetailFragment();
+                    display.showMovieDetailFragment(movie.tmdbId);
                 }
             }
         };
@@ -251,6 +260,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case WATCHLIST:
                 fetchWatchlistIfNeeded();
                 break;
+            case DETAIL:
+                fetchDetailMovieIfNeeded();
+                break;
         }
     }
 
@@ -259,6 +271,20 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         super.populateUi();
 
         final MovieUi ui = getUi();
+
+        if (!isLoggedIn() && ui.getMovieQueryType().requireLogin()) {
+            ui.showError(NetworkError.UNAUTHORIZED);
+            return;
+        }
+
+        if (ui instanceof MovieListUi) {
+            populateListUi((MovieListUi) ui);
+        } else if (ui instanceof MovieDetailUi) {
+            populateDetailUi((MovieDetailUi) ui);
+        }
+    }
+
+    private void populateListUi(MovieListUi ui) {
         final MovieQueryType queryType = ui.getMovieQueryType();
 
         if (isLoggedIn()) {
@@ -268,56 +294,50 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
         } else {
             ui.setFiltersVisibility(false);
-            if (queryType.requireLogin()) {
-                ui.showError(NetworkError.UNAUTHORIZED);
-                return;
-            }
         }
+
+        List<Movie> items;
 
         switch (queryType) {
             case TRENDING:
-                populateTrendingUi();
+                items = mMoviesState.getTrending();
+                if (requireFiltering()) {
+                    items = filterMovies(items);
+                }
+                ui.setItems(items);
+                ui.showLoadingProgress(false);
                 break;
             case LIBRARY:
-                populateLibraryUi();
+                items = mMoviesState.getLibrary();
+                if (requireFiltering()) {
+                    items = filterMovies(items);
+                }
+                ui.setItems(items);
+                ui.showLoadingProgress(false);
                 break;
             case WATCHLIST:
-                populateWatchlistUi();
+                items = mMoviesState.getWatchlist();
+                if (requireFiltering()) {
+                    items = filterMovies(items);
+                }
+                ui.setItemsWithSections(items, Arrays.asList(Filter.UPCOMING, Filter.SOON,
+                        Filter.RELEASED, Filter.WATCHED));
+                ui.showLoadingProgress(false);
                 break;
         }
+    }
+
+    private void populateDetailUi(MovieDetailUi ui) {
+        ui.setMovie(getMovie(ui.getRequestParameter()));
+    }
+
+    private Movie getMovie(String tmdbId) {
+        return mMoviesState.getMovies().get(tmdbId);
     }
 
     private boolean isLoggedIn() {
         return !TextUtils.isEmpty(mMoviesState.getUsername())
                 && !TextUtils.isEmpty(mMoviesState.getHashedPassword());
-    }
-
-    private void populateLibraryUi() {
-        List<Movie> items = mMoviesState.getLibrary();
-        if (requireFiltering()) {
-            items = filterMovies(items);
-        }
-        getUi().setItems(items);
-        getUi().showLoadingProgress(false);
-    }
-
-    private void populateTrendingUi() {
-        List<Movie> items = mMoviesState.getTrending();
-        if (requireFiltering()) {
-            items = filterMovies(items);
-        }
-        getUi().setItems(items);
-        getUi().showLoadingProgress(false);
-    }
-
-    private void populateWatchlistUi() {
-        List<Movie> items = mMoviesState.getWatchlist();
-        if (requireFiltering()) {
-            items = filterMovies(items);
-        }
-        getUi().setItemsWithSections(items,
-                Arrays.asList(Filter.UPCOMING, Filter.SOON, Filter.RELEASED, Filter.WATCHED));
-        getUi().showLoadingProgress(false);
     }
 
     private boolean requireFiltering() {
@@ -382,6 +402,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchDetailMovie() {
+        showLoadingProgress(true);
+        mExecutor.execute(new FetchDetailMovieRunnable(getUi().getRequestParameter()));
+    }
+
+    private void fetchDetailMovieIfNeeded() {
+        Movie cached = getMovie(getUi().getRequestParameter());
+        if (cached == null) {
+            fetchDetailMovie();
+        }
+    }
+
     private void removeMutuallyExclusiveFilters(final Filter filter) {
         List<Filter> mutuallyExclusives = filter.getMutuallyExclusiveFilters();
         if (!PhilmCollections.isEmpty(mutuallyExclusives)) {
@@ -421,6 +453,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState.setWatchlist(null);
     }
 
+    void addMoviesToCache(List<Movie> movies) {
+        Map<String, Movie> cache = mMoviesState.getMovies();
+        for (Movie movie : movies) {
+            final String key = movie.tmdbId;
+            if (!cache.containsKey(key)) {
+                cache.put(key, movie);
+            }
+        }
+    }
+
     private class FetchTrendingRunnable extends TraktNetworkCallRunnable<List<Movie>> {
         public FetchTrendingRunnable() {
             super(mTraktClient);
@@ -434,6 +476,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             mMoviesState.setTrending(result);
+            addMoviesToCache(result);
         }
 
         @Override
@@ -461,6 +504,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             mMoviesState.setLibrary(result);
+            addMoviesToCache(result);
         }
 
         @Override
@@ -488,6 +532,35 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             mMoviesState.setWatchlist(result);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                ui.showError(NetworkError.from(re));
+            }
+        }
+    }
+
+    private class FetchDetailMovieRunnable extends TraktNetworkCallRunnable<Movie> {
+        private final String mTmdbId;
+
+        FetchDetailMovieRunnable(String tmdbId) {
+            super(mTraktClient);
+            mTmdbId = Preconditions.checkNotNull(tmdbId, "tmdbId cannot be null");
+        }
+
+        @Override
+        public Movie doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.movieService().summary(mTmdbId);
+        }
+
+        @Override
+        public void onSuccess(Movie result) {
+            // Should do something better here
+            mMoviesState.getMovies().put(result.tmdbId, result);
+            populateUi();
         }
 
         @Override

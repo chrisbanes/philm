@@ -3,6 +3,7 @@ package app.philm.in;
 import com.google.common.base.Preconditions;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.controllers.MovieController;
@@ -60,12 +61,13 @@ public class Display {
                 .commit();
     }
 
-    public void showMovieDetailFragment() {
-        MovieDetailFragment fragment = new MovieDetailFragment();
+    public void showMovieDetailFragment(String movieId) {
+        MovieDetailFragment fragment = MovieDetailFragment.create(movieId);
 
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
     }
 

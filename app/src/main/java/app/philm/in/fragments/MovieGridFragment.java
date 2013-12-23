@@ -22,7 +22,7 @@ import app.philm.in.fragments.base.GridFragment;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 
-public class MovieGridFragment extends GridFragment implements MovieController.MovieUi {
+public class MovieGridFragment extends GridFragment implements MovieController.MovieListUi {
 
     private static final String KEY_QUERY_TYPE = "query_type";
 
@@ -170,6 +170,11 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     public MovieController.MovieQueryType getMovieQueryType() {
         final int queryType = getArguments().getInt(KEY_QUERY_TYPE);
         return MovieController.MovieQueryType.values()[queryType];
+    }
+
+    @Override
+    public String getRequestParameter() {
+        return null;
     }
 
     @Override

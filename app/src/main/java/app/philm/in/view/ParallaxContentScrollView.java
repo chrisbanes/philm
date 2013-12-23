@@ -47,7 +47,15 @@ public class ParallaxContentScrollView extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mContentViewWrapper.setPadding(0, mHeaderView.getHeight(), 0, 0);
+
+        if (mContentViewWrapper.getPaddingTop() != mHeaderView.getHeight()) {
+            mContentViewWrapper.post(new Runnable() {
+                @Override
+                public void run() {
+                    mContentViewWrapper.setPadding(0, mHeaderView.getHeight(), 0, 0);
+                }
+            });
+        }
     }
 
     void onScrollViewScrollChanged(int y) {

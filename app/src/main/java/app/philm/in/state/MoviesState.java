@@ -3,11 +3,14 @@ package app.philm.in.state;
 import com.jakewharton.trakt.entities.Movie;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
 
 public interface MoviesState extends BaseState {
+
+    public Map<String, Movie> getMovies();
 
     public List<Movie> getLibrary();
 

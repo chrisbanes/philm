@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.HashSet;
@@ -23,7 +24,7 @@ import app.philm.in.fragments.base.PhilmListFragment;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 
-public class MovieListFragment extends PhilmListFragment implements MovieController.MovieUi {
+public class MovieListFragment extends PhilmListFragment implements MovieController.MovieListUi {
 
     private static final String KEY_QUERY_TYPE = "query_type";
 
@@ -136,6 +137,17 @@ public class MovieListFragment extends PhilmListFragment implements MovieControl
     }
 
     @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        if (mCallbacks != null) {
+            MovieSectionedListAdapter.Item item =
+                    (MovieSectionedListAdapter.Item) l.getItemAtPosition(position);
+            if (item.getType() == MovieSectionedListAdapter.Item.TYPE_ITEM) {
+                mCallbacks.showMovieDetail(item.getMovie());
+            }
+        }
+    }
+
+    @Override
     public void setCallbacks(MovieController.MovieUiCallbacks callbacks) {
         mCallbacks = callbacks;
     }
@@ -154,6 +166,11 @@ public class MovieListFragment extends PhilmListFragment implements MovieControl
     public MovieController.MovieQueryType getMovieQueryType() {
         final int queryType = getArguments().getInt(KEY_QUERY_TYPE);
         return MovieController.MovieQueryType.values()[queryType];
+    }
+
+    @Override
+    public String getRequestParameter() {
+        return null;
     }
 
     @Override

@@ -29,17 +29,13 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
     private static final String LOG_TAG = MovieSectionedListAdapter.class.getSimpleName();
 
-    private static final class Item {
+    public static final class Item {
+        public static final int TYPE_ITEM = 0;
+        public static final int TYPE_SECTION = 1;
 
-        static final int TYPE_ITEM = 0;
-
-        static final int TYPE_SECTION = 1;
-
-        private final int type;
-
-        private final Movie movie;
-
-        private final int titleResId;
+        final int type;
+        final Movie movie;
+        final int titleResId;
 
         Item(Movie movie) {
             type = TYPE_ITEM;
@@ -51,6 +47,14 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
             type = TYPE_SECTION;
             titleResId = sectionTitle;
             movie = null;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public Movie getMovie() {
+            return movie;
         }
     }
 

@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieGridFragment;
+import app.philm.in.fragments.MovieListFragment;
 
 public class Display {
 
@@ -40,7 +41,7 @@ public class Display {
     }
 
     public void showWatchlist() {
-        MovieGridFragment fragment = MovieGridFragment
+        MovieListFragment fragment = MovieListFragment
                 .create(MovieController.MovieQueryType.WATCHLIST);
 
         mActivity.getFragmentManager().beginTransaction()

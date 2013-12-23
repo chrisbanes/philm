@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="trakt_image_size">1</integer>
+    <integer name="trakt_poster_image_size">1</integer>
 
 </resources>

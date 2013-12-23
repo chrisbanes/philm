@@ -18,6 +18,9 @@ public class TraktImageHelper {
     private static final String POSTER_SMALL_SUFFIX = "-138";
     private static final String POSTER_LARGE_SUFFIX = "-300";
 
+    private static final String FANART_SMALL_SUFFIX = "-218";
+    private static final String FANART_LARGE_SUFFIX = "-940";
+
     private final Resources mResources;
 
     public TraktImageHelper(Resources resources) {
@@ -25,19 +28,36 @@ public class TraktImageHelper {
     }
 
     public String getPosterUrl(final Movie movie) {
-        return getPosterUrl(movie, mResources.getInteger(R.integer.trakt_image_size));
+        return getPosterUrl(movie, mResources.getInteger(R.integer.trakt_poster_image_size));
     }
 
     public String getPosterUrl(final Movie movie, final int type) {
-        final String rawPosterUrl = movie.images.poster;
+        final String rawUrl = movie.images.poster;
         switch (type) {
             case TYPE_LARGE:
-                return modifyUrl(rawPosterUrl, POSTER_LARGE_SUFFIX);
+                return modifyUrl(rawUrl, POSTER_LARGE_SUFFIX);
             case TYPE_SMALL:
-                return modifyUrl(rawPosterUrl, POSTER_SMALL_SUFFIX);
+                return modifyUrl(rawUrl, POSTER_SMALL_SUFFIX);
             case TYPE_UNCOMPRESSED:
             default:
-                return rawPosterUrl;
+                return rawUrl;
+        }
+    }
+
+    public String getFanartUrl(final Movie movie) {
+        return getFanartUrl(movie, mResources.getInteger(R.integer.trakt_fanart_image_size));
+    }
+
+    public String getFanartUrl(final Movie movie, final int type) {
+        final String rawUrl = movie.images.fanart;
+        switch (type) {
+            case TYPE_LARGE:
+                return modifyUrl(rawUrl, FANART_LARGE_SUFFIX);
+            case TYPE_SMALL:
+                return modifyUrl(rawUrl, FANART_SMALL_SUFFIX);
+            case TYPE_UNCOMPRESSED:
+            default:
+                return rawUrl;
         }
     }
 

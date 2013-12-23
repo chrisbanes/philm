@@ -1,14 +1,15 @@
 package app.philm.in.fragments;
 
+import com.hb.views.PinnedSectionListView;
 import com.jakewharton.trakt.entities.Movie;
 
-import android.content.res.Resources;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
+import android.widget.ListView;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,28 +17,29 @@ import java.util.Set;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.adapters.MovieGridAdapter;
+import app.philm.in.adapters.MovieSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.GridFragment;
+import app.philm.in.fragments.base.PhilmListFragment;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 
-public class MovieGridFragment extends GridFragment implements MovieController.MovieUi {
+public class MovieListFragment extends PhilmListFragment implements MovieController.MovieUi {
 
     private static final String KEY_QUERY_TYPE = "query_type";
 
     private MovieController.MovieUiCallbacks mCallbacks;
+
     private Set<MovieController.Filter> mFilters;
 
-    private MovieGridAdapter mMovieGridAdapter;
+    private MovieSectionedListAdapter mMovieListAdapter;
 
     private boolean mFiltersItemVisible;
 
-    public static MovieGridFragment create(MovieController.MovieQueryType type) {
+    public static MovieListFragment create(MovieController.MovieQueryType type) {
         Bundle bundle = new Bundle();
         bundle.putInt(KEY_QUERY_TYPE, type.ordinal());
 
-        MovieGridFragment fragment = new MovieGridFragment();
+        MovieListFragment fragment = new MovieListFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -48,8 +50,8 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        mMovieGridAdapter = new MovieGridAdapter(getActivity());
-        setListAdapter(mMovieGridAdapter);
+        mMovieListAdapter = new MovieSectionedListAdapter(getActivity());
+        setListAdapter(mMovieListAdapter);
 
         mFilters = new HashSet<MovieController.Filter>();
     }
@@ -57,16 +59,7 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Resources res = getResources();
-        GridView gridView = getGridView();
-
-        gridView.setNumColumns(GridView.AUTO_FIT);
-        gridView.setColumnWidth(res.getDimensionPixelSize(R.dimen.movie_grid_item_width));
-        gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-
-        setGridShown(false);
+        setListShown(false);
     }
 
     @Override
@@ -149,7 +142,7 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
 
     @Override
     public void setItems(List<Movie> items) {
-        mMovieGridAdapter.setItems(items);
+        mMovieListAdapter.setItems(items);
     }
 
     @Override
@@ -160,7 +153,7 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
 
     @Override
     public void showError(NetworkError error) {
-        setGridShown(true);
+        setListShown(true);
         switch (error) {
             case UNAUTHORIZED:
                 setEmptyText(getString(R.string.empty_missing_account, getTitle()));
@@ -176,7 +169,7 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
 
     @Override
     public void showLoadingProgress(boolean visible) {
-        setGridShown(!visible);
+        setListShown(!visible);
     }
 
     private String getTitle() {
@@ -203,6 +196,11 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     public void showActiveFilters(Set<MovieController.Filter> filters) {
         mFilters = filters;
         getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    protected ListView createListView(Context context) {
+        return new PinnedSectionListView(context, null);
     }
 
     private void updateItemCheckedState(Menu menu, int itemId, MovieController.Filter filter) {

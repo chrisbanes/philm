@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<app.philm.in.view.ParallaxContentScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/side_menu_background">
+
+        <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:textAppearance="@style/TextAppearance.Philm.Movie.Title"/>
+
+    </LinearLayout>
+
+</app.philm.in.view.ParallaxContentScrollView>

@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import app.philm.in.Constants;
+import app.philm.in.Display;
 import app.philm.in.R;
 import app.philm.in.network.NetworkError;
 import app.philm.in.network.TraktNetworkCallRunnable;
@@ -147,6 +148,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void clearFilters();
 
         void refresh();
+
+        void showMovieDetail(Movie movie);
     }
 
     private final MoviesState mMoviesState;
@@ -214,6 +217,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     case WATCHLIST:
                         fetchWatchlist();
                         break;
+                }
+            }
+
+            @Override
+            public void showMovieDetail(Movie movie) {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showMovieDetailFragment();
                 }
             }
         };

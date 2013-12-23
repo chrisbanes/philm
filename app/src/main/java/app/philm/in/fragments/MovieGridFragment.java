@@ -65,6 +65,7 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
         gridView.setColumnWidth(res.getDimensionPixelSize(R.dimen.movie_grid_item_width));
         gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
         gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
+        gridView.setFastScrollEnabled(true);
 
         setGridShown(false);
     }
@@ -91,6 +92,14 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
 
             // Update the clear button depending if there are active filters
             menu.findItem(R.id.menu_filter_clear).setVisible(!PhilmCollections.isEmpty(mFilters));
+        }
+    }
+
+    @Override
+    public void onListItemClick(GridView l, View v, int position, long id) {
+        if (mCallbacks != null) {
+            Movie movie = (Movie) l.getItemAtPosition(position);
+            mCallbacks.showMovieDetail(movie);
         }
     }
 

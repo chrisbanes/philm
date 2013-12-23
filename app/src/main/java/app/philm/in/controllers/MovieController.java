@@ -389,17 +389,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onLibraryChanged(MoviesState.LibraryChangedEvent event) {
-        populateLibraryUi();
+        populateUi();
     }
 
     @Subscribe
     public void onTrendingChanged(MoviesState.TrendingChangedEvent event) {
-        populateTrendingUi();
+        populateUi();
     }
 
     @Subscribe
     public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
-        populateWatchlistUi();
+        populateUi();
     }
 
     @Subscribe

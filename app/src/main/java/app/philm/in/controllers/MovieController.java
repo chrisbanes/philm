@@ -29,8 +29,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
-
-
     public static enum Filter {
         COLLECTION, WATCHED, UNWATCHED;
 
@@ -69,9 +67,19 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        LIBRARY, TRENDING;
+        LIBRARY, TRENDING, WATCHLIST;
 
         public boolean requireLogin() {
+            switch (this) {
+                case WATCHLIST:
+                case LIBRARY:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public boolean supportFiltering() {
             switch (this) {
                 case LIBRARY:
                     return true;
@@ -162,6 +170,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     case LIBRARY:
                         fetchLibrary();
                         break;
+                    case WATCHLIST:
+                        fetchWatchlist();
+                        break;
                 }
             }
         };
@@ -185,6 +196,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case LIBRARY:
                 fetchLibraryIfNeeded();
                 break;
+            case WATCHLIST:
+                fetchWatchlistIfNeeded();
+                break;
         }
     }
 
@@ -193,12 +207,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         super.populateUi();
 
         final MovieUi ui = getUi();
-
         final MovieQueryType queryType = ui.getMovieQueryType();
 
         if (isLoggedIn()) {
-            ui.setFiltersVisibility(true);
-            ui.showActiveFilters(mMoviesState.getFilters());
+            if (queryType.supportFiltering()) {
+                ui.setFiltersVisibility(true);
+                ui.showActiveFilters(mMoviesState.getFilters());
+            }
         } else {
             ui.setFiltersVisibility(false);
             if (queryType.requireLogin()) {
@@ -213,6 +228,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case LIBRARY:
                 populateLibraryUi();
+                break;
+            case WATCHLIST:
+                populateWatchlistUi();
                 break;
         }
     }
@@ -233,6 +251,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void populateTrendingUi() {
         List<Movie> items = mMoviesState.getTrending();
+        if (requireFiltering()) {
+            items = filterMovies(items);
+        }
+        getUi().setItems(items);
+        getUi().showLoadingProgress(false);
+    }
+
+    private void populateWatchlistUi() {
+        List<Movie> items = mMoviesState.getWatchlist();
         if (requireFiltering()) {
             items = filterMovies(items);
         }
@@ -291,6 +318,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchWatchlist() {
+        showLoadingProgress(true);
+        mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
+    }
+
+    private void fetchWatchlistIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
+            fetchWatchlist();
+        }
+    }
+
     private void removeMutuallyExclusiveFilters(final Filter filter) {
         List<Filter> mutuallyExclusives = filter.getMutuallyExclusiveFilters();
         if (!PhilmCollections.isEmpty(mutuallyExclusives)) {
@@ -318,10 +356,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
+    public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
+        populateWatchlistUi();
+    }
+
+    @Subscribe
     public void onAccountChanged(UserState.AccountChangedEvent event) {
         // Nuke all Movie State...
         mMoviesState.setLibrary(null);
         mMoviesState.setTrending(null);
+        mMoviesState.setWatchlist(null);
     }
 
     private class FetchTrendingRunnable extends TraktNetworkCallRunnable<List<Movie>> {
@@ -364,6 +408,33 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             mMoviesState.setLibrary(result);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                ui.showError(NetworkError.from(re));
+            }
+        }
+    }
+
+    private class FetchWatchlistRunnable extends TraktNetworkCallRunnable<List<Movie>> {
+        private final String mUsername;
+
+        FetchWatchlistRunnable(String username) {
+            super(mTraktClient);
+            mUsername = Preconditions.checkNotNull(username, "username cannot be null");
+        }
+
+        @Override
+        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.philmUserService().watchlistMovies(mUsername);
+        }
+
+        @Override
+        public void onSuccess(List<Movie> result) {
+            mMoviesState.setWatchlist(result);
         }
 
         @Override

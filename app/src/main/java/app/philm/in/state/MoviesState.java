@@ -17,10 +17,16 @@ public interface MoviesState extends BaseState {
 
     public void setTrending(List<Movie> trending);
 
+    public List<Movie> getWatchlist();
+
+    public void setWatchlist(List<Movie> watchlist);
+
     public Set<MovieController.Filter> getFilters();
 
     public static class LibraryChangedEvent {}
 
     public static class TrendingChangedEvent {}
+
+    public static class WatchlistChangedEvent {}
 
 }

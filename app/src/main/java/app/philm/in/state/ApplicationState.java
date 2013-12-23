@@ -21,6 +21,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private List<Movie> mLibrary;
     private List<Movie> mTrending;
+    private List<Movie> mWatchlist;
     private Set<MovieController.Filter> mFilters;
 
     private Account mAccount;
@@ -78,6 +79,19 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
             mFilters = new HashSet<MovieController.Filter>();
         }
         return mFilters;
+    }
+
+    @Override
+    public List<Movie> getWatchlist() {
+        return mWatchlist;
+    }
+
+    @Override
+    public void setWatchlist(List<Movie> watchlist) {
+        if (!Objects.equal(mWatchlist, watchlist)) {
+            mWatchlist = watchlist;
+            mEventBus.post(new WatchlistChangedEvent());
+        }
     }
 
     ///////////////////////////

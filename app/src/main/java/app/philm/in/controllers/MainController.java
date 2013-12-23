@@ -17,7 +17,8 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     public static enum SideMenuItem {
         TRENDING(R.string.trending_title),
-        LIBRARY(R.string.library_title);
+        LIBRARY(R.string.library_title),
+        WATCHLIST(R.string.watchlist_title);
 
         private final int mTitleResId;
 
@@ -122,6 +123,9 @@ public class MainController extends BaseUiController<MainController.MainControll
                     break;
                 case LIBRARY:
                     display.showLibrary();
+                    break;
+                case WATCHLIST:
+                    display.showWatchlist();
                     break;
             }
         }

@@ -39,6 +39,17 @@ public class Display {
         setActionBarTitle(R.string.trending_title);
     }
 
+    public void showWatchlist() {
+        MovieGridFragment fragment = MovieGridFragment
+                .create(MovieController.MovieQueryType.WATCHLIST);
+
+        mActivity.getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .commit();
+
+        setActionBarTitle(R.string.watchlist_title);
+    }
+
     public void showLogin() {
         LoginFragment fragment = LoginFragment.create();
 

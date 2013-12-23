@@ -2,7 +2,6 @@ package app.philm.in.adapters;
 
 import com.hb.views.PinnedSectionListView;
 import com.jakewharton.trakt.entities.Movie;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
@@ -12,10 +11,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
+import app.philm.in.Constants;
 import app.philm.in.R;
+import app.philm.in.controllers.MovieController;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
 
@@ -25,37 +30,117 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
     private static final String LOG_TAG = MovieSectionedListAdapter.class.getSimpleName();
 
     private static final class Item {
+
         static final int TYPE_ITEM = 0;
+
         static final int TYPE_SECTION = 1;
 
-        private final Movie movie;
         private final int type;
 
-        Item(int type, Movie movie) {
-            this.type = type;
+        private final Movie movie;
+
+        private final int titleResId;
+
+        Item(Movie movie) {
+            type = TYPE_ITEM;
             this.movie = movie;
+            titleResId = 0;
+        }
+
+        Item(int sectionTitle) {
+            type = TYPE_SECTION;
+            titleResId = sectionTitle;
+            movie = null;
         }
     }
 
     private final Activity mActivity;
     private final TraktImageHelper mTraktImageHelper;
+    private final DateFormat mDateFormat;
+
     private List<Item> mItems;
 
     public MovieSectionedListAdapter(Activity activity) {
         mActivity = activity;
         mTraktImageHelper = new TraktImageHelper(activity.getResources());
+        mDateFormat = android.text.format.DateFormat.getMediumDateFormat(activity);
     }
 
     public void setItems(List<Movie> items) {
+        setItems(items, null);
+    }
+
+    public void setItems(List<Movie> items, List<MovieController.Filter> sections) {
         if (PhilmCollections.isEmpty(items)) {
             mItems = null;
         } else {
             mItems = new ArrayList<Item>();
-            for (Movie movie : items) {
-                mItems.add(new Item(Item.TYPE_ITEM, movie));
+
+            if (!PhilmCollections.isEmpty(sections)) {
+                HashSet<Movie> movies = new HashSet<Movie>(items);
+                for (MovieController.Filter filter : sections) {
+                    boolean addedHeader = false;
+                    for (Iterator<Movie> i = movies.iterator(); i.hasNext(); ) {
+                        Movie movie = i.next();
+                        if (filter.isMovieFiltered(movie)) {
+                            if (!addedHeader) {
+                                mItems.add(new Item(filter.getTitle()));
+                                addedHeader = true;
+                            }
+                            mItems.add(new Item(movie));
+                            i.remove();
+                        }
+                    }
+                }
+            } else {
+                for (Movie movie : items) {
+                    mItems.add(new Item(movie));
+                }
             }
         }
         notifyDataSetChanged();
+    }
+
+    private static List<Movie> upcomingFilms(List<Movie> movies) {
+        ArrayList<Movie> upcoming = null;
+        for (Movie movie : movies) {
+            final long time = movie.released.getTime();
+            if (time - Constants.FUTURE_SOON_THRESHOLD > System.currentTimeMillis()) {
+                if (upcoming == null) {
+                    upcoming = new ArrayList<Movie>();
+                }
+                upcoming.add(movie);
+            }
+        }
+        return upcoming;
+    }
+
+    private static List<Movie> soonFilms(List<Movie> movies) {
+        ArrayList<Movie> soon = null;
+        for (Movie movie : movies) {
+            final long time = movie.released.getTime();
+            if (time > System.currentTimeMillis()
+                    && (time - Constants.FUTURE_SOON_THRESHOLD <= System.currentTimeMillis())) {
+                if (soon == null) {
+                    soon = new ArrayList<Movie>();
+                }
+                soon.add(movie);
+            }
+        }
+        return soon;
+    }
+
+    private static List<Movie> releasedFilms(List<Movie> movies) {
+        ArrayList<Movie> released = null;
+        for (Movie movie : movies) {
+            if (movie.released.getTime() <= System.currentTimeMillis()) {
+                if (released == null) {
+                    released = new ArrayList<Movie>();
+                }
+                released.add(movie);
+            }
+        }
+        return released;
     }
 
     @Override
@@ -75,29 +160,43 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
+        final Item item = getItem(position);
         View view = convertView;
+
         if (view == null) {
-            view = mActivity.getLayoutInflater().inflate(R.layout.item_list_movie, viewGroup, false);
+            final int layout = item.type == Item.TYPE_ITEM
+                    ? R.layout.item_list_movie
+                    : R.layout.item_list_movie_section_header;
+            view = mActivity.getLayoutInflater().inflate(layout, viewGroup, false);
         }
 
-        final Item item = getItem(position);
+        switch (item.type) {
+            case Item.TYPE_ITEM: {
+                Movie movie = item.movie;
 
-        if (item.type == Item.TYPE_ITEM) {
-            final TextView title = (TextView) view.findViewById(R.id.textview_title);
-            title.setText(item.movie.title);
+                final TextView title = (TextView) view.findViewById(R.id.textview_title);
+                title.setText(mActivity.getString(R.string.movie_title_year, movie.title,
+                        movie.year));
 
-            final TextView rating = (TextView) view.findViewById(R.id.textview_rating);
-            rating.setText(item.movie.ratings.percentage + "%");
+                final TextView rating = (TextView) view.findViewById(R.id.textview_rating);
+                rating.setText(mActivity.getString(R.string.movie_rating_votes,
+                        movie.ratings.percentage,
+                        movie.ratings.votes));
 
-            final TextView votes = (TextView) view.findViewById(R.id.textview_rating_votes);
-            int numberVotes = item.movie.ratings.votes;
-            votes.setText(mActivity.getResources()
-                    .getQuantityString(R.plurals.ratings, numberVotes, numberVotes));
+                final TextView release = (TextView) view.findViewById(R.id.textview_release);
+                release.setText(mActivity.getString(R.string.movie_release_date,
+                        mDateFormat.format(movie.released)));
 
-            final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
-            Picasso.with(mActivity)
-                    .load(mTraktImageHelper.getPosterUrl(item.movie))
-                    .into(imageView);
+                final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
+                Picasso.with(mActivity)
+                        .load(mTraktImageHelper.getPosterUrl(item.movie))
+                        .into(imageView);
+
+                break;
+            }
+            case Item.TYPE_SECTION:
+                ((TextView) view).setText(item.titleResId);
+                break;
         }
 
         return view;
@@ -114,7 +213,7 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
     }
 
     @Override
-    public boolean isItemViewTypePinned(int position) {
-        return getItemViewType(position) == Item.TYPE_SECTION;
+    public boolean isItemViewTypePinned(int type) {
+        return type == Item.TYPE_SECTION;
     }
 }

@@ -18,13 +18,21 @@
     <string name="menu_refresh">Refresh</string>
 
     <string name="menu_filter">Filter</string>
-    <string name="menu_filter_collection">In collection</string>
-    <string name="menu_filter_watched">Watched</string>
-    <string name="menu_filter_unwatched">Unwatched</string>
     <string name="menu_filter_clear">Clear</string>
 
     <string name="empty_missing_account">%1$s could not be retrieved as you are not logged in.</string>
     <string name="empty_network_error">%1$s could not be retrieved due to an network error. Check your internet connection and try again.</string>
     <string name="empty_unknown_error">%1$s could not be retrieved due to an unknown error.</string>
+
+    <string name="movie_title_year">%1$s (%2$d)</string>
+    <string name="movie_rating_votes">%1$d%% - %2$d votes</string>
+    <string name="movie_release_date">Release date: %1$s</string>
+
+    <string name="filter_collection">In collection</string>
+    <string name="filter_watched">Watched</string>
+    <string name="filter_unwatched">Unwatched</string>
+    <string name="filter_upcoming">Upcoming</string>
+    <string name="filter_soon">Soon</string>
+    <string name="filter_released">Released</string>
 
 </resources>

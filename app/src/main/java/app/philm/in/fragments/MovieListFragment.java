@@ -146,6 +146,11 @@ public class MovieListFragment extends PhilmListFragment implements MovieControl
     }
 
     @Override
+    public void setItemsWithSections(List<Movie> items, List<MovieController.Filter> sections) {
+        mMovieListAdapter.setItems(items, sections);
+    }
+
+    @Override
     public MovieController.MovieQueryType getMovieQueryType() {
         final int queryType = getArguments().getInt(KEY_QUERY_TYPE);
         return MovieController.MovieQueryType.values()[queryType];

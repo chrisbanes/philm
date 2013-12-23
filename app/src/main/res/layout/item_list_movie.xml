@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/movie_list_item_height"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:baselineAligned="false">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/movie_list_item_height"
+              android:foreground="?android:attr/selectableItemBackground"
+              android:baselineAligned="false">
 
     <ImageView
             android:id="@+id/imageview_poster"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/movie_list_image_width"
             android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/spacing_minor"/>
+            android:scaleType="centerCrop"/>
 
-    <TextView
-            android:id="@+id/textview_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/imageview_poster"
-            android:layout_marginTop="@dimen/spacing_minor"
-            android:maxLines="2"
-            android:textAppearance="@style/TextAppearance.Philm.Movie.Title"/>
+    <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_minor">
 
-    <TextView
-            android:id="@+id/textview_rating"
-            android:layout_toRightOf="@+id/imageview_poster"
-            android:layout_below="@id/textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_micro"
-            android:textAppearance="@style/TextAppearance.Philm.Movie.Rating"/>
+        <TextView
+                android:id="@+id/textview_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:textAppearance="@style/TextAppearance.Philm.Movie.Title"/>
 
-    <TextView
-            android:id="@+id/textview_rating_votes"
-            android:layout_toRightOf="@+id/textview_rating"
-            android:layout_alignBottom="@+id/textview_rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.Philm.Movie.Rating"/>
+        <TextView
+                android:id="@+id/textview_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Philm.Movie.Rating"/>
 
-</RelativeLayout>
+        <TextView
+                android:id="@+id/textview_release"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Philm.Movie.Rating"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

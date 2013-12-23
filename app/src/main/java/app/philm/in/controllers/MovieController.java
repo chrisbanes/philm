@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Movie;
 import com.squareup.otto.Subscribe;
 
-import android.accounts.Account;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -16,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import app.philm.in.Constants;
+import app.philm.in.R;
 import app.philm.in.network.NetworkError;
 import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.MoviesState;
@@ -30,7 +30,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     public static enum Filter {
-        COLLECTION, WATCHED, UNWATCHED;
+        COLLECTION(R.string.filter_collection),
+        WATCHED(R.string.filter_watched),
+        UNWATCHED(R.string.filter_unwatched),
+        IN_FUTURE(R.string.filter_upcoming),
+        UPCOMING(R.string.filter_upcoming),
+        SOON(R.string.filter_soon),
+        RELEASED(R.string.filter_released);
+
+        private final int mTitle;
+
+        private Filter(int titleResId) {
+            mTitle = titleResId;
+        }
+
+        public int getTitle() {
+            return mTitle;
+        }
 
         public boolean isMovieFiltered(Movie movie) {
             return isMovieFiltered(movie, this);
@@ -61,6 +77,30 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     break;
                 case UNWATCHED:
                     return !isMovieFiltered(movie, WATCHED);
+                case IN_FUTURE:
+                    if (movie.released != null) {
+                        return movie.released.getTime() >= System.currentTimeMillis();
+                    }
+                    break;
+                case UPCOMING:
+                    if (movie.released != null) {
+                        final long time = movie.released.getTime();
+                        return  time - Constants.FUTURE_SOON_THRESHOLD >= System.currentTimeMillis();
+                    }
+                    break;
+                case SOON:
+                    if (movie.released != null) {
+                        final long time = movie.released.getTime();
+                        return time >= System.currentTimeMillis()
+                                && time - Constants.FUTURE_SOON_THRESHOLD < System
+                                .currentTimeMillis();
+                    }
+                    break;
+                case RELEASED:
+                    if (movie.released != null) {
+                        return movie.released.getTime() < System.currentTimeMillis();
+                    }
+                    break;
             }
             return false;
         }
@@ -91,6 +131,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
         void setItems(List<Movie> items);
+        void setItemsWithSections(List<Movie> items, List<Filter> sections);
         MovieQueryType getMovieQueryType();
         void showError(NetworkError error);
         void showLoadingProgress(boolean visible);
@@ -263,7 +304,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (requireFiltering()) {
             items = filterMovies(items);
         }
-        getUi().setItems(items);
+        getUi().setItemsWithSections(items,
+                Arrays.asList(Filter.UPCOMING, Filter.SOON, Filter.RELEASED, Filter.WATCHED));
         getUi().showLoadingProgress(false);
     }
 

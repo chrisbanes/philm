@@ -153,6 +153,11 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
     }
 
     @Override
+    public void setItemsWithSections(List<Movie> items, List<MovieController.Filter> sections) {
+        mMovieGridAdapter.setItems(items);
+    }
+
+    @Override
     public MovieController.MovieQueryType getMovieQueryType() {
         final int queryType = getArguments().getInt(KEY_QUERY_TYPE);
         return MovieController.MovieQueryType.values()[queryType];

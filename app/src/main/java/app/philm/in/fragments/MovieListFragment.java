@@ -69,6 +69,14 @@ public class MovieListFragment extends PhilmListFragment implements MovieControl
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         if (mFiltersItemVisible) {
+
+            MenuItem item = menu.findItem(R.id.menu_filter);
+            if (!PhilmCollections.isEmpty(mFilters)) {
+                item.setIcon(R.drawable.ic_action_filter_enabled);
+            } else {
+                item.setIcon(R.drawable.ic_action_filter);
+            }
+
             updateItemCheckedState(menu, R.id.menu_filter_collection,
                     MovieController.Filter.COLLECTION);
             updateItemCheckedState(menu, R.id.menu_filter_watched,

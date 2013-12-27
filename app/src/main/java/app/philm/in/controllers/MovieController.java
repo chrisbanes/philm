@@ -2,7 +2,10 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
+import com.jakewharton.trakt.entities.ActionResponse;
 import com.jakewharton.trakt.entities.Movie;
+import com.jakewharton.trakt.entities.Response;
+import com.jakewharton.trakt.services.MovieService;
 import com.squareup.otto.Subscribe;
 
 import android.text.TextUtils;
@@ -156,6 +159,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void refresh();
 
         void showMovieDetail(PhilmMovie movie);
+
+        void toggleMovieSeen(PhilmMovie movie);
     }
 
     private final MoviesState mMoviesState;
@@ -230,7 +235,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void showMovieDetail(PhilmMovie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showMovieDetailFragment(movie.getTmdbId());
+                    display.showMovieDetailFragment(movie.getImdbId());
+                }
+            }
+
+            @Override
+            public void toggleMovieSeen(PhilmMovie movie) {
+                if (movie.isWatched()) {
+                    markMovieUnseen(movie.getImdbId());
+                } else {
+                    markMovieSeen(movie.getImdbId());
                 }
             }
         };
@@ -388,6 +402,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void markMovieSeen(String imdbId) {
+        showLoadingProgress(true);
+        mExecutor.execute(new MarkMovieSeenRunnable(imdbId));
+    }
+
+    private void markMovieUnseen(String imdbId) {
+        showLoadingProgress(true);
+        mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
+    }
+
     private void fetchWatchlist() {
         showLoadingProgress(true);
         mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
@@ -400,8 +424,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchDetailMovie() {
+        fetchDetailMovie(getUi().getRequestParameter());
+    }
+
+    private void fetchDetailMovie(String imdbId) {
+        Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
         showLoadingProgress(true);
-        mExecutor.execute(new FetchDetailMovieRunnable(getUi().getRequestParameter()));
+        mExecutor.execute(new FetchDetailMovieRunnable(imdbId));
     }
 
     private void fetchDetailMovieIfNeeded() {
@@ -462,14 +491,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     PhilmMovie mapTraktMovieFromState(Movie rawMovie) {
         final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
 
-        PhilmMovie movie = stateMovies.get(rawMovie.tmdbId);
+        PhilmMovie movie = stateMovies.get(rawMovie.imdb_id);
         if (movie != null) {
             // We already have a movie, so just update it wrapped value
             movie.setMovie(rawMovie);
         } else {
             // No movie, so create one
             movie = new PhilmMovie(rawMovie);
-            stateMovies.put(movie.getTmdbId(), movie);
+            stateMovies.put(movie.getImdbId(), movie);
         }
 
         return movie;
@@ -566,16 +595,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchDetailMovieRunnable extends TraktNetworkCallRunnable<Movie> {
-        private final String mTmdbId;
+        private final String mImdbId;
 
-        FetchDetailMovieRunnable(String tmdbId) {
+        FetchDetailMovieRunnable(String imdbId) {
             super(mTraktClient);
-            mTmdbId = Preconditions.checkNotNull(tmdbId, "tmdbId cannot be null");
+            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
         }
 
         @Override
         public Movie doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.movieService().summary(mTmdbId);
+            return trakt.movieService().summary(mImdbId);
         }
 
         @Override
@@ -584,6 +613,64 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             // TODO: Should do something better here
             populateUi();
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                ui.showError(NetworkError.from(re));
+            }
+        }
+    }
+
+    private class MarkMovieSeenRunnable extends TraktNetworkCallRunnable<ActionResponse> {
+        private final String mImdbId;
+
+        MarkMovieSeenRunnable(String imdbId) {
+            super(mTraktClient);
+            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+        }
+
+        @Override
+        public ActionResponse doTraktCall(Trakt trakt) throws RetrofitError {
+            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(mImdbId);
+            MovieService.Movies body = new MovieService.Movies(seenMovie);
+            return trakt.movieService().seen(body);
+        }
+
+        @Override
+        public void onSuccess(ActionResponse result) {
+            fetchDetailMovie(mImdbId);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                ui.showError(NetworkError.from(re));
+            }
+        }
+    }
+
+    private class MarkMovieUnseenRunnable extends TraktNetworkCallRunnable<Response> {
+        private final String mImdbId;
+
+        MarkMovieUnseenRunnable(String imdbId) {
+            super(mTraktClient);
+            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+        }
+
+        @Override
+        public Response doTraktCall(Trakt trakt) throws RetrofitError {
+            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(mImdbId);
+            MovieService.Movies body = new MovieService.Movies(seenMovie);
+            return trakt.movieService().unseen(body);
+        }
+
+        @Override
+        public void onSuccess(Response result) {
+            fetchDetailMovie(mImdbId);
         }
 
         @Override

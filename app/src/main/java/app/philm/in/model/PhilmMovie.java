@@ -29,13 +29,20 @@ public class PhilmMovie {
         return false;
     }
 
-    public String getTmdbId() {
-        return traktEntity.tmdbId;
+    public String getImdbId() {
+        return traktEntity.imdb_id;
     }
 
     public boolean inCollection() {
         if (traktEntity.inCollection != null) {
             return traktEntity.inCollection;
+        }
+        return false;
+    }
+
+    public boolean inWatchlist() {
+        if (traktEntity.inWatchlist != null) {
+            return traktEntity.inWatchlist;
         }
         return false;
     }

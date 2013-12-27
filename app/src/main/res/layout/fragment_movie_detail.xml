@@ -29,19 +29,20 @@
                 android:layout_height="wrap_content"
                 style="?android:buttonBarStyle">
 
-            <Button
+            <app.philm.in.view.CheckableImageButton
+                    android:id="@+id/btn_seen"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     style="?android:attr/borderlessButtonStyle"
-                    android:text="Favourite"/>
+                    android:src="@drawable/ic_btn_seen"/>
 
-            <Button
+            <app.philm.in.view.CheckableImageButton
+                    android:id="@+id/btn_watchlist"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:text="Watchlist"/>
+                    style="?android:attr/borderlessButtonStyle"/>
 
         </LinearLayout>
 

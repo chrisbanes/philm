@@ -46,7 +46,7 @@ public class MovieGridAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getMovie().tmdbId.hashCode();
+        return getItem(position).getMovie().imdb_id.hashCode();
     }
 
     @Override

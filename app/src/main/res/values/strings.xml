@@ -35,4 +35,11 @@
     <string name="filter_soon">Soon</string>
     <string name="filter_released">Released</string>
 
+    <string name="action_add_watchlist">Add to watchlist</string>
+    <string name="action_remove_watchlist">Remove from watchlist</string>
+    <string name="action_add_collection">Add to collection</string>
+    <string name="action_remove_collection">Remove from collection</string>
+    <string name="action_mark_seen">Mark as seen</string>
+    <string name="action_mark_unseen">Mark as unseen</string>
+
 </resources>

@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,7 +20,9 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
+import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
+import app.philm.in.view.PhilmActionButton;
 
 public class MovieDetailFragment extends Fragment implements MovieController.MovieDetailUi,
         View.OnClickListener {
@@ -35,7 +38,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     private TextView mTitleTextView;
     private ImageView mFanartImageView;
 
-    private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
+    private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId),"movieId cannot be empty");
@@ -68,13 +71,13 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         mFanartImageView = (ImageView) view.findViewById(R.id.imageview_fanart);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
 
-        mSeenButton = (CheckableImageButton) view.findViewById(R.id.btn_seen);
+        mSeenButton = (PhilmActionButton) view.findViewById(R.id.btn_seen);
         mSeenButton.setOnClickListener(this);
 
-        mWatchlistButton = (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
+        mWatchlistButton = (PhilmActionButton) view.findViewById(R.id.btn_watchlist);
         mWatchlistButton.setOnClickListener(this);
 
-        mCollectionButton = (CheckableImageButton) view.findViewById(R.id.btn_collection);
+        mCollectionButton = (PhilmActionButton) view.findViewById(R.id.btn_collection);
         mCollectionButton.setOnClickListener(this);
     }
 
@@ -134,10 +137,22 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
                 mMovie.getYear()));
 
-        // TODO: Update Content Descriptions
-        mSeenButton.setChecked(mMovie.isWatched());
-        mWatchlistButton.setChecked(mMovie.inWatchlist());
-        mCollectionButton.setChecked(mMovie.inCollection());
+        updateButtonState(mSeenButton, mMovie.isWatched(), R.string.action_mark_seen,
+                R.string.action_mark_unseen);
+        updateButtonState(mWatchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
+                R.string.action_remove_watchlist);
+        updateButtonState(mCollectionButton, mMovie.inCollection(), R.string.action_add_collection,
+                R.string.action_remove_collection);
+    }
+
+    private void updateButtonState(PhilmActionButton button, final boolean checked,
+            final int toCheckDesc, final int toUncheckDesc) {
+        button.setChecked(checked);
+        if (checked) {
+            button.setContentDescription(getString(toUncheckDesc));
+        } else {
+            button.setContentDescription(getString(toCheckDesc));
+        }
     }
 
     private MovieController getController() {

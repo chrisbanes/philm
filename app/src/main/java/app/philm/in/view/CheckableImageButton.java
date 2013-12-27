@@ -33,6 +33,10 @@ public class CheckableImageButton extends ImageButton implements Checkable {
         super(context, attrs);
     }
 
+    public CheckableImageButton(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
     public boolean isChecked() {
         return mChecked;
     }

@@ -29,29 +29,26 @@
                 android:layout_height="wrap_content"
                 style="?android:buttonBarStyle">
 
-            <app.philm.in.view.CheckableImageButton
+            <app.philm.in.view.PhilmActionButton
                     android:id="@+id/btn_seen"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="?android:attr/borderlessButtonStyle"
                     android:src="@drawable/ic_btn_seen"/>
 
-            <app.philm.in.view.CheckableImageButton
-                    android:id="@+id/btn_watchlist"
-                    android:layout_width="0px"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:src="@drawable/ic_btn_watchlist"/>
-
-            <app.philm.in.view.CheckableImageButton
+            <app.philm.in.view.PhilmActionButton
                     android:id="@+id/btn_collection"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="?android:attr/borderlessButtonStyle"
                     android:src="@drawable/ic_btn_collection"/>
+
+            <app.philm.in.view.PhilmActionButton
+                    android:id="@+id/btn_watchlist"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_btn_watchlist"/>
 
         </LinearLayout>
 

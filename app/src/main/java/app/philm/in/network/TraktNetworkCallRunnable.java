@@ -25,6 +25,13 @@ public abstract class TraktNetworkCallRunnable<R> implements Runnable {
     public final void run() {
         android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
+        sHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                onPreTraktCall();
+            }
+        });
+
         R result = null;
         RetrofitError retrofitError = null;
 
@@ -40,11 +47,15 @@ public abstract class TraktNetworkCallRunnable<R> implements Runnable {
         sHandler.post(new ResultCallback(result, retrofitError));
     }
 
+    public void onPreTraktCall() {}
+
     public abstract R doTraktCall(Trakt trakt) throws RetrofitError;
 
     public abstract void onSuccess(R result);
 
     public abstract void onError(RetrofitError re);
+
+    public void onFinished() {}
 
     private class ResultCallback implements Runnable {
         private final R mResult;
@@ -62,6 +73,8 @@ public abstract class TraktNetworkCallRunnable<R> implements Runnable {
             } else if (mRetrofitError != null) {
                 onError(mRetrofitError);
             }
+
+            onFinished();
         }
     }
  }

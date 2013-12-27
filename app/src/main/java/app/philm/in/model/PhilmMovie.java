@@ -4,9 +4,22 @@ import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Movie;
 
+import java.util.Comparator;
+
 public class PhilmMovie {
 
+    private static final String[] TITLE_PREFIXES = { "The ", "An " };
+
+    public static final Comparator<PhilmMovie> COMPARATOR = new Comparator<PhilmMovie>() {
+        @Override
+        public int compare(PhilmMovie movie, PhilmMovie movie2) {
+            return movie.getSortTitle().compareTo(movie.getSortTitle());
+        }
+    };
+
     private Movie traktEntity;
+
+    private String mSortTitle;
 
     public PhilmMovie(Movie traktEntity) {
         setMovie(traktEntity);
@@ -49,6 +62,19 @@ public class PhilmMovie {
 
     public String getTitle() {
         return traktEntity.title;
+    }
+
+    public String getSortTitle() {
+        if (mSortTitle == null) {
+            mSortTitle = getTitle();
+            for (int i = 0, z = TITLE_PREFIXES.length; i < z; i++) {
+                final String prefix = TITLE_PREFIXES[i];
+                if (mSortTitle.startsWith(prefix)) {
+                    mSortTitle = mSortTitle.substring(prefix.length());
+                }
+            }
+        }
+        return mSortTitle;
     }
 
     public int getYear() {

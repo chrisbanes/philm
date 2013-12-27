@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -316,7 +317,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     items = filterMovies(items);
                 }
                 ui.setItems(items);
-                ui.showLoadingProgress(false);
                 break;
             case LIBRARY:
                 items = mMoviesState.getLibrary();
@@ -324,7 +324,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     items = filterMovies(items);
                 }
                 ui.setItems(items);
-                ui.showLoadingProgress(false);
                 break;
             case WATCHLIST:
                 items = mMoviesState.getWatchlist();
@@ -333,7 +332,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
                 ui.setItemsWithSections(items, Arrays.asList(Filter.UPCOMING, Filter.SOON,
                         Filter.RELEASED, Filter.WATCHED));
-                ui.showLoadingProgress(false);
                 break;
         }
     }
@@ -353,6 +351,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private boolean requireFiltering() {
         return !PhilmCollections.isEmpty(mMoviesState.getFilters());
+    }
+
+    private void checkPhilmState(PhilmMovie movie) {
+        final List<PhilmMovie> library = mMoviesState.getLibrary();
+
+        if (!PhilmCollections.isEmpty(library)) {
+            final boolean shouldBeInLibrary = movie.isWatched() || movie.inCollection();
+
+            if (shouldBeInLibrary != library.contains(movie)) {
+                if (shouldBeInLibrary) {
+                    library.add(movie);
+                    Collections.sort(library, PhilmMovie.COMPARATOR);
+                } else {
+                    library.remove(movie);
+                }
+            }
+        }
     }
 
     private List<PhilmMovie> filterMovies(List<PhilmMovie> movies) {
@@ -380,7 +395,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchLibrary() {
         if (isLoggedIn()) {
-            showLoadingProgress(true);
             mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
         }
     }
@@ -392,7 +406,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchTrending() {
-        showLoadingProgress(true);
         mExecutor.execute(new FetchTrendingRunnable());
     }
 
@@ -403,17 +416,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void markMovieSeen(String imdbId) {
-        showLoadingProgress(true);
         mExecutor.execute(new MarkMovieSeenRunnable(imdbId));
     }
 
     private void markMovieUnseen(String imdbId) {
-        showLoadingProgress(true);
         mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
     }
 
     private void fetchWatchlist() {
-        showLoadingProgress(true);
         mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
     }
 
@@ -429,7 +439,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchDetailMovie(String imdbId) {
         Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
-        showLoadingProgress(true);
         mExecutor.execute(new FetchDetailMovieRunnable(imdbId));
     }
 
@@ -504,7 +513,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return movie;
     }
 
-    private class FetchTrendingRunnable extends TraktNetworkCallRunnable<List<Movie>> {
+    private class FetchTrendingRunnable extends MovieControllerTraktRunnable<List<Movie>> {
         public FetchTrendingRunnable() {
             super(mTraktClient);
         }
@@ -532,7 +541,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchLibraryRunnable extends TraktNetworkCallRunnable<List<Movie>> {
+    private class FetchLibraryRunnable extends MovieControllerTraktRunnable<List<Movie>> {
         private final String mUsername;
 
         FetchLibraryRunnable(String username) {
@@ -548,7 +557,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             if (!PhilmCollections.isEmpty(result)) {
-                mMoviesState.setLibrary(mapTraktMoviesFromState(result));
+                List<PhilmMovie> movies = mapTraktMoviesFromState(result);
+                mMoviesState.setLibrary(movies);
             } else {
                 mMoviesState.setLibrary(null);
             }
@@ -594,7 +604,24 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchDetailMovieRunnable extends TraktNetworkCallRunnable<Movie> {
+    private abstract class MovieControllerTraktRunnable<R> extends TraktNetworkCallRunnable<R> {
+
+        public MovieControllerTraktRunnable(Trakt traktClient) {
+            super(traktClient);
+        }
+
+        @Override
+        public void onPreTraktCall() {
+            showLoadingProgress(true);
+        }
+
+        @Override
+        public void onFinished() {
+            showLoadingProgress(false);
+        }
+    }
+
+    private class FetchDetailMovieRunnable extends MovieControllerTraktRunnable<Movie> {
         private final String mImdbId;
 
         FetchDetailMovieRunnable(String imdbId) {
@@ -609,7 +636,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(Movie result) {
-            mapTraktMovieFromState(result);
+            checkPhilmState(mapTraktMovieFromState(result));
 
             // TODO: Should do something better here
             populateUi();
@@ -624,7 +651,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class MarkMovieSeenRunnable extends TraktNetworkCallRunnable<ActionResponse> {
+    private class MarkMovieSeenRunnable extends MovieControllerTraktRunnable<ActionResponse> {
         private final String mImdbId;
 
         MarkMovieSeenRunnable(String imdbId) {
@@ -641,7 +668,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(ActionResponse result) {
-            fetchDetailMovie(mImdbId);
+            if (result.skipped == 0) {
+                fetchDetailMovie(mImdbId);
+            }
         }
 
         @Override
@@ -653,7 +682,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class MarkMovieUnseenRunnable extends TraktNetworkCallRunnable<Response> {
+    private class MarkMovieUnseenRunnable extends MovieControllerTraktRunnable<Response> {
         private final String mImdbId;
 
         MarkMovieUnseenRunnable(String imdbId) {

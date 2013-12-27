@@ -563,14 +563,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 mMoviesState.setLibrary(null);
             }
         }
-
-        @Override
-        public void onError(RetrofitError re) {
-            MovieUi ui = getUi();
-            if (ui != null) {
-                ui.showError(NetworkError.from(re));
-            }
-        }
     }
 
     private class FetchWatchlistRunnable extends TraktNetworkCallRunnable<List<Movie>> {
@@ -616,6 +608,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
+        public void onError(RetrofitError re) {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                ui.showError(NetworkError.from(re));
+            }
+        }
+
+        @Override
         public void onFinished() {
             showLoadingProgress(false);
         }
@@ -641,14 +641,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             // TODO: Should do something better here
             populateUi();
         }
-
-        @Override
-        public void onError(RetrofitError re) {
-            MovieUi ui = getUi();
-            if (ui != null) {
-                ui.showError(NetworkError.from(re));
-            }
-        }
     }
 
     private class MarkMovieSeenRunnable extends MovieControllerTraktRunnable<ActionResponse> {
@@ -672,14 +664,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 fetchDetailMovie(mImdbId);
             }
         }
-
-        @Override
-        public void onError(RetrofitError re) {
-            MovieUi ui = getUi();
-            if (ui != null) {
-                ui.showError(NetworkError.from(re));
-            }
-        }
     }
 
     private class MarkMovieUnseenRunnable extends MovieControllerTraktRunnable<Response> {
@@ -700,14 +684,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(Response result) {
             fetchDetailMovie(mImdbId);
-        }
-
-        @Override
-        public void onError(RetrofitError re) {
-            MovieUi ui = getUi();
-            if (ui != null) {
-                ui.showError(NetworkError.from(re));
-            }
         }
     }
 }

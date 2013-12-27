@@ -45,6 +45,14 @@
                     style="?android:attr/borderlessButtonStyle"
                     android:src="@drawable/ic_btn_watchlist"/>
 
+            <app.philm.in.view.CheckableImageButton
+                    android:id="@+id/btn_collection"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:src="@drawable/ic_btn_collection"/>
+
         </LinearLayout>
 
     </LinearLayout>

@@ -35,7 +35,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     private TextView mTitleTextView;
     private ImageView mFanartImageView;
 
-    private CheckableImageButton mSeenButton, mWatchlistButton;
+    private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId),"movieId cannot be empty");
@@ -73,6 +73,9 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
 
         mWatchlistButton = (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
         mWatchlistButton.setOnClickListener(this);
+
+        mCollectionButton = (CheckableImageButton) view.findViewById(R.id.btn_collection);
+        mCollectionButton.setOnClickListener(this);
     }
 
     @Override
@@ -134,6 +137,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         // TODO: Update Content Descriptions
         mSeenButton.setChecked(mMovie.isWatched());
         mWatchlistButton.setChecked(mMovie.inWatchlist());
+        mCollectionButton.setChecked(mMovie.inCollection());
     }
 
     private MovieController getController() {
@@ -151,6 +155,11 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
             case R.id.btn_watchlist:
                 if (mCallbacks != null) {
                     mCallbacks.toggleInWatchlist(mMovie);
+                }
+                break;
+            case R.id.btn_collection:
+                if (mCallbacks != null) {
+                    mCallbacks.toggleInCollection(mMovie);
                 }
                 break;
         }

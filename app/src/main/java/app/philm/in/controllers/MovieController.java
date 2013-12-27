@@ -164,6 +164,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void toggleMovieSeen(PhilmMovie movie);
 
         void toggleInWatchlist(PhilmMovie movie);
+
+        void toggleInCollection(PhilmMovie movie);
     }
 
     private final MoviesState mMoviesState;
@@ -257,6 +259,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     removeFromWatchlist(movie.getImdbId());
                 } else {
                     addToWatchlist(movie.getImdbId());
+                }
+            }
+
+            @Override
+            public void toggleInCollection(PhilmMovie movie) {
+                if (movie.inCollection()) {
+                    removeFromCollection(movie.getImdbId());
+                } else {
+                    addToCollection(movie.getImdbId());
                 }
             }
         };
@@ -453,6 +464,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void removeFromWatchlist(String imdbId) {
         mExecutor.execute(new RemoveMovieFromWatchlistRunnable(imdbId));
+    }
+
+    private void addToCollection(String imdbId) {
+        mExecutor.execute(new AddMovieToCollectionRunnable(imdbId));
+    }
+
+    private void removeFromCollection(String imdbId) {
+        mExecutor.execute(new RemoveMovieFromCollectionRunnable(imdbId));
     }
 
     private void fetchWatchlist() {
@@ -655,10 +674,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public final Response doTraktCall(Trakt trakt) throws RetrofitError {
-            return doTraktCall(trakt, mImdbId);
+            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(mImdbId);
+
+            return doTraktCall(trakt, new MovieService.Movies(seenMovie));
         }
 
-        public abstract Response doTraktCall(Trakt trakt, String imdbId);
+        public abstract Response doTraktCall(Trakt trakt, MovieService.Movies body);
 
         @Override
         public final void onSuccess(Response result) {
@@ -713,9 +734,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
-        public ActionResponse doTraktCall(Trakt trakt, String imdbId) throws RetrofitError {
-            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(imdbId);
-            MovieService.Movies body = new MovieService.Movies(seenMovie);
+        public Response doTraktCall(Trakt trakt, MovieService.Movies body) throws RetrofitError {
             return trakt.movieService().seen(body);
         }
 
@@ -731,9 +750,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
-        public Response doTraktCall(Trakt trakt, String imdbId) throws RetrofitError {
-            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(imdbId);
-            MovieService.Movies body = new MovieService.Movies(seenMovie);
+        public Response doTraktCall(Trakt trakt, MovieService.Movies body) throws RetrofitError {
             return trakt.movieService().unseen(body);
         }
 
@@ -749,9 +766,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
-        public ActionResponse doTraktCall(Trakt trakt, String imdbId) throws RetrofitError {
-            MovieService.SeenMovie movie = new MovieService.SeenMovie(imdbId);
-            MovieService.Movies body = new MovieService.Movies(movie);
+        public Response doTraktCall(Trakt trakt, MovieService.Movies body) throws RetrofitError {
             return trakt.movieService().watchlist(body);
         }
 
@@ -767,15 +782,45 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
-        public Response doTraktCall(Trakt trakt, String imdbId) throws RetrofitError {
-            MovieService.SeenMovie movie = new MovieService.SeenMovie(imdbId);
-            MovieService.Movies body = new MovieService.Movies(movie);
+        public Response doTraktCall(Trakt trakt, MovieService.Movies body) throws RetrofitError {
             return trakt.movieService().unwatchlist(body);
         }
 
         @Override
         protected void movieRequiresModifying(PhilmMovie movie) {
             movie.setInWatched(false);
+        }
+    }
+
+    private class AddMovieToCollectionRunnable extends BaseMovieActionTraktRunnable {
+        AddMovieToCollectionRunnable(String imdbId) {
+            super(imdbId);
+        }
+
+        @Override
+        public Response doTraktCall(Trakt trakt, MovieService.Movies body) throws RetrofitError {
+            return trakt.movieService().library(body);
+        }
+
+        @Override
+        protected void movieRequiresModifying(PhilmMovie movie) {
+            movie.setInCollection(true);
+        }
+    }
+
+    private class RemoveMovieFromCollectionRunnable extends BaseMovieActionTraktRunnable {
+        RemoveMovieFromCollectionRunnable(String imdbId) {
+            super(imdbId);
+        }
+
+        @Override
+        public Response doTraktCall(Trakt trakt, MovieService.Movies body) throws RetrofitError {
+            return trakt.movieService().unlibrary(body);
+        }
+
+        @Override
+        protected void movieRequiresModifying(PhilmMovie movie) {
+            movie.setInCollection(false);
         }
     }
 }

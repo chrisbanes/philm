@@ -60,6 +60,12 @@ public class PhilmMovie {
         return false;
     }
 
+    public void setInCollection(boolean inCollection) {
+        if (inCollection != inCollection()) {
+            traktEntity.inCollection = inCollection;
+        }
+    }
+
     public boolean inWatchlist() {
         if (traktEntity.inWatchlist != null) {
             return traktEntity.inWatchlist;

@@ -42,6 +42,13 @@ public class PhilmMovie {
         return false;
     }
 
+    public void setWatched(boolean watched) {
+        if (watched != isWatched()) {
+            traktEntity.watched = watched;
+            traktEntity.plays = watched ? 1 : 0;
+        }
+    }
+
     public String getImdbId() {
         return traktEntity.imdb_id;
     }
@@ -58,6 +65,12 @@ public class PhilmMovie {
             return traktEntity.inWatchlist;
         }
         return false;
+    }
+
+    public void setInWatched(boolean inWatchlist) {
+        if (inWatchlist != inWatchlist()) {
+            traktEntity.inWatchlist = inWatchlist;
+        }
     }
 
     public String getTitle() {

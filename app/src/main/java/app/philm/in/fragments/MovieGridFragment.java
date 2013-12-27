@@ -65,8 +65,6 @@ public class MovieGridFragment extends GridFragment implements MovieController.M
         gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
         gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
         gridView.setFastScrollEnabled(true);
-
-        setGridShown(false);
     }
 
     @Override

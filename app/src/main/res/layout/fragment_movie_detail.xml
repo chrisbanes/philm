@@ -42,7 +42,8 @@
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    style="?android:attr/borderlessButtonStyle"/>
+                    style="?android:attr/borderlessButtonStyle"
+                    android:src="@drawable/ic_btn_watchlist"/>
 
         </LinearLayout>
 

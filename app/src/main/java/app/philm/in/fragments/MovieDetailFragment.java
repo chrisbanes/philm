@@ -149,6 +149,9 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
                 }
                 break;
             case R.id.btn_watchlist:
+                if (mCallbacks != null) {
+                    mCallbacks.toggleInWatchlist(mMovie);
+                }
                 break;
         }
     }

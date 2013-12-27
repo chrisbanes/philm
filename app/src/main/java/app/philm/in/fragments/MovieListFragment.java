@@ -57,12 +57,6 @@ public class MovieListFragment extends PhilmListFragment implements MovieControl
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setListShown(false);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.movies, menu);
 

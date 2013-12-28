@@ -6,6 +6,7 @@ import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.SearchResult;
 
 public interface MoviesState extends BaseState {
 
@@ -23,6 +24,10 @@ public interface MoviesState extends BaseState {
 
     public void setWatchlist(List<PhilmMovie> watchlist);
 
+    public void setSearchResult(SearchResult result);
+
+    public SearchResult getSearchResult();
+
     public Set<MovieController.Filter> getFilters();
 
     public static class LibraryChangedEvent {}
@@ -30,5 +35,13 @@ public interface MoviesState extends BaseState {
     public static class TrendingChangedEvent {}
 
     public static class WatchlistChangedEvent {}
+
+    public static class SearchResultChangedEvent {
+        public final String query;
+
+        SearchResultChangedEvent(String query) {
+            this.query = query;
+        }
+    }
 
 }

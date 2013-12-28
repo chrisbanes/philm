@@ -47,21 +47,26 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
         if (mFiltersItemVisible) {
 
             MenuItem item = menu.findItem(R.id.menu_filter);
-            if (!PhilmCollections.isEmpty(mFilters)) {
-                item.setIcon(R.drawable.ic_action_filter_enabled);
-            } else {
-                item.setIcon(R.drawable.ic_action_filter);
+            if (item != null) {
+                if (!PhilmCollections.isEmpty(mFilters)) {
+                    item.setIcon(R.drawable.ic_action_filter_enabled);
+                } else {
+                    item.setIcon(R.drawable.ic_action_filter);
+                }
+
+                updateItemCheckedState(menu, R.id.menu_filter_collection,
+                        MovieController.Filter.COLLECTION);
+                updateItemCheckedState(menu, R.id.menu_filter_watched,
+                        MovieController.Filter.WATCHED);
+                updateItemCheckedState(menu, R.id.menu_filter_unwatched,
+                        MovieController.Filter.UNWATCHED);
+
+                // Update the clear button depending if there are active filters
+                MenuItem clearItem = menu.findItem(R.id.menu_filter_clear);
+                if (clearItem != null) {
+                    clearItem.setVisible(!PhilmCollections.isEmpty(mFilters));
+                }
             }
-
-            updateItemCheckedState(menu, R.id.menu_filter_collection,
-                    MovieController.Filter.COLLECTION);
-            updateItemCheckedState(menu, R.id.menu_filter_watched,
-                    MovieController.Filter.WATCHED);
-            updateItemCheckedState(menu, R.id.menu_filter_unwatched,
-                    MovieController.Filter.UNWATCHED);
-
-            // Update the clear button depending if there are active filters
-            menu.findItem(R.id.menu_filter_clear).setVisible(!PhilmCollections.isEmpty(mFilters));
         }
     }
 

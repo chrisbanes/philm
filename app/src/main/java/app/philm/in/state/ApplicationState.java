@@ -16,12 +16,15 @@ import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.SearchResult;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
 
     private final Bus mEventBus;
 
     private Map<String, PhilmMovie> mMovies;
+    private SearchResult mSearchResult;
+
     private List<PhilmMovie> mLibrary;
     private List<PhilmMovie> mTrending;
     private List<PhilmMovie> mWatchlist;
@@ -104,6 +107,16 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
             mWatchlist = watchlist;
             mEventBus.post(new WatchlistChangedEvent());
         }
+    }
+
+    @Override
+    public SearchResult getSearchResult() {
+        return mSearchResult;
+    }
+
+    @Override
+    public void setSearchResult(SearchResult result) {
+        mSearchResult = result;
     }
 
     ///////////////////////////

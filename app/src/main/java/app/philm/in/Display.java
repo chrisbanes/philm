@@ -11,6 +11,7 @@ import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.fragments.MovieGridFragment;
 import app.philm.in.fragments.MovieListFragment;
+import app.philm.in.fragments.SearchListFragment;
 
 public class Display {
 
@@ -69,6 +70,16 @@ public class Display {
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
+    }
+
+    public void showSearchFragment() {
+        SearchListFragment fragment = new SearchListFragment();
+
+        mActivity.getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .commit();
+
+        setActionBarTitle(R.string.search_title);
     }
 
     public void closeDrawerLayout() {

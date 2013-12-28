@@ -10,4 +10,8 @@ public class Trakt extends com.jakewharton.trakt.Trakt {
         return buildRestAdapter().create(PhilmUserService.class);
     }
 
+    public PhilmSearchService philmSearchService() {
+        return buildRestAdapter().create(PhilmSearchService.class);
+    }
+
 }

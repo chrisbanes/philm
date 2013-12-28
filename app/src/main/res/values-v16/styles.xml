@@ -5,6 +5,10 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
+    <style name="TextAppearance.Philm.Serif" parent="android:TextAppearance">
+        <item name="android:fontFamily">serif</item>
+    </style>
+
     <style name="TextAppearance.Philm.Condensed" parent="android:TextAppearance">
         <item name="android:fontFamily">sans-serif-condensed</item>
     </style>

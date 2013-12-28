@@ -3,10 +3,13 @@ package app.philm.in.view;
 import com.google.common.base.Preconditions;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
+
+import app.philm.in.R;
 
 public class ParallaxContentScrollView extends FrameLayout {
 
@@ -18,8 +21,17 @@ public class ParallaxContentScrollView extends FrameLayout {
     private FrameLayout mContentViewWrapper;
     private ScrollView mContentViewScrollView;
 
+    private int mContentOverlaySize;
+
     public ParallaxContentScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ParallaxContentScrollView);
+
+        mContentOverlaySize = a.getDimensionPixelSize(
+                R.styleable.ParallaxContentScrollView_contentOverlay, 0);
+
+        a.recycle();
     }
 
     @Override
@@ -47,12 +59,17 @@ public class ParallaxContentScrollView extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        updateContentViewPaddingTop();
+    }
 
-        if (mContentViewWrapper.getPaddingTop() != mHeaderView.getHeight()) {
+    void updateContentViewPaddingTop() {
+        final int targetPaddingTop = mHeaderView.getHeight() - mContentOverlaySize;
+
+        if (mContentViewWrapper.getPaddingTop() != targetPaddingTop) {
             mContentViewWrapper.post(new Runnable() {
                 @Override
                 public void run() {
-                    mContentViewWrapper.setPadding(0, mHeaderView.getHeight(), 0, 0);
+                    mContentViewWrapper.setPadding(0, targetPaddingTop, 0, 0);
                 }
             });
         }

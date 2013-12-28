@@ -36,7 +36,9 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     private TraktImageHelper mTraktImageHelper;
 
     private TextView mTitleTextView;
+    private TextView mSummaryTextView;
     private ImageView mFanartImageView;
+    private ImageView mPosterImageView;
 
     private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -69,7 +71,11 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mFanartImageView = (ImageView) view.findViewById(R.id.imageview_fanart);
+        mPosterImageView = (ImageView) view.findViewById(R.id.imageview_poster);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+
+        mSummaryTextView = (TextView) view.findViewById(R.id.textview_summary);
+        mSummaryTextView.setOnClickListener(this);
 
         mSeenButton = (PhilmActionButton) view.findViewById(R.id.btn_seen);
         mSeenButton.setOnClickListener(this);
@@ -134,8 +140,14 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
                 .load(mTraktImageHelper.getFanartUrl(mMovie.getMovie()))
                 .into(mFanartImageView);
 
+        Picasso.with(getActivity())
+                .load(mTraktImageHelper.getPosterUrl(mMovie.getMovie()))
+                .into(mPosterImageView);
+
         mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
                 mMovie.getYear()));
+
+        mSummaryTextView.setText(mMovie.getMovie().overview);
 
         updateButtonState(mSeenButton, mMovie.isWatched(), R.string.action_mark_seen,
                 R.string.action_mark_unseen);
@@ -176,6 +188,13 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
                 if (mCallbacks != null) {
                     mCallbacks.toggleInCollection(mMovie);
                 }
+                break;
+            case R.id.textview_summary:
+                final int defaultMaxLines = getResources()
+                        .getInteger(R.integer.default_summary_maxlines);
+                mSummaryTextView.setMaxLines(mSummaryTextView.getMaxLines() == defaultMaxLines
+                        ? Integer.MAX_VALUE
+                        : defaultMaxLines);
                 break;
         }
     }

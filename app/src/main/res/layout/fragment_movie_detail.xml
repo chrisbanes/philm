@@ -2,55 +2,98 @@
 
 <app.philm.in.view.ParallaxContentScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:internal="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        internal:contentOverlay="@dimen/movie_detail_content_overlay">
 
     <ImageView
             android:id="@+id/imageview_fanart"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/movie_detail_fanart_height"
             android:scaleType="centerCrop"/>
 
     <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/side_menu_background">
-
-        <TextView
-                android:id="@+id/textview_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.Philm.Movie.Title"/>
+            android:orientation="vertical"
+            android:animateLayoutChanges="true">
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="?android:buttonBarStyle">
+                android:background="@drawable/black_translucent_gradient"
+                android:baselineAligned="false">
 
-            <app.philm.in.view.PhilmActionButton
-                    android:id="@+id/btn_seen"
-                    android:layout_width="0px"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_btn_seen"/>
+            <ImageView
+                    android:id="@+id/imageview_poster"
+                    android:layout_width="@dimen/movie_detail_poster_width"
+                    android:layout_height="@dimen/movie_detail_poster_height"
+                    android:scaleType="centerCrop"
+                    android:layout_marginLeft="@dimen/spacing_major"
+                    android:background="?android:attr/colorForeground"
+                    android:padding="2dp"/>
 
-            <app.philm.in.view.PhilmActionButton
-                    android:id="@+id/btn_collection"
+            <TextView
+                    android:id="@+id/textview_title"
                     android:layout_width="0px"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_btn_collection"/>
-
-            <app.philm.in.view.PhilmActionButton
-                    android:id="@+id/btn_watchlist"
-                    android:layout_width="0px"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_btn_watchlist"/>
+                    android:layout_height="match_parent"
+                    android:maxLines="2"
+                    android:padding="@dimen/spacing_minor"
+                    android:paddingRight="@dimen/spacing_major"
+                    android:gravity="left|bottom"
+                    android:textAppearance="@style/TextAppearance.Philm.Movie.Detail.Title"/>
 
         </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/spacing_major"
+                android:background="@color/side_menu_background">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="?android:buttonBarStyle">
+
+                <app.philm.in.view.PhilmActionButton
+                        android:id="@+id/btn_seen"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_btn_seen"/>
+
+                <app.philm.in.view.PhilmActionButton
+                        android:id="@+id/btn_collection"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_btn_collection"/>
+
+                <app.philm.in.view.PhilmActionButton
+                        android:id="@+id/btn_watchlist"
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_btn_watchlist"/>
+
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/textview_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Philm.Movie.Detail.Summary"/>
+
+            <View
+                    android:layout_height="400dp"
+                    android:layout_width="match_parent"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

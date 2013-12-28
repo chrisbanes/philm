@@ -36,140 +36,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
-    public static enum Filter {
-        COLLECTION(R.string.filter_collection),
-        WATCHED(R.string.filter_watched),
-        UNWATCHED(R.string.filter_unwatched),
-        IN_FUTURE(R.string.filter_upcoming),
-        UPCOMING(R.string.filter_upcoming),
-        SOON(R.string.filter_soon),
-        RELEASED(R.string.filter_released);
-
-        private final int mTitle;
-
-        private Filter(int titleResId) {
-            mTitle = titleResId;
-        }
-
-        public int getTitle() {
-            return mTitle;
-        }
-
-        public boolean isMovieFiltered(PhilmMovie movie) {
-            return isMovieFiltered(movie, this);
-        }
-
-        public List<Filter> getMutuallyExclusiveFilters() {
-            switch (this) {
-                case WATCHED:
-                    return Arrays.asList(UNWATCHED);
-                case UNWATCHED:
-                    return Arrays.asList(WATCHED);
-            }
-            return null;
-        }
-
-        private static boolean isMovieFiltered(PhilmMovie movie, Filter filter) {
-            // TODO: Move dependent methods to PhilmMovie
-            final Movie unpacked = movie.getMovie();
-
-            switch (filter) {
-                case COLLECTION:
-                    return movie.inCollection();
-                case WATCHED:
-                    return movie.isWatched();
-                case UNWATCHED:
-                    return !movie.isWatched();
-                case IN_FUTURE:
-                    if (unpacked.released != null) {
-                        return unpacked.released.getTime() >= System.currentTimeMillis();
-                    }
-                    break;
-                case UPCOMING:
-                    if (unpacked.released != null) {
-                        final long time = unpacked.released.getTime();
-                        return  time - Constants.FUTURE_SOON_THRESHOLD >= System.currentTimeMillis();
-                    }
-                    break;
-                case SOON:
-                    if (unpacked.released != null) {
-                        final long time = unpacked.released.getTime();
-                        return time >= System.currentTimeMillis()
-                                && time - Constants.FUTURE_SOON_THRESHOLD < System
-                                .currentTimeMillis();
-                    }
-                    break;
-                case RELEASED:
-                    if (unpacked.released != null) {
-                        return unpacked.released.getTime() < System.currentTimeMillis();
-                    }
-                    break;
-            }
-            return false;
-        }
-    }
-
-    public static enum MovieQueryType {
-        LIBRARY, TRENDING, WATCHLIST, DETAIL;
-
-        public boolean requireLogin() {
-            switch (this) {
-                case WATCHLIST:
-                case LIBRARY:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        public boolean supportFiltering() {
-            switch (this) {
-                case LIBRARY:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    }
-
-    interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
-        void showError(NetworkError error);
-        void showLoadingProgress(boolean visible);
-        MovieQueryType getMovieQueryType();
-        String getRequestParameter();
-    }
-
-    public interface MovieListUi extends MovieUi {
-        void setItems(List<PhilmMovie> items);
-        void setItemsWithSections(List<PhilmMovie> items, List<Filter> sections);
-        void setFiltersVisibility(boolean visible);
-        void showActiveFilters(Set<Filter> filters);
-    }
-
-    public interface MovieDetailUi extends MovieUi {
-        void setMovie(PhilmMovie movie);
-    }
-
-    public interface MovieUiCallbacks {
-        void addFilter(Filter filter);
-
-        void removeFilter(Filter filter);
-
-        void clearFilters();
-
-        void refresh();
-
-        void showMovieDetail(PhilmMovie movie);
-
-        void toggleMovieSeen(PhilmMovie movie);
-
-        void toggleInWatchlist(PhilmMovie movie);
-
-        void toggleInCollection(PhilmMovie movie);
-    }
-
     private final MoviesState mMoviesState;
+
     private final ExecutorService mExecutor;
+
     private final Trakt mTraktClient;
 
     public MovieController(
@@ -180,6 +50,30 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
+    }
+
+    @Subscribe
+    public void onLibraryChanged(MoviesState.LibraryChangedEvent event) {
+        populateUi();
+    }
+
+    @Subscribe
+    public void onTrendingChanged(MoviesState.TrendingChangedEvent event) {
+        populateUi();
+    }
+
+    @Subscribe
+    public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
+        populateUi();
+    }
+
+    @Subscribe
+    public void onAccountChanged(UserState.AccountChangedEvent event) {
+        // Nuke all Movie State...
+        mMoviesState.setLibrary(null);
+        mMoviesState.setTrending(null);
+        mMoviesState.setWatchlist(null);
+        mMoviesState.getMovies().clear();
     }
 
     @Override
@@ -318,6 +212,160 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    List<PhilmMovie> mapTraktMoviesFromState(List<Movie> rawMovies) {
+        final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(rawMovies.size());
+        for (Movie rawMovie : rawMovies) {
+            movies.add(mapTraktMovieFromState(rawMovie));
+        }
+        return movies;
+    }
+
+    PhilmMovie mapTraktMovieFromState(Movie rawMovie) {
+        final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
+
+        PhilmMovie movie = stateMovies.get(rawMovie.imdb_id);
+        if (movie != null) {
+            // We already have a movie, so just update it wrapped value
+            movie.setMovie(rawMovie);
+        } else {
+            // No movie, so create one
+            movie = new PhilmMovie(rawMovie);
+            stateMovies.put(movie.getImdbId(), movie);
+        }
+
+        return movie;
+    }
+
+    private void addToCollection(String imdbId) {
+        mExecutor.execute(new AddMovieToCollectionRunnable(imdbId));
+    }
+
+    private void addToWatchlist(String imdbId) {
+        mExecutor.execute(new AddMovieToWatchlistRunnable(imdbId));
+    }
+
+    private void checkPhilmState(PhilmMovie movie) {
+        final List<PhilmMovie> library = mMoviesState.getLibrary();
+        final List<PhilmMovie> watchlist = mMoviesState.getWatchlist();
+
+        if (!PhilmCollections.isEmpty(library)) {
+            final boolean shouldBeInLibrary = movie.isWatched() || movie.inCollection();
+
+            if (shouldBeInLibrary != library.contains(movie)) {
+                if (shouldBeInLibrary) {
+                    library.add(movie);
+                    Collections.sort(library, PhilmMovie.COMPARATOR);
+                } else {
+                    library.remove(movie);
+                }
+            }
+        }
+
+        if (!PhilmCollections.isEmpty(watchlist)) {
+            final boolean shouldBeInWatchlist = movie.inWatchlist();
+            if (shouldBeInWatchlist != watchlist.contains(movie)) {
+                if (shouldBeInWatchlist) {
+                    watchlist.add(movie);
+                    Collections.sort(watchlist, PhilmMovie.COMPARATOR);
+                } else {
+                    watchlist.remove(movie);
+                }
+            }
+        }
+    }
+
+    private void fetchDetailMovie() {
+        fetchDetailMovie(getUi().getRequestParameter());
+    }
+
+    private void fetchDetailMovie(String imdbId) {
+        Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+        mExecutor.execute(new FetchDetailMovieRunnable(imdbId));
+    }
+
+    private void fetchDetailMovieIfNeeded() {
+        PhilmMovie cached = getMovie(getUi().getRequestParameter());
+        if (cached == null) {
+            fetchDetailMovie();
+        }
+    }
+
+    private void fetchLibrary() {
+        if (isLoggedIn()) {
+            mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
+        }
+    }
+
+    private void fetchLibraryIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
+            fetchLibrary();
+        }
+    }
+
+    private void fetchTrending() {
+        mExecutor.execute(new FetchTrendingRunnable());
+    }
+
+    private void fetchTrendingIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getTrending())) {
+            fetchTrending();
+        }
+    }
+
+    private void fetchWatchlist() {
+        mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
+    }
+
+    private void fetchWatchlistIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
+            fetchWatchlist();
+        }
+    }
+
+    private List<PhilmMovie> filterMovies(List<PhilmMovie> movies) {
+        Preconditions.checkNotNull(movies, "movies cannot be null");
+
+        final Set<Filter> filters = mMoviesState.getFilters();
+        Preconditions.checkNotNull(filters, "filters cannot be null");
+        Preconditions.checkState(!filters.isEmpty(), "filters cannot be empty");
+
+        ArrayList<PhilmMovie> filteredMovies = new ArrayList<PhilmMovie>();
+        for (PhilmMovie movie : movies) {
+            boolean filtered = true;
+            for (Filter filter : filters) {
+                if (!filter.isMovieFiltered(movie)) {
+                    filtered = false;
+                    break;
+                }
+            }
+            if (filtered) {
+                filteredMovies.add(movie);
+            }
+        }
+        return filteredMovies;
+    }
+
+    private PhilmMovie getMovie(String tmdbId) {
+        return mMoviesState.getMovies().get(tmdbId);
+    }
+
+    private boolean isLoggedIn() {
+        return !TextUtils.isEmpty(mMoviesState.getUsername())
+                && !TextUtils.isEmpty(mMoviesState.getHashedPassword());
+    }
+
+    private void markMovieSeen(String imdbId) {
+        mExecutor.execute(new MarkMovieSeenRunnable(imdbId));
+    }
+
+    private void markMovieUnseen(String imdbId) {
+        mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
+    }
+
+    private void populateDetailUi(MovieDetailUi ui) {
+        ui.setMovie(getMovie(ui.getRequestParameter()));
+    }
+
     private void populateListUi(MovieListUi ui) {
         final MovieQueryType queryType = ui.getMovieQueryType();
 
@@ -358,146 +406,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void populateDetailUi(MovieDetailUi ui) {
-        ui.setMovie(getMovie(ui.getRequestParameter()));
-    }
-
-    private PhilmMovie getMovie(String tmdbId) {
-        return mMoviesState.getMovies().get(tmdbId);
-    }
-
-    private boolean isLoggedIn() {
-        return !TextUtils.isEmpty(mMoviesState.getUsername())
-                && !TextUtils.isEmpty(mMoviesState.getHashedPassword());
-    }
-
-    private boolean requireFiltering() {
-        return !PhilmCollections.isEmpty(mMoviesState.getFilters());
-    }
-
-    private void checkPhilmState(PhilmMovie movie) {
-        final List<PhilmMovie> library = mMoviesState.getLibrary();
-        final List<PhilmMovie> watchlist = mMoviesState.getWatchlist();
-
-        if (!PhilmCollections.isEmpty(library)) {
-            final boolean shouldBeInLibrary = movie.isWatched() || movie.inCollection();
-
-            if (shouldBeInLibrary != library.contains(movie)) {
-                if (shouldBeInLibrary) {
-                    library.add(movie);
-                    Collections.sort(library, PhilmMovie.COMPARATOR);
-                } else {
-                    library.remove(movie);
-                }
-            }
-        }
-
-        if (!PhilmCollections.isEmpty(watchlist)) {
-            final boolean shouldBeInWatchlist = movie.inWatchlist();
-            if (shouldBeInWatchlist != watchlist.contains(movie)) {
-                if (shouldBeInWatchlist) {
-                    watchlist.add(movie);
-                    Collections.sort(watchlist, PhilmMovie.COMPARATOR);
-                } else {
-                    watchlist.remove(movie);
-                }
-            }
-        }
-    }
-
-    private List<PhilmMovie> filterMovies(List<PhilmMovie> movies) {
-        Preconditions.checkNotNull(movies, "movies cannot be null");
-
-        final Set<Filter> filters = mMoviesState.getFilters();
-        Preconditions.checkNotNull(filters, "filters cannot be null");
-        Preconditions.checkState(!filters.isEmpty(), "filters cannot be empty");
-
-        ArrayList<PhilmMovie> filteredMovies = new ArrayList<PhilmMovie>();
-        for (PhilmMovie movie : movies) {
-            boolean filtered = true;
-            for (Filter filter : filters) {
-                if (!filter.isMovieFiltered(movie)) {
-                    filtered = false;
-                    break;
-                }
-            }
-            if (filtered) {
-                filteredMovies.add(movie);
-            }
-        }
-        return filteredMovies;
-    }
-
-    private void fetchLibrary() {
-        if (isLoggedIn()) {
-            mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
-        }
-    }
-
-    private void fetchLibraryIfNeeded() {
-        if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
-            fetchLibrary();
-        }
-    }
-
-    private void fetchTrending() {
-        mExecutor.execute(new FetchTrendingRunnable());
-    }
-
-    private void fetchTrendingIfNeeded() {
-        if (PhilmCollections.isEmpty(mMoviesState.getTrending())) {
-            fetchTrending();
-        }
-    }
-
-    private void markMovieSeen(String imdbId) {
-        mExecutor.execute(new MarkMovieSeenRunnable(imdbId));
-    }
-
-    private void markMovieUnseen(String imdbId) {
-        mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
-    }
-
-    private void addToWatchlist(String imdbId) {
-        mExecutor.execute(new AddMovieToWatchlistRunnable(imdbId));
-    }
-
-    private void removeFromWatchlist(String imdbId) {
-        mExecutor.execute(new RemoveMovieFromWatchlistRunnable(imdbId));
-    }
-
-    private void addToCollection(String imdbId) {
-        mExecutor.execute(new AddMovieToCollectionRunnable(imdbId));
-    }
-
     private void removeFromCollection(String imdbId) {
         mExecutor.execute(new RemoveMovieFromCollectionRunnable(imdbId));
     }
 
-    private void fetchWatchlist() {
-        mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
-    }
-
-    private void fetchWatchlistIfNeeded() {
-        if (PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
-            fetchWatchlist();
-        }
-    }
-
-    private void fetchDetailMovie() {
-        fetchDetailMovie(getUi().getRequestParameter());
-    }
-
-    private void fetchDetailMovie(String imdbId) {
-        Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
-        mExecutor.execute(new FetchDetailMovieRunnable(imdbId));
-    }
-
-    private void fetchDetailMovieIfNeeded() {
-        PhilmMovie cached = getMovie(getUi().getRequestParameter());
-        if (cached == null) {
-            fetchDetailMovie();
-        }
+    private void removeFromWatchlist(String imdbId) {
+        mExecutor.execute(new RemoveMovieFromWatchlistRunnable(imdbId));
     }
 
     private void removeMutuallyExclusiveFilters(final Filter filter) {
@@ -509,6 +423,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private boolean requireFiltering() {
+        return !PhilmCollections.isEmpty(mMoviesState.getFilters());
+    }
+
     private void showLoadingProgress(boolean show) {
         MovieUi ui = getUi();
         if (ui != null) {
@@ -516,52 +434,143 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    @Subscribe
-    public void onLibraryChanged(MoviesState.LibraryChangedEvent event) {
-        populateUi();
-    }
+    public static enum Filter {
+        COLLECTION(R.string.filter_collection),
+        WATCHED(R.string.filter_watched),
+        UNWATCHED(R.string.filter_unwatched),
+        IN_FUTURE(R.string.filter_upcoming),
+        UPCOMING(R.string.filter_upcoming),
+        SOON(R.string.filter_soon),
+        RELEASED(R.string.filter_released);
 
-    @Subscribe
-    public void onTrendingChanged(MoviesState.TrendingChangedEvent event) {
-        populateUi();
-    }
+        private final int mTitle;
 
-    @Subscribe
-    public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
-        populateUi();
-    }
-
-    @Subscribe
-    public void onAccountChanged(UserState.AccountChangedEvent event) {
-        // Nuke all Movie State...
-        mMoviesState.setLibrary(null);
-        mMoviesState.setTrending(null);
-        mMoviesState.setWatchlist(null);
-        mMoviesState.getMovies().clear();
-    }
-
-    List<PhilmMovie> mapTraktMoviesFromState(List<Movie> rawMovies) {
-        final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(rawMovies.size());
-        for (Movie rawMovie : rawMovies) {
-            movies.add(mapTraktMovieFromState(rawMovie));
-        }
-        return movies;
-    }
-
-    PhilmMovie mapTraktMovieFromState(Movie rawMovie) {
-        final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
-
-        PhilmMovie movie = stateMovies.get(rawMovie.imdb_id);
-        if (movie != null) {
-            // We already have a movie, so just update it wrapped value
-            movie.setMovie(rawMovie);
-        } else {
-            // No movie, so create one
-            movie = new PhilmMovie(rawMovie);
-            stateMovies.put(movie.getImdbId(), movie);
+        private Filter(int titleResId) {
+            mTitle = titleResId;
         }
 
-        return movie;
+        private static boolean isMovieFiltered(PhilmMovie movie, Filter filter) {
+            // TODO: Move dependent methods to PhilmMovie
+            final Movie unpacked = movie.getMovie();
+
+            switch (filter) {
+                case COLLECTION:
+                    return movie.inCollection();
+                case WATCHED:
+                    return movie.isWatched();
+                case UNWATCHED:
+                    return !movie.isWatched();
+                case IN_FUTURE:
+                    if (unpacked.released != null) {
+                        return unpacked.released.getTime() >= System.currentTimeMillis();
+                    }
+                    break;
+                case UPCOMING:
+                    if (unpacked.released != null) {
+                        final long time = unpacked.released.getTime();
+                        return  time - Constants.FUTURE_SOON_THRESHOLD >= System.currentTimeMillis();
+                    }
+                    break;
+                case SOON:
+                    if (unpacked.released != null) {
+                        final long time = unpacked.released.getTime();
+                        return time >= System.currentTimeMillis()
+                                && time - Constants.FUTURE_SOON_THRESHOLD < System
+                                .currentTimeMillis();
+                    }
+                    break;
+                case RELEASED:
+                    if (unpacked.released != null) {
+                        return unpacked.released.getTime() < System.currentTimeMillis();
+                    }
+                    break;
+            }
+            return false;
+        }
+
+        public int getTitle() {
+            return mTitle;
+        }
+
+        public boolean isMovieFiltered(PhilmMovie movie) {
+            return isMovieFiltered(movie, this);
+        }
+
+        public List<Filter> getMutuallyExclusiveFilters() {
+            switch (this) {
+                case WATCHED:
+                    return Arrays.asList(UNWATCHED);
+                case UNWATCHED:
+                    return Arrays.asList(WATCHED);
+            }
+            return null;
+        }
+    }
+
+    public static enum MovieQueryType {
+        LIBRARY, TRENDING, WATCHLIST, DETAIL;
+
+        public boolean requireLogin() {
+            switch (this) {
+                case WATCHLIST:
+                case LIBRARY:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public boolean supportFiltering() {
+            switch (this) {
+                case LIBRARY:
+                case TRENDING:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+
+    interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
+        void showError(NetworkError error);
+
+        void showLoadingProgress(boolean visible);
+
+        MovieQueryType getMovieQueryType();
+
+        String getRequestParameter();
+    }
+
+    public interface MovieListUi extends MovieUi {
+        void setItems(List<PhilmMovie> items);
+
+        void setItemsWithSections(List<PhilmMovie> items, List<Filter> sections);
+
+        void setFiltersVisibility(boolean visible);
+
+        void showActiveFilters(Set<Filter> filters);
+    }
+
+    public interface MovieDetailUi extends MovieUi {
+        void setMovie(PhilmMovie movie);
+    }
+
+    public interface MovieUiCallbacks {
+        void addFilter(Filter filter);
+
+        void removeFilter(Filter filter);
+
+        void clearFilters();
+
+        void refresh();
+
+        void showMovieDetail(PhilmMovie movie);
+
+        void toggleMovieSeen(PhilmMovie movie);
+
+        void toggleInWatchlist(PhilmMovie movie);
+
+        void toggleInCollection(PhilmMovie movie);
     }
 
     private class FetchTrendingRunnable extends BaseMovieTraktRunnable<List<Movie>> {
@@ -690,6 +699,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
         }
 
+        protected abstract void movieRequiresModifying(PhilmMovie movie);
+
         private void onActionCompleted(final boolean successful) {
             if (successful) {
                 PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
@@ -702,8 +713,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
         }
-
-        protected abstract void movieRequiresModifying(PhilmMovie movie);
     }
 
     private class FetchDetailMovieRunnable extends BaseMovieTraktRunnable<Movie> {

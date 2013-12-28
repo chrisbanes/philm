@@ -1,5 +1,6 @@
 package app.philm.in.model;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Movie;
@@ -100,4 +101,20 @@ public class PhilmMovie {
         return traktEntity.year;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        return Objects.equal(getTitle(), ((PhilmMovie) o).getTitle());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getTitle());
+    }
 }

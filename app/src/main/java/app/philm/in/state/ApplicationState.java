@@ -117,6 +117,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     @Override
     public void setSearchResult(SearchResult result) {
         mSearchResult = result;
+        mEventBus.post(new SearchResultChangedEvent());
     }
 
     ///////////////////////////

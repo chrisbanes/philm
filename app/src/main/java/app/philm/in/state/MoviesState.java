@@ -36,12 +36,6 @@ public interface MoviesState extends BaseState {
 
     public static class WatchlistChangedEvent {}
 
-    public static class SearchResultChangedEvent {
-        public final String query;
-
-        SearchResultChangedEvent(String query) {
-            this.query = query;
-        }
-    }
+    public static class SearchResultChangedEvent {}
 
 }

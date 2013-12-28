@@ -6,4 +6,4 @@
           android:textAppearance="@style/TextAppearance.Philm.Movie.ListSection"
           android:padding="@dimen/spacing_micro"
           android:paddingLeft="@dimen/spacing_major"
-          android:background="@android:color/holo_blue_dark"/>
+          android:background="@color/primary_accent_color" />

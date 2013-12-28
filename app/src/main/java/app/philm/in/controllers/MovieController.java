@@ -39,9 +39,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     private final MoviesState mMoviesState;
-
     private final ExecutorService mExecutor;
-
     private final Trakt mTraktClient;
 
     public MovieController(
@@ -76,6 +74,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState.setTrending(null);
         mMoviesState.setWatchlist(null);
         mMoviesState.getMovies().clear();
+    }
+
+    @Subscribe
+    public void onSearchResultChanged(MoviesState.SearchResultChangedEvent event) {
+        populateUi();
     }
 
     @Override
@@ -136,40 +139,45 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void showMovieDetail(PhilmMovie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showMovieDetailFragment(movie.getImdbId());
+                    display.showMovieDetailFragment(movie.getId());
                 }
             }
 
             @Override
             public void toggleMovieSeen(PhilmMovie movie) {
                 if (movie.isWatched()) {
-                    markMovieUnseen(movie.getImdbId());
+                    markMovieUnseen(movie.getId());
                 } else {
-                    markMovieSeen(movie.getImdbId());
+                    markMovieSeen(movie.getId());
                 }
             }
 
             @Override
             public void toggleInWatchlist(PhilmMovie movie) {
                 if (movie.inWatchlist()) {
-                    removeFromWatchlist(movie.getImdbId());
+                    removeFromWatchlist(movie.getId());
                 } else {
-                    addToWatchlist(movie.getImdbId());
+                    addToWatchlist(movie.getId());
                 }
             }
 
             @Override
             public void toggleInCollection(PhilmMovie movie) {
                 if (movie.inCollection()) {
-                    removeFromCollection(movie.getImdbId());
+                    removeFromCollection(movie.getId());
                 } else {
-                    addToCollection(movie.getImdbId());
+                    addToCollection(movie.getId());
                 }
             }
 
             @Override
             public void search(String query) {
                 fetchSearchResults(query);
+            }
+
+            @Override
+            public void clearSearch() {
+                mMoviesState.setSearchResult(null);
             }
         };
     }
@@ -183,6 +191,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (queryType.requireLogin() && !isLoggedIn()) {
             Log.i(LOG_TAG, queryType.name() + " UI Attached but not logged in");
             return;
+        }
+
+        Display display = getDisplay();
+        if (display != null && queryType.getTitle() != 0) {
+            display.setActionBarTitle(queryType.getTitle());
         }
 
         switch (queryType) {
@@ -232,14 +245,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     PhilmMovie mapTraktMovieFromState(Movie rawMovie) {
         final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
 
-        PhilmMovie movie = stateMovies.get(rawMovie.imdb_id);
+        PhilmMovie movie = stateMovies.get(PhilmMovie.getId(rawMovie));
         if (movie != null) {
             // We already have a movie, so just update it wrapped value
             movie.setMovie(rawMovie);
         } else {
             // No movie, so create one
             movie = new PhilmMovie(rawMovie);
-            stateMovies.put(movie.getImdbId(), movie);
+            stateMovies.put(movie.getId(), movie);
         }
 
         return movie;
@@ -380,14 +393,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void populateDetailUi(MovieDetailUi ui) {
-        ui.setMovie(getMovie(ui.getRequestParameter()));
+        final PhilmMovie movie = getMovie(ui.getRequestParameter());
+        ui.setMovie(movie);
+
+        Display display = getDisplay();
+        if (display != null) {
+            display.setActionBarTitle(movie != null ? movie.getTitle() : null);
+        }
     }
 
     private void populateSearchUi(SearchMovieUi ui) {
         SearchResult result = mMoviesState.getSearchResult();
-        if (result != null) {
-            ui.setQuery(result.getQuery());
-        }
+        ui.setQuery(result != null ? result.getQuery() : null);
 
         // Now carry on with list ui population
         populateListUi(ui);
@@ -540,7 +557,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        LIBRARY, TRENDING, WATCHLIST, DETAIL, SEARCH;
+        TRENDING(R.string.trending_title),
+        LIBRARY(R.string.library_title),
+        WATCHLIST(R.string.watchlist_title),
+        DETAIL(0),
+        SEARCH(R.string.search_title);
+
+        private final int mTitleResId;
+
+        private MovieQueryType(int titleResId) {
+            mTitleResId = titleResId;
+        }
+
+        public int getTitle() {
+            return mTitleResId;
+        }
 
         public boolean requireLogin() {
             switch (this) {
@@ -609,6 +640,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void toggleInCollection(PhilmMovie movie);
 
         void search(String query);
+
+        void clearSearch();
     }
 
     private abstract class BaseMovieTraktRunnable<R> extends TraktNetworkCallRunnable<R> {
@@ -728,7 +761,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         public void onSuccess(List<Movie> result) {
             if (Objects.equal(mSearchResult, mMoviesState.getSearchResult())) {
                 mSearchResult.setMovies(mapTraktMoviesFromState(result));
-                populateUi();
+                mMoviesState.setSearchResult(mSearchResult);
             }
         }
     }

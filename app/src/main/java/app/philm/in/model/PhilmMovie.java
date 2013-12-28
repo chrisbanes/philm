@@ -5,6 +5,8 @@ import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Movie;
 
+import android.text.TextUtils;
+
 import java.util.Comparator;
 
 public class PhilmMovie {
@@ -19,11 +21,20 @@ public class PhilmMovie {
     };
 
     private Movie traktEntity;
-
     private String mSortTitle;
+    private String mId;
 
     public PhilmMovie(Movie traktEntity) {
         setMovie(traktEntity);
+    }
+
+    public static String getId(Movie rawMovie) {
+        if (!TextUtils.isEmpty(rawMovie.imdb_id)) {
+            return rawMovie.imdb_id;
+        } else if (!TextUtils.isEmpty(rawMovie.tmdbId)) {
+            return rawMovie.tmdbId;
+        }
+        return null;
     }
 
     public Movie getMovie() {
@@ -50,8 +61,11 @@ public class PhilmMovie {
         }
     }
 
-    public String getImdbId() {
-        return traktEntity.imdb_id;
+    public String getId() {
+        if (mId == null) {
+            mId = getId(traktEntity);
+        }
+        return mId;
     }
 
     public boolean inCollection() {

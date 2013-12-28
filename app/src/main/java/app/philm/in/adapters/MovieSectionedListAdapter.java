@@ -2,6 +2,7 @@ package app.philm.in.adapters;
 
 import com.hb.views.PinnedSectionListView;
 import com.jakewharton.trakt.entities.Movie;
+import com.jakewharton.trakt.entities.Ratings;
 import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
@@ -182,10 +183,11 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                 title.setText(mActivity.getString(R.string.movie_title_year, movie.getTitle(),
                         movie.getYear()));
 
-                final TextView rating = (TextView) view.findViewById(R.id.textview_rating);
-                rating.setText(mActivity.getString(R.string.movie_rating_votes,
-                        movie.getMovie().ratings.percentage,
-                        movie.getMovie().ratings.votes));
+                final Ratings ratings = movie.getMovie().ratings;
+                final TextView ratingTextView = (TextView) view.findViewById(R.id.textview_rating);
+                ratingTextView.setText(mActivity.getString(R.string.movie_rating_votes,
+                        ratings != null ? ratings.percentage.toString() : "?",
+                        ratings != null ? ratings.votes : 0));
 
                 final TextView release = (TextView) view.findViewById(R.id.textview_release);
                 release.setText(mActivity.getString(R.string.movie_release_date,

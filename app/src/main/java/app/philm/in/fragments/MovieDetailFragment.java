@@ -106,7 +106,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
 
     @Override
     public void showError(NetworkError error) {
-
+        // TODO: Show something good here
     }
 
     @Override

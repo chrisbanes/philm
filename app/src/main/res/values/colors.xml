@@ -3,4 +3,6 @@
 
     <color name="side_menu_background">#FF222222</color>
 
+    <color name="primary_accent_color">@android:color/holo_green_dark</color>
+
 </resources>

@@ -2,6 +2,7 @@ package app.philm.in;
 
 import com.google.common.base.Preconditions;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -28,8 +29,6 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
-
-        setActionBarTitle(R.string.library_title);
     }
 
     public void showTrending() {
@@ -39,8 +38,6 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
-
-        setActionBarTitle(R.string.trending_title);
     }
 
     public void showWatchlist() {
@@ -50,8 +47,6 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
-
-        setActionBarTitle(R.string.watchlist_title);
     }
 
     public void showLogin() {
@@ -78,8 +73,6 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
-
-        setActionBarTitle(R.string.search_title);
     }
 
     public void closeDrawerLayout() {
@@ -89,8 +82,15 @@ public class Display {
         }
     }
 
-    private void setActionBarTitle(int titleResId) {
-        mActivity.getActionBar().setTitle(titleResId);
+    public void setActionBarTitle(int titleResId) {
+        setActionBarTitle(mActivity.getString(titleResId));
+    }
+
+    public void setActionBarTitle(String title) {
+        ActionBar ab = mActivity.getActionBar();
+        if (ab != null) {
+            ab.setTitle(title);
+        }
     }
 
 }

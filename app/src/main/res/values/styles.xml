@@ -1,14 +1,11 @@
 <resources>
 
     <style name="Theme.Base.Philm" parent="android:Theme.Holo">
-
     </style>
 
 
     <style name="Theme.Philm" parent="Theme.Base.Philm">
     </style>
-
-
 
     <style name="TextAppearance.Philm.Light" parent="android:TextAppearance" />
 

@@ -27,7 +27,7 @@
     <string name="empty_unknown_error">%1$s could not be retrieved due to an unknown error.</string>
 
     <string name="movie_title_year">%1$s (%2$d)</string>
-    <string name="movie_rating_votes">%1$d%% - %2$d votes</string>
+    <string name="movie_rating_votes">%1$s%% - %2$d votes</string>
     <string name="movie_release_date">Release date: %1$s</string>
 
     <string name="filter_collection">In collection</string>
@@ -43,5 +43,9 @@
     <string name="action_remove_collection">Remove from collection</string>
     <string name="action_mark_seen">Mark as seen</string>
     <string name="action_mark_unseen">Mark as unseen</string>
+
+    <string name="search_hint_movies">Search movies</string>
+
+    <string name="search_empty">Search for movies by entering text above</string>
 
 </resources>

@@ -9,15 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class PhilmListFragment extends Fragment {
+public abstract class PhilmListFragment<E extends AbsListView> extends Fragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
     static final int INTERNAL_PROGRESS_CONTAINER_ID = 0x00ff0002;
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
@@ -33,12 +33,12 @@ public class PhilmListFragment extends Fragment {
     final private AdapterView.OnItemClickListener mOnClickListener
             = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            onListItemClick((ListView)parent, v, position, id);
+            onListItemClick((E)parent, v, position, id);
         }
     };
 
     ListAdapter mAdapter;
-    ListView mList;
+    E mList;
     View mEmptyView;
     TextView mStandardEmptyView;
     View mProgressContainer;
@@ -97,7 +97,7 @@ public class PhilmListFragment extends Fragment {
         lframe.addView(tv, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
-        ListView lv = createListView(getActivity());
+        E lv = createListView(getActivity());
         lv.setId(android.R.id.list);
         lv.setDrawSelectorOnTop(false);
         lframe.addView(lv, new FrameLayout.LayoutParams(
@@ -147,7 +147,7 @@ public class PhilmListFragment extends Fragment {
      * @param position The position of the view in the list
      * @param id The row id of the item that was clicked
      */
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onListItemClick(E l, View v, int position, long id) {
     }
 
     /**
@@ -196,7 +196,7 @@ public class PhilmListFragment extends Fragment {
     /**
      * Get the activity's list view widget.
      */
-    public ListView getListView() {
+    public E getListView() {
         ensureList();
         return mList;
     }
@@ -297,9 +297,7 @@ public class PhilmListFragment extends Fragment {
         return mAdapter;
     }
 
-    protected ListView createListView(Context context) {
-        return new ListView(context);
-    }
+    protected abstract E createListView(Context context);
 
     private void ensureList() {
         if (mList != null) {
@@ -309,8 +307,8 @@ public class PhilmListFragment extends Fragment {
         if (root == null) {
             throw new IllegalStateException("Content view not yet created");
         }
-        if (root instanceof ListView) {
-            mList = (ListView)root;
+        if (root instanceof AbsListView) {
+            mList = (E)root;
         } else {
             mStandardEmptyView = (TextView)root.findViewById(INTERNAL_EMPTY_ID);
             if (mStandardEmptyView == null) {
@@ -321,7 +319,7 @@ public class PhilmListFragment extends Fragment {
             mProgressContainer = root.findViewById(INTERNAL_PROGRESS_CONTAINER_ID);
             mListContainer = root.findViewById(INTERNAL_LIST_CONTAINER_ID);
             View rawListView = root.findViewById(android.R.id.list);
-            if (!(rawListView instanceof ListView)) {
+            if (!(rawListView instanceof AbsListView)) {
                 if (rawListView == null) {
                     throw new RuntimeException(
                             "Your content must have a ListView whose id attribute is " +
@@ -331,7 +329,7 @@ public class PhilmListFragment extends Fragment {
                         "Content has view with id attribute 'android.R.id.list' "
                                 + "that is not a ListView class");
             }
-            mList = (ListView)rawListView;
+            mList = (E)rawListView;
             if (mEmptyView != null) {
                 mList.setEmptyView(mEmptyView);
             } else if (mEmptyText != null) {

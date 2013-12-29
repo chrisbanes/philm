@@ -8,6 +8,7 @@ import android.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.controllers.MovieController;
+import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.fragments.MovieGridFragment;
@@ -15,6 +16,8 @@ import app.philm.in.fragments.MovieListFragment;
 import app.philm.in.fragments.SearchListFragment;
 
 public class Display {
+
+    private static final String FRAGMENT_TAG_LICENCES = "licences";
 
     private final Activity mActivity;
 
@@ -73,6 +76,11 @@ public class Display {
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
+    }
+
+    public void showLicencesFragment() {
+        LicencesFragment fragment = new LicencesFragment();
+        fragment.show(mActivity.getFragmentManager(), FRAGMENT_TAG_LICENCES);
     }
 
     public void closeDrawerLayout() {

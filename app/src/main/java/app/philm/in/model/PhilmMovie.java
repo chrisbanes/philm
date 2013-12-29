@@ -17,12 +17,13 @@ public class PhilmMovie {
     public static final Comparator<PhilmMovie> COMPARATOR = new Comparator<PhilmMovie>() {
         @Override
         public int compare(PhilmMovie movie, PhilmMovie movie2) {
-            return movie.getSortTitle().compareTo(movie.getSortTitle());
+            return movie.getSortTitle().compareTo(movie2.getSortTitle());
         }
     };
 
     private static final String[] TITLE_PREFIXES = { "The ", "An " };
 
+    // tmdbId
     Long _id;
 
     String traktId;
@@ -44,11 +45,13 @@ public class PhilmMovie {
     int ratingPercent;
     int ratingVotes;
 
+    public PhilmMovie() {}
+
     public PhilmMovie(Movie traktEntity) {
         setFromMovie(traktEntity);
     }
 
-    public static String getId(Movie rawMovie) {
+    public static String getTraktId(Movie rawMovie) {
         if (!TextUtils.isEmpty(rawMovie.imdb_id)) {
             return rawMovie.imdb_id;
         } else if (!TextUtils.isEmpty(rawMovie.tmdbId)) {
@@ -70,22 +73,27 @@ public class PhilmMovie {
     public void setFromMovie(Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
 
-        traktId = getId(movie);
+        _id = Long.parseLong(movie.tmdbId);
+
+        traktId = getTraktId(movie);
         title = movie.title;
         sortTitle = getSortTitle(title);
-        overview = movie.overview;
 
-        year = unbox(movie.year);
-        inCollection = unbox(movie.inCollection);
-        inWatchlist = unbox(movie.inWatchlist);
-        watched = unbox(movie.watched);
-        plays = unbox(movie.plays);
-        releasedTime = unbox(movie.released);
+        if (!TextUtils.isEmpty(movie.overview)) {
+            overview = movie.overview;
+        }
+
+        year = unbox(year, movie.year);
+        inCollection = unbox(inCollection, movie.inCollection);
+        inWatchlist = unbox(inWatchlist, movie.inWatchlist);
+        watched = unbox(inWatchlist, movie.watched);
+        plays = unbox(plays, movie.plays);
+        releasedTime = unbox(releasedTime, movie.released);
 
         Ratings ratings = movie.ratings;
         if (ratings != null) {
-            ratingPercent = unbox(ratings.percentage);
-            ratingVotes = unbox(ratings.votes);
+            ratingPercent = unbox(ratingPercent, ratings.percentage);
+            ratingVotes = unbox(ratingVotes, ratings.votes);
         }
 
         Images images = movie.images;
@@ -104,7 +112,11 @@ public class PhilmMovie {
         plays = watched ? 1 : 0;
     }
 
-    public String getId() {
+    public long getDbId() {
+        return _id;
+    }
+
+    public String getTraktId() {
         return traktId;
     }
 
@@ -181,19 +193,15 @@ public class PhilmMovie {
         return Objects.hashCode(getTitle());
     }
 
-    private static boolean unbox(Boolean value) {
-        return value != null ? value : false;
+    private static boolean unbox(boolean currentValue, Boolean newValue) {
+        return newValue != null ? newValue : currentValue;
     }
 
-    private static int unbox(Integer value) {
-        return value != null ? value : 0;
+    private static int unbox(int currentValue, Integer newValue) {
+        return newValue != null ? newValue : currentValue;
     }
 
-    private static long unbox(Long value) {
-        return value != null ? value : 0l;
-    }
-
-    private static long unbox(Date value) {
-        return value != null ? value.getTime() : 0l;
+    private static long unbox(long currentValue, Date newValue) {
+        return newValue != null ? newValue.getTime() : currentValue;
     }
 }

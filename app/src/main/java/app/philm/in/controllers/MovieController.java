@@ -9,6 +9,7 @@ import com.jakewharton.trakt.entities.Response;
 import com.jakewharton.trakt.services.MovieService;
 import com.squareup.otto.Subscribe;
 
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -40,8 +41,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     private final MoviesState mMoviesState;
+
     private final ExecutorService mExecutor;
+
     private final Trakt mTraktClient;
+
     private final DatabaseHelper mDbHelper;
 
     public MovieController(
@@ -88,11 +92,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Override
     protected void onInited() {
         super.onInited();
-
-        if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
-            mMoviesState.setLibrary(mDbHelper.getLibrary());
-        }
-
+        populateStateFromDb();
         mMoviesState.registerForEvents(this);
     }
 
@@ -148,34 +148,34 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void showMovieDetail(PhilmMovie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showMovieDetailFragment(movie.getId());
+                    display.showMovieDetailFragment(movie.getTraktId());
                 }
             }
 
             @Override
             public void toggleMovieSeen(PhilmMovie movie) {
                 if (movie.isWatched()) {
-                    markMovieUnseen(movie.getId());
+                    markMovieUnseen(movie.getTraktId());
                 } else {
-                    markMovieSeen(movie.getId());
+                    markMovieSeen(movie.getTraktId());
                 }
             }
 
             @Override
             public void toggleInWatchlist(PhilmMovie movie) {
                 if (movie.inWatchlist()) {
-                    removeFromWatchlist(movie.getId());
+                    removeFromWatchlist(movie.getTraktId());
                 } else {
-                    addToWatchlist(movie.getId());
+                    addToWatchlist(movie.getTraktId());
                 }
             }
 
             @Override
             public void toggleInCollection(PhilmMovie movie) {
                 if (movie.inCollection()) {
-                    removeFromCollection(movie.getId());
+                    removeFromCollection(movie.getTraktId());
                 } else {
-                    addToCollection(movie.getId());
+                    addToCollection(movie.getTraktId());
                 }
             }
 
@@ -254,14 +254,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     PhilmMovie mapTraktMovieFromState(Movie rawMovie) {
         final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
 
-        PhilmMovie movie = stateMovies.get(PhilmMovie.getId(rawMovie));
+        PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(rawMovie));
         if (movie != null) {
             // We already have a movie, so just update it wrapped value
             movie.setFromMovie(rawMovie);
         } else {
             // No movie, so create one
             movie = new PhilmMovie(rawMovie);
-            stateMovies.put(movie.getId(), movie);
+            stateMovies.put(movie.getTraktId(), movie);
         }
 
         return movie;
@@ -305,6 +305,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private boolean containsEnoughDetail(PhilmMovie movie) {
+        return !TextUtils.isEmpty(movie.getOverview());
+    }
+
     private void fetchDetailMovie() {
         fetchDetailMovie(getUi().getRequestParameter());
     }
@@ -316,7 +320,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchDetailMovieIfNeeded() {
         PhilmMovie cached = getMovie(getUi().getRequestParameter());
-        if (cached == null) {
+        if (cached == null || !containsEnoughDetail(cached)) {
             fetchDetailMovie();
         }
     }
@@ -401,6 +405,50 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
     }
 
+    private void persistLibraryToDb(final List<PhilmMovie> movies) {
+        assertInited();
+
+        ArrayMap<Long, PhilmMovie> dbItemsMap = new ArrayMap<Long, PhilmMovie>();
+        for (PhilmMovie movie : mDbHelper.getLibrary()) {
+            dbItemsMap.put(movie.getDbId(), movie);
+        }
+
+        // Now lets remove the items from the map, leaving only those not in the library
+        for (PhilmMovie movie : movies) {
+            dbItemsMap.remove(movie.getDbId());
+        }
+
+        // Anything left in the dbItemsMap needs removing from the db
+        if (!dbItemsMap.isEmpty()) {
+            mDbHelper.delete(dbItemsMap.values());
+        }
+
+        // Now persist the correct list
+        mDbHelper.put(movies);
+    }
+
+    private void persistWatchlistToDb(final List<PhilmMovie> movies) {
+        assertInited();
+
+        ArrayMap<Long, PhilmMovie> dbItemsMap = new ArrayMap<Long, PhilmMovie>();
+        for (PhilmMovie movie : mDbHelper.getWatchlist()) {
+            dbItemsMap.put(movie.getDbId(), movie);
+        }
+
+        // Now lets remove the items from the map, leaving only those not in the watchlist
+        for (PhilmMovie movie : movies) {
+            dbItemsMap.remove(movie.getDbId());
+        }
+
+        // Anything left in the dbItemsMap needs removing from the db
+        if (!dbItemsMap.isEmpty()) {
+            mDbHelper.delete(dbItemsMap.values());
+        }
+
+        // Now persist the correct list
+        mDbHelper.put(movies);
+    }
+
     private void populateDetailUi(MovieDetailUi ui) {
         final PhilmMovie movie = getMovie(ui.getRequestParameter());
         ui.setMovie(movie);
@@ -409,14 +457,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (display != null) {
             display.setActionBarTitle(movie != null ? movie.getTitle() : null);
         }
-    }
-
-    private void populateSearchUi(SearchMovieUi ui) {
-        SearchResult result = mMoviesState.getSearchResult();
-        ui.setQuery(result != null ? result.getQuery() : null);
-
-        // Now carry on with list ui population
-        populateListUi(ui);
     }
 
     private void populateListUi(MovieListUi ui) {
@@ -465,6 +505,29 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             ui.setItems(items);
         } else {
             ui.setItemsWithSections(items, sections);
+        }
+    }
+
+    private void populateSearchUi(SearchMovieUi ui) {
+        SearchResult result = mMoviesState.getSearchResult();
+        ui.setQuery(result != null ? result.getQuery() : null);
+
+        // Now carry on with list ui population
+        populateListUi(ui);
+    }
+
+    private void populateStateFromDb() {
+        if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
+            mMoviesState.setLibrary(mDbHelper.getLibrary());
+            for (PhilmMovie movie : mMoviesState.getLibrary()) {
+                mMoviesState.getMovies().put(movie.getTraktId(), movie);
+            }
+        }
+        if (PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
+            mMoviesState.setWatchlist(mDbHelper.getWatchlist());
+            for (PhilmMovie movie : mMoviesState.getWatchlist()) {
+                mMoviesState.getMovies().put(movie.getTraktId(), movie);
+            }
         }
     }
 
@@ -708,7 +771,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             if (!PhilmCollections.isEmpty(result)) {
                 List<PhilmMovie> movies = mapTraktMoviesFromState(result);
                 mMoviesState.setLibrary(movies);
-                mDbHelper.put(movies);
+
+                if (isInited()) {
+                    persistLibraryToDb(movies);
+                }
             } else {
                 mMoviesState.setLibrary(null);
             }
@@ -731,7 +797,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             if (!PhilmCollections.isEmpty(result)) {
-                mMoviesState.setWatchlist(mapTraktMoviesFromState(result));
+                List<PhilmMovie> movies = mapTraktMoviesFromState(result);
+                mMoviesState.setWatchlist(movies);
+
+                if (isInited()) {
+                    persistWatchlistToDb(movies);
+                }
             } else {
                 mMoviesState.setWatchlist(null);
             }
@@ -748,7 +819,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.philmSearchService().movies(mSearchResult.getQuery().toString());
+            return trakt.philmSearchService().movies(mSearchResult.getQuery());
         }
 
         @Override
@@ -817,7 +888,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(Movie result) {
-            checkPhilmState(mapTraktMovieFromState(result));
+            PhilmMovie movie = mapTraktMovieFromState(result);
+            checkPhilmState(movie);
+            if (isInited()) {
+                mDbHelper.put(movie);
+            }
 
             // TODO: Should do something better here
             populateUi();

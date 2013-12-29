@@ -5,16 +5,22 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import app.philm.in.Constants;
 import app.philm.in.model.PhilmMovie;
+import nl.qbusict.cupboard.QueryResultIterable;
 
 public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseHelper {
 
+    private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
+
     private static final String DATABASE_NAME = "philm.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     static {
         // register our models
@@ -45,15 +51,44 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
 
     @Override
     public List<PhilmMovie> getLibrary() {
-        Iterable<PhilmMovie> itr = cupboard().withDatabase(getReadableDatabase())
-                .query(PhilmMovie.class)
-                .withSelection("inCollection = ? OR watched = ?", "true", "true")
-                .orderBy("sortTitle")
-                .query();
-
         ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>();
-        for (PhilmMovie movie : itr) {
-            movies.add(movie);
+        QueryResultIterable<PhilmMovie> itr = null;
+
+        try {
+            itr = cupboard().withDatabase(getReadableDatabase()).query(PhilmMovie.class)
+                    .withSelection("inCollection = ? OR watched = ?", "1", "1")
+                    .orderBy("sortTitle")
+                    .query();
+
+            for (PhilmMovie movie : itr) {
+                movies.add(movie);
+            }
+        } finally {
+            if (itr != null) {
+                itr.close();
+            }
+        }
+        return movies;
+    }
+
+    @Override
+    public List<PhilmMovie> getWatchlist() {
+        ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>();
+        QueryResultIterable<PhilmMovie> itr = null;
+
+        try {
+            itr = cupboard().withDatabase(getReadableDatabase()).query(PhilmMovie.class)
+                    .withSelection("inWatchlist = ?", "1")
+                    .orderBy("releasedTime")
+                    .query();
+
+            for (PhilmMovie movie : itr) {
+                movies.add(movie);
+            }
+        } finally {
+            if (itr != null) {
+                itr.close();
+            }
         }
         return movies;
     }
@@ -61,12 +96,37 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
     @Override
     public void put(PhilmMovie movie) {
         cupboard().withDatabase(getWritableDatabase()).put(movie);
+
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "put(PhilmMovie). ID: " + movie.getDbId());
+        }
     }
 
     @Override
-    public void put(List<PhilmMovie> movies) {
-        for (PhilmMovie movie : movies) {
-            cupboard().withDatabase(getWritableDatabase()).put(movie);
+    public void put(Collection<PhilmMovie> movies) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (PhilmMovie movie : movies) {
+                cupboard().withDatabase(db).put(movie);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    @Override
+    public void delete(Collection<PhilmMovie> movies) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (PhilmMovie movie : movies) {
+                cupboard().withDatabase(db).delete(movie);
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 }

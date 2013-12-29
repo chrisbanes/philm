@@ -183,19 +183,18 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                 title.setText(mActivity.getString(R.string.movie_title_year, movie.getTitle(),
                         movie.getYear()));
 
-                final Ratings ratings = movie.getMovie().ratings;
                 final TextView ratingTextView = (TextView) view.findViewById(R.id.textview_rating);
                 ratingTextView.setText(mActivity.getString(R.string.movie_rating_votes,
-                        ratings != null ? ratings.percentage.toString() : "?",
-                        ratings != null ? ratings.votes : 0));
+                        movie.getRatingPercent() != 0 ? String.valueOf(movie.getRatingPercent()) : "?",
+                        movie.getRatingVotes()));
 
                 final TextView release = (TextView) view.findViewById(R.id.textview_release);
                 release.setText(mActivity.getString(R.string.movie_release_date,
-                        mDateFormat.format(movie.getMovie().released)));
+                        mDateFormat.format(movie.getReleasedTime())));
 
                 final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
                 Picasso.with(mActivity)
-                        .load(mTraktImageHelper.getPosterUrl(item.movie.getMovie()))
+                        .load(mTraktImageHelper.getPosterUrl(item.movie))
                         .into(imageView);
 
                 break;

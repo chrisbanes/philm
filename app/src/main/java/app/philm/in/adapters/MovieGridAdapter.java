@@ -63,7 +63,7 @@ public class MovieGridAdapter extends BaseAdapter {
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
         Picasso.with(mActivity)
-                .load(mTraktImageHelper.getPosterUrl(movie.getMovie()))
+                .load(mTraktImageHelper.getPosterUrl(movie))
                 .into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {

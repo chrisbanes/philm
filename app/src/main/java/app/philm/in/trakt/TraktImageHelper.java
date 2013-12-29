@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 
 import app.philm.in.R;
+import app.philm.in.model.PhilmMovie;
 
 public class TraktImageHelper {
 
@@ -27,12 +28,12 @@ public class TraktImageHelper {
         mResources = Preconditions.checkNotNull(resources, "resources cannot be null");
     }
 
-    public String getPosterUrl(final Movie movie) {
+    public String getPosterUrl(final PhilmMovie movie) {
         return getPosterUrl(movie, mResources.getInteger(R.integer.trakt_poster_image_size));
     }
 
-    public String getPosterUrl(final Movie movie, final int type) {
-        final String rawUrl = movie.images.poster;
+    public String getPosterUrl(final PhilmMovie movie, final int type) {
+        final String rawUrl = movie.getPosterUrl();
         switch (type) {
             case TYPE_LARGE:
                 return modifyUrl(rawUrl, POSTER_LARGE_SUFFIX);
@@ -44,12 +45,12 @@ public class TraktImageHelper {
         }
     }
 
-    public String getFanartUrl(final Movie movie) {
+    public String getFanartUrl(final PhilmMovie movie) {
         return getFanartUrl(movie, mResources.getInteger(R.integer.trakt_fanart_image_size));
     }
 
-    public String getFanartUrl(final Movie movie, final int type) {
-        final String rawUrl = movie.images.fanart;
+    public String getFanartUrl(final PhilmMovie movie, final int type) {
+        final String rawUrl = movie.getFanartUrl();
         switch (type) {
             case TYPE_LARGE:
                 return modifyUrl(rawUrl, FANART_LARGE_SUFFIX);

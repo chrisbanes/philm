@@ -248,7 +248,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         PhilmMovie movie = stateMovies.get(PhilmMovie.getId(rawMovie));
         if (movie != null) {
             // We already have a movie, so just update it wrapped value
-            movie.setMovie(rawMovie);
+            movie.setFromMovie(rawMovie);
         } else {
             // No movie, so create one
             movie = new PhilmMovie(rawMovie);
@@ -499,9 +499,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         private static boolean isMovieFiltered(PhilmMovie movie, Filter filter) {
-            // TODO: Move dependent methods to PhilmMovie
-            final Movie unpacked = movie.getMovie();
-
             switch (filter) {
                 case COLLECTION:
                     return movie.inCollection();
@@ -510,29 +507,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 case UNWATCHED:
                     return !movie.isWatched();
                 case IN_FUTURE:
-                    if (unpacked.released != null) {
-                        return unpacked.released.getTime() >= System.currentTimeMillis();
-                    }
-                    break;
+                    return movie.getReleasedTime() >= System.currentTimeMillis();
                 case UPCOMING:
-                    if (unpacked.released != null) {
-                        final long time = unpacked.released.getTime();
-                        return  time - Constants.FUTURE_SOON_THRESHOLD >= System.currentTimeMillis();
-                    }
-                    break;
+                    return movie.getReleasedTime() - Constants.FUTURE_SOON_THRESHOLD
+                            >= System.currentTimeMillis();
                 case SOON:
-                    if (unpacked.released != null) {
-                        final long time = unpacked.released.getTime();
-                        return time >= System.currentTimeMillis()
-                                && time - Constants.FUTURE_SOON_THRESHOLD < System
-                                .currentTimeMillis();
-                    }
-                    break;
+                    return movie.getReleasedTime() >= System.currentTimeMillis()
+                            && movie.getReleasedTime() - Constants.FUTURE_SOON_THRESHOLD < System
+                            .currentTimeMillis();
                 case RELEASED:
-                    if (unpacked.released != null) {
-                        return unpacked.released.getTime() < System.currentTimeMillis();
-                    }
-                    break;
+                    return movie.getReleasedTime() < System.currentTimeMillis();
             }
             return false;
         }

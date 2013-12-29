@@ -138,17 +138,17 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         }
 
         Picasso.with(getActivity())
-                .load(mTraktImageHelper.getFanartUrl(mMovie.getMovie()))
+                .load(mTraktImageHelper.getFanartUrl(mMovie))
                 .into(mFanartImageView);
 
         Picasso.with(getActivity())
-                .load(mTraktImageHelper.getPosterUrl(mMovie.getMovie()))
+                .load(mTraktImageHelper.getPosterUrl(mMovie))
                 .into(mPosterImageView);
 
         mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
                 mMovie.getYear()));
 
-        mSummaryTextView.setText(mMovie.getMovie().overview);
+        mSummaryTextView.setText(mMovie.getOverview());
 
         updateButtonState(mSeenButton, mMovie.isWatched(), R.string.action_mark_seen,
                 R.string.action_mark_unseen);

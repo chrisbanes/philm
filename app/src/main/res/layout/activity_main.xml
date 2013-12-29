@@ -9,13 +9,20 @@
     <FrameLayout
             android:id="@+id/fragment_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
-    <fragment
-            android:id="@+id/fragment_side_menu"
+    <FrameLayout
             android:layout_width="@dimen/drawer_side_menu_width"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:name="app.philm.in.fragments.SideMenuFragment" />
+            android:background="@color/side_menu_background">
+
+        <fragment
+                android:id="@+id/fragment_side_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:name="app.philm.in.fragments.SideMenuFragment"/>
+
+    </FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.Philm" parent="Theme.Base.Philm">
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:windowTranslucentStatus">false</item>
     </style>

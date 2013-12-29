@@ -22,12 +22,6 @@ public class SideMenuFragment extends ListFragment implements MainControllerUi {
     private MainControllerUiCallbacks mCallbacks;
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getView().setBackgroundColor(getResources().getColor(R.color.side_menu_background));
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         getController().attachUi(this);

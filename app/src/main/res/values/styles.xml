@@ -5,6 +5,10 @@
 
 
     <style name="Theme.Philm" parent="Theme.Base.Philm">
+        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
+    </style>
+
+    <style name="Widget.Philm.ActionBar" parent="android:Widget.Holo.ActionBar.Solid">
     </style>
 
     <style name="TextAppearance.Philm.Light" parent="android:TextAppearance" />

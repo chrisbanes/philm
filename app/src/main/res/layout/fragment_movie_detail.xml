@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="@dimen/spacing_major"
-                android:background="@color/side_menu_background">
+                android:background="?android:windowBackground">
 
             <LinearLayout
                     android:layout_width="match_parent"
@@ -63,21 +63,21 @@
                 <app.philm.in.view.PhilmActionButton
                         android:id="@+id/btn_seen"
                         android:layout_width="0px"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:src="@drawable/ic_btn_seen"/>
 
                 <app.philm.in.view.PhilmActionButton
                         android:id="@+id/btn_collection"
                         android:layout_width="0px"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:src="@drawable/ic_btn_collection"/>
 
                 <app.philm.in.view.PhilmActionButton
                         android:id="@+id/btn_watchlist"
                         android:layout_width="0px"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:src="@drawable/ic_btn_watchlist"/>
 
@@ -89,12 +89,7 @@
                     android:layout_height="wrap_content"
                     style="@style/Widget.Philm.Movie.Detail.Summary"/>
 
-            <View
-                    android:layout_height="400dp"
-                    android:layout_width="match_parent"/>
-
         </LinearLayout>
-
 
     </LinearLayout>
 

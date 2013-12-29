@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
 
 import android.app.Fragment;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;

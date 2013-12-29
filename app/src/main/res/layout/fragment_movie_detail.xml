@@ -23,25 +23,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/black_translucent_gradient"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:paddingLeft="@dimen/spacing_minor"
+                android:paddingBottom="@dimen/spacing_minor"
+                android:paddingRight="@dimen/spacing_minor">
 
             <ImageView
                     android:id="@+id/imageview_poster"
                     android:layout_width="@dimen/movie_detail_poster_width"
                     android:layout_height="@dimen/movie_detail_poster_height"
                     android:scaleType="centerCrop"
-                    android:layout_marginLeft="@dimen/spacing_major"
+                    android:layout_marginRight="@dimen/spacing_minor"
                     android:background="?android:attr/colorForeground"
-                    android:padding="2dp"/>
+                    android:padding="1dp"/>
 
             <TextView
                     android:id="@+id/textview_title"
                     android:layout_width="0px"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:maxLines="2"
-                    android:padding="@dimen/spacing_minor"
-                    android:paddingRight="@dimen/spacing_major"
+                    android:maxLines="3"
                     android:gravity="left|bottom"
                     android:textAppearance="@style/TextAppearance.Philm.Movie.Detail.Title"/>
 

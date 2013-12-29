@@ -192,9 +192,11 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
             case R.id.textview_summary:
                 final int defaultMaxLines = getResources()
                         .getInteger(R.integer.default_summary_maxlines);
-                mSummaryTextView.setMaxLines(mSummaryTextView.getMaxLines() == defaultMaxLines
-                        ? Integer.MAX_VALUE
-                        : defaultMaxLines);
+                if (mSummaryTextView.getLineCount() == defaultMaxLines) {
+                    mSummaryTextView.setMaxLines(Integer.MAX_VALUE);
+                } else if (mSummaryTextView.getLineCount() > defaultMaxLines) {
+                    mSummaryTextView.setMaxLines(defaultMaxLines);
+                }
                 break;
         }
     }

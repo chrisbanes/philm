@@ -106,48 +106,6 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
         notifyDataSetChanged();
     }
 
-    private static List<Movie> upcomingFilms(List<Movie> movies) {
-        ArrayList<Movie> upcoming = null;
-        for (Movie movie : movies) {
-            final long time = movie.released.getTime();
-            if (time - Constants.FUTURE_SOON_THRESHOLD > System.currentTimeMillis()) {
-                if (upcoming == null) {
-                    upcoming = new ArrayList<Movie>();
-                }
-                upcoming.add(movie);
-            }
-        }
-        return upcoming;
-    }
-
-    private static List<Movie> soonFilms(List<Movie> movies) {
-        ArrayList<Movie> soon = null;
-        for (Movie movie : movies) {
-            final long time = movie.released.getTime();
-            if (time > System.currentTimeMillis()
-                    && (time - Constants.FUTURE_SOON_THRESHOLD <= System.currentTimeMillis())) {
-                if (soon == null) {
-                    soon = new ArrayList<Movie>();
-                }
-                soon.add(movie);
-            }
-        }
-        return soon;
-    }
-
-    private static List<Movie> releasedFilms(List<Movie> movies) {
-        ArrayList<Movie> released = null;
-        for (Movie movie : movies) {
-            if (movie.released.getTime() <= System.currentTimeMillis()) {
-                if (released == null) {
-                    released = new ArrayList<Movie>();
-                }
-                released.add(movie);
-            }
-        }
-        return released;
-    }
-
     @Override
     public int getCount() {
         return mItems != null ? mItems.size() : 0;

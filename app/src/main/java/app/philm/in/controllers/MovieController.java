@@ -33,6 +33,7 @@ import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.util.TimeUtils;
 import retrofit.RetrofitError;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
@@ -305,10 +306,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private boolean containsEnoughDetail(PhilmMovie movie) {
-        return !TextUtils.isEmpty(movie.getOverview());
-    }
-
     private void fetchDetailMovie() {
         fetchDetailMovie(getUi().getRequestParameter());
     }
@@ -320,7 +317,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchDetailMovieIfNeeded() {
         PhilmMovie cached = getMovie(getUi().getRequestParameter());
-        if (cached == null || !containsEnoughDetail(cached)) {
+        if (cached == null || requireMovieDetailFetch(cached)) {
             fetchDetailMovie();
         }
     }
@@ -548,6 +545,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private boolean requireMovieDetailFetch(PhilmMovie movie) {
+        Preconditions.checkNotNull(movie, "movie cannot be null");
+        return TimeUtils.isAfterThreshold(movie.getLastFetchedTime(),
+                Constants.STALE_MOVIE_DETAIL_THRESHOLD)
+                || TextUtils.isEmpty(movie.getOverview());
+    }
+
     private void showLoadingProgress(boolean show) {
         MovieUi ui = getUi();
         if (ui != null) {
@@ -581,12 +585,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 case IN_FUTURE:
                     return movie.getReleasedTime() >= System.currentTimeMillis();
                 case UPCOMING:
-                    return movie.getReleasedTime() - Constants.FUTURE_SOON_THRESHOLD
-                            >= System.currentTimeMillis();
+                    return TimeUtils.isAfterThreshold(movie.getReleasedTime(),
+                            Constants.FUTURE_SOON_THRESHOLD);
                 case SOON:
                     return movie.getReleasedTime() >= System.currentTimeMillis()
-                            && movie.getReleasedTime() - Constants.FUTURE_SOON_THRESHOLD < System
-                            .currentTimeMillis();
+                            && TimeUtils.isBeforeThreshold(movie.getReleasedTime(),
+                            Constants.FUTURE_SOON_THRESHOLD);
                 case RELEASED:
                     return movie.getReleasedTime() < System.currentTimeMillis();
             }

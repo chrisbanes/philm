@@ -11,6 +11,8 @@ public class Constants {
 
     public static final long FUTURE_SOON_THRESHOLD = 30 * DateUtils.DAY_IN_MILLIS;
 
+    public static final long STALE_MOVIE_DETAIL_THRESHOLD = 2 * DateUtils.DAY_IN_MILLIS;
+
     public static final boolean DEBUG = true;
 
 }

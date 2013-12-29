@@ -20,6 +20,8 @@ import app.philm.in.model.SearchResult;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
 
+    private static final int INITIAL_MOVIE_MAP_CAPACITY = 200;
+
     private final Bus mEventBus;
 
     private Map<String, PhilmMovie> mMovies;
@@ -53,11 +55,10 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     //
     ///////////////////////////
 
-
     @Override
     public Map<String, PhilmMovie> getMovies() {
         if (mMovies == null) {
-            mMovies = new ArrayMap<String, PhilmMovie>();
+            mMovies = new ArrayMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
         }
         return mMovies;
     }

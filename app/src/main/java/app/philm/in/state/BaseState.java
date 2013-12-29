@@ -14,4 +14,12 @@ interface BaseState {
 
     public void unregisterForEvents(Object receiver);
 
+    static class BaseArgumentEvent<T> {
+        public final T item;
+
+        public BaseArgumentEvent(T item) {
+            this.item = item;
+        }
+    }
+
 }

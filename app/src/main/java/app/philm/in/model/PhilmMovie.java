@@ -45,6 +45,8 @@ public class PhilmMovie {
     int ratingPercent;
     int ratingVotes;
 
+    long lastFetched;
+
     public PhilmMovie() {}
 
     public PhilmMovie(Movie traktEntity) {
@@ -101,6 +103,8 @@ public class PhilmMovie {
             fanartUrl = images.fanart;
             posterUrl = images.poster;
         }
+
+        lastFetched = System.currentTimeMillis();
     }
 
     public boolean isWatched() {
@@ -186,6 +190,10 @@ public class PhilmMovie {
         }
 
         return Objects.equal(getTitle(), ((PhilmMovie) o).getTitle());
+    }
+
+    public long getLastFetchedTime() {
+        return lastFetched;
     }
 
     @Override

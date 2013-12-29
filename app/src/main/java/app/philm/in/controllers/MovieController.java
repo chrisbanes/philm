@@ -9,13 +9,13 @@ import com.jakewharton.trakt.entities.Response;
 import com.jakewharton.trakt.services.MovieService;
 import com.squareup.otto.Subscribe;
 
-import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -408,7 +408,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void persistLibraryToDb(final List<PhilmMovie> movies) {
         assertInited();
 
-        ArrayMap<Long, PhilmMovie> dbItemsMap = new ArrayMap<Long, PhilmMovie>();
+        HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
         for (PhilmMovie movie : mDbHelper.getLibrary()) {
             dbItemsMap.put(movie.getDbId(), movie);
         }
@@ -430,7 +430,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void persistWatchlistToDb(final List<PhilmMovie> movies) {
         assertInited();
 
-        ArrayMap<Long, PhilmMovie> dbItemsMap = new ArrayMap<Long, PhilmMovie>();
+        HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
         for (PhilmMovie movie : mDbHelper.getWatchlist()) {
             dbItemsMap.put(movie.getDbId(), movie);
         }

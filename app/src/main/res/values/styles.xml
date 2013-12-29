@@ -34,6 +34,18 @@
         <item name="android:textSize">24dp</item>
     </style>
 
+    <style name="Widget.Philm.Movie.Detail.Title" parent="android:Widget">
+        <item name="android:textAppearance">@style/TextAppearance.Philm.Condensed</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">bottom|left</item>
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">1.2</item>
+        <item name="android:shadowDy">1.2</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+
     <style name="Widget.Philm.Movie.Detail.Summary" parent="android:Widget">
         <item name="android:textAppearance">@style/TextAppearance.Philm.Serif</item>
         <item name="android:textSize">16dp</item>

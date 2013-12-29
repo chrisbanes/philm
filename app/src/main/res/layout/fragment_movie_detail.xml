@@ -42,9 +42,7 @@
                     android:layout_width="0px"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:maxLines="3"
-                    android:gravity="left|bottom"
-                    android:textAppearance="@style/TextAppearance.Philm.Movie.Detail.Title"/>
+                    style="@style/Widget.Philm.Movie.Detail.Title"/>
 
         </LinearLayout>
 

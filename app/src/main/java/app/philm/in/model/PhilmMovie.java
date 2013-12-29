@@ -23,25 +23,26 @@ public class PhilmMovie {
 
     private static final String[] TITLE_PREFIXES = { "The ", "An " };
 
-    private String mId;
+    Long _id;
 
-    private String mTitle;
-    private String mSortTitle;
-    private String mOverview;
+    String traktId;
+    String title;
+    String sortTitle;
+    String overview;
 
-    private String mPosterUrl;
-    private String mFanartUrl;
+    String posterUrl;
+    String fanartUrl;
 
-    private boolean mInWatchlist;
-    private boolean mInCollection;
-    private boolean mWatched;
+    boolean inWatchlist;
+    boolean inCollection;
+    boolean watched;
 
-    private int mPlays;
-    private int mYear;
-    private long mReleasedTime;
+    int plays;
+    int year;
+    long releasedTime;
 
-    private int mRatingPercent;
-    private int mRatingVotes;
+    int ratingPercent;
+    int ratingVotes;
 
     public PhilmMovie(Movie traktEntity) {
         setFromMovie(traktEntity);
@@ -69,98 +70,98 @@ public class PhilmMovie {
     public void setFromMovie(Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
 
-        mId = getId(movie);
-        mTitle = movie.title;
-        mSortTitle = getSortTitle(mTitle);
-        mOverview = movie.overview;
+        traktId = getId(movie);
+        title = movie.title;
+        sortTitle = getSortTitle(title);
+        overview = movie.overview;
 
-        mYear = unbox(movie.year);
-        mInCollection = unbox(movie.inCollection);
-        mInWatchlist = unbox(movie.inWatchlist);
-        mWatched = unbox(movie.watched);
-        mPlays = unbox(movie.plays);
-        mReleasedTime = unbox(movie.released);
+        year = unbox(movie.year);
+        inCollection = unbox(movie.inCollection);
+        inWatchlist = unbox(movie.inWatchlist);
+        watched = unbox(movie.watched);
+        plays = unbox(movie.plays);
+        releasedTime = unbox(movie.released);
 
         Ratings ratings = movie.ratings;
         if (ratings != null) {
-            mRatingPercent = unbox(ratings.percentage);
-            mRatingVotes = unbox(ratings.votes);
+            ratingPercent = unbox(ratings.percentage);
+            ratingVotes = unbox(ratings.votes);
         }
 
         Images images = movie.images;
         if (images != null) {
-            mFanartUrl = images.fanart;
-            mPosterUrl = images.poster;
+            fanartUrl = images.fanart;
+            posterUrl = images.poster;
         }
     }
 
     public boolean isWatched() {
-        return mWatched;
+        return watched;
     }
 
     public void setWatched(boolean watched) {
-        mWatched = watched;
-        mPlays = watched ? 1 : 0;
+        this.watched = watched;
+        plays = watched ? 1 : 0;
     }
 
     public String getId() {
-        return mId;
+        return traktId;
     }
 
     public boolean inCollection() {
-        return mInCollection;
+        return inCollection;
     }
 
     public void setInCollection(boolean inCollection) {
-        mInCollection = inCollection;
+        this.inCollection = inCollection;
     }
 
     public boolean inWatchlist() {
-        return mInWatchlist;
+        return inWatchlist;
     }
 
     public void setInWatched(boolean inWatchlist) {
-        mInWatchlist = inWatchlist;
+        this.inWatchlist = inWatchlist;
     }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public String getSortTitle() {
-        return mSortTitle;
+        return sortTitle;
     }
 
     public String getPosterUrl() {
-        return mPosterUrl;
+        return posterUrl;
     }
 
     public String getFanartUrl() {
-        return mFanartUrl;
+        return fanartUrl;
     }
 
     public long getReleasedTime() {
-        return mReleasedTime;
+        return releasedTime;
     }
 
     public int getPlays() {
-        return mPlays;
+        return plays;
     }
 
     public int getYear() {
-        return mYear;
+        return year;
     }
 
     public int getRatingPercent() {
-        return mRatingPercent;
+        return ratingPercent;
     }
 
     public int getRatingVotes() {
-        return mRatingVotes;
+        return ratingVotes;
     }
 
     public String getOverview() {
-        return mOverview;
+        return overview;
     }
 
     @Override

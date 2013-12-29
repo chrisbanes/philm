@@ -9,6 +9,7 @@ import android.util.Log;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.R;
+import app.philm.in.state.DatabaseHelper;
 
 public class MainController extends BaseUiController<MainController.MainControllerUi,
         MainController.MainControllerUiCallbacks> {
@@ -49,16 +50,20 @@ public class MainController extends BaseUiController<MainController.MainControll
     private final UserController mUserController;
     private final MovieController mMovieController;
 
+    private final DatabaseHelper mDbHelper;
+
     private HostCallbacks mHostCallbacks;
 
     public MainController(
             UserController userController,
-            MovieController movieController) {
+            MovieController movieController,
+            DatabaseHelper dbHelper) {
         super();
         mUserController = Preconditions.checkNotNull(userController,
                 "userController cannot be null");
         mMovieController = Preconditions.checkNotNull(movieController,
                 "movieController cannot be null");
+        mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
 
         mUserController.setControllerCallbacks(new UserController.ControllerCallbacks() {
             @Override
@@ -86,7 +91,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     @Override
-     protected void onInited() {
+    protected void onInited() {
         super.onInited();
         mUserController.init();
         mMovieController.init();
@@ -139,6 +144,8 @@ public class MainController extends BaseUiController<MainController.MainControll
     protected void onSuspended() {
         mUserController.suspend();
         mMovieController.suspend();
+
+        mDbHelper.close();
     }
 
     @Override

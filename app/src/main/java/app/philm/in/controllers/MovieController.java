@@ -27,6 +27,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.SearchResult;
 import app.philm.in.network.NetworkError;
 import app.philm.in.network.TraktNetworkCallRunnable;
+import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
@@ -41,15 +42,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final MoviesState mMoviesState;
     private final ExecutorService mExecutor;
     private final Trakt mTraktClient;
+    private final DatabaseHelper mDbHelper;
 
     public MovieController(
             MoviesState movieState,
             Trakt traktClient,
-            ExecutorService executor) {
+            ExecutorService executor,
+            DatabaseHelper dbHelper) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
+        mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
     }
 
     @Subscribe
@@ -84,6 +88,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Override
     protected void onInited() {
         super.onInited();
+
+        if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
+            mMoviesState.setLibrary(mDbHelper.getLibrary());
+        }
+
         mMoviesState.registerForEvents(this);
     }
 
@@ -699,6 +708,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             if (!PhilmCollections.isEmpty(result)) {
                 List<PhilmMovie> movies = mapTraktMoviesFromState(result);
                 mMoviesState.setLibrary(movies);
+                mDbHelper.put(movies);
             } else {
                 mMoviesState.setLibrary(null);
             }

@@ -10,6 +10,8 @@ import android.content.Context;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import app.philm.in.state.DatabaseHelper;
+import app.philm.in.state.PhilmSQLiteOpenHelper;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AccountManagerHelper;
 
@@ -30,6 +32,7 @@ public class Container {
     private ExecutorService mThreadPoolExecutor;
     private Trakt mTrakt;
     private AccountManagerHelper mAccountManagerHelper;
+    private DatabaseHelper mDatabaseHelper;
 
     private Container(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
@@ -64,6 +67,13 @@ public class Container {
             mAccountManagerHelper = new AccountManagerHelper(AccountManager.get(mContext));
         }
         return mAccountManagerHelper;
+    }
+
+    public DatabaseHelper getDatabaseHelper() {
+        if (mDatabaseHelper == null) {
+            mDatabaseHelper = new PhilmSQLiteOpenHelper(mContext);
+        }
+        return mDatabaseHelper;
     }
 
 }

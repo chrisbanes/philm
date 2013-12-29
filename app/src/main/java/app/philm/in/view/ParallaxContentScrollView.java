@@ -15,11 +15,17 @@ public class ParallaxContentScrollView extends FrameLayout {
 
     private static final float PARALLAX_FRICTION = 0.5f;
 
+    public interface OnContentViewScrollListener {
+        void onContentViewScrolled(float percent);
+    }
+
     private View mHeaderView;
     private View mContentView;
 
     private FrameLayout mContentViewWrapper;
-    private ScrollView mContentViewScrollView;
+    private NotifyingScrollView mContentViewScrollView;
+
+    private OnContentViewScrollListener mContentViewScrollListener;
 
     private int mContentOverlaySize;
 
@@ -32,6 +38,10 @@ public class ParallaxContentScrollView extends FrameLayout {
                 R.styleable.ParallaxContentScrollView_contentOverlay, 0);
 
         a.recycle();
+    }
+
+    public void setOnContentViewScrollListener(OnContentViewScrollListener listener) {
+        mContentViewScrollListener = listener;
     }
 
     @Override
@@ -49,11 +59,19 @@ public class ParallaxContentScrollView extends FrameLayout {
         mContentViewWrapper = new FrameLayout(getContext());
         mContentViewWrapper.addView(mContentView);
 
-        mContentViewScrollView = new CustomScrollView(getContext());
+        mContentViewScrollView = new NotifyingScrollView(getContext());
         mContentViewScrollView.setFillViewport(true);
         mContentViewScrollView.addView(mContentViewWrapper,
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(mContentViewScrollView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+        mContentViewScrollView.setOnScrollChangedListener(
+                new NotifyingScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
+                onScrollViewScrollChanged(t);
+            }
+        });
     }
 
     @Override
@@ -79,19 +97,10 @@ public class ParallaxContentScrollView extends FrameLayout {
         if (y <= mHeaderView.getHeight()) {
             int newTop = Math.round(-y * PARALLAX_FRICTION);
             mHeaderView.offsetTopAndBottom(newTop - mHeaderView.getTop());
-        }
-    }
 
-    class CustomScrollView extends ScrollView {
-
-        public CustomScrollView(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-            super.onScrollChanged(l, t, oldl, oldt);
-            onScrollViewScrollChanged(t);
+            if (mContentViewScrollListener != null) {
+                mContentViewScrollListener.onContentViewScrolled(y / (float) mHeaderView.getHeight());
+            }
         }
     }
 }

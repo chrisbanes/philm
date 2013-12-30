@@ -1,5 +1,7 @@
 package app.philm.in.adapters;
 
+import com.google.common.base.Objects;
+
 import com.hb.views.PinnedSectionListView;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.Ratings;
@@ -43,9 +45,11 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
         mDateFormat = android.text.format.DateFormat.getMediumDateFormat(activity);
     }
 
-    public void setItems(List<ListItem<PhilmMovie>> listItems) {
-        mItems = listItems;
-        notifyDataSetChanged();
+    public void setItems(List<ListItem<PhilmMovie>> items) {
+        if (!Objects.equal(items, mItems)) {
+            mItems = items;
+            notifyDataSetChanged();
+        }
     }
 
     @Override

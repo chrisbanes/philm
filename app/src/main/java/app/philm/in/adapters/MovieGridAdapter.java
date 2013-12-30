@@ -1,5 +1,7 @@
 package app.philm.in.adapters;
 
+import com.google.common.base.Objects;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -31,8 +33,10 @@ public class MovieGridAdapter extends BaseAdapter {
     }
 
     public void setItems(List<ListItem<PhilmMovie>> items) {
-        mItems = items;
-        notifyDataSetChanged();
+        if (!Objects.equal(items, mItems)) {
+            mItems = items;
+            notifyDataSetChanged();
+        }
     }
 
     @Override

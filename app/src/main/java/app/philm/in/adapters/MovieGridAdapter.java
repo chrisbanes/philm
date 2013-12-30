@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import app.philm.in.R;
+import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 
@@ -22,14 +23,14 @@ public class MovieGridAdapter extends BaseAdapter {
 
     private final Activity mActivity;
     private final TraktImageHelper mTraktImageHelper;
-    private List<PhilmMovie> mItems;
+    private List<ListItem<PhilmMovie>> mItems;
 
     public MovieGridAdapter(Activity activity) {
         mActivity = activity;
         mTraktImageHelper = new TraktImageHelper(activity.getResources());
     }
 
-    public void setItems(List<PhilmMovie> items) {
+    public void setItems(List<ListItem<PhilmMovie>> items) {
         mItems = items;
         notifyDataSetChanged();
     }
@@ -40,13 +41,13 @@ public class MovieGridAdapter extends BaseAdapter {
     }
 
     @Override
-    public PhilmMovie getItem(int position) {
+    public ListItem<PhilmMovie> getItem(int position) {
         return mItems.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return getItem(position).getTraktId().hashCode();
+        return getItem(position).getItem().getTraktId().hashCode();
     }
 
     @Override
@@ -56,7 +57,7 @@ public class MovieGridAdapter extends BaseAdapter {
             view = mActivity.getLayoutInflater().inflate(R.layout.item_grid_movie, viewGroup, false);
         }
 
-        final PhilmMovie movie = getItem(position);
+        final PhilmMovie movie = getItem(position).getItem();
 
         final TextView title = (TextView) view.findViewById(R.id.textview_title);
         title.setText(movie.getTitle());

@@ -12,6 +12,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieListFragment;
+import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 
 public class MovieGridFragment extends PhilmMovieListFragment<GridView> {
@@ -41,19 +42,15 @@ public class MovieGridFragment extends PhilmMovieListFragment<GridView> {
     @Override
     public void onListItemClick(GridView l, View v, int position, long id) {
         if (hasCallbacks()) {
-            PhilmMovie movie = (PhilmMovie) l.getItemAtPosition(position);
-            getCallbacks().showMovieDetail(movie);
+            ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
+            if (item.getType() == ListItem.TYPE_ITEM) {
+                getCallbacks().showMovieDetail(item.getItem());
+            }
         }
     }
 
     @Override
-    public void setItems(List<PhilmMovie> items) {
-        mMovieGridAdapter.setItems(items);
-    }
-
-    @Override
-    public void setItemsWithSections(List<PhilmMovie> items,
-            List<MovieController.Filter> sections) {
+    public void setItems(List<ListItem<PhilmMovie>> items) {
         mMovieGridAdapter.setItems(items);
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 import app.philm.in.Constants;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
@@ -30,40 +31,11 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
     private static final String LOG_TAG = MovieSectionedListAdapter.class.getSimpleName();
 
-    public static final class Item {
-        public static final int TYPE_ITEM = 0;
-        public static final int TYPE_SECTION = 1;
-
-        final int type;
-        final PhilmMovie movie;
-        final int titleResId;
-
-        Item(PhilmMovie movie) {
-            type = TYPE_ITEM;
-            this.movie = movie;
-            titleResId = 0;
-        }
-
-        Item(int sectionTitle) {
-            type = TYPE_SECTION;
-            titleResId = sectionTitle;
-            movie = null;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public PhilmMovie getMovie() {
-            return movie;
-        }
-    }
-
     private final Activity mActivity;
     private final TraktImageHelper mTraktImageHelper;
     private final DateFormat mDateFormat;
 
-    private List<Item> mItems;
+    private List<ListItem<PhilmMovie>> mItems;
 
     public MovieSectionedListAdapter(Activity activity) {
         mActivity = activity;
@@ -71,38 +43,8 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
         mDateFormat = android.text.format.DateFormat.getMediumDateFormat(activity);
     }
 
-    public void setItems(List<PhilmMovie> items) {
-        setItems(items, null);
-    }
-
-    public void setItems(List<PhilmMovie> items, List<MovieController.Filter> sections) {
-        if (PhilmCollections.isEmpty(items)) {
-            mItems = null;
-        } else {
-            mItems = new ArrayList<Item>();
-
-            if (!PhilmCollections.isEmpty(sections)) {
-                HashSet<PhilmMovie> movies = new HashSet<PhilmMovie>(items);
-                for (MovieController.Filter filter : sections) {
-                    boolean addedHeader = false;
-                    for (Iterator<PhilmMovie> i = movies.iterator(); i.hasNext(); ) {
-                        PhilmMovie movie = i.next();
-                        if (filter.isMovieFiltered(movie)) {
-                            if (!addedHeader) {
-                                mItems.add(new Item(filter.getTitle()));
-                                addedHeader = true;
-                            }
-                            mItems.add(new Item(movie));
-                            i.remove();
-                        }
-                    }
-                }
-            } else {
-                for (PhilmMovie movie : items) {
-                    mItems.add(new Item(movie));
-                }
-            }
-        }
+    public void setItems(List<ListItem<PhilmMovie>> listItems) {
+        mItems = listItems;
         notifyDataSetChanged();
     }
 
@@ -112,7 +54,7 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
     }
 
     @Override
-    public Item getItem(int position) {
+    public ListItem<PhilmMovie> getItem(int position) {
         return mItems.get(position);
     }
 
@@ -123,19 +65,19 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        final Item item = getItem(position);
+        final ListItem<PhilmMovie> item = getItem(position);
         View view = convertView;
 
         if (view == null) {
-            final int layout = item.type == Item.TYPE_ITEM
+            final int layout = item.getType() == ListItem.TYPE_ITEM
                     ? R.layout.item_list_movie
                     : R.layout.item_list_movie_section_header;
             view = mActivity.getLayoutInflater().inflate(layout, viewGroup, false);
         }
 
-        switch (item.type) {
-            case Item.TYPE_ITEM: {
-                PhilmMovie movie = item.movie;
+        switch (item.getType()) {
+            case ListItem.TYPE_ITEM: {
+                PhilmMovie movie = item.getItem();
 
                 final TextView title = (TextView) view.findViewById(R.id.textview_title);
                 title.setText(mActivity.getString(R.string.movie_title_year, movie.getTitle(),
@@ -152,13 +94,13 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
                 final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
                 Picasso.with(mActivity)
-                        .load(mTraktImageHelper.getPosterUrl(item.movie))
+                        .load(mTraktImageHelper.getPosterUrl(item.getItem()))
                         .into(imageView);
 
                 break;
             }
-            case Item.TYPE_SECTION:
-                ((TextView) view).setText(item.titleResId);
+            case ListItem.TYPE_SECTION:
+                ((TextView) view).setText(item.getSectionTitle());
                 break;
         }
 
@@ -172,11 +114,11 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).type;
+        return getItem(position).getType();
     }
 
     @Override
     public boolean isItemViewTypePinned(int type) {
-        return type == Item.TYPE_SECTION;
+        return type == ListItem.TYPE_SECTION;
     }
 }

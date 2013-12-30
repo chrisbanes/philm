@@ -1,5 +1,7 @@
 package app.philm.in.model;
 
+import android.util.Log;
+
 public class ListItem<T> {
 
     public static final int TYPE_ITEM = 0;
@@ -33,4 +35,35 @@ public class ListItem<T> {
         return titleResId;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ListItem listItem = (ListItem) o;
+
+        if (titleResId != listItem.titleResId) {
+            return false;
+        }
+        if (type != listItem.type) {
+            return false;
+        }
+        if (item != null ? !item.equals(listItem.item) : listItem.item != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type;
+        result = 31 * result + (item != null ? item.hashCode() : 0);
+        result = 31 * result + titleResId;
+        return result;
+    }
 }

@@ -180,6 +180,10 @@ public class PhilmMovie {
         return overview;
     }
 
+    public long getLastFetchedTime() {
+        return lastFetched;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -189,16 +193,23 @@ public class PhilmMovie {
             return false;
         }
 
-        return Objects.equal(getTitle(), ((PhilmMovie) o).getTitle());
-    }
+        PhilmMovie that = (PhilmMovie) o;
 
-    public long getLastFetchedTime() {
-        return lastFetched;
+        if (year != that.year) {
+            return false;
+        }
+        if (traktId != null ? !traktId.equals(that.traktId) : that.traktId != null) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getTitle());
+        int result = traktId != null ? traktId.hashCode() : 0;
+        result = 31 * result + year;
+        return result;
     }
 
     private static boolean unbox(boolean currentValue, Boolean newValue) {

@@ -5,24 +5,21 @@ import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
 
 import android.app.Fragment;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.drawable.PercentageDrawable;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
-import app.philm.in.view.CheatSheet;
-import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.PhilmActionButton;
 
 public class MovieDetailFragment extends Fragment implements MovieController.MovieDetailUi,
@@ -40,6 +37,9 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     private TextView mSummaryTextView;
     private ImageView mFanartImageView;
     private ImageView mPosterImageView;
+
+    private ImageView mRatingImageView;
+    private PercentageDrawable mPercentageDrawable;
 
     private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -74,6 +74,10 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         mFanartImageView = (ImageView) view.findViewById(R.id.imageview_fanart);
         mPosterImageView = (ImageView) view.findViewById(R.id.imageview_poster);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mRatingImageView = (ImageView) view.findViewById(R.id.imageview_rating);
+
+        mPercentageDrawable = new PercentageDrawable(getResources());
+        mRatingImageView.setImageDrawable(mPercentageDrawable);
 
         mSummaryTextView = (TextView) view.findViewById(R.id.textview_summary);
         mSummaryTextView.setOnClickListener(this);
@@ -156,6 +160,8 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
                 R.string.action_remove_watchlist);
         updateButtonState(mCollectionButton, mMovie.inCollection(), R.string.action_add_collection,
                 R.string.action_remove_collection);
+
+        mPercentageDrawable.showRating(mMovie.getRatingPercent());
     }
 
     private void updateButtonState(PhilmActionButton button, final boolean checked,

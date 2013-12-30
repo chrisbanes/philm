@@ -1,3 +1,4 @@
+
 buildscript {
     repositories {
         mavenCentral()
@@ -18,6 +19,10 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
 }
 
+def buildTime() {
+    return new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
+}
+
 def versionMajor = 0
 def versionMinor = 0
 def versionPatch = 1
@@ -32,6 +37,8 @@ android {
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         minSdkVersion 14
         targetSdkVersion 19
+
+        buildConfigField "String", "BUILD_TIME", "\"${buildTime()}\""
     }
 
     buildTypes {
@@ -63,3 +70,5 @@ dependencies {
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }
+
+

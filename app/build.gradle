@@ -1,15 +1,21 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'http://download.crashlytics.com/maven' }
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+
     }
 }
 apply plugin: 'android'
+apply plugin: 'crashlytics'
 
 repositories {
     mavenCentral()
+    maven { url 'http://download.crashlytics.com/maven' }
 }
 
 android {
@@ -46,5 +52,7 @@ dependencies {
     compile 'com.squareup:otto:1.3.4'
     compile 'com.google.guava:guava:15.0'
     compile 'nl.qbusict:cupboard:1.+'
+    compile 'com.crashlytics.android:crashlytics:1.+'
+
     compile fileTree(dir: 'libs', include: '*.jar')
 }

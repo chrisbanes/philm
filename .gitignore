@@ -10,3 +10,6 @@ gen
 # IntelliJ
 *.iml
 .idea
+
+# Crashlytics
+com_crashlytics_export_strings.xml

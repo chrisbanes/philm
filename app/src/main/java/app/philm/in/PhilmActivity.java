@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 
 import app.philm.in.controllers.MainController;
+import com.crashlytics.android.Crashlytics;
 
 public class PhilmActivity extends Activity implements MainController.HostCallbacks {
 
@@ -21,6 +22,8 @@ public class PhilmActivity extends Activity implements MainController.HostCallba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+
         setContentView(R.layout.activity_main);
 
         mMainController = PhilmApplication.from(this).getMainController();

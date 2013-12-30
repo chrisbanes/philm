@@ -90,12 +90,50 @@
 
             <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="120dp">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/spacing_major"
+                        android:layout_marginBottom="@dimen/spacing_major"
+                        android:background="#FF333333">
+
+                    <LinearLayout
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:paddingRight="60dp"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                        <TextView
+                                android:id="@+id/textview_votes"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/Widget.Philm.Movie.Detail.Ratings.Votes"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/movie_detail_votes"
+                                style="@style/Widget.Philm.Movie.Detail.Ratings.Title" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                            android:layout_width="0px"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:paddingLeft="60dp">
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <ImageView
                         android:id="@+id/imageview_rating"
                         android:layout_width="120dp"
-                        android:layout_height="120dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"/>
 
             </FrameLayout>

@@ -36,7 +36,7 @@
 
     <style name="Widget.Philm.Movie.Detail.Title" parent="android:Widget">
         <item name="android:textAppearance">@style/TextAppearance.Philm.Condensed</item>
-        <item name="android:textSize">24dp</item>
+        <item name="android:textSize">26dp</item>
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">bottom|left</item>
@@ -54,6 +54,17 @@
         <item name="android:maxLines">@integer/default_summary_maxlines</item>
         <item name="android:ellipsize">end</item>
         <item name="android:background">?android:attr/selectableItemBackground</item>
+    </style>
+
+    <style name="Widget.Philm.Movie.Detail.Ratings.Title" parent="android:Widget">
+        <item name="android:textAppearance">@style/TextAppearance.Philm.Light</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="Widget.Philm.Movie.Detail.Ratings.Votes" parent="android:Widget">
+        <item name="android:textAppearance">@style/TextAppearance.Philm.Condensed</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24dp</item>
     </style>
 
 </resources>

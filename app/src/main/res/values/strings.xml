@@ -48,4 +48,6 @@
 
     <string name="search_empty">Search for movies by entering text above</string>
 
+    <string name="movie_detail_votes">Votes</string>
+
 </resources>

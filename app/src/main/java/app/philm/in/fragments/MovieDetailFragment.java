@@ -40,6 +40,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
 
     private ImageView mRatingImageView;
     private PercentageDrawable mPercentageDrawable;
+    private TextView mVotesTextView;
 
     private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -74,6 +75,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         mFanartImageView = (ImageView) view.findViewById(R.id.imageview_fanart);
         mPosterImageView = (ImageView) view.findViewById(R.id.imageview_poster);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
+        mVotesTextView = (TextView) view.findViewById(R.id.textview_votes);
         mRatingImageView = (ImageView) view.findViewById(R.id.imageview_rating);
 
         mPercentageDrawable = new PercentageDrawable(getResources());
@@ -162,6 +164,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
                 R.string.action_remove_collection);
 
         mPercentageDrawable.showRating(mMovie.getRatingPercent());
+        mVotesTextView.setText(String.valueOf(mMovie.getRatingVotes()));
     }
 
     private void updateButtonState(PhilmActionButton button, final boolean checked,

@@ -486,6 +486,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 items = mMoviesState.getWatchlist();
                 sections = Arrays.asList(Filter.UPCOMING, Filter.SOON,Filter.RELEASED,
                         Filter.WATCHED);
+                break;
             case SEARCH:
                 SearchResult result = mMoviesState.getSearchResult();
                 if (result != null) {

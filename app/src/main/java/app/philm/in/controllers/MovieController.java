@@ -33,8 +33,12 @@ import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.util.TimeUtils;
 import retrofit.RetrofitError;
+
+import static app.philm.in.util.TimeUtils.isAfterThreshold;
+import static app.philm.in.util.TimeUtils.isBeforeThreshold;
+import static app.philm.in.util.TimeUtils.isInFuture;
+import static app.philm.in.util.TimeUtils.isInPast;
 
 public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
@@ -548,7 +552,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private boolean requireMovieDetailFetch(PhilmMovie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
-        return TimeUtils.isAfterThreshold(movie.getLastFetchedTime(),
+        return isAfterThreshold(movie.getLastFetchedTime(),
                 Constants.STALE_MOVIE_DETAIL_THRESHOLD)
                 || TextUtils.isEmpty(movie.getOverview());
     }
@@ -561,13 +565,40 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum Filter {
+        /**
+         * Filters {@link PhilmMovie} that are in the user's collection.
+         */
         COLLECTION(R.string.filter_collection),
+
+        /**
+         * Filters {@link PhilmMovie} that have been watched by the user.
+         */
         WATCHED(R.string.filter_watched),
+
+        /**
+         * Filters {@link PhilmMovie} that have not been watched by the user.
+         */
         UNWATCHED(R.string.filter_unwatched),
-        IN_FUTURE(R.string.filter_upcoming),
+
+        /**
+         * Filters {@link PhilmMovie} that have not been released yet.
+         */
+        NOT_RELEASED(R.string.filter_upcoming),
+
+        /**
+         * Filters {@link PhilmMovie} that have already been released.
+         */
+        RELEASED(R.string.filter_released),
+
+        /**
+         * Filters {@link PhilmMovie} that are unreleased, and will be released in the far future.
+         */
         UPCOMING(R.string.filter_upcoming),
-        SOON(R.string.filter_soon),
-        RELEASED(R.string.filter_released);
+
+        /**
+         * Filters {@link PhilmMovie} that are unreleased, and will be released in the near future.
+         */
+        SOON(R.string.filter_soon);
 
         private final int mTitle;
 
@@ -575,35 +606,30 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             mTitle = titleResId;
         }
 
-        private static boolean isMovieFiltered(PhilmMovie movie, Filter filter) {
-            switch (filter) {
+        public int getTitle() {
+            return mTitle;
+        }
+
+        public boolean isMovieFiltered(PhilmMovie movie) {
+            switch (this) {
                 case COLLECTION:
                     return movie.inCollection();
                 case WATCHED:
                     return movie.isWatched();
                 case UNWATCHED:
                     return !movie.isWatched();
-                case IN_FUTURE:
-                    return movie.getReleasedTime() >= System.currentTimeMillis();
+                case NOT_RELEASED:
+                    return isInFuture(movie.getReleasedTime());
                 case UPCOMING:
-                    return TimeUtils.isAfterThreshold(movie.getReleasedTime(),
+                    return isAfterThreshold(movie.getReleasedTime(),
                             Constants.FUTURE_SOON_THRESHOLD);
                 case SOON:
-                    return movie.getReleasedTime() >= System.currentTimeMillis()
-                            && TimeUtils.isBeforeThreshold(movie.getReleasedTime(),
-                            Constants.FUTURE_SOON_THRESHOLD);
+                    return isInFuture(movie.getReleasedTime()) && isBeforeThreshold(
+                            movie.getReleasedTime(), Constants.FUTURE_SOON_THRESHOLD);
                 case RELEASED:
-                    return movie.getReleasedTime() < System.currentTimeMillis();
+                    return isInPast(movie.getReleasedTime());
             }
             return false;
-        }
-
-        public int getTitle() {
-            return mTitle;
-        }
-
-        public boolean isMovieFiltered(PhilmMovie movie) {
-            return isMovieFiltered(movie, this);
         }
 
         public List<Filter> getMutuallyExclusiveFilters() {

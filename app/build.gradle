@@ -18,11 +18,18 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
 }
 
+def versionMajor = 0
+def versionMinor = 0
+def versionPatch = 1
+def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+
 android {
     compileSdkVersion 19
     buildToolsVersion "19.0.0"
 
     defaultConfig {
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         minSdkVersion 14
         targetSdkVersion 19
     }

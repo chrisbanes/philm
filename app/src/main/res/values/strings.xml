@@ -54,7 +54,7 @@
     <string name="movie_detail_rate">Rate</string>
 
     <string-array name="movie_rating_descriptions">
-        <item>Not Set</item>
+        <item>Unrated</item>
         <item>Weak sauce</item>
         <item>Terrible</item>
         <item>Bad</item>

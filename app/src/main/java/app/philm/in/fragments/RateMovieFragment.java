@@ -42,7 +42,7 @@ public class RateMovieFragment extends DialogFragment implements DialogInterface
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(layout);
-        builder.setPositiveButton(android.R.string.ok, this);
+        builder.setPositiveButton(R.string.movie_detail_rate, this);
         builder.setNegativeButton(android.R.string.cancel, this);
         return builder.create();
     }

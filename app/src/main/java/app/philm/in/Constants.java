@@ -13,6 +13,8 @@ public class Constants {
 
     public static final long STALE_MOVIE_DETAIL_THRESHOLD = 2 * DateUtils.DAY_IN_MILLIS;
 
+    public static final int FILTER_HIGHLY_RATED = 70;
+
     public static final boolean DEBUG = true;
 
 }

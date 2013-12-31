@@ -60,6 +60,8 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
                         MovieController.Filter.WATCHED);
                 updateItemCheckedState(menu, R.id.menu_filter_unwatched,
                         MovieController.Filter.UNWATCHED);
+                updateItemCheckedState(menu, R.id.menu_filter_highly_rated,
+                        MovieController.Filter.HIGHLY_RATED);
 
                 // Update the clear button depending if there are active filters
                 MenuItem clearItem = menu.findItem(R.id.menu_filter_clear);
@@ -81,6 +83,9 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
                 return true;
             case R.id.menu_filter_unwatched:
                 updateFilterState(MovieController.Filter.UNWATCHED, !item.isChecked());
+                return true;
+            case R.id.menu_filter_highly_rated:
+                updateFilterState(MovieController.Filter.HIGHLY_RATED, !item.isChecked());
                 return true;
             case R.id.menu_filter_clear:
                 if (mCallbacks != null) {

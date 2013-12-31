@@ -20,6 +20,10 @@
                   android:title="@string/filter_unwatched"
                   android:checkable="true"/>
 
+            <item android:id="@+id/menu_filter_highly_rated"
+                  android:title="@string/filter_highly_rated"
+                  android:checkable="true"/>
+
             <item android:id="@+id/menu_filter_clear"
                   android:title="@string/menu_filter_clear"/>
         </menu>

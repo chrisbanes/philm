@@ -36,6 +36,7 @@
     <string name="filter_upcoming">Upcoming</string>
     <string name="filter_soon">Soon</string>
     <string name="filter_released">Released</string>
+    <string name="filter_highly_rated">Highly Rated</string>
 
     <string name="action_add_watchlist">Add to watchlist</string>
     <string name="action_remove_watchlist">Remove from watchlist</string>

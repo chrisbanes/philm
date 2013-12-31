@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.Ratings;
+import com.jakewharton.trakt.enumerations.Rating;
 
 import android.text.TextUtils;
 
@@ -42,6 +43,7 @@ public class PhilmMovie {
     int year;
     long releasedTime;
 
+    int userRating;
     int ratingPercent;
     int ratingVotes;
 
@@ -96,6 +98,9 @@ public class PhilmMovie {
         if (ratings != null) {
             ratingPercent = unbox(ratingPercent, ratings.percentage);
             ratingVotes = unbox(ratingVotes, ratings.votes);
+        }
+        if (movie.rating != null) {
+            userRating = movie.rating.ordinal();
         }
 
         Images images = movie.images;
@@ -174,6 +179,10 @@ public class PhilmMovie {
 
     public int getRatingVotes() {
         return ratingVotes;
+    }
+
+    public int getUserRating() {
+        return userRating;
     }
 
     public String getOverview() {

@@ -669,7 +669,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         /**
          * Filters {@link PhilmMovie} that are unreleased, and will be released in the near future.
          */
-        SOON(R.string.filter_soon);
+        SOON(R.string.filter_soon),
+
+        /**
+         * Filters {@link PhilmMovie} which are highly rated, either by the user or the public.
+         */
+        HIGHLY_RATED(R.string.filter_highly_rated);
+
 
         private final int mTitle;
 
@@ -699,6 +705,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                             movie.getReleasedTime(), Constants.FUTURE_SOON_THRESHOLD);
                 case RELEASED:
                     return isInPast(movie.getReleasedTime());
+                case HIGHLY_RATED:
+                    return Math.max(movie.getRatingPercent(), movie.getUserRating() * 10)
+                            >= Constants.FILTER_HIGHLY_RATED;
             }
             return false;
         }

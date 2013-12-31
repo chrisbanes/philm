@@ -1,5 +1,7 @@
 package app.philm.in.drawable;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -18,7 +20,7 @@ public class PercentageDrawable extends Drawable {
     private static final Interpolator INTERPOLATOR = new AccelerateDecelerateInterpolator();
 
     private static final float BACKGROUND_CIRCLE_RADIUS_RATIO = 1f / 2f;
-    private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.7f / 2f;
+    private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.8f / 2f;
     private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.725f;
 
     private final Paint mBackgroundCirclePaint;
@@ -31,31 +33,48 @@ public class PercentageDrawable extends Drawable {
 
     private ValueAnimator mAnimator;
 
-    private int mCurrentValue;
-    private int mTargetValue;
+    private float mCurrentValue;
+    private float mTargetValue;
 
     private String mText;
 
-    public PercentageDrawable(Resources resources) {
+    private boolean mReverseMode;
+
+    public PercentageDrawable() {
         mBounds = new RectF();
         mTextBounds = new Rect();
 
         mArcPaint = new Paint();
         mArcPaint.setAntiAlias(true);
-        mArcPaint.setColor(0xFF99CC00);
 
         mBackgroundCirclePaint = new Paint();
         mBackgroundCirclePaint.setAntiAlias(true);
-        mBackgroundCirclePaint.setColor(0xFFDDDDDD);
 
         mForegroundCirclePaint = new Paint();
         mForegroundCirclePaint.setAntiAlias(true);
-        mForegroundCirclePaint.setColor(0xFF669900);
 
         mTextPaint = new Paint();
-        mTextPaint.setTypeface(Typeface.DEFAULT);
         mTextPaint.setAntiAlias(true);
-        mTextPaint.setColor(0xFF99CC00);
+    }
+
+    public void setTypeface(Typeface typeface) {
+        mTextPaint.setTypeface(typeface);
+    }
+
+    public void setBackgroundCircleColor(int color) {
+        mBackgroundCirclePaint.setColor(color);
+    }
+
+    public void setForegroundCircleColor(int color) {
+        mForegroundCirclePaint.setColor(color);
+    }
+
+    public void setArcColor(int color) {
+        mArcPaint.setColor(color);
+    }
+
+    public void setTextColor(int color) {
+        mTextPaint.setColor(color);
     }
 
     @Override
@@ -65,8 +84,12 @@ public class PercentageDrawable extends Drawable {
         canvas.drawCircle(mBounds.centerX(), mBounds.centerY(),
                 mBounds.height() * BACKGROUND_CIRCLE_RADIUS_RATIO, mBackgroundCirclePaint);
 
-        final float arcAngle = (mCurrentValue / 100f) * 360f;
-        canvas.drawArc(mBounds, -90f, arcAngle, true, mArcPaint);
+        final float arcAngle = mCurrentValue * 360f;
+        if (mReverseMode) {
+            canvas.drawArc(mBounds, arcAngle - 90f, 360f - arcAngle, true, mArcPaint);
+        } else {
+            canvas.drawArc(mBounds, -90f, arcAngle, true, mArcPaint);
+        }
 
         canvas.drawCircle(mBounds.centerX(),
                 mBounds.centerY(),
@@ -87,6 +110,7 @@ public class PercentageDrawable extends Drawable {
         mArcPaint.setAlpha(alpha);
         mBackgroundCirclePaint.setAlpha(alpha);
         mForegroundCirclePaint.setAlpha(alpha);
+        mTextPaint.setAlpha(alpha);
     }
 
     @Override
@@ -94,22 +118,25 @@ public class PercentageDrawable extends Drawable {
         mArcPaint.setColorFilter(colorFilter);
         mBackgroundCirclePaint.setColorFilter(colorFilter);
         mForegroundCirclePaint.setColorFilter(colorFilter);
+        mTextPaint.setColorFilter(colorFilter);
     }
 
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-        updateTextSize(bounds);
+        if (mText != null) {
+            updateTextSize();
+        }
     }
 
-    private void updateTextSize(final Rect bounds) {
-        final int targetWidth = Math.round(bounds.width() * TEXT_SIZE_BOUNDS_RATIO);
-        final int targetHeight = Math.round(bounds.height() * TEXT_SIZE_BOUNDS_RATIO);
+    private void updateTextSize() {
+        final int targetWidth = Math.round(getBounds().width() * TEXT_SIZE_BOUNDS_RATIO);
+        final int targetHeight = Math.round(getBounds().height() * TEXT_SIZE_BOUNDS_RATIO);
 
         float textSize = 4f;
         do {
             mTextPaint.setTextSize(textSize);
-            mTextPaint.getTextBounds("100", 0, 3, mTextBounds);
+            mTextPaint.getTextBounds(mText, 0, mText.length(), mTextBounds);
             textSize += 2f;
         } while (mTextBounds.width() < targetWidth && mTextBounds.height() < targetHeight);
     }
@@ -125,18 +152,32 @@ public class PercentageDrawable extends Drawable {
         }
 
         mText = String.valueOf(percentage);
-        mCurrentValue = 0;
-        mTargetValue = percentage;
+        updateTextSize();
 
-        mAnimator = new ValueAnimator();
-        mAnimator.setDuration(1250);
-        mAnimator.setInterpolator(INTERPOLATOR);
-        mAnimator.setIntValues(mCurrentValue, mTargetValue);
-        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        mTargetValue = percentage / 100f;
+
+        mAnimator = createAnimator(0f, mTargetValue);
+        mAnimator.start();
+    }
+
+    public void showRate(String promptText) {
+        if (isRunning()) {
+            stop();
+        }
+
+        mText = promptText;
+        updateTextSize();
+
+        mAnimator = createAnimator(0f, 1f);
+        mAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        mAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                mCurrentValue = (Integer) valueAnimator.getAnimatedValue();
-                invalidateSelf();
+            public void onAnimationRepeat(Animator animation) {
+                mReverseMode = !mReverseMode;
+            }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mReverseMode = false;
             }
         });
         mAnimator.start();
@@ -150,5 +191,20 @@ public class PercentageDrawable extends Drawable {
 
     public boolean isRunning() {
         return mAnimator != null ? mAnimator.isRunning() : false;
+    }
+
+    private ValueAnimator createAnimator(float startValue, float endValue) {
+        ValueAnimator animator = new ValueAnimator();
+        animator.setDuration(1250);
+        animator.setInterpolator(INTERPOLATOR);
+        animator.setFloatValues(startValue, endValue);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                mCurrentValue = (Float) valueAnimator.getAnimatedValue();
+                invalidateSelf();
+            }
+        });
+        return animator;
     }
 }

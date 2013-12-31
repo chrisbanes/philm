@@ -21,6 +21,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.view.PhilmActionButton;
+import app.philm.in.view.RatingCircleView;
 
 public class MovieDetailFragment extends Fragment implements MovieController.MovieDetailUi,
         View.OnClickListener {
@@ -38,8 +39,8 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     private ImageView mFanartImageView;
     private ImageView mPosterImageView;
 
-    private ImageView mRatingImageView;
-    private PercentageDrawable mPercentageDrawable;
+    private RatingCircleView mRatingCircleView;
+    private TextView mGlobalRatingTextView;
     private TextView mVotesTextView;
 
     private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
@@ -76,10 +77,8 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         mPosterImageView = (ImageView) view.findViewById(R.id.imageview_poster);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mVotesTextView = (TextView) view.findViewById(R.id.textview_votes);
-        mRatingImageView = (ImageView) view.findViewById(R.id.imageview_rating);
-
-        mPercentageDrawable = new PercentageDrawable(getResources());
-        mRatingImageView.setImageDrawable(mPercentageDrawable);
+        mGlobalRatingTextView = (TextView) view.findViewById(R.id.textview_global_rating);
+        mRatingCircleView = (RatingCircleView) view.findViewById(R.id.rcv_rating);
 
         mSummaryTextView = (TextView) view.findViewById(R.id.textview_summary);
         mSummaryTextView.setOnClickListener(this);
@@ -163,7 +162,13 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         updateButtonState(mCollectionButton, mMovie.inCollection(), R.string.action_add_collection,
                 R.string.action_remove_collection);
 
-        mPercentageDrawable.showRating(mMovie.getRatingPercent());
+        if (mMovie.getUserRating() > 0) {
+            mRatingCircleView.showRating(mMovie.getUserRating());
+        } else {
+            mRatingCircleView.showRatePrompt();
+        }
+
+        mGlobalRatingTextView.setText(mMovie.getRatingPercent() + "%");
         mVotesTextView.setText(String.valueOf(mMovie.getRatingVotes()));
     }
 

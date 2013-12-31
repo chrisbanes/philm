@@ -5,4 +5,12 @@
         <attr name="contentOverlay" format="dimension|reference" />
     </declare-styleable>
 
+    <declare-styleable name="RatingCircleView">
+        <attr name="ratePrompt" format="string|reference" />
+        <attr name="backgroundCircleColor" format="color|reference" />
+        <attr name="foregroundCircleColor" format="color|reference" />
+        <attr name="arcColor" format="color|reference" />
+        <attr name="textColor" format="color|reference" />
+    </declare-styleable>
+
 </resources>

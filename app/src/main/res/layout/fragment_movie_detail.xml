@@ -56,7 +56,8 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="?android:buttonBarStyle">
+                    style="?android:buttonBarStyle"
+                    android:layout_marginBottom="@dimen/spacing_minor">
 
                 <app.philm.in.view.PhilmActionButton
                         android:id="@+id/btn_seen"
@@ -85,25 +86,27 @@
                     android:id="@+id/textview_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_minor"
                     style="@style/Widget.Philm.Movie.Detail.Summary"/>
 
 
             <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="120dp">
+                    android:layout_height="110dp"
+                    android:layout_marginBottom="@dimen/spacing_minor">
 
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/spacing_major"
-                        android:layout_marginBottom="@dimen/spacing_major"
+                        android:layout_marginTop="@dimen/spacing_minor"
+                        android:layout_marginBottom="@dimen/spacing_minor"
                         android:background="#FF333333">
 
                     <LinearLayout
                             android:layout_width="0px"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:paddingRight="60dp"
+                            android:paddingRight="50dp"
                             android:orientation="vertical"
                             android:gravity="center">
 
@@ -125,16 +128,36 @@
                             android:layout_width="0px"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:paddingLeft="60dp">
+                            android:paddingLeft="50dp"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                        <TextView
+                                android:id="@+id/textview_global_rating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="@style/Widget.Philm.Movie.Detail.Ratings.Votes"/>
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/movie_detail_global"
+                                style="@style/Widget.Philm.Movie.Detail.Ratings.Title" />
+
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <ImageView
-                        android:id="@+id/imageview_rating"
-                        android:layout_width="120dp"
+                <app.philm.in.view.RatingCircleView
+                        android:id="@+id/rcv_rating"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        internal:backgroundCircleColor="#FFDDDDDD"
+                        internal:foregroundCircleColor="#FF669900"
+                        internal:arcColor="#FF99CC00"
+                        internal:textColor="#FF99CC00"
+                        internal:ratePrompt="@string/movie_detail_rate" />
 
             </FrameLayout>
 

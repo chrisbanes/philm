@@ -63,4 +63,10 @@
         <item name="android:textSize">24dp</item>
     </style>
 
+    <style name="Widget.Philm.Movie.Detail.Rating.Description" parent="android:Widget">
+        <item name="font">roboto_condensed_bold</item>
+        <item name="android:textSize">22dp</item>
+    </style>
+
+
 </resources>

@@ -31,9 +31,11 @@ public class FontTextView extends TextView {
     public FontTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FontTextView);
-        setFont(a.getInt(R.styleable.FontTextView_font, 0));
-        a.recycle();
+        if (!isInEditMode()) {
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FontTextView);
+            setFont(a.getInt(R.styleable.FontTextView_font, 0));
+            a.recycle();
+        }
     }
 
 

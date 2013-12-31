@@ -56,14 +56,14 @@ public class RatingCircleView extends ImageView {
     }
 
     /**
-     * @param rating between 0 & 100.
+     * @param rating between 0-10.
      */
     public void showRating(int rating) {
         mDrawable.showRating(rating);
     }
 
     public void showRatePrompt() {
-        mDrawable.showRate(mRatePrompt);
+        mDrawable.showPrompt(mRatePrompt);
     }
 
     @Override

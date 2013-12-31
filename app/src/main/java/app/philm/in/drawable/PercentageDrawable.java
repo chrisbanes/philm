@@ -21,7 +21,7 @@ public class PercentageDrawable extends Drawable {
 
     private static final float BACKGROUND_CIRCLE_RADIUS_RATIO = 1f / 2f;
     private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.8f / 2f;
-    private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.725f;
+    private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.6f;
 
     private final Paint mBackgroundCirclePaint;
     private final Paint mForegroundCirclePaint;
@@ -153,21 +153,21 @@ public class PercentageDrawable extends Drawable {
         return PixelFormat.TRANSPARENT;
     }
 
-    public void showRating(int percentage) {
+    public void showRating(int rating) {
         if (isRunning()) {
             stop();
         }
 
-        mText = String.valueOf(percentage);
+        mText = String.valueOf(rating);
         updateTextSize();
 
-        mTargetValue = percentage / 100f;
+        mTargetValue = rating / 10f;
 
         mAnimator = createAnimator(0f, mTargetValue);
         mAnimator.start();
     }
 
-    public void showRate(String promptText) {
+    public void showPrompt(String promptText) {
         if (isRunning()) {
             stop();
         }

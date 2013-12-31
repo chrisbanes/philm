@@ -13,11 +13,13 @@ import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.fragments.MovieGridFragment;
 import app.philm.in.fragments.MovieListFragment;
+import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.SearchListFragment;
 
 public class Display {
 
     private static final String FRAGMENT_TAG_LICENCES = "licences";
+    private static final String FRAGMENT_TAG_RATE_MOVIE = "rate_movie";
 
     private final Activity mActivity;
 
@@ -81,6 +83,11 @@ public class Display {
     public void showLicencesFragment() {
         LicencesFragment fragment = new LicencesFragment();
         fragment.show(mActivity.getFragmentManager(), FRAGMENT_TAG_LICENCES);
+    }
+
+    public void showRateMovieFragment() {
+        RateMovieFragment fragment = new RateMovieFragment();
+        fragment.show(mActivity.getFragmentManager(), FRAGMENT_TAG_RATE_MOVIE);
     }
 
     public void closeDrawerLayout() {

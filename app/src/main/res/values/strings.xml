@@ -53,4 +53,18 @@
     <string name="movie_detail_global">Global</string>
     <string name="movie_detail_rate">Rate</string>
 
+    <string-array name="movie_rating_descriptions">
+        <item>Not Set</item>
+        <item>Weak sauce</item>
+        <item>Terrible</item>
+        <item>Bad</item>
+        <item>Poor</item>
+        <item>Meh</item>
+        <item>Fair</item>
+        <item>Good</item>
+        <item>Great</item>
+        <item>Superb</item>
+        <item>Totally Ninja</item>
+    </string-array>
+
 </resources>

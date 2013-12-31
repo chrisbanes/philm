@@ -197,6 +197,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void clearSearch() {
                 mMoviesState.setSearchResult(null);
             }
+
+            @Override
+            public void showRateMovie(PhilmMovie movie) {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showRateMovieFragment();
+                }
+            }
         };
     }
 
@@ -807,6 +815,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void search(String query);
 
         void clearSearch();
+
+        void showRateMovie(PhilmMovie movie);
     }
 
     private abstract class BaseMovieTraktRunnable<R> extends TraktNetworkCallRunnable<R> {

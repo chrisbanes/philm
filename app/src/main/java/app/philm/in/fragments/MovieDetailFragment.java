@@ -16,12 +16,11 @@ import android.widget.TextView;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.drawable.PercentageDrawable;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.view.PhilmActionButton;
-import app.philm.in.view.RatingCircleView;
+import app.philm.in.view.RatingBarLayout;
 
 public class MovieDetailFragment extends Fragment implements MovieController.MovieDetailUi,
         View.OnClickListener {
@@ -39,9 +38,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     private ImageView mFanartImageView;
     private ImageView mPosterImageView;
 
-    private RatingCircleView mRatingCircleView;
-    private TextView mGlobalRatingTextView;
-    private TextView mVotesTextView;
+    private RatingBarLayout mRatingBarLayout;
 
     private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -76,9 +73,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         mFanartImageView = (ImageView) view.findViewById(R.id.imageview_fanart);
         mPosterImageView = (ImageView) view.findViewById(R.id.imageview_poster);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-        mVotesTextView = (TextView) view.findViewById(R.id.textview_votes);
-        mGlobalRatingTextView = (TextView) view.findViewById(R.id.textview_global_rating);
-        mRatingCircleView = (RatingCircleView) view.findViewById(R.id.rcv_rating);
+        mRatingBarLayout = (RatingBarLayout) view.findViewById(R.id.rating_bar_layout);
 
         mSummaryTextView = (TextView) view.findViewById(R.id.textview_summary);
         mSummaryTextView.setOnClickListener(this);
@@ -162,14 +157,15 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         updateButtonState(mCollectionButton, mMovie.inCollection(), R.string.action_add_collection,
                 R.string.action_remove_collection);
 
-        if (mMovie.getUserRating() > 0) {
-            mRatingCircleView.showRating(mMovie.getUserRating());
+        if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
+            mRatingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
         } else {
-            mRatingCircleView.showRatePrompt();
+            mRatingBarLayout.showRatePrompt();
         }
+        mRatingBarLayout.setRatingGlobalPercentage(mMovie.getRatingPercent());
+        mRatingBarLayout.setRatingGlobalVotes(mMovie.getRatingVotes());
+        mRatingBarLayout.setRatingCircleClickListener(this);
 
-        mGlobalRatingTextView.setText(mMovie.getRatingPercent() + "%");
-        mVotesTextView.setText(String.valueOf(mMovie.getRatingVotes()));
     }
 
     private void updateButtonState(PhilmActionButton button, final boolean checked,
@@ -211,6 +207,11 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
                     mSummaryTextView.setMaxLines(Integer.MAX_VALUE);
                 } else if (mSummaryTextView.getLineCount() > defaultMaxLines) {
                     mSummaryTextView.setMaxLines(defaultMaxLines);
+                }
+                break;
+            case R.id.rcv_rating:
+                if (mCallbacks != null) {
+                    mCallbacks.showRateMovie(mMovie);
                 }
                 break;
         }

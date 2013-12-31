@@ -1,6 +1,5 @@
 package app.philm.in.model;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Images;
@@ -14,6 +13,8 @@ import java.util.Comparator;
 import java.util.Date;
 
 public class PhilmMovie {
+
+    public static final int NOT_SET = -1;
 
     public static final Comparator<PhilmMovie> COMPARATOR = new Comparator<PhilmMovie>() {
         @Override
@@ -43,7 +44,8 @@ public class PhilmMovie {
     int year;
     long releasedTime;
 
-    int userRating;
+    int userRating = NOT_SET;
+    int userRatingAdvanced = NOT_SET;
     int ratingPercent;
     int ratingVotes;
 
@@ -99,9 +101,9 @@ public class PhilmMovie {
             ratingPercent = unbox(ratingPercent, ratings.percentage);
             ratingVotes = unbox(ratingVotes, ratings.votes);
         }
-        if (movie.rating != null) {
-            userRating = movie.rating.ordinal();
-        }
+
+        userRating = unbox(userRating, movie.rating);
+        userRatingAdvanced = unbox(userRatingAdvanced, movie.rating_advanced);
 
         Images images = movie.images;
         if (images != null) {
@@ -185,6 +187,10 @@ public class PhilmMovie {
         return userRating;
     }
 
+    public int getUserRatingAdvanced() {
+        return userRatingAdvanced;
+    }
+
     public String getOverview() {
         return overview;
     }
@@ -231,5 +237,17 @@ public class PhilmMovie {
 
     private static long unbox(long currentValue, Date newValue) {
         return newValue != null ? newValue.getTime() : currentValue;
+    }
+
+    private static int unbox(int currentValue, Rating rating) {
+        if (rating != null) {
+            switch (rating) {
+                case Unrate:
+                    return NOT_SET;
+                default:
+                    return rating.ordinal();
+            }
+        }
+        return currentValue;
     }
 }

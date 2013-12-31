@@ -69,7 +69,7 @@ public class ParallaxContentScrollView extends FrameLayout {
                 new NotifyingScrollView.OnScrollChangedListener() {
             @Override
             public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
-                onScrollViewScrollChanged(t);
+                updateOffset(t);
             }
         });
     }
@@ -78,6 +78,7 @@ public class ParallaxContentScrollView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         updateContentViewPaddingTop();
+        updateOffset(mContentViewScrollView.getScrollY());
     }
 
     void updateContentViewPaddingTop() {
@@ -93,13 +94,15 @@ public class ParallaxContentScrollView extends FrameLayout {
         }
     }
 
-    void onScrollViewScrollChanged(int y) {
+
+    void updateOffset(int y) {
         if (y <= mHeaderView.getHeight()) {
             int newTop = Math.round(-y * PARALLAX_FRICTION);
             mHeaderView.offsetTopAndBottom(newTop - mHeaderView.getTop());
 
             if (mContentViewScrollListener != null) {
-                mContentViewScrollListener.onContentViewScrolled(y / (float) mHeaderView.getHeight());
+                mContentViewScrollListener
+                        .onContentViewScrolled(y / (float) mHeaderView.getHeight());
             }
         }
     }

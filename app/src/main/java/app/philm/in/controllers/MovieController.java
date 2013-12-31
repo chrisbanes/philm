@@ -5,8 +5,11 @@ import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.ActionResponse;
 import com.jakewharton.trakt.entities.Movie;
+import com.jakewharton.trakt.entities.RatingResponse;
 import com.jakewharton.trakt.entities.Response;
+import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.MovieService;
+import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
 
 import android.support.v4.util.ArrayMap;
@@ -207,8 +210,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void submitRating(PhilmMovie movie, int rating) {
-                markMovieRating(movie, rating);
+            public void submitRating(PhilmMovie movie, Rating rating) {
+                markMovieRating(movie.getTraktId(), rating);
             }
         };
     }
@@ -479,10 +482,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
     }
 
-    private void markMovieRating(PhilmMovie movie, int rating) {
+    private void markMovieRating(String imdbId, Rating rating) {
         if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "markMovieRating: " + movie.getTitle() + " " + rating);
+            Log.d(LOG_TAG, "markMovieRating: " + imdbId + ". " + rating.name());
         }
+        mExecutor.execute(new SubmitMovieRatingRunnable(imdbId, rating));
     }
 
     private void persistLibraryToDb(final List<PhilmMovie> movies) {
@@ -823,7 +827,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void showRateMovie(PhilmMovie movie);
 
-        void submitRating(PhilmMovie movie, int rating);
+        void submitRating(PhilmMovie movie, Rating rating);
     }
 
     private abstract class BaseMovieTraktRunnable<R> extends TraktNetworkCallRunnable<R> {
@@ -1052,6 +1056,34 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         protected void movieRequiresModifying(PhilmMovie movie) {
             movie.setWatched(false);
+        }
+    }
+
+    private class SubmitMovieRatingRunnable extends BaseMovieTraktRunnable<RatingResponse> {
+        private final String mImdbId;
+        private final Rating mRating;
+
+        SubmitMovieRatingRunnable(String imdbId, Rating rating) {
+            super(mTraktClient);
+            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+            mRating = Preconditions.checkNotNull(rating, "rating cannot be null");
+        }
+
+        @Override
+        public RatingResponse doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.rateService().movie(new RateService.MovieRating(mImdbId, mRating));
+        }
+
+        @Override
+        public void onSuccess(RatingResponse result) {
+            if ("success".equals(result.status)) {
+                PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
+                if (movie != null) {
+                    movie.setUserRatingAdvanced(result.rating);
+                    mDbHelper.put(movie);
+                    populateUis();
+                }
+            }
         }
     }
 

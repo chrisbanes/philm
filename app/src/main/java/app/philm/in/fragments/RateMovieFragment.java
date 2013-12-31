@@ -78,7 +78,7 @@ public class RateMovieFragment extends DialogFragment implements DialogInterface
         switch (button) {
             case DialogInterface.BUTTON_POSITIVE:
                 if (mCallbacks != null) {
-                    mCallbacks.submitRating(mMovie, getRating());
+                    mCallbacks.submitRating(mMovie, PhilmMovie.mapIntToRating(getRating()));
                 }
                 break;
         }

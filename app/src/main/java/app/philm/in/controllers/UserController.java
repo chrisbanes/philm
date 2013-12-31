@@ -142,7 +142,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     @Override
-    protected UserUiCallbacks createUiCallbacks() {
+    protected UserUiCallbacks createUiCallbacks(final UserUi ui) {
         return new UserUiCallbacks() {
 
             @Override
@@ -180,8 +180,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         @Override
         public void onSuccess(String result) {
             if (!"success".equals(result)) {
-                UserUi ui = getUi();
-                if (ui != null) {
+                for (UserUi ui : getUis()) {
                     ui.showError(Error.BAD_AUTH);
                 }
                 return;
@@ -218,8 +217,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
         @Override
         public void onError(RetrofitError re) {
-            UserUi ui = getUi();
-            if (ui != null) {
+            for (UserUi ui : getUis()) {
                 ui.showError(Error.BAD_AUTH);
             }
         }

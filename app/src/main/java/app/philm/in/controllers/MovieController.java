@@ -71,17 +71,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onLibraryChanged(MoviesState.LibraryChangedEvent event) {
-        populateUi();
+        populateUis();
     }
 
     @Subscribe
     public void onTrendingChanged(MoviesState.TrendingChangedEvent event) {
-        populateUi();
+        populateUis();
     }
 
     @Subscribe
     public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
-        populateUi();
+        populateUis();
     }
 
     @Subscribe
@@ -95,7 +95,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onSearchResultChanged(MoviesState.SearchResultChangedEvent event) {
-        populateUi();
+        populateUis();
     }
 
     @Override
@@ -112,21 +112,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Override
-    protected MovieUiCallbacks createUiCallbacks() {
+    protected MovieUiCallbacks createUiCallbacks(final MovieUi ui) {
         return new MovieUiCallbacks() {
 
             @Override
             public void addFilter(Filter filter) {
                 if (mMoviesState.getFilters().add(filter)) {
                     removeMutuallyExclusiveFilters(filter);
-                    populateUi();
+                    populateUis();
                 }
             }
 
             @Override
             public void removeFilter(Filter filter) {
                 if (mMoviesState.getFilters().remove(filter)) {
-                    populateUi();
+                    populateUis();
                 }
             }
 
@@ -134,13 +134,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void clearFilters() {
                 if (!mMoviesState.getFilters().isEmpty()) {
                     mMoviesState.getFilters().clear();
-                    populateUi();
+                    populateUis();
                 }
             }
 
             @Override
             public void refresh() {
-                switch (getUi().getMovieQueryType()) {
+                switch (ui.getMovieQueryType()) {
                     case TRENDING:
                         fetchTrending();
                         break;
@@ -214,10 +214,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Override
-    protected void onUiAttached() {
-        super.onUiAttached();
-
-        final MovieQueryType queryType = getUi().getMovieQueryType();
+    protected void onUiAttached(final MovieUi ui) {
+        final MovieQueryType queryType = ui.getMovieQueryType();
 
         if (queryType.requireLogin() && !isLoggedIn()) {
             Log.i(LOG_TAG, queryType.name() + " UI Attached but not logged in");
@@ -240,17 +238,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 fetchWatchlistIfNeeded();
                 break;
             case DETAIL:
-                fetchDetailMovieIfNeeded();
+                fetchDetailMovieIfNeeded(ui);
                 break;
         }
     }
 
     @Override
-    protected void populateUi() {
-        super.populateUi();
-
-        final MovieUi ui = getUi();
-
+    protected void populateUi(final MovieUi ui) {
         if (!isLoggedIn() && ui.getMovieQueryType().requireLogin()) {
             ui.showError(NetworkError.UNAUTHORIZED);
             return;
@@ -389,8 +383,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return result;
     }
 
-    private void fetchDetailMovie() {
-        fetchDetailMovie(getUi().getRequestParameter());
+    private void fetchDetailMovie(MovieUi ui) {
+        fetchDetailMovie(ui.getRequestParameter());
     }
 
     private void fetchDetailMovie(String imdbId) {
@@ -398,10 +392,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new FetchDetailMovieRunnable(imdbId));
     }
 
-    private void fetchDetailMovieIfNeeded() {
-        PhilmMovie cached = getMovie(getUi().getRequestParameter());
+    private void fetchDetailMovieIfNeeded(MovieUi ui) {
+        PhilmMovie cached = getMovie(ui.getRequestParameter());
         if (cached == null || requireMovieDetailFetch(cached)) {
-            fetchDetailMovie();
+            fetchDetailMovie(ui);
         }
     }
 
@@ -648,8 +642,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void showLoadingProgress(boolean show) {
-        MovieUi ui = getUi();
-        if (ui != null) {
+        for (MovieUi ui : getUis()) {
             ui.showLoadingProgress(show);
         }
     }
@@ -846,8 +839,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onError(RetrofitError re) {
-            MovieUi ui = getUi();
-            if (ui != null) {
+            for (MovieUi ui : getUis()) {
                 ui.showError(NetworkError.from(re));
             }
         }
@@ -879,8 +871,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onError(RetrofitError re) {
-            MovieUi ui = getUi();
-            if (ui != null) {
+            for (MovieUi ui : getUis()) {
                 ui.showError(NetworkError.from(re));
             }
         }
@@ -998,7 +989,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (movie != null) {
                     movieRequiresModifying(movie);
                     checkPhilmState(movie);
-                    populateUi();
+                    populateUis();
                 } else {
                     fetchDetailMovie(mImdbId);
                 }
@@ -1028,7 +1019,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             // TODO: Should do something better here
-            populateUi();
+            populateUis();
         }
     }
 

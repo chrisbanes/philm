@@ -98,12 +98,12 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     @Override
-    protected void populateUi() {
-        getUi().setSideMenuItems(SideMenuItem.values());
+    protected void populateUi(MainControllerUi ui) {
+        ui.setSideMenuItems(SideMenuItem.values());
     }
 
     @Override
-    protected MainControllerUiCallbacks createUiCallbacks() {
+    protected MainControllerUiCallbacks createUiCallbacks(final MainControllerUi ui) {
         return new MainControllerUiCallbacks() {
             @Override
             public void onSideMenuItemSelected(SideMenuItem item) {

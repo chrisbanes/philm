@@ -11,31 +11,29 @@
     <style name="Widget.Philm.ActionBar" parent="android:Widget.Holo.ActionBar.Solid">
     </style>
 
-    <style name="TextAppearance.Philm.Light" parent="android:TextAppearance" />
-
-    <style name="TextAppearance.Philm.Serif" parent="android:TextAppearance" />
-
-    <style name="TextAppearance.Philm.Condensed" parent="android:TextAppearance" />
-
-    <style name="TextAppearance.Philm.Movie.Title" parent="TextAppearance.Philm.Condensed">
+    <style name="Widget.Philm.Movie.List.Title" parent="android:Widget">
+        <item name="font">roboto_condensed</item>
         <item name="android:textSize">20dp</item>
+        <item name="android:maxLines">2</item>
     </style>
 
-    <style name="TextAppearance.Philm.Movie.Rating" parent="TextAppearance.Philm.Condensed">
+    <style name="Widget.Philm.Movie.List.Subtitle" parent="android:Widget">
+        <item name="font">roboto_condensed</item>
         <item name="android:textSize">14dp</item>
         <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
-    <style name="TextAppearance.Philm.Movie.ListSection" parent="TextAppearance.Philm.Condensed">
+    <style name="Widget.Philm.Movie.List.SectionHeader" parent="android:Widget">
+        <item name="font">roboto_condensed</item>
         <item name="android:textSize">18dp</item>
-    </style>
+        <item name="android:padding">@dimen/spacing_micro</item>
+        <item name="android:paddingLeft">@dimen/spacing_major</item>
+        <item name="android:background">@color/primary_accent_color</item>
 
-    <style name="TextAppearance.Philm.Movie.Detail.Title" parent="TextAppearance.Philm.Condensed">
-        <item name="android:textSize">24dp</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Title" parent="android:Widget">
-        <item name="android:textAppearance">@style/TextAppearance.Philm.Condensed</item>
+        <item name="font">roboto_condensed</item>
         <item name="android:textSize">26dp</item>
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
@@ -47,9 +45,8 @@
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Summary" parent="android:Widget">
-        <item name="android:textAppearance">@style/TextAppearance.Philm.Serif</item>
-        <item name="android:textSize">16dp</item>
-        <item name="android:textStyle">italic</item>
+        <item name="font">roboto_slab</item>
+        <item name="android:textSize">15dp</item>
         <item name="android:padding">@dimen/spacing_minor</item>
         <item name="android:maxLines">@integer/default_summary_maxlines</item>
         <item name="android:ellipsize">end</item>
@@ -57,13 +54,12 @@
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Ratings.Title" parent="android:Widget">
-        <item name="android:textAppearance">@style/TextAppearance.Philm.Light</item>
+        <item name="font">roboto_light</item>
         <item name="android:textSize">16dp</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Ratings.Votes" parent="android:Widget">
-        <item name="android:textAppearance">@style/TextAppearance.Philm.Condensed</item>
-        <item name="android:textStyle">bold</item>
+        <item name="font">roboto_condensed_bold</item>
         <item name="android:textSize">24dp</item>
     </style>
 

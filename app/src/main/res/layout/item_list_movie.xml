@@ -20,24 +20,23 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_minor">
 
-        <TextView
+        <app.philm.in.view.FontTextView
                 android:id="@+id/textview_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.Philm.Movie.Title"/>
+                style="@style/Widget.Philm.Movie.List.Title"/>
 
-        <TextView
+        <app.philm.in.view.FontTextView
                 android:id="@+id/textview_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Philm.Movie.Rating"/>
+                style="@style/Widget.Philm.Movie.List.Subtitle"/>
 
-        <TextView
+        <app.philm.in.view.FontTextView
                 android:id="@+id/textview_release"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Philm.Movie.Rating"/>
+                style="@style/Widget.Philm.Movie.List.Subtitle"/>
 
     </LinearLayout>
 

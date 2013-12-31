@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <attr name="font" format="enum">
+        <enum name="roboto_light" value="1" />
+        <enum name="roboto_condensed" value="2" />
+        <enum name="roboto_condensed_light" value="3" />
+        <enum name="roboto_condensed_bold" value="4" />
+        <enum name="roboto_slab" value="5" />
+    </attr>
+
     <declare-styleable name="ParallaxContentScrollView">
         <attr name="contentOverlay" format="dimension|reference" />
     </declare-styleable>
@@ -11,6 +19,11 @@
         <attr name="foregroundCircleColor" format="color|reference" />
         <attr name="arcColor" format="color|reference" />
         <attr name="textColor" format="color|reference" />
+        <attr name="font" />
+    </declare-styleable>
+
+    <declare-styleable name="FontTextView">
+        <attr name="font" />
     </declare-styleable>
 
 </resources>

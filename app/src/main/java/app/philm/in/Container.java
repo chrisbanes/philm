@@ -14,6 +14,7 @@ import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AccountManagerHelper;
+import app.philm.in.util.TypefaceManager;
 
 public class Container {
 
@@ -33,6 +34,7 @@ public class Container {
     private Trakt mTrakt;
     private AccountManagerHelper mAccountManagerHelper;
     private DatabaseHelper mDatabaseHelper;
+    private TypefaceManager mTypefaceManager;
 
     private Container(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
@@ -74,6 +76,13 @@ public class Container {
             mDatabaseHelper = new PhilmSQLiteOpenHelper(mContext);
         }
         return mDatabaseHelper;
+    }
+
+    public TypefaceManager getTypefaceManager() {
+        if (mTypefaceManager == null) {
+            mTypefaceManager = new TypefaceManager(mContext.getAssets());
+        }
+        return mTypefaceManager;
     }
 
 }

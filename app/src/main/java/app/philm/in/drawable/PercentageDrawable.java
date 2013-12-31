@@ -54,11 +54,13 @@ public class PercentageDrawable extends Drawable {
         mForegroundCirclePaint.setAntiAlias(true);
 
         mTextPaint = new Paint();
+        mTextPaint.setSubpixelText(true);
         mTextPaint.setAntiAlias(true);
     }
 
     public void setTypeface(Typeface typeface) {
         mTextPaint.setTypeface(typeface);
+        updateTextSize();
     }
 
     public void setBackgroundCircleColor(int color) {
@@ -130,8 +132,13 @@ public class PercentageDrawable extends Drawable {
     }
 
     private void updateTextSize() {
-        final int targetWidth = Math.round(getBounds().width() * TEXT_SIZE_BOUNDS_RATIO);
-        final int targetHeight = Math.round(getBounds().height() * TEXT_SIZE_BOUNDS_RATIO);
+        Rect bounds = getBounds();
+        if (bounds.width() == 0 || bounds.height() == 0) {
+            return;
+        }
+
+        final int targetWidth = Math.round(bounds.width() * TEXT_SIZE_BOUNDS_RATIO);
+        final int targetHeight = Math.round(bounds.height() * TEXT_SIZE_BOUNDS_RATIO);
 
         float textSize = 4f;
         do {

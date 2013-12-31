@@ -2,6 +2,7 @@ package app.philm.in.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +37,12 @@ public class RatingCircleView extends ImageView {
         mDrawable.setArcColor(a.getColor(R.styleable.RatingCircleView_arcColor, 0));
         mDrawable.setTextColor(a.getColor(R.styleable.RatingCircleView_textColor, 0));
         mRatePrompt = a.getString(R.styleable.RatingCircleView_ratePrompt);
+
+        Typeface typeface = FontTextView.getFont(context,
+                a.getInt(R.styleable.RatingCircleView_font, 0));
+        if (typeface != null) {
+            mDrawable.setTypeface(typeface);
+        }
 
         a.recycle();
     }

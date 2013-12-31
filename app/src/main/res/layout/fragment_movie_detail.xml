@@ -37,7 +37,7 @@
                     android:background="?android:attr/colorForeground"
                     android:padding="1dp"/>
 
-            <TextView
+            <app.philm.in.view.FontTextView
                     android:id="@+id/textview_title"
                     android:layout_width="0px"
                     android:layout_weight="1"
@@ -82,7 +82,7 @@
 
             </LinearLayout>
 
-            <TextView
+            <app.philm.in.view.FontTextView
                     android:id="@+id/textview_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -110,13 +110,13 @@
                             android:orientation="vertical"
                             android:gravity="center">
 
-                        <TextView
+                        <app.philm.in.view.FontTextView
                                 android:id="@+id/textview_votes"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 style="@style/Widget.Philm.Movie.Detail.Ratings.Votes"/>
 
-                        <TextView
+                        <app.philm.in.view.FontTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/movie_detail_votes"
@@ -132,13 +132,13 @@
                             android:orientation="vertical"
                             android:gravity="center">
 
-                        <TextView
+                        <app.philm.in.view.FontTextView
                                 android:id="@+id/textview_global_rating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 style="@style/Widget.Philm.Movie.Detail.Ratings.Votes"/>
 
-                        <TextView
+                        <app.philm.in.view.FontTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/movie_detail_global"
@@ -157,7 +157,8 @@
                         internal:foregroundCircleColor="#FF669900"
                         internal:arcColor="#FF99CC00"
                         internal:textColor="#FF99CC00"
-                        internal:ratePrompt="@string/movie_detail_rate" />
+                        internal:ratePrompt="@string/movie_detail_rate"
+                        internal:font="roboto_slab" />
 
             </FrameLayout>
 

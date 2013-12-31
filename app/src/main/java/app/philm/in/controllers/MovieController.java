@@ -202,8 +202,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void showRateMovie(PhilmMovie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showRateMovieFragment();
+                    display.showRateMovieFragment(movie.getTraktId());
                 }
+            }
+
+            @Override
+            public void submitRating(PhilmMovie movie, int rating) {
+                markMovieRating(movie, rating);
             }
         };
     }
@@ -480,6 +485,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
     }
 
+    private void markMovieRating(PhilmMovie movie, int rating) {
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "markMovieRating: " + movie.getTitle() + " " + rating);
+        }
+    }
+
     private void persistLibraryToDb(final List<PhilmMovie> movies) {
         assertInited();
 
@@ -736,7 +747,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         LIBRARY(R.string.library_title),
         WATCHLIST(R.string.watchlist_title),
         DETAIL(0),
-        SEARCH(R.string.search_title);
+        SEARCH(R.string.search_title),
+        NONE(0);
 
         private final int mTitleResId;
 
@@ -817,6 +829,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void clearSearch();
 
         void showRateMovie(PhilmMovie movie);
+
+        void submitRating(PhilmMovie movie, int rating);
     }
 
     private abstract class BaseMovieTraktRunnable<R> extends TraktNetworkCallRunnable<R> {

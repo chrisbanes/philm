@@ -85,8 +85,8 @@ public class Display {
         fragment.show(mActivity.getFragmentManager(), FRAGMENT_TAG_LICENCES);
     }
 
-    public void showRateMovieFragment() {
-        RateMovieFragment fragment = new RateMovieFragment();
+    public void showRateMovieFragment(String movieId) {
+        RateMovieFragment fragment = RateMovieFragment.create(movieId);
         fragment.show(mActivity.getFragmentManager(), FRAGMENT_TAG_RATE_MOVIE);
     }
 

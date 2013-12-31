@@ -26,7 +26,6 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         View.OnClickListener {
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
-    private static final String KEY_QUERY_TYPE = "query_type";
 
     private MovieController.MovieUiCallbacks mCallbacks;
     private PhilmMovie mMovie;
@@ -47,7 +46,6 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_QUERY_MOVIE_ID, movieId);
-        bundle.putInt(KEY_QUERY_TYPE, MovieController.MovieQueryType.DETAIL.ordinal());
 
         MovieDetailFragment fragment = new MovieDetailFragment();
         fragment.setArguments(bundle);
@@ -113,18 +111,17 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
 
     @Override
     public void showError(NetworkError error) {
-        // TODO: Show something good here
+        // TODO: Implement!
     }
 
     @Override
     public void showLoadingProgress(boolean visible) {
-
+        // TODO: Implement!
     }
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        final int queryType = getArguments().getInt(KEY_QUERY_TYPE);
-        return MovieController.MovieQueryType.values()[queryType];
+        return MovieController.MovieQueryType.DETAIL;
     }
 
     @Override

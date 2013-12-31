@@ -10,8 +10,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
 
 public class PercentageDrawable extends Drawable {
+
+    private static final Interpolator INTERPOLATOR = new AccelerateDecelerateInterpolator();
 
     private static final float BACKGROUND_CIRCLE_RADIUS_RATIO = 1f / 2f;
     private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.7f / 2f;
@@ -62,7 +66,7 @@ public class PercentageDrawable extends Drawable {
                 mBounds.height() * BACKGROUND_CIRCLE_RADIUS_RATIO, mBackgroundCirclePaint);
 
         final float arcAngle = (mCurrentValue / 100f) * 360f;
-        canvas.drawArc(mBounds, 0f, arcAngle, true, mArcPaint);
+        canvas.drawArc(mBounds, -90f, arcAngle, true, mArcPaint);
 
         canvas.drawCircle(mBounds.centerX(),
                 mBounds.centerY(),
@@ -125,7 +129,8 @@ public class PercentageDrawable extends Drawable {
         mTargetValue = percentage;
 
         mAnimator = new ValueAnimator();
-        mAnimator.setDuration(1000);
+        mAnimator.setDuration(1250);
+        mAnimator.setInterpolator(INTERPOLATOR);
         mAnimator.setIntValues(mCurrentValue, mTargetValue);
         mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

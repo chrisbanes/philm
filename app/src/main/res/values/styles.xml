@@ -34,7 +34,7 @@
 
     <style name="Widget.Philm.Movie.Detail.Title" parent="android:Widget">
         <item name="font">roboto_condensed</item>
-        <item name="android:textSize">26dp</item>
+        <item name="android:textSize">@dimen/movie_detail_title_textsize</item>
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">bottom|left</item>
@@ -46,7 +46,7 @@
 
     <style name="Widget.Philm.Movie.Detail.Summary" parent="android:Widget">
         <item name="font">roboto_slab</item>
-        <item name="android:textSize">15dp</item>
+        <item name="android:textSize">@dimen/movie_detail_summary_textsize</item>
         <item name="android:padding">@dimen/spacing_minor</item>
         <item name="android:maxLines">@integer/default_summary_maxlines</item>
         <item name="android:ellipsize">end</item>

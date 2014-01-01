@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +26,9 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
     private MovieController.MovieUiCallbacks mCallbacks;
 
     private boolean mFiltersItemVisible;
+
+    private int mFirstVisiblePosition;
+    private int mFirstVisiblePositionTop;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +106,8 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -109,8 +116,25 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
 
     @Override
     public void onPause() {
+        saveListViewPosition();
         getController().detachUi(this);
         super.onPause();
+    }
+
+    private void saveListViewPosition() {
+        E listView = getListView();
+
+        mFirstVisiblePosition = listView.getFirstVisiblePosition();
+
+        if (mFirstVisiblePosition != AdapterView.INVALID_POSITION && listView.getChildCount() > 0) {
+            mFirstVisiblePositionTop = listView.getChildAt(0).getTop();
+        }
+    }
+
+    protected void moveListViewToSavedPositions() {
+        if (mFirstVisiblePosition != AdapterView.INVALID_POSITION) {
+            getListView().setSelection(mFirstVisiblePosition);
+        }
     }
 
     @Override

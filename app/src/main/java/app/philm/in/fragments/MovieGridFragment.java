@@ -52,6 +52,7 @@ public class MovieGridFragment extends PhilmMovieListFragment<GridView> {
     @Override
     public void setItems(List<ListItem<PhilmMovie>> items) {
         mMovieGridAdapter.setItems(items);
+        moveListViewToSavedPositions();
     }
 
     @Override

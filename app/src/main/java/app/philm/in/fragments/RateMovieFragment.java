@@ -100,6 +100,11 @@ public class RateMovieFragment extends DialogFragment implements DialogInterface
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         mRatingBar.setEnabled(movie != null);
+
+        if (movie != null) {
+            mRatingBar.setRating(movie.getUserRatingAdvanced() / 2f);
+            updateRatingDescriptionText();
+        }
     }
 
     @Override

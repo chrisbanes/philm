@@ -377,9 +377,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
         }
 
-        for (MovieController.Filter filter : sections) {
-            if (sectionsItemLists.containsKey(filter)) {
-                result.addAll(sectionsItemLists.get(filter));
+        if (sectionsItemLists != null) {
+            for (MovieController.Filter filter : sections) {
+                if (sectionsItemLists.containsKey(filter)) {
+                    result.addAll(sectionsItemLists.get(filter));
+                }
             }
         }
 

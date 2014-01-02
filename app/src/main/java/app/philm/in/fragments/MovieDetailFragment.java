@@ -16,6 +16,7 @@ import android.widget.TextView;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
@@ -24,12 +25,11 @@ import app.philm.in.view.RatingBarLayout;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
-public class MovieDetailFragment extends Fragment implements MovieController.MovieDetailUi,
-        View.OnClickListener {
+public class MovieDetailFragment extends PhilmMovieFragment
+        implements MovieController.MovieDetailUi, View.OnClickListener {
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
-    private MovieController.MovieUiCallbacks mCallbacks;
     private PhilmMovie mMovie;
 
     private TraktImageHelper mTraktImageHelper;
@@ -89,23 +89,6 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getController().attachUi(this);
-    }
-
-    @Override
-    public void onPause() {
-        getController().detachUi(this);
-        super.onPause();
-    }
-
-    @Override
-    public void setCallbacks(MovieController.MovieUiCallbacks callbacks) {
-        mCallbacks = callbacks;
-    }
-
-    @Override
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
@@ -129,16 +112,6 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     @Override
     public void setToggleWatchedButtonEnabled(boolean enabled) {
         mSeenButton.setEnabled(enabled);
-    }
-
-    @Override
-    public void showError(NetworkError error) {
-        Crouton.makeText(getActivity(), error.getTitle(), Style.ALERT).show();
-    }
-
-    @Override
-    public void showLoadingProgress(boolean visible) {
-        // TODO: Implement!
     }
 
     @Override
@@ -197,26 +170,22 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
         }
     }
 
-    private MovieController getController() {
-        return PhilmApplication.from(getActivity()).getMainController().getMovieController();
-    }
-
     @Override
     public final void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_seen:
-                if (mCallbacks != null) {
-                    mCallbacks.toggleMovieSeen(mMovie);
+                if (hasCallbacks()) {
+                    getCallbacks().toggleMovieSeen(mMovie);
                 }
                 break;
             case R.id.btn_watchlist:
-                if (mCallbacks != null) {
-                    mCallbacks.toggleInWatchlist(mMovie);
+                if (hasCallbacks()) {
+                    getCallbacks().toggleInWatchlist(mMovie);
                 }
                 break;
             case R.id.btn_collection:
-                if (mCallbacks != null) {
-                    mCallbacks.toggleInCollection(mMovie);
+                if (hasCallbacks()) {
+                    getCallbacks().toggleInCollection(mMovie);
                 }
                 break;
             case R.id.textview_summary:
@@ -229,8 +198,8 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
                 }
                 break;
             case R.id.rcv_rating:
-                if (mCallbacks != null) {
-                    mCallbacks.showRateMovie(mMovie);
+                if (hasCallbacks()) {
+                    getCallbacks().showRateMovie(mMovie);
                 }
                 break;
         }

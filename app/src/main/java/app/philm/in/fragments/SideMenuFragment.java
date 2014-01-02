@@ -3,7 +3,6 @@ package app.philm.in.fragments;
 import com.google.common.base.Preconditions;
 
 import android.app.ListFragment;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,7 +10,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import app.philm.in.PhilmApplication;
-import app.philm.in.R;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;

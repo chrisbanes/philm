@@ -793,7 +793,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
+    public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
         void showError(NetworkError error);
 
         void showLoadingProgress(boolean visible);

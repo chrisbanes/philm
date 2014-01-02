@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
@@ -20,7 +19,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public abstract class PhilmMovieListFragment<E extends AbsListView> extends PhilmListFragment<E>
+public abstract class PhilmMovieListFragment<E extends AbsListView> extends ListFragment<E>
         implements MovieController.MovieListUi {
 
     private Set<MovieController.Filter> mFilters;
@@ -28,6 +27,8 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
     private MovieController.MovieUiCallbacks mCallbacks;
 
     private boolean mFiltersItemVisible;
+
+    private Crouton mCurrentCrouton;
 
     private int mFirstVisiblePosition;
     private int mFirstVisiblePositionTop;
@@ -119,6 +120,7 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
     @Override
     public void onPause() {
         saveListViewPosition();
+        cancelCrouton();
         getController().detachUi(this);
         super.onPause();
     }
@@ -177,8 +179,18 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
                 setEmptyText(getString(R.string.empty_unknown_error, getTitle()));
                 break;
         }
+    }
 
-        Crouton.makeText(getActivity(), error.getTitle(), Style.ALERT).show();
+    private void cancelCrouton() {
+        if (mCurrentCrouton != null) {
+            mCurrentCrouton.cancel();
+        }
+    }
+
+    protected void showCrouton(int text, Style style) {
+        cancelCrouton();
+        mCurrentCrouton = Crouton.makeText(getActivity(), text, style);
+        mCurrentCrouton.show();
     }
 
     protected final boolean hasCallbacks() {

@@ -17,7 +17,7 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public abstract class PhilmListFragment<E extends AbsListView> extends Fragment {
+public abstract class ListFragment<E extends AbsListView> extends Fragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
     static final int INTERNAL_PROGRESS_CONTAINER_ID = 0x00ff0002;
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
@@ -46,7 +46,7 @@ public abstract class PhilmListFragment<E extends AbsListView> extends Fragment 
     CharSequence mEmptyText;
     boolean mListShown;
 
-    public PhilmListFragment() {
+    public ListFragment() {
     }
 
     /**

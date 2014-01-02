@@ -16,11 +16,12 @@ import android.widget.TextView;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.fragments.base.PhilmMovieDialogFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 
-public class RateMovieFragment extends DialogFragment implements DialogInterface.OnClickListener,
-        MovieController.MovieRateUi {
+public class RateMovieFragment extends PhilmMovieDialogFragment
+        implements DialogInterface.OnClickListener, MovieController.MovieRateUi {
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
@@ -30,7 +31,6 @@ public class RateMovieFragment extends DialogFragment implements DialogInterface
     private String[] mRatingDescriptions;
 
     private PhilmMovie mMovie;
-    private MovieController.MovieUiCallbacks mCallbacks;
 
     public static RateMovieFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -77,23 +77,11 @@ public class RateMovieFragment extends DialogFragment implements DialogInterface
     public void onClick(DialogInterface dialogInterface, final int button) {
         switch (button) {
             case DialogInterface.BUTTON_POSITIVE:
-                if (mCallbacks != null) {
-                    mCallbacks.submitRating(mMovie, PhilmMovie.mapIntToRating(getRating()));
+                if (hasCallbacks()) {
+                    getCallbacks().submitRating(mMovie, PhilmMovie.mapIntToRating(getRating()));
                 }
                 break;
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getController().attachUi(this);
-    }
-
-    @Override
-    public void onPause() {
-        getController().detachUi(this);
-        super.onPause();
     }
 
     @Override
@@ -127,11 +115,6 @@ public class RateMovieFragment extends DialogFragment implements DialogInterface
         return getArguments().getString(KEY_QUERY_MOVIE_ID);
     }
 
-    @Override
-    public void setCallbacks(MovieController.MovieUiCallbacks callbacks) {
-        mCallbacks = callbacks;
-    }
-
     private int getRating() {
         return Math.round(mRatingBar.getRating() * 2f);
     }
@@ -142,9 +125,5 @@ public class RateMovieFragment extends DialogFragment implements DialogInterface
 
     private void updateRatingDescriptionText() {
         mRatingDescriptionTextView.setText(getRatingDescription(getRating()));
-    }
-
-    private MovieController getController() {
-        return PhilmApplication.from(getActivity()).getMainController().getMovieController();
     }
 }

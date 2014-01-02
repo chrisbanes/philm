@@ -32,6 +32,11 @@
 
     </style>
 
+    <style name="Widget.Philm.Movie.Login.Title" parent="android:Widget">
+        <item name="font">roboto_condensed</item>
+        <item name="android:textSize">@dimen/movie_detail_title_textsize</item>
+    </style>
+
     <style name="Widget.Philm.Movie.Detail.Title" parent="android:Widget">
         <item name="font">roboto_condensed</item>
         <item name="android:textSize">@dimen/movie_detail_title_textsize</item>

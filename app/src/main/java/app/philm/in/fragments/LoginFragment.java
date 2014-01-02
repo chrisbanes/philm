@@ -36,7 +36,7 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
         mUsername = (EditText) view.findViewById(R.id.edit_login);
         mPassword = (EditText) view.findViewById(R.id.edit_password);
 
-        mLoginButton = (Button) view.findViewById(R.id.btn_login);
+        mLoginButton = (Button) view.findViewById(R.id.btn_submit);
         mLoginButton.setOnClickListener(this);
 
         return view;
@@ -67,7 +67,7 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_login:
+            case R.id.btn_submit:
                 if (mCallbacks != null) {
                     String username = mUsername.getText().toString().trim();
                     String password = mPassword.getText().toString().trim();

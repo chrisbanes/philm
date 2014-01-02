@@ -39,6 +39,7 @@ public class PhilmApplication extends Application {
                 container.getDatabaseHelper());
 
         mMainController = new MainController(
+                mApplicationState,
                 userController,
                 movieController,
                 container.getDatabaseHelper());

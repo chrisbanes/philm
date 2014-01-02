@@ -16,6 +16,7 @@ import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.SearchResult;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
@@ -33,6 +34,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private Set<MovieController.Filter> mFilters;
 
     private Account mAccount;
+    private PhilmUserProfile mUserProfile;
     private String mUsername, mHashedPassword;
 
     public ApplicationState(Bus eventBus) {
@@ -157,5 +159,18 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(hashedPassword)) {
             mEventBus.post(new UserCredentialsConfirmedEvent());
         }
+    }
+
+    @Override
+    public void setUserProfile(PhilmUserProfile profile) {
+        if (!Objects.equal(profile, mUserProfile)) {
+            mUserProfile = profile;
+            mEventBus.post(new UserProfileChangedEvent());
+        }
+    }
+
+    @Override
+    public PhilmUserProfile getUserProfile() {
+        return mUserProfile;
     }
 }

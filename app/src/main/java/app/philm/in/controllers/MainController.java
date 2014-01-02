@@ -2,14 +2,20 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
 
+import com.squareup.otto.Subscribe;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.R;
+import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.state.ApplicationState;
 import app.philm.in.state.DatabaseHelper;
+import app.philm.in.state.UserState;
 
 public class MainController extends BaseUiController<MainController.MainControllerUi,
         MainController.MainControllerUiCallbacks> {
@@ -41,6 +47,10 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     public interface MainControllerUi extends BaseUiController.Ui<MainControllerUiCallbacks> {
         void setSideMenuItems(SideMenuItem... items);
+
+        void showUserProfile(PhilmUserProfile profile);
+
+        void showAddAccountButton();
     }
 
     public interface MainControllerUiCallbacks {
@@ -54,13 +64,19 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     private final DatabaseHelper mDbHelper;
 
+    private ApplicationState mState;
+
     private HostCallbacks mHostCallbacks;
 
     public MainController(
+            ApplicationState state,
             UserController userController,
             MovieController movieController,
             DatabaseHelper dbHelper) {
         super();
+
+        mState = Preconditions.checkNotNull(state, "state cannot be null");
+
         mUserController = Preconditions.checkNotNull(userController,
                 "userController cannot be null");
         mMovieController = Preconditions.checkNotNull(movieController,
@@ -76,6 +92,11 @@ public class MainController extends BaseUiController<MainController.MainControll
                 }
             }
         });
+    }
+
+    @Subscribe
+    public void onAccountChanged(UserState.UserProfileChangedEvent event) {
+        populateUis();
     }
 
     @Override
@@ -95,6 +116,8 @@ public class MainController extends BaseUiController<MainController.MainControll
     @Override
     protected void onInited() {
         super.onInited();
+        mState.registerForEvents(this);
+
         mUserController.init();
         mMovieController.init();
     }
@@ -102,6 +125,15 @@ public class MainController extends BaseUiController<MainController.MainControll
     @Override
     protected void populateUi(MainControllerUi ui) {
         ui.setSideMenuItems(SideMenuItem.values());
+
+        PhilmUserProfile profile = mState.getUserProfile();
+        if (profile != null) {
+            ui.showUserProfile(profile);
+        } else {
+            if (TextUtils.isEmpty(mState.getUsername())) {
+                ui.showAddAccountButton();
+            }
+        }
     }
 
     @Override
@@ -161,6 +193,9 @@ public class MainController extends BaseUiController<MainController.MainControll
         mMovieController.suspend();
 
         mDbHelper.close();
+        mState.unregisterForEvents(this);
+
+        super.onSuspended();
     }
 
     @Override

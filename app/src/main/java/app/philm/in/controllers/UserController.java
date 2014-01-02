@@ -3,6 +3,7 @@ package app.philm.in.controllers;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
+import com.jakewharton.trakt.entities.UserProfile;
 import com.squareup.otto.Subscribe;
 
 import android.accounts.Account;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import app.philm.in.AccountActivity;
 import app.philm.in.Constants;
 import app.philm.in.Display;
+import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
@@ -84,7 +86,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 mUserState.setCurrentAccount(accounts[0]);
             }
         } else {
-            // Try and find account in account list, if removed remove our reference
+            // Try and find account in account list, if removed, remove our reference
             boolean found = false;
             for (int i = 0, z = accounts.length ; i < z ; i++) {
                 if (Objects.equal(accounts[i].name, account.name)) {
@@ -104,8 +106,10 @@ public class UserController extends BaseUiController<UserController.UserUi,
         if (currentAccount != null) {
             mUserState.setCredentials(currentAccount.name,
                     mAccountManagerHelper.getPassword(currentAccount));
+            fetchUserProfile(mUserState.getUsername());
         } else {
             mUserState.setCredentials(null, null);
+            mUserState.setUserProfile(null);
             // TODO: Also nuke rest of state
         }
 
@@ -137,8 +141,12 @@ public class UserController extends BaseUiController<UserController.UserUi,
         super.onSuspended();
     }
 
-    void doLogin(String username, String password) {
+    private void doLogin(String username, String password) {
         mExecutor.execute(new CheckUserCredentialsRunnable(username, Sha1.encode(password)));
+    }
+
+    private void fetchUserProfile(String username) {
+        mExecutor.execute(new FetchUserProfileRunnable(username));
     }
 
     @Override
@@ -160,6 +168,30 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 doLogin(username, password);
             }
         };
+    }
+
+    private class FetchUserProfileRunnable extends TraktNetworkCallRunnable<UserProfile> {
+        private final String mUsername;
+
+        FetchUserProfileRunnable(String username) {
+            super(mTraktClient);
+            mUsername = Preconditions.checkNotNull(username, "username cannot be null");
+        }
+
+        @Override
+        public UserProfile doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.userService().profile(mUsername);
+        }
+
+        @Override
+        public void onSuccess(UserProfile result) {
+            mUserState.setUserProfile(new PhilmUserProfile(result));
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            // TODO Ignore
+        }
     }
 
     private class CheckUserCredentialsRunnable extends TraktNetworkCallRunnable<String> {

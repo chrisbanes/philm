@@ -2,7 +2,11 @@ package app.philm.in.state;
 
 import android.accounts.Account;
 
+import app.philm.in.model.PhilmUserProfile;
+
 interface BaseState {
+
+    public PhilmUserProfile getUserProfile();
 
     public String getUsername();
 

@@ -9,6 +9,8 @@
     <string name="watchlist_title">Watchlist</string>
     <string name="search_title">Search</string>
 
+    <string name="button_add_account">Add Account</string>
+
     <string name="drawer_open_content_desc">Drawer open</string>
     <string name="drawer_closed_content_desc">Drawer closed</string>
 

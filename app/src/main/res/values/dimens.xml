@@ -5,6 +5,9 @@
     <dimen name="spacing_minor">8dp</dimen>
     <dimen name="spacing_major">16dp</dimen>
 
+    <dimen name="drawer_account_avatar_width">56dp</dimen>
+    <dimen name="drawer_account_avatar_height">56dp</dimen>
+
     <dimen name="movie_grid_spacing">1dp</dimen>
     <dimen name="movie_grid_item_width">100dp</dimen>
     <dimen name="movie_grid_item_height">170dp</dimen>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:divider="?android:attr/dividerVertical"
+              android:showDividers="middle">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+        <LinearLayout
+                android:id="@+id/side_items_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:divider="?android:attr/dividerVertical"
+                android:showDividers="middle|end">
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:buttonBarStyle">
+
+        <ImageView
+                android:id="@+id/imageview_account_avatar"
+                android:layout_width="@dimen/drawer_account_avatar_width"
+                android:layout_height="@dimen/drawer_account_avatar_height"
+                android:visibility="gone" />
+
+        <Button
+                android:id="@+id/btn_account"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/button_add_account"
+                style="?android:buttonBarButtonStyle"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

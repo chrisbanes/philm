@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.controllers.MovieController;
@@ -95,6 +96,11 @@ public class Display {
         if (drawerLayout != null) {
             drawerLayout.closeDrawers();
         }
+    }
+
+    public void startAddAccountActivity() {
+        Intent intent = new Intent(AccountActivity.ACTION_LOGIN);
+        mActivity.startActivity(intent);
     }
 
     public void setActionBarTitle(int titleResId) {

@@ -1,23 +1,43 @@
 package app.philm.in.fragments;
 
-import com.google.common.base.Preconditions;
-
-import android.app.ListFragment;
+import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import app.philm.in.PhilmApplication;
+import app.philm.in.R;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 
-public class SideMenuFragment extends ListFragment implements MainControllerUi {
+public class SideMenuFragment extends Fragment implements MainControllerUi, View.OnClickListener {
+
+    private SideMenuItem[] mSideMenuItems;
 
     private MainControllerUiCallbacks mCallbacks;
+
+    private LinearLayout mSideItemsLayout;
+    private Button mAddAccountButton;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_drawer, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mSideItemsLayout = (LinearLayout) view.findViewById(R.id.side_items_layout);
+
+        mAddAccountButton = (Button) view.findViewById(R.id.btn_account);
+        mAddAccountButton.setOnClickListener(this);
+    }
 
     @Override
     public void onResume() {
@@ -33,57 +53,40 @@ public class SideMenuFragment extends ListFragment implements MainControllerUi {
 
     @Override
     public void setSideMenuItems(SideMenuItem[] items) {
-        setListAdapter(new SideMenuItemAdapter(items));
-        setListShown(true);
+        mSideMenuItems = items;
+
+        if (mSideItemsLayout != null) {
+            populateSideItems();
+        }
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
+    public void onClick(View view) {
         if (mCallbacks != null) {
-            mCallbacks.onSideMenuItemSelected((SideMenuItem) l.getItemAtPosition(position));
+            if (view == mAddAccountButton) {
+                mCallbacks.addAccountRequested();
+            } else if (view.getTag() instanceof SideMenuItem) {
+                mCallbacks.onSideMenuItemSelected((SideMenuItem) view.getTag());
+            }
+        }
+    }
+
+    private void populateSideItems() {
+        mSideItemsLayout.removeAllViews();
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        for (SideMenuItem item : mSideMenuItems) {
+            Button button = (Button) inflater.inflate(R.layout.item_drawer, mSideItemsLayout, false);
+            button.setText(item.getTitle());
+            button.setTag(item);
+            button.setOnClickListener(this);
+            mSideItemsLayout.addView(button);
         }
     }
 
     @Override
     public void setCallbacks(MainControllerUiCallbacks callbacks) {
         mCallbacks = callbacks;
-    }
-
-    private class SideMenuItemAdapter extends BaseAdapter {
-        private SideMenuItem[] mItems;
-
-        SideMenuItemAdapter(SideMenuItem[] items) {
-            mItems = Preconditions.checkNotNull(items, "items cannot be null");
-        }
-
-        @Override
-        public int getCount() {
-            return mItems.length;
-        }
-
-        @Override
-        public SideMenuItem getItem(int position) {
-            return mItems[position];
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
-            if (view == null) {
-                view = getActivity().getLayoutInflater()
-                        .inflate(android.R.layout.simple_list_item_1, viewGroup, false);
-            }
-
-            final SideMenuItem item = getItem(position);
-            final TextView textView = (TextView) view.findViewById(android.R.id.text1);
-            textView.setText(item.getTitle());
-
-            return view;
-        }
     }
 
     private MainController getController() {

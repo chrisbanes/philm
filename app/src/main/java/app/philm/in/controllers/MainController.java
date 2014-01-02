@@ -45,6 +45,8 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     public interface MainControllerUiCallbacks {
         void onSideMenuItemSelected(SideMenuItem item);
+
+        void addAccountRequested();
     }
 
     private final UserController mUserController;
@@ -107,11 +109,24 @@ public class MainController extends BaseUiController<MainController.MainControll
         return new MainControllerUiCallbacks() {
             @Override
             public void onSideMenuItemSelected(SideMenuItem item) {
+                closeDrawer();
+                showUiItem(item);
+            }
+
+            @Override
+            public void addAccountRequested() {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.startAddAccountActivity();
+                    display.closeDrawerLayout();
+                }
+            }
+
+            private void closeDrawer() {
                 Display display = getDisplay();
                 if (display != null) {
                     display.closeDrawerLayout();
                 }
-                showUiItem(item);
             }
         };
     }

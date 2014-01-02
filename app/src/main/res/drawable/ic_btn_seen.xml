@@ -2,10 +2,10 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:state_enabled="false" android:drawable="@drawable/ic_btn_seen_disabled" />
+
     <item android:state_checked="true" android:drawable="@drawable/ic_btn_seen_checked" />
 
-    <item android:state_enabled="true" android:drawable="@drawable/ic_btn_seen_normal" />
-
-    <item android:drawable="@drawable/ic_btn_seen_disabled" />
+    <item android:drawable="@drawable/ic_btn_seen_normal" />
 
 </selector>

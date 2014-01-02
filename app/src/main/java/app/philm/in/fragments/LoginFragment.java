@@ -7,7 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -20,8 +21,14 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     private UserController.UserUiCallbacks mCallbacks;
 
     private EditText mUsername;
+
     private EditText mPassword;
+
     private Button mLoginButton;
+
+    private TextView mErrorTextView;
+
+    private ProgressBar mProgressBar;
 
     public static LoginFragment create() {
         LoginFragment fragment = new LoginFragment();
@@ -39,6 +46,9 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
         mLoginButton = (Button) view.findViewById(R.id.btn_submit);
         mLoginButton.setOnClickListener(this);
 
+        mErrorTextView = (TextView) view.findViewById(R.id.textview_error_message);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
+
         return view;
     }
 
@@ -55,8 +65,18 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     }
 
     @Override
+    public void showLoadingProgress(boolean visible) {
+        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
     public void showError(UserController.Error error) {
-        Toast.makeText(getActivity(), "Error: " + error.name(), Toast.LENGTH_SHORT).show();
+        switch (error) {
+            case BAD_AUTH:
+                mErrorTextView.setText(R.string.login_authorization_error);
+                mErrorTextView.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     @Override
@@ -68,13 +88,23 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_submit:
+                mErrorTextView.setVisibility(View.GONE);
                 if (mCallbacks != null) {
-                    String username = mUsername.getText().toString().trim();
-                    String password = mPassword.getText().toString().trim();
-                    if (mCallbacks.isUsernameValid(username) &&
-                            mCallbacks.isPasswordValid(password)) {
-                        mCallbacks.login(username, password);
+                    final String username = mUsername.getText().toString().trim();
+                    if (!mCallbacks.isUsernameValid(username)) {
+                        mUsername.setError(getString(R.string.login_username_empty));
+                        return;
                     }
+                    mUsername.setError(null);
+
+                    final String password = mPassword.getText().toString().trim();
+                    if (!mCallbacks.isPasswordValid(password)) {
+                        mPassword.setError(getString(R.string.login_password_empty));
+                        return;
+                    }
+                    mPassword.setError(null);
+
+                    mCallbacks.login(username, password);
                 }
         }
     }

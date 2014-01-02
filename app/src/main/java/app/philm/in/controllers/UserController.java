@@ -41,6 +41,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     public interface UserUi extends BaseUiController.Ui<UserUiCallbacks> {
+        void showLoadingProgress(boolean visible);
+
         void showError(Error error);
     }
 
@@ -158,6 +160,9 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     private void doLogin(String username, String password) {
+        for (UserUi ui : getUis()) {
+            ui.showLoadingProgress(true);
+        }
         mExecutor.execute(new CheckUserCredentialsRunnable(username, Sha1.encode(password)));
     }
 
@@ -271,6 +276,13 @@ public class UserController extends BaseUiController<UserController.UserUi,
         public void onError(RetrofitError re) {
             for (UserUi ui : getUis()) {
                 ui.showError(Error.BAD_AUTH);
+            }
+        }
+
+        @Override
+        public void onFinished() {
+            for (UserUi ui : getUis()) {
+                ui.showLoadingProgress(false);
             }
         }
     }

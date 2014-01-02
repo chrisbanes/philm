@@ -30,6 +30,11 @@
     <string name="empty_network_error">%1$s could not be retrieved due to an network error. Check your internet connection and try again.</string>
     <string name="empty_unknown_error">%1$s could not be retrieved due to an unknown error.</string>
 
+    <string name="login_username_empty">Username is empty.</string>
+    <string name="login_password_empty">Password is empty.</string>
+
+    <string name="login_authorization_error">The username or password were incorrect. Please try again.</string>
+
     <string name="error_unauthorized">Unauthorized</string>
     <string name="error_network">Network error</string>
     <string name="error_unknown">Unknown error :(</string>

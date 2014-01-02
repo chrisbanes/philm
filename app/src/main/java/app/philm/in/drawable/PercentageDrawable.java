@@ -3,7 +3,6 @@ package app.philm.in.drawable;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -15,6 +14,8 @@ import android.graphics.drawable.Drawable;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import app.philm.in.util.ColorUtils;
+
 public class PercentageDrawable extends Drawable {
 
     private static final Interpolator INTERPOLATOR = new AccelerateDecelerateInterpolator();
@@ -23,10 +24,14 @@ public class PercentageDrawable extends Drawable {
     private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.8f / 2f;
     private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.6f;
 
+    private static final float PRESSED_DARKEN_RATIO = 0.15f;
+
     private final Paint mBackgroundCirclePaint;
     private final Paint mForegroundCirclePaint;
     private final Paint mArcPaint;
     private final Paint mTextPaint;
+
+    private int mForegroundCircleColor;
 
     private final Rect mTextBounds;
     private final RectF mBounds;
@@ -38,7 +43,9 @@ public class PercentageDrawable extends Drawable {
 
     private String mText;
 
-    private boolean mReverseMode;
+    private boolean mAntiClockwiseMode;
+
+    private boolean mPressed;
 
     public PercentageDrawable() {
         mBounds = new RectF();
@@ -68,6 +75,7 @@ public class PercentageDrawable extends Drawable {
     }
 
     public void setForegroundCircleColor(int color) {
+        mForegroundCircleColor = color;
         mForegroundCirclePaint.setColor(color);
     }
 
@@ -87,7 +95,7 @@ public class PercentageDrawable extends Drawable {
                 mBounds.height() * BACKGROUND_CIRCLE_RADIUS_RATIO, mBackgroundCirclePaint);
 
         final float arcAngle = mCurrentValue * 360f;
-        if (mReverseMode) {
+        if (mAntiClockwiseMode) {
             canvas.drawArc(mBounds, arcAngle - 90f, 360f - arcAngle, true, mArcPaint);
         } else {
             canvas.drawArc(mBounds, -90f, arcAngle, true, mArcPaint);
@@ -124,11 +132,46 @@ public class PercentageDrawable extends Drawable {
     }
 
     @Override
+    public boolean isStateful() {
+        return true;
+    }
+
+    @Override
+    protected boolean onStateChange(int[] state) {
+        boolean pressed = false;
+
+        for (int i = 0, z = state.length ; i < z ; i++) {
+            switch (state[i]) {
+                case android.R.attr.state_pressed:
+                    pressed = true;
+                    break;
+            }
+        }
+
+        return setPressed(pressed);
+    }
+
+    @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
         if (mText != null) {
             updateTextSize();
         }
+    }
+
+    private boolean setPressed(boolean pressed) {
+        if (pressed != mPressed) {
+            mPressed = pressed;
+            if (pressed) {
+                mForegroundCirclePaint.setColor(
+                        ColorUtils.darken(mForegroundCircleColor, PRESSED_DARKEN_RATIO));
+            } else {
+                mForegroundCirclePaint.setColor(mForegroundCircleColor);
+            }
+            invalidateSelf();
+            return true;
+        }
+        return false;
     }
 
     private void updateTextSize() {
@@ -180,11 +223,11 @@ public class PercentageDrawable extends Drawable {
         mAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationRepeat(Animator animation) {
-                mReverseMode = !mReverseMode;
+                mAntiClockwiseMode = !mAntiClockwiseMode;
             }
             @Override
             public void onAnimationEnd(Animator animation) {
-                mReverseMode = false;
+                mAntiClockwiseMode = false;
             }
         });
         mAnimator.start();

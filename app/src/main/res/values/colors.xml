@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="side_menu_background">#FF222222</color>
+    <color name="side_menu_background">#FF202020</color>
+
+    <color name="light_gray">#FFDDDDDD</color>
 
     <color name="primary_accent_color">@android:color/holo_green_dark</color>
 

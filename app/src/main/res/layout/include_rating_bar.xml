@@ -61,10 +61,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            internal:backgroundCircleColor="#FFDDDDDD"
-            internal:foregroundCircleColor="#FF669900"
-            internal:arcColor="#FF99CC00"
-            internal:textColor="#FF99CC00"
+            internal:backgroundCircleColor="@color/light_gray"
+            internal:foregroundCircleColor="@android:color/holo_green_dark"
+            internal:arcColor="@android:color/holo_green_light"
+            internal:textColor="@android:color/holo_green_light"
             internal:ratePrompt="@string/movie_detail_rate"
             internal:font="roboto_slab" />
 

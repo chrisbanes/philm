@@ -35,7 +35,8 @@
                     android:scaleType="centerCrop"
                     android:layout_marginRight="@dimen/spacing_minor"
                     android:background="?android:attr/colorForeground"
-                    android:padding="1dp"/>
+                    android:padding="1dp"
+                    android:cropToPadding="true"/>
 
             <app.philm.in.view.FontTextView
                     android:id="@+id/textview_title"

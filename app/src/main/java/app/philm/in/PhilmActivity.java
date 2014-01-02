@@ -61,7 +61,7 @@ public class PhilmActivity extends Activity implements MainController.HostCallba
     protected void onPostResume() {
         super.onPostResume();
 
-        mMainController.setDisplay(new Display(this));
+        mMainController.setDisplay(new Display(this, mDrawerToggle));
         mMainController.setHostCallbacks(this);
         mMainController.init();
 
@@ -84,6 +84,13 @@ public class PhilmActivity extends Activity implements MainController.HostCallba
         if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getFragmentManager().popBackStack();
+                return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

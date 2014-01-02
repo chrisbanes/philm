@@ -226,8 +226,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         Display display = getDisplay();
-        if (display != null && queryType.getTitle() != 0) {
-            display.setActionBarTitle(queryType.getTitle());
+        if (display != null) {
+            display.setDrawerToggleEnabled(!(ui instanceof MovieDetailUi));
+
+            if (queryType.getTitle() != 0) {
+                display.setActionBarTitle(queryType.getTitle());
+            }
         }
 
         switch (queryType) {

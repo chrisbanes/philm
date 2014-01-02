@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.controllers.MovieController;
@@ -24,8 +25,15 @@ public class Display {
 
     private final Activity mActivity;
 
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+
     public Display(Activity activity) {
+        this(activity, null);
+    }
+
+    public Display(Activity activity, ActionBarDrawerToggle actionBarDrawerToggle) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
+        mActionBarDrawerToggle = actionBarDrawerToggle;
     }
 
     public void showLibrary() {
@@ -105,6 +113,12 @@ public class Display {
 
     public void setActionBarTitle(int titleResId) {
         setActionBarTitle(mActivity.getString(titleResId));
+    }
+
+    public void setDrawerToggleEnabled(boolean enabled) {
+        if (mActionBarDrawerToggle != null) {
+            mActionBarDrawerToggle.setDrawerIndicatorEnabled(enabled);
+        }
     }
 
     public void setActionBarTitle(String title) {

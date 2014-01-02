@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
@@ -47,6 +48,7 @@ public class PercentageDrawable extends Drawable {
 
     private boolean mAntiClockwiseMode;
 
+    private boolean mEnabled;
     private boolean mPressed;
 
     public PercentageDrawable() {
@@ -141,16 +143,27 @@ public class PercentageDrawable extends Drawable {
     @Override
     protected boolean onStateChange(int[] state) {
         boolean pressed = false;
+        boolean enabled = false;
 
         for (int i = 0, z = state.length ; i < z ; i++) {
             switch (state[i]) {
                 case android.R.attr.state_pressed:
                     pressed = true;
                     break;
+                case android.R.attr.state_enabled:
+                    enabled = true;
+                    break;
             }
         }
 
-        return setPressed(pressed);
+        boolean causedInvalidate = false;
+        if (setPressed(pressed)) {
+            causedInvalidate = true;
+        }
+        if (setEnabled(enabled)) {
+            causedInvalidate = true;
+        }
+        return causedInvalidate;
     }
 
     @Override
@@ -169,6 +182,21 @@ public class PercentageDrawable extends Drawable {
                         ColorUtils.darken(mForegroundCircleColor, PRESSED_DARKEN_RATIO));
             } else {
                 mForegroundCirclePaint.setColor(mForegroundCircleColor);
+            }
+            invalidateSelf();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean setEnabled(boolean enabled) {
+        if (enabled != mEnabled) {
+            mEnabled = enabled;
+            if (enabled) {
+                setAlpha(255);
+            } else {
+                setAlpha(Math.round(255 * 0.3f));
+                stop();
             }
             invalidateSelf();
             return true;
@@ -212,8 +240,10 @@ public class PercentageDrawable extends Drawable {
 
         mTargetValue = rating / 10f;
 
-        mAnimator = createAnimator(0f, mTargetValue);
-        mAnimator.start();
+        if (shouldAnimate()) {
+            mAnimator = createAnimator(0f, mTargetValue);
+            mAnimator.start();
+        }
     }
 
     public void showPrompt(String promptText) {
@@ -224,25 +254,32 @@ public class PercentageDrawable extends Drawable {
         mText = promptText;
         updateTextSize();
 
-        mAnimator = createAnimator(0f, 1f);
-        mAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        mAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                mAntiClockwiseMode = !mAntiClockwiseMode;
-            }
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mAntiClockwiseMode = false;
-            }
-        });
-        mAnimator.start();
+        if (shouldAnimate()) {
+            mAnimator = createAnimator(0f, 1f);
+            mAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            mAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    mAntiClockwiseMode = !mAntiClockwiseMode;
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAntiClockwiseMode = false;
+                }
+            });
+            mAnimator.start();
+        }
     }
 
     public void stop() {
         if (mAnimator != null) {
             mAnimator.end();
         }
+    }
+
+    private boolean shouldAnimate() {
+        return mEnabled;
     }
 
     public boolean isRunning() {

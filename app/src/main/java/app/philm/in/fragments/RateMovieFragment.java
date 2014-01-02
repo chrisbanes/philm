@@ -20,7 +20,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 
 public class RateMovieFragment extends DialogFragment implements DialogInterface.OnClickListener,
-        MovieController.MovieDetailUi {
+        MovieController.MovieRateUi {
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 

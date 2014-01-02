@@ -36,6 +36,10 @@ public class RatingBarLayout extends FrameLayout {
         mRatingGlobalVotesTextView = (TextView) findViewById(R.id.textview_votes);
     }
 
+    public void setRatingCircleEnabled(boolean enabled) {
+        mRatingCircleView.setEnabled(enabled);
+    }
+
     public void showUserRating(int userRating) {
         mRatingCircleView.showRating(userRating);
     }

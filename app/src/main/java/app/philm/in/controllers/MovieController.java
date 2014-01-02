@@ -259,6 +259,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateListUi((MovieListUi) ui);
         } else if (ui instanceof MovieDetailUi) {
             populateDetailUi((MovieDetailUi) ui);
+        } else if (ui instanceof MovieRateUi) {
+            populateRateUi((MovieRateUi) ui);
         }
     }
 
@@ -538,11 +540,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void populateDetailUi(MovieDetailUi ui) {
         final PhilmMovie movie = getMovie(ui.getRequestParameter());
         ui.setMovie(movie);
+        ui.setRateCircleEnabled(isLoggedIn());
 
         Display display = getDisplay();
         if (display != null) {
             display.setActionBarTitle(movie != null ? movie.getTitle() : null);
         }
+    }
+
+    private void populateRateUi(MovieRateUi ui) {
+        final PhilmMovie movie = getMovie(ui.getRequestParameter());
+        ui.setMovie(movie);
     }
 
     private void populateListUi(MovieListUi ui) {
@@ -803,6 +811,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieDetailUi extends MovieUi {
+        void setMovie(PhilmMovie movie);
+
+        void setRateCircleEnabled(boolean enabled);
+    }
+
+    public interface MovieRateUi extends MovieUi {
         void setMovie(PhilmMovie movie);
     }
 

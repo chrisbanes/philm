@@ -110,6 +110,11 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     }
 
     @Override
+    public void setRateCircleEnabled(boolean enabled) {
+        mRatingBarLayout.setRatingCircleEnabled(enabled);
+    }
+
+    @Override
     public void showError(NetworkError error) {
         // TODO: Implement!
     }

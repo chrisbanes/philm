@@ -35,7 +35,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private Account mAccount;
     private PhilmUserProfile mUserProfile;
-    private String mUsername, mHashedPassword;
+    private String mUsername;
 
     public ApplicationState(Bus eventBus) {
         mEventBus = Preconditions.checkNotNull(eventBus, "eventBus cannot null");
@@ -148,17 +148,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public String getHashedPassword() {
-        return mHashedPassword;
-    }
-
-    @Override
-    public void setCredentials(String username, String hashedPassword) {
+    public void setUsername(String username) {
         mUsername = username;
-        mHashedPassword = hashedPassword;
-        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(hashedPassword)) {
-            mEventBus.post(new UserCredentialsConfirmedEvent());
-        }
     }
 
     @Override

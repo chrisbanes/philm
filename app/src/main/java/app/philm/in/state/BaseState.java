@@ -10,8 +10,6 @@ interface BaseState {
 
     public String getUsername();
 
-    public String getHashedPassword();
-
     public Account getCurrentAccount();
 
     public void registerForEvents(Object receiver);

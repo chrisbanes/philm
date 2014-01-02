@@ -6,7 +6,6 @@ import com.squareup.otto.Subscribe;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import app.philm.in.Constants;

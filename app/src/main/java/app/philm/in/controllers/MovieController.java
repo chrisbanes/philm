@@ -474,8 +474,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private boolean isLoggedIn() {
-        return !TextUtils.isEmpty(mMoviesState.getUsername())
-                && !TextUtils.isEmpty(mMoviesState.getHashedPassword());
+        return mMoviesState.getCurrentAccount() != null;
     }
 
     private void markMovieSeen(String imdbId) {

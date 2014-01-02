@@ -10,10 +10,7 @@ public interface UserState extends BaseState {
 
     public void setCurrentAccount(Account account);
 
-    public void setCredentials(String username, String hashedPassword);
-
-    public static class UserCredentialsConfirmedEvent {
-    }
+    public void setUsername(String username);
 
     public static class AccountChangedEvent {
     }

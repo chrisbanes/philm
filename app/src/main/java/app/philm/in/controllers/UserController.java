@@ -111,7 +111,9 @@ public class UserController extends BaseUiController<UserController.UserUi,
         if (currentAccount != null) {
             final String username = currentAccount.name;
 
-            mUserState.setCredentials(username, mAccountManagerHelper.getPassword(currentAccount));
+            mUserState.setUsername(username);
+            mTraktClient.setAuthentication(username,
+                    mAccountManagerHelper.getPassword(currentAccount));
 
             PhilmUserProfile profileFromDb = mDbHelper.get(username);
             mUserState.setUserProfile(profileFromDb);
@@ -119,7 +121,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 fetchUserProfile(mUserState.getUsername());
             }
         } else {
-            mUserState.setCredentials(null, null);
+            mUserState.setUsername(null);
+            mTraktClient.setAuthentication(null, null);
 
             final PhilmUserProfile currentUserProfile = mUserState.getUserProfile();
             if (currentUserProfile != null) {
@@ -128,9 +131,6 @@ public class UserController extends BaseUiController<UserController.UserUi,
             }
             // TODO: Also nuke rest of state
         }
-
-        // Update TraktClient
-        mTraktClient.setAuthentication(mUserState.getUsername(), mUserState.getHashedPassword());
 
         if (Constants.DEBUG) {
             Log.d(LOG_TAG, "onAccountChanged: " + mUserState.getUsername());

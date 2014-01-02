@@ -22,7 +22,9 @@ public class PercentageDrawable extends Drawable {
 
     private static final float BACKGROUND_CIRCLE_RADIUS_RATIO = 1f / 2f;
     private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.8f / 2f;
-    private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.6f;
+
+    private static final float SMALL_TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.5f;
+    private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.7f;
 
     private static final float PRESSED_DARKEN_RATIO = 0.15f;
 
@@ -176,12 +178,16 @@ public class PercentageDrawable extends Drawable {
 
     private void updateTextSize() {
         Rect bounds = getBounds();
-        if (bounds.width() == 0 || bounds.height() == 0) {
+        if (mText == null || bounds.width() == 0 || bounds.height() == 0) {
             return;
         }
 
-        final int targetWidth = Math.round(bounds.width() * TEXT_SIZE_BOUNDS_RATIO);
-        final int targetHeight = Math.round(bounds.height() * TEXT_SIZE_BOUNDS_RATIO);
+        final float boundsRatio = mText.length() <= 2
+                ? SMALL_TEXT_SIZE_BOUNDS_RATIO
+                : TEXT_SIZE_BOUNDS_RATIO;
+
+        final int targetWidth = Math.round(bounds.width() * boundsRatio);
+        final int targetHeight = Math.round(bounds.height() * boundsRatio);
 
         float textSize = 4f;
         do {

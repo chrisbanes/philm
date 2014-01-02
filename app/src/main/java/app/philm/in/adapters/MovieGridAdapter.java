@@ -65,6 +65,7 @@ public class MovieGridAdapter extends BaseAdapter {
 
         final TextView title = (TextView) view.findViewById(R.id.textview_title);
         title.setText(movie.getTitle());
+        title.setVisibility(View.VISIBLE);
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
         Picasso.with(mActivity)

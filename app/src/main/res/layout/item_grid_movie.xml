@@ -12,11 +12,10 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-    <TextView
+    <app.philm.in.view.FontTextView
             android:id="@+id/textview_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_minor"
-            android:layout_gravity="bottom"/>
+            android:layout_height="match_parent"
+            style="@style/Widget.Philm.Movie.Grid.Title" />
 
 </FrameLayout>

@@ -6,5 +6,9 @@
     <color name="light_gray">#FFDDDDDD</color>
 
     <color name="primary_accent_color">@android:color/holo_green_dark</color>
+    <color name="primary_accent_color_dark_10">#FF4D8000</color>
+    <color name="primary_accent_color_dark_20">#FF336600</color>
+    <color name="primary_accent_color_dark_30">#FF1A4D00</color>
+    <color name="primary_accent_color_dark_40">#FF003300</color>
 
 </resources>

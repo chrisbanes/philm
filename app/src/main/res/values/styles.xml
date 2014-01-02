@@ -11,6 +11,14 @@
     <style name="Widget.Philm.ActionBar" parent="android:Widget.Holo.ActionBar.Solid">
     </style>
 
+    <style name="Widget.Philm.Movie.Grid.Title" parent="android:Widget">
+        <item name="font">roboto_condensed</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:padding">@dimen/spacing_minor</item>
+        <item name="android:gravity">center|left</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
     <style name="Widget.Philm.Movie.List.Title" parent="android:Widget">
         <item name="font">roboto_condensed</item>
         <item name="android:textSize">20dp</item>

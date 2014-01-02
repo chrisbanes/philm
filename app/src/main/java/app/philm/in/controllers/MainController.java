@@ -95,7 +95,12 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     @Subscribe
-    public void onAccountChanged(UserState.UserProfileChangedEvent event) {
+    public void onUserProfileChanged(UserState.UserProfileChangedEvent event) {
+        populateUis();
+    }
+
+    @Subscribe
+    public void onAccountChanged(UserState.AccountChangedEvent event) {
         populateUis();
     }
 
@@ -130,9 +135,7 @@ public class MainController extends BaseUiController<MainController.MainControll
         if (profile != null) {
             ui.showUserProfile(profile);
         } else {
-            if (TextUtils.isEmpty(mState.getUsername())) {
-                ui.showAddAccountButton();
-            }
+            ui.showAddAccountButton();
         }
     }
 

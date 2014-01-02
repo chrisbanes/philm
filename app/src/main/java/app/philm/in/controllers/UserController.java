@@ -20,6 +20,7 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.network.TraktNetworkCallRunnable;
+import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AccountManagerHelper;
@@ -56,6 +57,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     private final ExecutorService mExecutor;
     private final Trakt mTraktClient;
     private final AccountManagerHelper mAccountManagerHelper;
+    private final DatabaseHelper mDbHelper;
 
     private ControllerCallbacks mControllerCallbacks;
 
@@ -63,13 +65,15 @@ public class UserController extends BaseUiController<UserController.UserUi,
             UserState userState,
             Trakt traktClient,
             ExecutorService executor,
-            AccountManagerHelper accountManagerHelper) {
+            AccountManagerHelper accountManagerHelper,
+            DatabaseHelper dbHelper) {
         super();
         mUserState = Preconditions.checkNotNull(userState, "userState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
         mAccountManagerHelper = Preconditions.checkNotNull(accountManagerHelper,
                 "accountManagerHelper cannot be null");
+        mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
     }
 
     @Override
@@ -103,13 +107,25 @@ public class UserController extends BaseUiController<UserController.UserUi,
     @Subscribe
     public void onAccountChanged(UserState.AccountChangedEvent event) {
         Account currentAccount = mUserState.getCurrentAccount();
+
         if (currentAccount != null) {
-            mUserState.setCredentials(currentAccount.name,
-                    mAccountManagerHelper.getPassword(currentAccount));
-            fetchUserProfile(mUserState.getUsername());
+            final String username = currentAccount.name;
+
+            mUserState.setCredentials(username, mAccountManagerHelper.getPassword(currentAccount));
+
+            PhilmUserProfile profileFromDb = mDbHelper.get(username);
+            mUserState.setUserProfile(profileFromDb);
+            if (profileFromDb == null) {
+                fetchUserProfile(mUserState.getUsername());
+            }
         } else {
             mUserState.setCredentials(null, null);
-            mUserState.setUserProfile(null);
+
+            final PhilmUserProfile currentUserProfile = mUserState.getUserProfile();
+            if (currentUserProfile != null) {
+                mUserState.setUserProfile(null);
+                mDbHelper.delete(currentUserProfile);
+            }
             // TODO: Also nuke rest of state
         }
 
@@ -185,7 +201,9 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
         @Override
         public void onSuccess(UserProfile result) {
-            mUserState.setUserProfile(new PhilmUserProfile(result));
+            PhilmUserProfile newProfile = new PhilmUserProfile(result);
+            mUserState.setUserProfile(newProfile);
+            mDbHelper.put(newProfile);
         }
 
         @Override
@@ -219,30 +237,32 @@ public class UserController extends BaseUiController<UserController.UserUi,
             }
 
             Account[] accounts = mAccountManagerHelper.getAccounts();
-            Account existingAccount = null;
+            Account account = null;
             for (int i = 0, count = accounts.length; i < count; i++) {
                 if (mUsername.equals(accounts[i].name)) {
-                    existingAccount = accounts[i];
+                    account = accounts[i];
+                    break;
                 }
             }
 
-            Bundle callbackResult = new Bundle();
-
-            if (existingAccount == null) {
-                final Account account = new Account(mUsername, Constants.TRAKT_ACCOUNT_TYPE);
+            if (account == null) {
+                account = new Account(mUsername, Constants.TRAKT_ACCOUNT_TYPE);
                 mAccountManagerHelper.addAccount(account, mPassword);
                 mAccountManagerHelper.setAuthToken(account, mPassword,
                         Constants.TRAKT_AUTHTOKEN_PASSWORD_TYPE);
             } else {
-                mAccountManagerHelper.setPassword(existingAccount, mPassword);
+                mAccountManagerHelper.setPassword(account, mPassword);
             }
 
-            callbackResult.putString(AccountManager.KEY_ACCOUNT_NAME, mUsername);
-            callbackResult.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.TRAKT_ACCOUNT_TYPE);
-            callbackResult.putString(AccountManager.KEY_AUTHTOKEN, mPassword);
+            mUserState.setCurrentAccount(account);
 
             if (mControllerCallbacks != null) {
-                // TODO: Shouldn't always finish
+                Bundle callbackResult = new Bundle();
+                callbackResult.putString(AccountManager.KEY_ACCOUNT_NAME, mUsername);
+                callbackResult.putString(AccountManager.KEY_ACCOUNT_TYPE,
+                        Constants.TRAKT_ACCOUNT_TYPE);
+                callbackResult.putString(AccountManager.KEY_AUTHTOKEN, mPassword);
+
                 mControllerCallbacks.onAddAccountCompleted(callbackResult);
             }
         }

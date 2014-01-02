@@ -30,7 +30,8 @@ public class PhilmApplication extends Application {
                 mApplicationState,
                 container.getTraktClient(),
                 container.getExecutor(),
-                container.getAccountManagerHelper());
+                container.getAccountManagerHelper(),
+                container.getDatabaseHelper());
 
         MovieController movieController = new MovieController(
                 mApplicationState,

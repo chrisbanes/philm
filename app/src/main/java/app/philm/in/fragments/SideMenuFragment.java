@@ -71,6 +71,7 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
 
     @Override
     public void showAddAccountButton() {
+        mUserProfile = null;
         mAvatarImageView.setVisibility(View.GONE);
         mAccountButton.setText(R.string.button_add_account);
     }

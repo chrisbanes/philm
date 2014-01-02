@@ -13,6 +13,7 @@ import java.util.List;
 
 import app.philm.in.Constants;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmUserProfile;
 import nl.qbusict.cupboard.QueryResultIterable;
 
 public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseHelper {
@@ -20,14 +21,13 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
     private static final String DATABASE_NAME = "philm.db";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     static {
         // register our models
         cupboard().register(PhilmMovie.class);
+        cupboard().register(PhilmUserProfile.class);
     }
-
-    private SQLiteDatabase mOpenDatabase;
 
     public PhilmSQLiteOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -128,5 +128,23 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         } finally {
             db.endTransaction();
         }
+    }
+
+    @Override
+    public PhilmUserProfile get(String username) {
+        return cupboard().withDatabase(getReadableDatabase())
+                .query(PhilmUserProfile.class)
+                .withSelection("username = ?", username)
+                .get();
+    }
+
+    @Override
+    public void put(PhilmUserProfile profile) {
+        cupboard().withDatabase(getWritableDatabase()).put(profile);
+    }
+
+    @Override
+    public void delete(PhilmUserProfile profile) {
+        cupboard().withDatabase(getWritableDatabase()).delete(profile);
     }
 }

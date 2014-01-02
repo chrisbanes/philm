@@ -4,6 +4,7 @@ import com.jakewharton.trakt.entities.UserProfile;
 
 public class PhilmUserProfile {
 
+    Long _id;
     String username;
     String avatarUrl;
 

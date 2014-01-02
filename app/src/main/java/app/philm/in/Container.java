@@ -59,7 +59,7 @@ public class Container {
         if (mTrakt == null) {
             mTrakt = new Trakt();
             mTrakt.setApiKey(Constants.TRAKT_API_KEY);
-            mTrakt.setIsDebug(Constants.DEBUG);
+            mTrakt.setIsDebug(Constants.DEBUG_NETWORK);
         }
         return mTrakt;
     }

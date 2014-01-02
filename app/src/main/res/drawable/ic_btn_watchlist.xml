@@ -4,6 +4,8 @@
 
     <item android:state_checked="true" android:drawable="@drawable/ic_btn_watchlist_checked" />
 
-    <item android:drawable="@drawable/ic_btn_watchlist" />
+    <item android:state_enabled="true" android:drawable="@drawable/ic_btn_watchlist_normal" />
+
+    <item android:drawable="@drawable/ic_btn_watchlist_disabled" />
 
 </selector>

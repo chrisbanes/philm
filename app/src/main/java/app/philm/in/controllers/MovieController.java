@@ -540,7 +540,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void populateDetailUi(MovieDetailUi ui) {
         final PhilmMovie movie = getMovie(ui.getRequestParameter());
         ui.setMovie(movie);
-        ui.setRateCircleEnabled(isLoggedIn());
+
+        boolean isLoggedIn = isLoggedIn();
+        ui.setRateCircleEnabled(isLoggedIn);
+        ui.setCollectionButtonEnabled(isLoggedIn);
+        ui.setWatchlistButtonEnabled(isLoggedIn);
+        ui.setToggleWatchedButtonEnabled(isLoggedIn);
 
         Display display = getDisplay();
         if (display != null) {
@@ -813,6 +818,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface MovieDetailUi extends MovieUi {
         void setMovie(PhilmMovie movie);
 
+        void setToggleWatchedButtonEnabled(boolean enabled);
+        void setCollectionButtonEnabled(boolean enabled);
+        void setWatchlistButtonEnabled(boolean enabled);
         void setRateCircleEnabled(boolean enabled);
     }
 

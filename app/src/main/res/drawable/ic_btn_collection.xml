@@ -4,6 +4,8 @@
 
     <item android:state_checked="true" android:drawable="@drawable/ic_btn_collection_checked" />
 
-    <item android:drawable="@drawable/ic_btn_collection" />
+    <item android:state_enabled="true" android:drawable="@drawable/ic_btn_collection_normal" />
+
+    <item android:drawable="@drawable/ic_btn_collection_disabled" />
 
 </selector>

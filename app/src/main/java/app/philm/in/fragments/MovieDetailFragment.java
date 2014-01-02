@@ -117,6 +117,21 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
     }
 
     @Override
+    public void setCollectionButtonEnabled(boolean enabled) {
+        mCollectionButton.setEnabled(enabled);
+    }
+
+    @Override
+    public void setWatchlistButtonEnabled(boolean enabled) {
+        mWatchlistButton.setEnabled(enabled);
+    }
+
+    @Override
+    public void setToggleWatchedButtonEnabled(boolean enabled) {
+        mSeenButton.setEnabled(enabled);
+    }
+
+    @Override
     public void showError(NetworkError error) {
         Crouton.makeText(getActivity(), error.getTitle(), Style.ALERT).show();
     }

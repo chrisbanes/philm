@@ -16,6 +16,8 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 public abstract class PhilmMovieListFragment<E extends AbsListView> extends PhilmListFragment<E>
@@ -175,6 +177,8 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends Phil
                 setEmptyText(getString(R.string.empty_unknown_error, getTitle()));
                 break;
         }
+
+        Crouton.makeText(getActivity(), error.getTitle(), Style.ALERT).show();
     }
 
     protected final boolean hasCallbacks() {

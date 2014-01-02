@@ -21,6 +21,8 @@ import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.view.PhilmActionButton;
 import app.philm.in.view.RatingBarLayout;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class MovieDetailFragment extends Fragment implements MovieController.MovieDetailUi,
         View.OnClickListener {
@@ -116,7 +118,7 @@ public class MovieDetailFragment extends Fragment implements MovieController.Mov
 
     @Override
     public void showError(NetworkError error) {
-        // TODO: Implement!
+        Crouton.makeText(getActivity(), error.getTitle(), Style.ALERT).show();
     }
 
     @Override

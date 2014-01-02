@@ -67,6 +67,9 @@ dependencies {
     compile 'com.google.guava:guava:15.0'
     compile 'nl.qbusict:cupboard:1.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
+    compile ("de.keyboardsurfer.android.widget:crouton:1.8.+") {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }

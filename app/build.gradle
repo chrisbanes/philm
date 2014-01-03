@@ -41,6 +41,11 @@ android {
         buildConfigField "String", "BUILD_TIME", "\"${buildTime()}\""
     }
 
+    signingConfigs {
+        release {
+        }
+    }
+
     buildTypes {
         debug {
             runProguard false
@@ -49,11 +54,8 @@ android {
         release {
             runProguard false
             proguardFile getDefaultProguardFile('proguard-android.txt')
+            signingConfig signingConfigs.release
         }
-    }
-
-    signingConfigs {
-        release {}
     }
 
     productFlavors {

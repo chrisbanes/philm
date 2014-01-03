@@ -24,9 +24,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void getLibrary(final DatabaseHelper.Callback<List<PhilmMovie>> callback) {
-        mExecutorService.execute(new BackgroundCallRunnable<List<PhilmMovie>>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<List<PhilmMovie>>() {
             @Override
-            public List<PhilmMovie> doBackgroundCall() {
+            public List<PhilmMovie> doDatabaseCall() {
                 return mDbHelper.getLibrary();
             }
 
@@ -39,9 +39,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void put(final Collection<PhilmMovie> movies) {
-        mExecutorService.execute(new BackgroundCallRunnable<Void>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
-            public Void doBackgroundCall() {
+            public Void doDatabaseCall() {
                 mDbHelper.delete(movies);
                 return null;
             }
@@ -50,9 +50,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void put(final PhilmMovie movie) {
-        mExecutorService.execute(new BackgroundCallRunnable<Void>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
-            public Void doBackgroundCall() {
+            public Void doDatabaseCall() {
                 mDbHelper.put(movie);
                 return null;
             }
@@ -61,9 +61,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void delete(final Collection<PhilmMovie> movies) {
-        mExecutorService.execute(new BackgroundCallRunnable<Void>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
-            public Void doBackgroundCall() {
+            public Void doDatabaseCall() {
                 mDbHelper.delete(movies);
                 return null;
             }
@@ -72,9 +72,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void getUserProfile(final String username, final Callback<PhilmUserProfile> callback) {
-        mExecutorService.execute(new BackgroundCallRunnable<PhilmUserProfile>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<PhilmUserProfile>() {
             @Override
-            public PhilmUserProfile doBackgroundCall() {
+            public PhilmUserProfile doDatabaseCall() {
                 return mDbHelper.getUserProfile(username);
             }
 
@@ -87,9 +87,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void put(final PhilmUserProfile profile) {
-        mExecutorService.execute(new BackgroundCallRunnable<Void>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
-            public Void doBackgroundCall() {
+            public Void doDatabaseCall() {
                 mDbHelper.put(profile);
                 return null;
             }
@@ -98,9 +98,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void delete(final PhilmUserProfile profile) {
-        mExecutorService.execute(new BackgroundCallRunnable<Void>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
-            public Void doBackgroundCall() {
+            public Void doDatabaseCall() {
                 mDbHelper.delete(profile);
                 return null;
             }
@@ -114,9 +114,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void mergeLibrary(final List<PhilmMovie> library) {
-        mExecutorService.execute(new BackgroundCallRunnable<Void>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
-            public Void doBackgroundCall() {
+            public Void doDatabaseCall() {
                 HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
                 for (PhilmMovie movie : mDbHelper.getLibrary()) {
                     dbItemsMap.put(movie.getDbId(), movie);
@@ -142,9 +142,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void mergeWatchlist(final List<PhilmMovie> watchlist) {
-        mExecutorService.execute(new BackgroundCallRunnable<Void>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
-            public Void doBackgroundCall() {
+            public Void doDatabaseCall() {
                 HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
                 for (PhilmMovie movie : mDbHelper.getWatchlist()) {
                     dbItemsMap.put(movie.getDbId(), movie);
@@ -170,9 +170,9 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
 
     @Override
     public void getWatchlist(final DatabaseHelper.Callback<List<PhilmMovie>> callback) {
-        mExecutorService.execute(new BackgroundCallRunnable<List<PhilmMovie>>() {
+        mExecutorService.execute(new DatabaseBackgroundRunnable<List<PhilmMovie>>() {
             @Override
-            public List<PhilmMovie> doBackgroundCall() {
+            public List<PhilmMovie> doDatabaseCall() {
                 return mDbHelper.getWatchlist();
             }
 
@@ -181,6 +181,21 @@ public class AsyncDatabaseHelper implements DatabaseHelper {
                 callback.onFinished(result);
             }
         });
+    }
+
+    private abstract class DatabaseBackgroundRunnable<R> extends BackgroundCallRunnable<R> {
+
+        @Override
+        public final R doBackgroundCall() {
+            if (mDbHelper.isClosed()) {
+                return null;
+            }
+
+            return doDatabaseCall();
+        }
+
+        public abstract R doDatabaseCall();
+
     }
 
 }

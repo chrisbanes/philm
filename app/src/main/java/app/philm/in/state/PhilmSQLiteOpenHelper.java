@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.common.base.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +32,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         cupboard().register(PhilmUserProfile.class);
     }
 
+    private boolean mIsClosed;
+
     public PhilmSQLiteOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -50,7 +55,9 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     List<PhilmMovie> getLibrary() {
-        ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>();
+        assetNotClosed();
+
+        ArrayList<PhilmMovie> movies = null;
         QueryResultIterable<PhilmMovie> itr = null;
 
         try {
@@ -58,6 +65,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
                     .withSelection("inCollection = ? OR watched = ?", "1", "1")
                     .orderBy("sortTitle")
                     .query();
+
+            movies = new ArrayList<PhilmMovie>();
 
             for (PhilmMovie movie : itr) {
                 movies.add(movie);
@@ -71,7 +80,9 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     List<PhilmMovie> getWatchlist() {
-        ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>();
+        assetNotClosed();
+
+        ArrayList<PhilmMovie> movies = null;
         QueryResultIterable<PhilmMovie> itr = null;
 
         try {
@@ -79,6 +90,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
                     .withSelection("inWatchlist = ?", "1")
                     .orderBy("releasedTime")
                     .query();
+
+            movies = new ArrayList<PhilmMovie>();
 
             for (PhilmMovie movie : itr) {
                 movies.add(movie);
@@ -92,51 +105,100 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
     void put(PhilmMovie movie) {
-        cupboard().withDatabase(getWritableDatabase()).put(movie);
+        assetNotClosed();
 
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "put(PhilmMovie). ID: " + movie.getDbId());
+        try {
+            cupboard().withDatabase(getWritableDatabase()).put(movie);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         }
     }
 
     void put(Collection<PhilmMovie> movies) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
+        assetNotClosed();
+
+        SQLiteDatabase db = null;
+
         try {
+            db = getWritableDatabase();
+            db.beginTransaction();
             for (PhilmMovie movie : movies) {
                 cupboard().withDatabase(db).put(movie);
             }
             db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         } finally {
-            db.endTransaction();
+            if (db != null) {
+                db.endTransaction();
+            }
         }
     }
 
     void delete(Collection<PhilmMovie> movies) {
-        SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
+        assetNotClosed();
+
+        SQLiteDatabase db = null;
+
         try {
+            db = getWritableDatabase();
+            db.beginTransaction();
             for (PhilmMovie movie : movies) {
                 cupboard().withDatabase(db).delete(movie);
             }
             db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         } finally {
-            db.endTransaction();
+            if (db != null) {
+                db.endTransaction();
+            }
         }
     }
 
     PhilmUserProfile getUserProfile(String username) {
-        return cupboard().withDatabase(getReadableDatabase())
-                .query(PhilmUserProfile.class)
-                .withSelection("username = ?", username)
-                .get();
+        assetNotClosed();
+
+        try {
+            return cupboard().withDatabase(getReadableDatabase())
+                    .query(PhilmUserProfile.class)
+                    .withSelection("username = ?", username)
+                    .get();
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+            return null;
+        }
     }
 
     void put(PhilmUserProfile profile) {
-        cupboard().withDatabase(getWritableDatabase()).put(profile);
+        assetNotClosed();
+        try {
+            cupboard().withDatabase(getWritableDatabase()).put(profile);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
     }
 
     void delete(PhilmUserProfile profile) {
-        cupboard().withDatabase(getWritableDatabase()).delete(profile);
+        assetNotClosed();
+        try {
+            cupboard().withDatabase(getWritableDatabase()).delete(profile);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
+    }
+
+    @Override
+    public synchronized void close() {
+        mIsClosed = true;
+        super.close();
+    }
+
+    public boolean isClosed() {
+        return mIsClosed;
+    }
+
+    private void assetNotClosed() {
+        Preconditions.checkState(!mIsClosed, "Database is closed");
     }
 }

@@ -1173,8 +1173,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onFinished(List<PhilmMovie> result) {
             mMoviesState.setLibrary(result);
-            for (PhilmMovie movie : result) {
-                mMoviesState.getMovies().put(movie.getTraktId(), movie);
+            if (!PhilmCollections.isEmpty(result)) {
+                for (PhilmMovie movie : result) {
+                    mMoviesState.getMovies().put(movie.getTraktId(), movie);
+                }
             }
             mPopulatedLibraryFromDb = true;
             fetchLibraryIfNeeded();
@@ -1185,8 +1187,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onFinished(List<PhilmMovie> result) {
             mMoviesState.setWatchlist(result);
-            for (PhilmMovie movie : result) {
-                mMoviesState.getMovies().put(movie.getTraktId(), movie);
+            if (!PhilmCollections.isEmpty(result)) {
+                for (PhilmMovie movie : result) {
+                    mMoviesState.getMovies().put(movie.getTraktId(), movie);
+                }
             }
             mPopulatedWatchlistFromDb = true;
             fetchWatchlistIfNeeded();

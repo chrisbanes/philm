@@ -63,7 +63,20 @@ public class RatingBarLayout extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mLeftRatingBarLayout.setPadding(0, 0, mRatingCircleView.getWidth() / 2, 0);
-        mRightRatingBarLayout.setPadding(mRatingCircleView.getWidth() / 2, 0, 0, 0);
+
+        if (changed) {
+            final int targetPadding = mRatingCircleView.getWidth() / 2;
+            if (mLeftRatingBarLayout.getPaddingRight() != targetPadding ||
+                    mRightRatingBarLayout.getPaddingLeft() != targetPadding) {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLeftRatingBarLayout.setPadding(0, 0, targetPadding, 0);
+                        mRightRatingBarLayout.setPadding(targetPadding, 0, 0, 0);
+                    }
+                });
+            }
+        }
+
     }
 }

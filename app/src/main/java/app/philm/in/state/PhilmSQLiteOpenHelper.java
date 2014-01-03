@@ -16,7 +16,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import nl.qbusict.cupboard.QueryResultIterable;
 
-public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseHelper {
+public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
@@ -49,8 +49,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         // do migration work
     }
 
-    @Override
-    public List<PhilmMovie> getLibrary() {
+    List<PhilmMovie> getLibrary() {
         ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>();
         QueryResultIterable<PhilmMovie> itr = null;
 
@@ -71,8 +70,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         return movies;
     }
 
-    @Override
-    public List<PhilmMovie> getWatchlist() {
+    List<PhilmMovie> getWatchlist() {
         ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>();
         QueryResultIterable<PhilmMovie> itr = null;
 
@@ -93,8 +91,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         return movies;
     }
 
-    @Override
-    public void put(PhilmMovie movie) {
+    void put(PhilmMovie movie) {
         cupboard().withDatabase(getWritableDatabase()).put(movie);
 
         if (Constants.DEBUG) {
@@ -102,8 +99,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         }
     }
 
-    @Override
-    public void put(Collection<PhilmMovie> movies) {
+    void put(Collection<PhilmMovie> movies) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
@@ -116,8 +112,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         }
     }
 
-    @Override
-    public void delete(Collection<PhilmMovie> movies) {
+    void delete(Collection<PhilmMovie> movies) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
@@ -130,21 +125,18 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         }
     }
 
-    @Override
-    public PhilmUserProfile get(String username) {
+    PhilmUserProfile getUserProfile(String username) {
         return cupboard().withDatabase(getReadableDatabase())
                 .query(PhilmUserProfile.class)
                 .withSelection("username = ?", username)
                 .get();
     }
 
-    @Override
-    public void put(PhilmUserProfile profile) {
+    void put(PhilmUserProfile profile) {
         cupboard().withDatabase(getWritableDatabase()).put(profile);
     }
 
-    @Override
-    public void delete(PhilmUserProfile profile) {
+    void delete(PhilmUserProfile profile) {
         cupboard().withDatabase(getWritableDatabase()).delete(profile);
     }
 }

@@ -53,12 +53,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     private final MoviesState mMoviesState;
-
     private final ExecutorService mExecutor;
-
     private final Trakt mTraktClient;
-
     private final DatabaseHelper mDbHelper;
+
+    private boolean mPopulatedLibraryFromDb = false;
+    private boolean mPopulatedWatchlistFromDb = false;
 
     public MovieController(
             MoviesState movieState,
@@ -417,7 +417,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchLibraryIfNeeded() {
-        if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
+        if (mPopulatedLibraryFromDb && PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
             fetchLibrary();
         }
     }
@@ -445,7 +445,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchWatchlistIfNeeded() {
-        if (PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
+        if (mPopulatedWatchlistFromDb && PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
             fetchWatchlist();
         }
     }
@@ -498,46 +498,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void persistLibraryToDb(final List<PhilmMovie> movies) {
         assertInited();
-
-        HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
-        for (PhilmMovie movie : mDbHelper.getLibrary()) {
-            dbItemsMap.put(movie.getDbId(), movie);
-        }
-
-        // Now lets remove the items from the map, leaving only those not in the library
-        for (PhilmMovie movie : movies) {
-            dbItemsMap.remove(movie.getDbId());
-        }
-
-        // Anything left in the dbItemsMap needs removing from the db
-        if (!dbItemsMap.isEmpty()) {
-            mDbHelper.delete(dbItemsMap.values());
-        }
-
-        // Now persist the correct list
-        mDbHelper.put(movies);
+        mDbHelper.mergeLibrary(movies);
     }
 
     private void persistWatchlistToDb(final List<PhilmMovie> movies) {
         assertInited();
-
-        HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
-        for (PhilmMovie movie : mDbHelper.getWatchlist()) {
-            dbItemsMap.put(movie.getDbId(), movie);
-        }
-
-        // Now lets remove the items from the map, leaving only those not in the watchlist
-        for (PhilmMovie movie : movies) {
-            dbItemsMap.remove(movie.getDbId());
-        }
-
-        // Anything left in the dbItemsMap needs removing from the db
-        if (!dbItemsMap.isEmpty()) {
-            mDbHelper.delete(dbItemsMap.values());
-        }
-
-        // Now persist the correct list
-        mDbHelper.put(movies);
+        mDbHelper.mergeWatchlist(movies);
     }
 
     private void populateDetailUi(MovieDetailUi ui) {
@@ -626,16 +592,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void populateStateFromDb() {
         if (PhilmCollections.isEmpty(mMoviesState.getLibrary())) {
-            mMoviesState.setLibrary(mDbHelper.getLibrary());
-            for (PhilmMovie movie : mMoviesState.getLibrary()) {
-                mMoviesState.getMovies().put(movie.getTraktId(), movie);
-            }
+            mDbHelper.getLibrary(new LibraryDbLoadCallback());
         }
         if (PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
-            mMoviesState.setWatchlist(mDbHelper.getWatchlist());
-            for (PhilmMovie movie : mMoviesState.getWatchlist()) {
-                mMoviesState.getMovies().put(movie.getTraktId(), movie);
-            }
+            mDbHelper.getWatchlist(new WatchlistDbLoadCallback());
         }
     }
 
@@ -1175,6 +1135,30 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         protected void movieRequiresModifying(PhilmMovie movie) {
             movie.setInCollection(false);
+        }
+    }
+
+    private class LibraryDbLoadCallback implements DatabaseHelper.Callback<List<PhilmMovie>> {
+        @Override
+        public void onFinished(List<PhilmMovie> result) {
+            mMoviesState.setLibrary(result);
+            for (PhilmMovie movie : result) {
+                mMoviesState.getMovies().put(movie.getTraktId(), movie);
+            }
+            mPopulatedLibraryFromDb = true;
+            fetchLibraryIfNeeded();
+        }
+    }
+
+    private class WatchlistDbLoadCallback implements DatabaseHelper.Callback<List<PhilmMovie>> {
+        @Override
+        public void onFinished(List<PhilmMovie> result) {
+            mMoviesState.setWatchlist(result);
+            for (PhilmMovie movie : result) {
+                mMoviesState.getMovies().put(movie.getTraktId(), movie);
+            }
+            mPopulatedWatchlistFromDb = true;
+            fetchWatchlistIfNeeded();
         }
     }
 }

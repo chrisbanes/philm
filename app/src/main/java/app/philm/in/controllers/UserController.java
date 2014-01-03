@@ -112,16 +112,10 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
         if (currentAccount != null) {
             final String username = currentAccount.name;
-
             mUserState.setUsername(username);
             mTraktClient.setAuthentication(username,
                     mAccountManagerHelper.getPassword(currentAccount));
-
-            PhilmUserProfile profileFromDb = mDbHelper.get(username);
-            mUserState.setUserProfile(profileFromDb);
-            if (profileFromDb == null) {
-                fetchUserProfile(mUserState.getUsername());
-            }
+            mDbHelper.getUserProfile(username, new UserProfileDbLoadCallback());
         } else {
             mUserState.setUsername(null);
             mTraktClient.setAuthentication(null, null);
@@ -287,4 +281,13 @@ public class UserController extends BaseUiController<UserController.UserUi,
         }
     }
 
+    private class UserProfileDbLoadCallback implements DatabaseHelper.Callback<PhilmUserProfile> {
+        @Override
+        public void onFinished(PhilmUserProfile result) {
+            mUserState.setUserProfile(result);
+            if (result == null) {
+                fetchUserProfile(mUserState.getUsername());
+            }
+        }
+    }
 }

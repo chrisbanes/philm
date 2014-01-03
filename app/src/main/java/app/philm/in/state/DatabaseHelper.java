@@ -8,9 +8,13 @@ import app.philm.in.model.PhilmUserProfile;
 
 public interface DatabaseHelper {
 
-    public List<PhilmMovie> getWatchlist();
+    public void mergeLibrary(List<PhilmMovie> library);
 
-    public List<PhilmMovie> getLibrary();
+    public void mergeWatchlist(List<PhilmMovie> watchlist);
+
+    public void getWatchlist(Callback<List<PhilmMovie>> callback);
+
+    public void getLibrary(Callback<List<PhilmMovie>> callback);
 
     public void put(Collection<PhilmMovie> movies);
 
@@ -18,12 +22,16 @@ public interface DatabaseHelper {
 
     public void delete(Collection<PhilmMovie> movies);
 
-    public PhilmUserProfile get(String username);
+    public void getUserProfile(String username, Callback<PhilmUserProfile> callback);
 
     public void put(PhilmUserProfile profile);
 
     public void delete(PhilmUserProfile profile);
 
     public void close();
+
+    public interface Callback<T> {
+        public void onFinished(T result);
+    }
 
 }

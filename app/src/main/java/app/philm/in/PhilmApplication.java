@@ -29,21 +29,21 @@ public class PhilmApplication extends Application {
         UserController userController = new UserController(
                 mApplicationState,
                 container.getTraktClient(),
-                container.getExecutor(),
+                container.getMultiThreadExecutor(),
                 container.getAccountManagerHelper(),
-                container.getDatabaseHelper());
+                container.getAsyncDatabaseHelper());
 
         MovieController movieController = new MovieController(
                 mApplicationState,
                 container.getTraktClient(),
-                container.getExecutor(),
-                container.getDatabaseHelper());
+                container.getMultiThreadExecutor(),
+                container.getAsyncDatabaseHelper());
 
         mMainController = new MainController(
                 mApplicationState,
                 userController,
                 movieController,
-                container.getDatabaseHelper());
+                container.getAsyncDatabaseHelper());
     }
 
     public MainController getMainController() {

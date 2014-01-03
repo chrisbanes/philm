@@ -10,6 +10,7 @@ import android.content.Context;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
 import app.philm.in.trakt.Trakt;
@@ -30,10 +31,14 @@ public class Container {
     private final Context mContext;
 
     private Bus mEventBus;
+
     private ExecutorService mThreadPoolExecutor;
+    private ExecutorService mSingleThreadExecutor;
+
     private Trakt mTrakt;
     private AccountManagerHelper mAccountManagerHelper;
-    private DatabaseHelper mDatabaseHelper;
+    private AsyncDatabaseHelper mAsyncDatabaseHelper;
+    private PhilmSQLiteOpenHelper mDatabaseHelper;
     private TypefaceManager mTypefaceManager;
 
     private Container(Context context) {
@@ -47,12 +52,19 @@ public class Container {
         return mEventBus;
     }
 
-    public ExecutorService getExecutor() {
+    public ExecutorService getMultiThreadExecutor() {
         if (mThreadPoolExecutor == null) {
             final int numberCores = Runtime.getRuntime().availableProcessors();
             mThreadPoolExecutor = Executors.newFixedThreadPool(numberCores * 2 + 1);
         }
         return mThreadPoolExecutor;
+    }
+
+    public ExecutorService getSingleThreadExecutor() {
+        if (mSingleThreadExecutor == null) {
+            mSingleThreadExecutor = Executors.newSingleThreadExecutor();
+        }
+        return mSingleThreadExecutor;
     }
 
     public Trakt getTraktClient() {
@@ -71,11 +83,12 @@ public class Container {
         return mAccountManagerHelper;
     }
 
-    public DatabaseHelper getDatabaseHelper() {
-        if (mDatabaseHelper == null) {
-            mDatabaseHelper = new PhilmSQLiteOpenHelper(mContext);
+    public AsyncDatabaseHelper getAsyncDatabaseHelper() {
+        if (mAsyncDatabaseHelper == null) {
+            mAsyncDatabaseHelper = new AsyncDatabaseHelper(getSingleThreadExecutor(),
+                    getDatabaseHelper());
         }
-        return mDatabaseHelper;
+        return mAsyncDatabaseHelper;
     }
 
     public TypefaceManager getTypefaceManager() {
@@ -83,6 +96,13 @@ public class Container {
             mTypefaceManager = new TypefaceManager(mContext.getAssets());
         }
         return mTypefaceManager;
+    }
+
+    public PhilmSQLiteOpenHelper getDatabaseHelper() {
+        if (mDatabaseHelper == null) {
+            mDatabaseHelper = new PhilmSQLiteOpenHelper(mContext);
+        }
+        return mDatabaseHelper;
     }
 
 }

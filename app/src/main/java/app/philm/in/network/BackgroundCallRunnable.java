@@ -28,9 +28,7 @@ public abstract class BackgroundCallRunnable<R> implements Runnable {
 
     public abstract R doBackgroundCall();
 
-    public void onSuccess(R result) {}
-
-    public void onFinished() {}
+    public void onFinished(R result) {}
 
     private class ResultCallback implements Runnable {
         private final R mResult;
@@ -41,10 +39,7 @@ public abstract class BackgroundCallRunnable<R> implements Runnable {
 
         @Override
         public void run() {
-            if (mResult != null) {
-                onSuccess(mResult);
-            }
-            onFinished();
+            onFinished(mResult);
         }
     }
  }

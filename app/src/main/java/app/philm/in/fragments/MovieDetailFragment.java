@@ -171,6 +171,15 @@ public class MovieDetailFragment extends PhilmMovieFragment
         if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
 
+            final View.OnClickListener clickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        getCallbacks().showMovieDetail((PhilmMovie) view.getTag());
+                    }
+                }
+            };
+
             for (PhilmMovie movie : mMovie.getRelated()) {
                 View view = viewRecycler.getRecycledView();
                 if (view == null) {
@@ -194,6 +203,9 @@ public class MovieDetailFragment extends PhilmMovieFragment
                                 title.setVisibility(View.VISIBLE);
                             }
                         });
+
+                view.setOnClickListener(clickListener);
+                view.setTag(movie);
 
                 mRelatedLayout.addView(view);
             }

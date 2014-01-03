@@ -1,7 +1,5 @@
 package app.philm.in.fragments;
 
-import com.squareup.picasso.Picasso;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.squareup.picasso.Picasso;
+
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MainController;
@@ -18,6 +18,7 @@ import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.view.ViewRecycler;
 
 public class SideMenuFragment extends Fragment implements MainControllerUi, View.OnClickListener {
 
@@ -25,6 +26,7 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
 
     private MainControllerUiCallbacks mCallbacks;
 
+    private ViewRecycler mSideItemsViewRecycler;
     private LinearLayout mSideItemsLayout;
     private Button mAccountButton;
     private ImageView mAvatarImageView;
@@ -41,6 +43,7 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSideItemsLayout = (LinearLayout) view.findViewById(R.id.side_items_layout);
+        mSideItemsViewRecycler = new ViewRecycler(mSideItemsLayout);
 
         mAccountButton = (Button) view.findViewById(R.id.btn_account);
         mAccountButton.setOnClickListener(this);
@@ -108,18 +111,22 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
     }
 
     private void populateSideItems() {
-        // TODO: Re-use these Views
-        mSideItemsLayout.removeAllViews();
+        mSideItemsViewRecycler.recycleViews();
 
         final LayoutInflater inflater = getActivity().getLayoutInflater();
 
         for (SideMenuItem item : mSideMenuItems) {
-            Button button = (Button) inflater.inflate(R.layout.item_drawer, mSideItemsLayout, false);
+            Button button = (Button) mSideItemsViewRecycler.getRecycledView();
+            if (button == null) {
+                button = (Button) inflater.inflate(R.layout.item_drawer, mSideItemsLayout, false);
+            }
             button.setText(item.getTitle());
             button.setTag(item);
             button.setOnClickListener(this);
             mSideItemsLayout.addView(button);
         }
+
+        mSideItemsViewRecycler.clearRecycledViews();
     }
 
     @Override

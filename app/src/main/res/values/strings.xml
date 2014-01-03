@@ -9,6 +9,8 @@
     <string name="watchlist_title">Watchlist</string>
     <string name="search_title">Search</string>
 
+    <string name="related_movies">Related</string>
+
     <string name="button_add_account">Add Account</string>
 
     <string name="login_prompt">Login to trakt.tv</string>

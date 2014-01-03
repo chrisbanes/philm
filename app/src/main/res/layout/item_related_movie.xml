@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="@dimen/movie_detail_related_item_width"
+    android:layout_height="match_parent"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/imageview_poster"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <app.philm.in.view.FontTextView
+        android:id="@+id/textview_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/Widget.Philm.Movie.Grid.Title" />
+
+</FrameLayout>

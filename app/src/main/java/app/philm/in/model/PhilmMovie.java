@@ -1,16 +1,16 @@
 package app.philm.in.model;
 
-import com.google.common.base.Preconditions;
+import android.text.TextUtils;
 
+import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
 
-import android.text.TextUtils;
-
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 public class PhilmMovie {
 
@@ -50,6 +50,8 @@ public class PhilmMovie {
     int ratingVotes;
 
     long lastFetched;
+
+    transient List<PhilmMovie> related;
 
     public PhilmMovie() {}
 
@@ -201,6 +203,14 @@ public class PhilmMovie {
 
     public long getLastFetchedTime() {
         return lastFetched;
+    }
+
+    public List<PhilmMovie> getRelated() {
+        return related;
+    }
+
+    public void setRelated(List<PhilmMovie> related) {
+        this.related = related;
     }
 
     @Override

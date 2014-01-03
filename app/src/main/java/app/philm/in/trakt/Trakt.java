@@ -2,8 +2,12 @@ package app.philm.in.trakt;
 
 public class Trakt extends com.jakewharton.trakt.Trakt {
 
-    public MoviesService moviesService() {
-        return buildRestAdapter().create(MoviesService.class);
+    public PhilmMovieService philmMovieService() {
+        return buildRestAdapter().create(PhilmMovieService.class);
+    }
+
+    public PhilmMoviesService philmMoviesService() {
+        return buildRestAdapter().create(PhilmMoviesService.class);
     }
 
     public PhilmUserService philmUserService() {

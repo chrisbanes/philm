@@ -1,8 +1,11 @@
 package app.philm.in.controllers;
 
+import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.entities.ActionResponse;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.RatingResponse;
@@ -12,14 +15,9 @@ import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
 
-import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -407,6 +405,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         PhilmMovie cached = getMovie(ui.getRequestParameter());
         if (cached == null || requireMovieDetailFetch(cached)) {
             fetchDetailMovie(ui);
+        } else {
+            checkDetailMovieResult(cached);
+        }
+    }
+
+    private void checkDetailMovieResult(PhilmMovie movie) {
+        if (PhilmCollections.isEmpty(movie.getRelated())) {
+            fetchRelatedMovies(movie.getTraktId());
         }
     }
 
@@ -428,6 +434,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         mMoviesState.setSearchResult(result);
         mExecutor.execute(new SearchMoviesRunnable(result));
+    }
+
+    private void fetchRelatedMovies(String traktId) {
+        mExecutor.execute(new FetchRelatedMoviesRunnable(traktId));
     }
 
     private void fetchTrending() {
@@ -848,7 +858,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.moviesService().trending();
+            return trakt.philmMoviesService().trending();
         }
 
         @Override
@@ -1009,7 +1019,28 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 mDbHelper.put(movie);
             }
 
-            // TODO: Should do something better here
+            populateUis();
+            checkDetailMovieResult(movie);
+        }
+    }
+
+    private class FetchRelatedMoviesRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+        private final String mImdbId;
+
+        FetchRelatedMoviesRunnable(String imdbId) {
+            super(mTraktClient);
+            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+        }
+
+        @Override
+        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.philmMovieService().related(mImdbId);
+        }
+
+        @Override
+        public void onSuccess(List<Movie> result) {
+            PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
+            movie.setRelated(mapTraktMoviesFromState(result));
             populateUis();
         }
     }

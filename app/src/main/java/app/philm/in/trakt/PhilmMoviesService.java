@@ -7,7 +7,7 @@ import java.util.List;
 import retrofit.http.EncodedPath;
 import retrofit.http.GET;
 
-public interface MoviesService {
+public interface PhilmMoviesService {
 
     @GET("/movies/trending.json/{apikey}")
     List<Movie> trending();

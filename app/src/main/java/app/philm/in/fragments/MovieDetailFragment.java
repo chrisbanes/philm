@@ -1,30 +1,27 @@
 package app.philm.in.fragments;
 
-import com.google.common.base.Preconditions;
-
-import com.squareup.picasso.Picasso;
-
-import android.app.Fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import app.philm.in.PhilmApplication;
+import com.google.common.base.Preconditions;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktImageHelper;
+import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.PhilmActionButton;
 import app.philm.in.view.RatingBarLayout;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
+import app.philm.in.view.ViewRecycler;
 
 public class MovieDetailFragment extends PhilmMovieFragment
         implements MovieController.MovieDetailUi, View.OnClickListener {
@@ -41,6 +38,9 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private ImageView mPosterImageView;
 
     private RatingBarLayout mRatingBarLayout;
+
+    private ViewRecycler mRelatedViewRecycler;
+    private LinearLayout mRelatedLayout;
 
     private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -87,6 +87,9 @@ public class MovieDetailFragment extends PhilmMovieFragment
 
         mCollectionButton = (PhilmActionButton) view.findViewById(R.id.btn_collection);
         mCollectionButton.setOnClickListener(this);
+
+        mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
+        mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
     }
 
     @Override
@@ -159,6 +162,44 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mRatingBarLayout.setRatingGlobalVotes(mMovie.getRatingVotes());
         mRatingBarLayout.setRatingCircleClickListener(this);
 
+        populateRelatedMovies(mRelatedViewRecycler);
+    }
+
+    private void populateRelatedMovies(final ViewRecycler viewRecycler) {
+        viewRecycler.recycleViews();
+
+        if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+            for (PhilmMovie movie : mMovie.getRelated()) {
+                View view = viewRecycler.getRecycledView();
+                if (view == null) {
+                    view = inflater.inflate(R.layout.item_related_movie, mRelatedLayout, false);
+                }
+
+                final TextView title = (TextView) view.findViewById(R.id.textview_title);
+                title.setText(movie.getTitle());
+
+                final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
+                Picasso.with(getActivity())
+                        .load(mTraktImageHelper.getPosterUrl(movie))
+                        .into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                title.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                title.setVisibility(View.VISIBLE);
+                            }
+                        });
+
+                mRelatedLayout.addView(view);
+            }
+        }
+
+        viewRecycler.clearRecycledViews();
     }
 
     private void updateButtonState(PhilmActionButton button, final boolean checked,

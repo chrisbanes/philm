@@ -110,7 +110,10 @@ public class MainController extends BaseUiController<MainController.MainControll
         }
 
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
-            showUiItem(SideMenuItem.TRENDING);
+            Display display = getDisplay();
+            if (display != null && !display.hasMainFragment()) {
+                showUiItem(display, SideMenuItem.TRENDING);
+            }
             return true;
         }
 
@@ -143,8 +146,11 @@ public class MainController extends BaseUiController<MainController.MainControll
         return new MainControllerUiCallbacks() {
             @Override
             public void onSideMenuItemSelected(SideMenuItem item) {
-                closeDrawer();
-                showUiItem(item);
+                Display display = getDisplay();
+                if (display != null) {
+                    showUiItem(display, item);
+                    display.closeDrawerLayout();
+                }
             }
 
             @Override
@@ -155,37 +161,30 @@ public class MainController extends BaseUiController<MainController.MainControll
                     display.closeDrawerLayout();
                 }
             }
-
-            private void closeDrawer() {
-                Display display = getDisplay();
-                if (display != null) {
-                    display.closeDrawerLayout();
-                }
-            }
         };
     }
 
-    private void showUiItem(SideMenuItem item) {
+    private void showUiItem(Display display, SideMenuItem item) {
+        Preconditions.checkNotNull(display, "display cannot be null");
+        Preconditions.checkNotNull(item, "item cannot be null");
+
         if (Constants.DEBUG) {
             Log.d(LOG_TAG, "showUiItem: " + item.name());
         }
 
-        Display display = getDisplay();
-        if (display != null) {
-            switch (item) {
-                case TRENDING:
-                    display.showTrending();
-                    break;
-                case LIBRARY:
-                    display.showLibrary();
-                    break;
-                case WATCHLIST:
-                    display.showWatchlist();
-                    break;
-                case SEARCH:
-                    display.showSearchFragment();
-                    break;
-            }
+        switch (item) {
+            case TRENDING:
+                display.showTrending();
+                break;
+            case LIBRARY:
+                display.showLibrary();
+                break;
+            case WATCHLIST:
+                display.showWatchlist();
+                break;
+            case SEARCH:
+                display.showSearchFragment();
+                break;
         }
     }
 

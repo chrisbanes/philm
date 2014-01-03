@@ -106,6 +106,10 @@ public class Display {
         }
     }
 
+    public boolean hasMainFragment() {
+        return mActivity.getFragmentManager().findFragmentById(R.id.fragment_main) != null;
+    }
+
     public void startAddAccountActivity() {
         Intent intent = new Intent(AccountActivity.ACTION_LOGIN);
         mActivity.startActivity(intent);

@@ -451,11 +451,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchWatchlist() {
-        mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
+        if (isLoggedIn()) {
+            mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
+        }
     }
 
     private void fetchWatchlistIfNeeded() {
-        if (mPopulatedWatchlistFromDb && PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
+        if (mPopulatedWatchlistFromDb
+                && PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
             fetchWatchlist();
         }
     }

@@ -1,19 +1,61 @@
 package app.philm.in.fragments;
 
-import android.app.DialogFragment;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
-public class LicencesFragment extends DialogFragment {
+import app.philm.in.PhilmApplication;
+import app.philm.in.controllers.AboutController;
+
+public class LicencesFragment extends Fragment implements AboutController.AboutOpenSourcesUi {
+
+    private WebView mWebView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        WebView view = new WebView(getActivity());
-        view.loadUrl("file:///android_asset/licences.html");
-        return view;
+        mWebView = new WebView(getActivity());
+        mWebView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        return mWebView;
+    }
+
+    private AboutController.AboutUiCallbacks mCallbacks;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getController().attachUi(this);
+    }
+
+    @Override
+    public void onPause() {
+        getController().detachUi(this);
+        super.onPause();
+    }
+
+    protected final boolean hasCallbacks() {
+        return mCallbacks != null;
+    }
+
+    protected final AboutController.AboutUiCallbacks getCallbacks() {
+        return mCallbacks;
+    }
+
+    @Override
+    public void setCallbacks(AboutController.AboutUiCallbacks callbacks) {
+        mCallbacks = callbacks;
+    }
+
+    private AboutController getController() {
+        return PhilmApplication.from(getActivity()).getMainController().getAboutController();
+    }
+
+    @Override
+    public void showLicences(String url) {
+        mWebView.loadUrl(url);
     }
 }

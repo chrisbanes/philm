@@ -1,34 +1,21 @@
 package app.philm.in;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Menu;
 import android.view.MenuItem;
 
-import app.philm.in.controllers.MainController;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-
-import com.crashlytics.android.Crashlytics;
-
-public class PhilmActivity extends Activity implements MainController.HostCallbacks {
+public class PhilmActivity extends BasePhilmActivity {
 
     private ActionBarDrawerToggle mDrawerToggle;
-
-    private MainController mMainController;
-
-    private Intent mLaunchIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
 
         setContentView(R.layout.activity_main);
-
-        mMainController = PhilmApplication.from(this).getMainController();
 
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawerLayout != null) {
@@ -39,14 +26,6 @@ public class PhilmActivity extends Activity implements MainController.HostCallba
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
         }
-
-        mLaunchIntent = getIntent();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        mLaunchIntent = intent;
     }
 
     @Override
@@ -58,25 +37,14 @@ public class PhilmActivity extends Activity implements MainController.HostCallba
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-        mMainController.setDisplay(new Display(this, mDrawerToggle));
-        mMainController.setHostCallbacks(this);
-        mMainController.init();
-
-        if (mLaunchIntent != null) {
-            mMainController.handleIntent(mLaunchIntent);
-            mLaunchIntent = null;
-        }
+    protected ActionBarDrawerToggle getDrawerToggle() {
+        return mDrawerToggle;
     }
 
     @Override
-    protected void onPause() {
-        mMainController.suspend();
-        mMainController.setHostCallbacks(null);
-        mMainController.setDisplay(null);
-        super.onPause();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
     @Override
@@ -84,13 +52,6 @@ public class PhilmActivity extends Activity implements MainController.HostCallba
         if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -100,16 +61,5 @@ public class PhilmActivity extends Activity implements MainController.HostCallba
         if (mDrawerToggle != null) {
             mDrawerToggle.onConfigurationChanged(newConfig);
         }
-    }
-
-    @Override
-    public void setAccountAuthenticatorResult(Bundle bundle) {
-        // NO-OP
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Crouton.clearCroutonsForActivity(this);
     }
 }

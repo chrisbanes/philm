@@ -34,6 +34,16 @@
 
         </activity>
 
+        <activity android:name=".AboutActivity"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="philm.intent.action.ABOUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+
         <service android:name=".account.PhilmAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>

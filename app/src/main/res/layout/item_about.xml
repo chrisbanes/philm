@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:padding="@dimen/spacing_minor"
+    android:gravity="center_vertical">
+
+    <app.philm.in.view.FontTextView
+        android:id="@android:id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:font="roboto_condensed_bold"
+        android:textSize="20sp"
+        android:maxLines="1"/>
+
+    <app.philm.in.view.FontTextView
+        android:id="@android:id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:font="roboto_condensed"
+        android:textSize="16sp"
+        android:maxLines="1"/>
+
+</LinearLayout>

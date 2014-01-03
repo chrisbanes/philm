@@ -8,6 +8,7 @@
     <string name="library_title">Library</string>
     <string name="watchlist_title">Watchlist</string>
     <string name="search_title">Search</string>
+    <string name="about_title">About</string>
 
     <string name="related_movies">Related</string>
 
@@ -24,6 +25,7 @@
 
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>
+    <string name="menu_about">About</string>
 
     <string name="menu_filter">Filter</string>
     <string name="menu_filter_clear">Clear</string>
@@ -81,5 +83,10 @@
         <item>Superb</item>
         <item>Totally Ninja</item>
     </string-array>
+
+    <string name="about_build_version_title">Build Version</string>
+    <string name="about_build_time_title">Build Time</string>
+    <string name="about_open_source_title">Open-source licences</string>
+    <string name="about_open_source_content">Licence details for used open-source software</string>
 
 </resources>

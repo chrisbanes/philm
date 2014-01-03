@@ -60,6 +60,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     private final UserController mUserController;
     private final MovieController mMovieController;
+    private final AboutController mAboutController;
 
     private final DatabaseHelper mDbHelper;
 
@@ -71,6 +72,7 @@ public class MainController extends BaseUiController<MainController.MainControll
             ApplicationState state,
             UserController userController,
             MovieController movieController,
+            AboutController aboutController,
             DatabaseHelper dbHelper) {
         super();
 
@@ -80,6 +82,8 @@ public class MainController extends BaseUiController<MainController.MainControll
                 "userController cannot be null");
         mMovieController = Preconditions.checkNotNull(movieController,
                 "movieController cannot be null");
+        mAboutController = Preconditions.checkNotNull(aboutController,
+                "aboutController cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
 
         mUserController.setControllerCallbacks(new UserController.ControllerCallbacks() {
@@ -117,7 +121,9 @@ public class MainController extends BaseUiController<MainController.MainControll
             return true;
         }
 
-        return mUserController.handleIntent(intent) || mMovieController.handleIntent(intent);
+        return mUserController.handleIntent(intent)
+                || mMovieController.handleIntent(intent)
+                || mAboutController.handleIntent(intent);
     }
 
     @Override
@@ -127,6 +133,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
         mUserController.init();
         mMovieController.init();
+        mAboutController.init();
     }
 
     @Override
@@ -190,6 +197,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     @Override
     protected void onSuspended() {
+        mAboutController.suspend();
         mUserController.suspend();
         mMovieController.suspend();
 
@@ -204,6 +212,26 @@ public class MainController extends BaseUiController<MainController.MainControll
         super.setDisplay(display);
         mMovieController.setDisplay(display);
         mUserController.setDisplay(display);
+        mAboutController.setDisplay(display);
+    }
+
+    public boolean onActivityMenuItemSelected(int menuItemId) {
+        Display display = getDisplay();
+
+        switch (menuItemId) {
+            case R.id.menu_about:
+                if (display != null) {
+                    display.startAboutActivity();
+                }
+                return true;
+            case android.R.id.home:
+                if (display != null) {
+                    display.popBackStack();
+                }
+                return true;
+        }
+
+        return false;
     }
 
     public void setHostCallbacks(HostCallbacks hostCallbacks) {
@@ -216,5 +244,9 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     public final UserController getUserController() {
         return mUserController;
+    }
+
+    public final AboutController getAboutController() {
+        return mAboutController;
     }
 }

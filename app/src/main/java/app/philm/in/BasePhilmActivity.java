@@ -1,15 +1,20 @@
 package app.philm.in;
 
-import android.accounts.AccountAuthenticatorActivity;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import app.philm.in.controllers.MainController;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class AccountActivity extends AccountAuthenticatorActivity
-        implements MainController.HostCallbacks {
+import com.crashlytics.android.Crashlytics;
 
-    public static final String ACTION_LOGIN = "philm.intent.action.LOGIN";
+public abstract class BasePhilmActivity extends Activity implements MainController.HostCallbacks {
 
     private MainController mMainController;
     private Intent mLaunchIntent;
@@ -17,7 +22,7 @@ public class AccountActivity extends AccountAuthenticatorActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account);
+        Crashlytics.start(this);
         mMainController = PhilmApplication.from(this).getMainController();
         mLaunchIntent = getIntent();
     }
@@ -31,7 +36,8 @@ public class AccountActivity extends AccountAuthenticatorActivity
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        mMainController.setDisplay(new Display(this));
+
+        mMainController.setDisplay(new Display(this, getDrawerToggle()));
         mMainController.setHostCallbacks(this);
         mMainController.init();
 
@@ -39,6 +45,10 @@ public class AccountActivity extends AccountAuthenticatorActivity
             mMainController.handleIntent(mLaunchIntent);
             mLaunchIntent = null;
         }
+    }
+
+    protected ActionBarDrawerToggle getDrawerToggle() {
+        return null;
     }
 
     @Override
@@ -49,4 +59,22 @@ public class AccountActivity extends AccountAuthenticatorActivity
         super.onPause();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mMainController.onActivityMenuItemSelected(item.getItemId())) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setAccountAuthenticatorResult(Bundle bundle) {
+        // NO-OP
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Crouton.clearCroutonsForActivity(this);
+    }
 }

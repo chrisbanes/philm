@@ -4,6 +4,7 @@ package app.philm.in;
 import android.app.Application;
 import android.content.Context;
 
+import app.philm.in.controllers.AboutController;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.controllers.UserController;
@@ -39,10 +40,13 @@ public class PhilmApplication extends Application {
                 container.getMultiThreadExecutor(),
                 container.getAsyncDatabaseHelper());
 
+        AboutController aboutController = new AboutController();
+
         mMainController = new MainController(
                 mApplicationState,
                 userController,
                 movieController,
+                aboutController,
                 container.getAsyncDatabaseHelper());
     }
 

@@ -24,7 +24,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
     private static final String DATABASE_NAME = "philm.db";
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     static {
         // register our models
@@ -51,7 +51,10 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         // this will upgrade tables, adding columns and new tables.
         // Note that existing columns will not be converted
         cupboard().withDatabase(db).upgradeTables();
-        // do migration work
+
+        if (oldVersion <= 9) {
+            deleteAllPhilmMovies();
+        }
     }
 
     List<PhilmMovie> getLibrary() {
@@ -183,6 +186,15 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         assetNotClosed();
         try {
             cupboard().withDatabase(getWritableDatabase()).delete(profile);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
+    }
+
+    void deleteAllPhilmMovies() {
+        assetNotClosed();
+        try {
+            cupboard().withDatabase(getWritableDatabase()).delete(PhilmMovie.class, null, null);
         } catch (Exception e) {
             Crashlytics.logException(e);
         }

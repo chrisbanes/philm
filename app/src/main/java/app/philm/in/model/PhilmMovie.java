@@ -16,6 +16,9 @@ public class PhilmMovie {
 
     public static final int NOT_SET = 0;
 
+    private static final int ID_TYPE_TMDB = 1;
+    private static final int ID_TYPE_IMDB = 2;
+
     public static final Comparator<PhilmMovie> COMPARATOR = new Comparator<PhilmMovie>() {
         @Override
         public int compare(PhilmMovie movie, PhilmMovie movie2) {
@@ -27,8 +30,11 @@ public class PhilmMovie {
 
     // tmdbId
     Long _id;
+    int idType;
 
     String traktId;
+    String imdbId;
+    String tmdbId;
     String title;
     String sortTitle;
     String overview;
@@ -81,9 +87,20 @@ public class PhilmMovie {
     public void setFromMovie(Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
 
-        _id = Long.parseLong(movie.tmdbId);
-
+        tmdbId = movie.tmdbId;
+        imdbId = movie.imdb_id;
         traktId = getTraktId(movie);
+
+        if (!TextUtils.isEmpty(imdbId)) {
+            _id = new Long(imdbId.hashCode());
+            idType = ID_TYPE_IMDB;
+        } else if (!TextUtils.isEmpty(tmdbId)) {
+            _id = new Long(tmdbId.hashCode());
+            idType = ID_TYPE_TMDB;
+        } else {
+            idType = NOT_SET;
+        }
+
         title = movie.title;
         sortTitle = getSortTitle(title);
 

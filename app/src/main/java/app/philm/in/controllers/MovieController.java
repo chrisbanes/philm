@@ -582,7 +582,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
         }
 
-        if (requireFiltering) {
+        if (requireFiltering && !PhilmCollections.isEmpty(items)) {
             items = filterMovies(items);
         }
 

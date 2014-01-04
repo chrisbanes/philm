@@ -570,8 +570,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case WATCHLIST:
                 items = mMoviesState.getWatchlist();
                 sections = Arrays.asList(Filter.UPCOMING, Filter.SOON, Filter.RELEASED,
-                        Filter.WATCHED);
-                sectionProcessingOrder = Arrays.asList(Filter.UPCOMING, Filter.SOON, Filter.WATCHED,
+                        Filter.SEEN);
+                sectionProcessingOrder = Arrays.asList(Filter.UPCOMING, Filter.SOON, Filter.SEEN,
                         Filter.RELEASED);
                 break;
             case SEARCH:
@@ -651,12 +651,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         /**
          * Filters {@link PhilmMovie} that have been watched by the user.
          */
-        WATCHED(R.string.filter_watched),
+        SEEN(R.string.filter_seen),
 
         /**
          * Filters {@link PhilmMovie} that have not been watched by the user.
          */
-        UNWATCHED(R.string.filter_unwatched),
+        UNSEEN(R.string.filter_unseen),
 
         /**
          * Filters {@link PhilmMovie} that have not been released yet.
@@ -698,9 +698,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             switch (this) {
                 case COLLECTION:
                     return movie.inCollection();
-                case WATCHED:
+                case SEEN:
                     return movie.isWatched();
-                case UNWATCHED:
+                case UNSEEN:
                     return !movie.isWatched();
                 case NOT_RELEASED:
                     return isInFuture(movie.getReleasedTime());
@@ -721,10 +721,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         public List<Filter> getMutuallyExclusiveFilters() {
             switch (this) {
-                case WATCHED:
-                    return Arrays.asList(UNWATCHED);
-                case UNWATCHED:
-                    return Arrays.asList(WATCHED);
+                case SEEN:
+                    return Arrays.asList(UNSEEN);
+                case UNSEEN:
+                    return Arrays.asList(SEEN);
             }
             return null;
         }

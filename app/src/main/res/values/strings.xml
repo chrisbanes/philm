@@ -48,8 +48,8 @@
     <string name="movie_release_date">Release date: %1$s</string>
 
     <string name="filter_collection">In collection</string>
-    <string name="filter_watched">Watched</string>
-    <string name="filter_unwatched">Unwatched</string>
+    <string name="filter_seen">Seen</string>
+    <string name="filter_unseen">Unseen</string>
     <string name="filter_upcoming">Upcoming</string>
     <string name="filter_soon">Soon</string>
     <string name="filter_released">Released</string>

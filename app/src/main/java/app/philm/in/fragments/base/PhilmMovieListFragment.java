@@ -64,10 +64,10 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
 
                 updateItemCheckedState(menu, R.id.menu_filter_collection,
                         MovieController.Filter.COLLECTION);
-                updateItemCheckedState(menu, R.id.menu_filter_watched,
-                        MovieController.Filter.WATCHED);
-                updateItemCheckedState(menu, R.id.menu_filter_unwatched,
-                        MovieController.Filter.UNWATCHED);
+                updateItemCheckedState(menu, R.id.menu_filter_seen,
+                        MovieController.Filter.SEEN);
+                updateItemCheckedState(menu, R.id.menu_filter_unseen,
+                        MovieController.Filter.UNSEEN);
                 updateItemCheckedState(menu, R.id.menu_filter_highly_rated,
                         MovieController.Filter.HIGHLY_RATED);
 
@@ -86,11 +86,11 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
             case R.id.menu_filter_collection:
                 updateFilterState(MovieController.Filter.COLLECTION, !item.isChecked());
                 return true;
-            case R.id.menu_filter_watched:
-                updateFilterState(MovieController.Filter.WATCHED, !item.isChecked());
+            case R.id.menu_filter_seen:
+                updateFilterState(MovieController.Filter.SEEN, !item.isChecked());
                 return true;
-            case R.id.menu_filter_unwatched:
-                updateFilterState(MovieController.Filter.UNWATCHED, !item.isChecked());
+            case R.id.menu_filter_unseen:
+                updateFilterState(MovieController.Filter.UNSEEN, !item.isChecked());
                 return true;
             case R.id.menu_filter_highly_rated:
                 updateFilterState(MovieController.Filter.HIGHLY_RATED, !item.isChecked());

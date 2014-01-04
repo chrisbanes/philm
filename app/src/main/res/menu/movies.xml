@@ -12,12 +12,12 @@
                   android:title="@string/filter_collection"
                   android:checkable="true"/>
 
-            <item android:id="@+id/menu_filter_watched"
-                  android:title="@string/filter_watched"
+            <item android:id="@+id/menu_filter_seen"
+                  android:title="@string/filter_seen"
                   android:checkable="true"/>
 
-            <item android:id="@+id/menu_filter_unwatched"
-                  android:title="@string/filter_unwatched"
+            <item android:id="@+id/menu_filter_unseen"
+                  android:title="@string/filter_unseen"
                   android:checkable="true"/>
 
             <item android:id="@+id/menu_filter_highly_rated"

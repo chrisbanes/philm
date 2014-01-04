@@ -111,7 +111,7 @@ public class PhilmMovie {
         year = unbox(year, movie.year);
         inCollection = unbox(inCollection, movie.inCollection);
         inWatchlist = unbox(inWatchlist, movie.inWatchlist);
-        watched = unbox(inWatchlist, movie.watched);
+        watched = unbox(watched, movie.watched);
         plays = unbox(plays, movie.plays);
         releasedTime = unbox(releasedTime, movie.released);
 
@@ -134,7 +134,7 @@ public class PhilmMovie {
     }
 
     public boolean isWatched() {
-        return watched;
+        return watched || plays > 0;
     }
 
     public void setWatched(boolean watched) {

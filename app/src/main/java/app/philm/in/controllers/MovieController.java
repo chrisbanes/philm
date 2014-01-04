@@ -1100,7 +1100,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             if ("success".equals(result.status)) {
                 PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
                 if (movie != null) {
-                    movie.setUserRatingAdvanced(result.rating);
+                    if (result.rating != null) {
+                        movie.setUserRatingAdvanced(result.rating);
+                    } else {
+                        movie.setUserRatingAdvanced(mRating);
+                    }
                     mDbHelper.put(movie);
                     populateUis();
                 }

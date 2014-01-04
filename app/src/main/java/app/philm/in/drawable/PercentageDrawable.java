@@ -44,6 +44,8 @@ public class PercentageDrawable extends Drawable {
 
     private ValueAnimator mAnimator;
 
+    private int mUserRating;
+
     private float mCurrentValue;
     private float mTargetValue;
 
@@ -236,22 +238,23 @@ public class PercentageDrawable extends Drawable {
     }
 
     public void showRating(int rating) {
-        if (mMode == MODE_RATING) {
+        if (mMode == MODE_RATING && mUserRating == rating) {
             return;
         }
-
+        mUserRating = rating;
         mMode = MODE_RATING;
+
         if (isRunning()) {
             stop();
         }
 
         mText = String.valueOf(rating);
         updateTextSize();
-
         mTargetValue = rating / 10f;
+        invalidateSelf();
 
         if (shouldAnimate()) {
-            mAnimator = createAnimator(0f, mTargetValue);
+            mAnimator = createAnimator(mCurrentValue, mTargetValue);
             mAnimator.start();
         }
     }
@@ -260,14 +263,15 @@ public class PercentageDrawable extends Drawable {
         if (mMode == MODE_PROMPT) {
             return;
         }
-
         mMode = MODE_PROMPT;
+
         if (isRunning()) {
             stop();
         }
 
         mText = promptText;
         updateTextSize();
+        invalidateSelf();
 
         if (shouldAnimate()) {
             mAnimator = createAnimator(0f, 1f);

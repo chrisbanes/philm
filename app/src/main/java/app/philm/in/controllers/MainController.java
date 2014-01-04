@@ -45,7 +45,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     public interface MainControllerUi extends BaseUiController.Ui<MainControllerUiCallbacks> {
-        void setSideMenuItems(SideMenuItem... items);
+        void setSideMenuItems(SideMenuItem[] items, SideMenuItem selected);
 
         void showUserProfile(PhilmUserProfile profile);
 
@@ -138,7 +138,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     @Override
     protected void populateUi(MainControllerUi ui) {
-        ui.setSideMenuItems(SideMenuItem.values());
+        ui.setSideMenuItems(SideMenuItem.values(), mState.getSelectedSideMenuItem());
 
         PhilmUserProfile profile = mState.getUserProfile();
         if (profile != null) {
@@ -193,6 +193,9 @@ public class MainController extends BaseUiController<MainController.MainControll
                 display.showSearchFragment();
                 break;
         }
+
+        mState.setSelectedSideMenuItem(item);
+        populateUis();
     }
 
     @Override

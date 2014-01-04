@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -37,6 +38,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private PhilmUserProfile mUserProfile;
     private String mUsername;
 
+    private MainController.SideMenuItem mSelectedSideMenuItem;
+
     public ApplicationState(Bus eventBus) {
         mEventBus = Preconditions.checkNotNull(eventBus, "eventBus cannot null");
     }
@@ -49,6 +52,16 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     @Override
     public void unregisterForEvents(Object receiver) {
         mEventBus.unregister(receiver);
+    }
+
+    @Override
+    public MainController.SideMenuItem getSelectedSideMenuItem() {
+        return mSelectedSideMenuItem;
+    }
+
+    @Override
+    public void setSelectedSideMenuItem(MainController.SideMenuItem item) {
+        mSelectedSideMenuItem = item;
     }
 
     ///////////////////////////

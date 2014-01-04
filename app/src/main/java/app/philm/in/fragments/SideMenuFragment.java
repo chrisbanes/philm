@@ -23,6 +23,7 @@ import app.philm.in.view.ViewRecycler;
 public class SideMenuFragment extends Fragment implements MainControllerUi, View.OnClickListener {
 
     private SideMenuItem[] mSideMenuItems;
+    private SideMenuItem mSelectedSideMenuItem;
 
     private MainControllerUiCallbacks mCallbacks;
 
@@ -64,8 +65,9 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
     }
 
     @Override
-    public void setSideMenuItems(SideMenuItem[] items) {
+    public void setSideMenuItems(SideMenuItem[] items, SideMenuItem selected) {
         mSideMenuItems = items;
+        mSelectedSideMenuItem = selected;
 
         if (mSideItemsLayout != null) {
             populateSideItems();
@@ -123,6 +125,7 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
             button.setText(item.getTitle());
             button.setTag(item);
             button.setOnClickListener(this);
+            button.setActivated(mSelectedSideMenuItem == item);
             mSideItemsLayout.addView(button);
         }
 

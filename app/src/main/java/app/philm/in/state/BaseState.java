@@ -2,9 +2,14 @@ package app.philm.in.state;
 
 import android.accounts.Account;
 
+import app.philm.in.controllers.MainController;
 import app.philm.in.model.PhilmUserProfile;
 
 interface BaseState {
+
+    public void setSelectedSideMenuItem(MainController.SideMenuItem item);
+
+    public MainController.SideMenuItem getSelectedSideMenuItem();
 
     public PhilmUserProfile getUserProfile();
 

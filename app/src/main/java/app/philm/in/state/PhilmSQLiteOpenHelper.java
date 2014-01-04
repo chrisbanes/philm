@@ -194,7 +194,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
     void deleteAllPhilmMovies() {
         assetNotClosed();
         try {
-            cupboard().withDatabase(getWritableDatabase()).delete(PhilmMovie.class, null, null);
+            cupboard().withDatabase(getWritableDatabase()).delete(PhilmMovie.class, null);
         } catch (Exception e) {
             Crashlytics.logException(e);
         }

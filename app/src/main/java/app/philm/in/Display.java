@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -41,27 +43,21 @@ public class Display {
         MovieGridFragment fragment = MovieGridFragment
                 .create(MovieController.MovieQueryType.LIBRARY);
 
-        mActivity.getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .commit();
+        showFragmentFromDrawer(fragment);
     }
 
     public void showTrending() {
         MovieGridFragment fragment = MovieGridFragment
                 .create(MovieController.MovieQueryType.TRENDING);
 
-        mActivity.getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .commit();
+        showFragmentFromDrawer(fragment);
     }
 
     public void showWatchlist() {
         MovieListFragment fragment = MovieListFragment
                 .create(MovieController.MovieQueryType.WATCHLIST);
 
-        mActivity.getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .commit();
+        showFragmentFromDrawer(fragment);
     }
 
     public void showLogin() {
@@ -148,6 +144,19 @@ public class Display {
         if (ab != null) {
             ab.setTitle(title);
         }
+    }
+
+    private void showFragmentFromDrawer(Fragment fragment) {
+        final FragmentManager fm = mActivity.getFragmentManager();
+
+        // Clear Back Stack
+        for (int i = 0, count = fm.getBackStackEntryCount() ; i < count ; i++) {
+            fm.popBackStack();
+        }
+
+        mActivity.getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .commit();
     }
 
     public void popBackStack() {

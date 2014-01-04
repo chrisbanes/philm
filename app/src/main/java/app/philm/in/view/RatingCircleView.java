@@ -15,6 +15,8 @@ public class RatingCircleView extends ImageView {
     private PercentageDrawable mDrawable;
     private String mRatePrompt;
 
+    private int mUserRating;
+
     public RatingCircleView(Context context) {
         this(context, null);
     }
@@ -59,7 +61,10 @@ public class RatingCircleView extends ImageView {
      * @param rating between 0-10.
      */
     public void showRating(int rating) {
-        mDrawable.showRating(rating);
+        if (mUserRating != rating) {
+            mUserRating = rating;
+            mDrawable.showRating(rating);
+        }
     }
 
     public void showRatePrompt() {

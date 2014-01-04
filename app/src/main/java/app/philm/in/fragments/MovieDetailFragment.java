@@ -2,6 +2,7 @@ package app.philm.in.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,9 @@ import com.google.common.base.Preconditions;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
+import app.philm.in.Constants;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieFragment;
@@ -25,6 +29,8 @@ import app.philm.in.view.ViewRecycler;
 
 public class MovieDetailFragment extends PhilmMovieFragment
         implements MovieController.MovieDetailUi, View.OnClickListener {
+
+    private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
@@ -133,18 +139,26 @@ public class MovieDetailFragment extends PhilmMovieFragment
             return;
         }
 
-        Picasso.with(getActivity())
-                .load(mTraktImageHelper.getFanartUrl(mMovie))
-                .into(mFanartImageView);
+        if (mFanartImageView.getDrawable() == null) {
+            Picasso.with(getActivity())
+                    .load(mTraktImageHelper.getFanartUrl(mMovie))
+                    .into(mFanartImageView);
+        }
 
-        Picasso.with(getActivity())
-                .load(mTraktImageHelper.getPosterUrl(mMovie))
-                .into(mPosterImageView);
+        if (mPosterImageView.getDrawable() == null) {
+            Picasso.with(getActivity())
+                    .load(mTraktImageHelper.getPosterUrl(mMovie, TraktImageHelper.TYPE_SMALL))
+                    .into(mPosterImageView);
+        }
 
-        mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
-                mMovie.getYear()));
+        if (TextUtils.isEmpty(mTitleTextView.getText())) {
+            mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
+                    mMovie.getYear()));
+        }
 
-        mSummaryTextView.setText(mMovie.getOverview());
+        if (TextUtils.isEmpty(mSummaryTextView.getText())) {
+            mSummaryTextView.setText(mMovie.getOverview());
+        }
 
         updateButtonState(mSeenButton, mMovie.isWatched(), R.string.action_mark_seen,
                 R.string.action_mark_unseen);
@@ -162,10 +176,17 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mRatingBarLayout.setRatingGlobalVotes(mMovie.getRatingVotes());
         mRatingBarLayout.setRatingCircleClickListener(this);
 
-        populateRelatedMovies(mRelatedViewRecycler);
+        final List<PhilmMovie> related = mMovie.getRelated();
+        if (related == null || related.size() != mRelatedLayout.getChildCount()) {
+            populateRelatedMovies(mRelatedViewRecycler);
+        }
     }
 
     private void populateRelatedMovies(final ViewRecycler viewRecycler) {
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "populateRelatedMovies");
+        }
+
         viewRecycler.recycleViews();
 
         if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
@@ -191,7 +212,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
 
                 final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
                 Picasso.with(getActivity())
-                        .load(mTraktImageHelper.getPosterUrl(movie))
+                        .load(mTraktImageHelper.getPosterUrl(movie, TraktImageHelper.TYPE_SMALL))
                         .into(imageView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -216,11 +237,13 @@ public class MovieDetailFragment extends PhilmMovieFragment
 
     private void updateButtonState(PhilmActionButton button, final boolean checked,
             final int toCheckDesc, final int toUncheckDesc) {
-        button.setChecked(checked);
-        if (checked) {
-            button.setContentDescription(getString(toUncheckDesc));
-        } else {
-            button.setContentDescription(getString(toCheckDesc));
+        if (button.isChecked() != checked) {
+            button.setChecked(checked);
+            if (checked) {
+                button.setContentDescription(getString(toUncheckDesc));
+            } else {
+                button.setContentDescription(getString(toCheckDesc));
+            }
         }
     }
 

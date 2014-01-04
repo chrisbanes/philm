@@ -19,6 +19,9 @@ import app.philm.in.util.ColorUtils;
 
 public class PercentageDrawable extends Drawable {
 
+    private static final int MODE_RATING = 1;
+    private static final int MODE_PROMPT = 2;
+
     private static final Interpolator INTERPOLATOR = new AccelerateDecelerateInterpolator();
 
     private static final float BACKGROUND_CIRCLE_RADIUS_RATIO = 1f / 2f;
@@ -50,6 +53,8 @@ public class PercentageDrawable extends Drawable {
 
     private boolean mEnabled;
     private boolean mPressed;
+
+    private int mMode;
 
     public PercentageDrawable() {
         mBounds = new RectF();
@@ -231,6 +236,11 @@ public class PercentageDrawable extends Drawable {
     }
 
     public void showRating(int rating) {
+        if (mMode == MODE_RATING) {
+            return;
+        }
+
+        mMode = MODE_RATING;
         if (isRunning()) {
             stop();
         }
@@ -247,6 +257,11 @@ public class PercentageDrawable extends Drawable {
     }
 
     public void showPrompt(String promptText) {
+        if (mMode == MODE_PROMPT) {
+            return;
+        }
+
+        mMode = MODE_PROMPT;
         if (isRunning()) {
             stop();
         }

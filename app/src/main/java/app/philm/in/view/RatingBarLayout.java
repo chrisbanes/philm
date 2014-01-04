@@ -19,6 +19,9 @@ public class RatingBarLayout extends FrameLayout {
     private final TextView mRatingGlobalPercentageTextView;
     private final TextView mRatingGlobalVotesTextView;
 
+    private int mRatingGlobalPercentage;
+    private int mRatingGlobalVotes;
+
     public RatingBarLayout(Context context) {
         this(context, null);
     }
@@ -49,11 +52,17 @@ public class RatingBarLayout extends FrameLayout {
     }
 
     public void setRatingGlobalPercentage(int ratingGlobalPercentage) {
-        mRatingGlobalPercentageTextView.setText(ratingGlobalPercentage + "%");
+        if (mRatingGlobalPercentage != ratingGlobalPercentage) {
+            mRatingGlobalPercentage = ratingGlobalPercentage;
+            mRatingGlobalPercentageTextView.setText(ratingGlobalPercentage + "%");
+        }
     }
 
     public void setRatingGlobalVotes(int ratingGlobalVotes) {
-        mRatingGlobalVotesTextView.setText(String.valueOf(ratingGlobalVotes));
+        if (mRatingGlobalVotes != ratingGlobalVotes) {
+            mRatingGlobalVotes = ratingGlobalVotes;
+            mRatingGlobalVotesTextView.setText(String.valueOf(ratingGlobalVotes));
+        }
     }
 
     public void setRatingCircleClickListener(OnClickListener clickListener) {

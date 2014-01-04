@@ -26,7 +26,7 @@ def buildTime() {
 def versionMajor = 0
 def versionMinor = 1
 def versionPatch = 0
-def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+def versionBuild = 1 // bump for dogfood builds, public betas, etc.
 
 android {
     compileSdkVersion 19

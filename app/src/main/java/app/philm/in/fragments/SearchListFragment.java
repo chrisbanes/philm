@@ -43,7 +43,9 @@ public class SearchListFragment extends MovieListFragment implements MovieContro
                     if (hasCallbacks()) {
                         getCallbacks().search(query);
                     }
-                    mSearchView.clearFocus();
+                    if (mSearchView != null) {
+                        mSearchView.clearFocus();
+                    }
                     return true;
                 }
 

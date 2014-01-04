@@ -31,7 +31,7 @@ public class AccountActivity extends AccountAuthenticatorActivity
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        mMainController.setDisplay(new Display(this));
+        mMainController.setDisplay(new AndroidDisplay(this));
         mMainController.setHostCallbacks(this);
         mMainController.init();
 

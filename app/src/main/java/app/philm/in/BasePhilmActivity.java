@@ -2,11 +2,8 @@ package app.philm.in;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import app.philm.in.controllers.MainController;
@@ -37,12 +34,12 @@ public abstract class BasePhilmActivity extends Activity implements MainControll
     protected void onPostResume() {
         super.onPostResume();
 
-        mMainController.setDisplay(new Display(this, getDrawerToggle()));
+        mMainController.setDisplay(new AndroidDisplay(this, getDrawerToggle()));
         mMainController.setHostCallbacks(this);
         mMainController.init();
 
         if (mLaunchIntent != null) {
-            mMainController.handleIntent(mLaunchIntent);
+            mMainController.handleIntent(mLaunchIntent.getAction());
             mLaunchIntent = null;
         }
     }

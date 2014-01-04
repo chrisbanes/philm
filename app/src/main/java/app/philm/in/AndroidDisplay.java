@@ -21,24 +21,21 @@ import app.philm.in.fragments.MovieListFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.SearchListFragment;
 
-public class Display {
-
-    private static final String FRAGMENT_TAG_LICENCES = "licences";
-    private static final String FRAGMENT_TAG_RATE_MOVIE = "rate_movie";
+public class AndroidDisplay implements Display {
 
     private final Activity mActivity;
+    private final ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    private ActionBarDrawerToggle mActionBarDrawerToggle;
-
-    public Display(Activity activity) {
+    public AndroidDisplay(Activity activity) {
         this(activity, null);
     }
 
-    public Display(Activity activity, ActionBarDrawerToggle actionBarDrawerToggle) {
+    public AndroidDisplay(Activity activity, ActionBarDrawerToggle actionBarDrawerToggle) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mActionBarDrawerToggle = actionBarDrawerToggle;
     }
 
+    @Override
     public void showLibrary() {
         MovieGridFragment fragment = MovieGridFragment
                 .create(MovieController.MovieQueryType.LIBRARY);
@@ -46,6 +43,7 @@ public class Display {
         showFragmentFromDrawer(fragment);
     }
 
+    @Override
     public void showTrending() {
         MovieGridFragment fragment = MovieGridFragment
                 .create(MovieController.MovieQueryType.TRENDING);
@@ -53,6 +51,7 @@ public class Display {
         showFragmentFromDrawer(fragment);
     }
 
+    @Override
     public void showWatchlist() {
         MovieListFragment fragment = MovieListFragment
                 .create(MovieController.MovieQueryType.WATCHLIST);
@@ -60,6 +59,7 @@ public class Display {
         showFragmentFromDrawer(fragment);
     }
 
+    @Override
     public void showLogin() {
         LoginFragment fragment = LoginFragment.create();
 
@@ -68,6 +68,7 @@ public class Display {
                 .commit();
     }
 
+    @Override
     public void showMovieDetailFragment(String movieId) {
         MovieDetailFragment fragment = MovieDetailFragment.create(movieId);
 
@@ -78,6 +79,7 @@ public class Display {
                 .commit();
     }
 
+    @Override
     public void showSearchFragment() {
         SearchListFragment fragment = new SearchListFragment();
 
@@ -86,6 +88,7 @@ public class Display {
                 .commit();
     }
 
+    @Override
     public void showAboutFragment() {
         AboutFragment fragment = new AboutFragment();
         mActivity.getFragmentManager().beginTransaction()
@@ -93,6 +96,7 @@ public class Display {
                 .commit();
     }
 
+    @Override
     public void showLicencesFragment() {
         LicencesFragment fragment = new LicencesFragment();
 
@@ -103,11 +107,13 @@ public class Display {
                 .commit();
     }
 
+    @Override
     public void showRateMovieFragment(String movieId) {
         RateMovieFragment fragment = RateMovieFragment.create(movieId);
         fragment.show(mActivity.getFragmentManager(), FRAGMENT_TAG_RATE_MOVIE);
     }
 
+    @Override
     public void closeDrawerLayout() {
         DrawerLayout drawerLayout = (DrawerLayout) mActivity.findViewById(R.id.drawer_layout);
         if (drawerLayout != null) {
@@ -115,30 +121,36 @@ public class Display {
         }
     }
 
+    @Override
     public boolean hasMainFragment() {
         return mActivity.getFragmentManager().findFragmentById(R.id.fragment_main) != null;
     }
 
+    @Override
     public void startAddAccountActivity() {
         Intent intent = new Intent(AccountActivity.ACTION_LOGIN);
         mActivity.startActivity(intent);
     }
 
+    @Override
     public void startAboutActivity() {
         Intent intent = new Intent(AboutActivity.ACTION_ABOUT);
         mActivity.startActivity(intent);
     }
 
+    @Override
     public void setActionBarTitle(int titleResId) {
         setActionBarTitle(mActivity.getString(titleResId));
     }
 
+    @Override
     public void setDrawerToggleEnabled(boolean enabled) {
         if (mActionBarDrawerToggle != null) {
             mActionBarDrawerToggle.setDrawerIndicatorEnabled(enabled);
         }
     }
 
+    @Override
     public void setActionBarTitle(String title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
@@ -150,7 +162,7 @@ public class Display {
         final FragmentManager fm = mActivity.getFragmentManager();
 
         // Clear Back Stack
-        for (int i = 0, count = fm.getBackStackEntryCount() ; i < count ; i++) {
+        for (int i = 0, count = fm.getBackStackEntryCount(); i < count; i++) {
             fm.popBackStack();
         }
 
@@ -159,6 +171,7 @@ public class Display {
                 .commit();
     }
 
+    @Override
     public void popBackStack() {
         if (mActivity.getFragmentManager().popBackStackImmediate()) {
             return;

@@ -5,15 +5,13 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Bus;
 
-import android.accounts.Account;
-import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
-
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import app.philm.in.model.PhilmAccount;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
@@ -34,7 +32,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private List<PhilmMovie> mWatchlist;
     private Set<MovieController.Filter> mFilters;
 
-    private Account mAccount;
+    private PhilmAccount mAccount;
     private PhilmUserProfile mUserProfile;
     private String mUsername;
 
@@ -73,7 +71,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     @Override
     public Map<String, PhilmMovie> getMovies() {
         if (mMovies == null) {
-            mMovies = new ArrayMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
+            mMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
         }
         return mMovies;
     }
@@ -143,7 +141,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     ///////////////////////////
 
     @Override
-    public void setCurrentAccount(Account account) {
+    public void setCurrentAccount(PhilmAccount account) {
         if (!Objects.equal(mAccount, account)) {
             mAccount = account;
             mEventBus.post(new AccountChangedEvent());
@@ -151,7 +149,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public Account getCurrentAccount() {
+    public PhilmAccount getCurrentAccount() {
         return mAccount;
     }
 

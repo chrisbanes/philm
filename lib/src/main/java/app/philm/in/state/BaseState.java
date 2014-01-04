@@ -1,7 +1,6 @@
 package app.philm.in.state;
 
-import android.accounts.Account;
-
+import app.philm.in.model.PhilmAccount;
 import app.philm.in.controllers.MainController;
 import app.philm.in.model.PhilmUserProfile;
 
@@ -15,7 +14,7 @@ interface BaseState {
 
     public String getUsername();
 
-    public Account getCurrentAccount();
+    public PhilmAccount getCurrentAccount();
 
     public void registerForEvents(Object receiver);
 

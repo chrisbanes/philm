@@ -1,0 +1,23 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.squareup.okhttp:okhttp:1.2.1'
+    compile 'com.squareup.retrofit:retrofit:1.2.2'
+    compile 'com.squareup:otto:1.3.4'
+    compile 'com.google.guava:guava:15.0'
+    compile 'nl.qbusict:cupboard:1.+'
+
+    compile fileTree(dir: 'libs', include: '*.jar')
+}

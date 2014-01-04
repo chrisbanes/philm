@@ -66,6 +66,7 @@ android {
 }
 
 dependencies {
+    compile project(':lib')
     compile 'com.android.support:support-v4:+'
     compile 'com.squareup.okhttp:okhttp:1.2.1'
     compile 'com.squareup.retrofit:retrofit:1.2.2'

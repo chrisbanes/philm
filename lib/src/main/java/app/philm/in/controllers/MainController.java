@@ -15,6 +15,7 @@ import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.state.ApplicationState;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.UserState;
+import app.philm.in.util.Logger;
 
 public class MainController extends BaseUiController<MainController.MainControllerUi,
         MainController.MainControllerUiCallbacks> {
@@ -63,17 +64,19 @@ public class MainController extends BaseUiController<MainController.MainControll
     private final AboutController mAboutController;
 
     private final DatabaseHelper mDbHelper;
-
-    private ApplicationState mState;
+    private final ApplicationState mState;
 
     private HostCallbacks mHostCallbacks;
+
+    private final Logger mLogger;
 
     public MainController(
             ApplicationState state,
             UserController userController,
             MovieController movieController,
             AboutController aboutController,
-            DatabaseHelper dbHelper) {
+            DatabaseHelper dbHelper,
+            Logger logger) {
         super();
 
         mState = Preconditions.checkNotNull(state, "state cannot be null");
@@ -85,6 +88,7 @@ public class MainController extends BaseUiController<MainController.MainControll
         mAboutController = Preconditions.checkNotNull(aboutController,
                 "aboutController cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
+        mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
 
         mUserController.setControllerCallbacks(new UserController.ControllerCallbacks() {
             @Override
@@ -108,12 +112,10 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     @Override
-    public boolean handleIntent(Intent intent) {
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "handleIntent: " + intent);
-        }
+    public boolean handleIntent(String intentAction) {
+        mLogger.d(LOG_TAG, "handleIntent: " + intentAction);
 
-        if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+        if (Intent.ACTION_MAIN.equals(intentAction)) {
             Display display = getDisplay();
             if (display != null && !display.hasMainFragment()) {
                 showUiItem(display, SideMenuItem.TRENDING);
@@ -121,9 +123,9 @@ public class MainController extends BaseUiController<MainController.MainControll
             return true;
         }
 
-        return mUserController.handleIntent(intent)
-                || mMovieController.handleIntent(intent)
-                || mAboutController.handleIntent(intent);
+        return mUserController.handleIntent(intentAction)
+                || mMovieController.handleIntent(intentAction)
+                || mAboutController.handleIntent(intentAction);
     }
 
     @Override
@@ -175,9 +177,7 @@ public class MainController extends BaseUiController<MainController.MainControll
         Preconditions.checkNotNull(display, "display cannot be null");
         Preconditions.checkNotNull(item, "item cannot be null");
 
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "showUiItem: " + item.name());
-        }
+        mLogger.d(LOG_TAG, "showUiItem: " + item.name());
 
         switch (item) {
             case TRENDING:

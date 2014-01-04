@@ -1,7 +1,5 @@
 package app.philm.in.model;
 
-import android.text.TextUtils;
-
 import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Movie;
@@ -11,6 +9,8 @@ import com.jakewharton.trakt.enumerations.Rating;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import app.philm.in.util.TextUtils;
 
 public class PhilmMovie {
 

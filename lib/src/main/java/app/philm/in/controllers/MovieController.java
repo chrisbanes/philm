@@ -1,9 +1,5 @@
 package app.philm.in.controllers;
 
-import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.ActionResponse;
@@ -18,12 +14,12 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import app.philm.in.Constants;
 import app.philm.in.Display;
@@ -37,6 +33,8 @@ import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
+import app.philm.in.util.BackgroundExecutor;
+import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
@@ -51,9 +49,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     private final MoviesState mMoviesState;
-    private final ExecutorService mExecutor;
+    private final BackgroundExecutor mExecutor;
     private final Trakt mTraktClient;
     private final DatabaseHelper mDbHelper;
+    private final Logger mLogger;
 
     private boolean mPopulatedLibraryFromDb = false;
     private boolean mPopulatedWatchlistFromDb = false;
@@ -61,13 +60,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public MovieController(
             MoviesState movieState,
             Trakt traktClient,
-            ExecutorService executor,
-            DatabaseHelper dbHelper) {
+            BackgroundExecutor executor,
+            DatabaseHelper dbHelper,
+            Logger logger) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
+        mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
     }
 
     @Subscribe
@@ -219,7 +220,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         final MovieQueryType queryType = ui.getMovieQueryType();
 
         if (queryType.requireLogin() && !isLoggedIn()) {
-            Log.i(LOG_TAG, queryType.name() + " UI Attached but not logged in");
+            mLogger.i(LOG_TAG, queryType.name() + " UI Attached but not logged in");
             return;
         }
 
@@ -355,7 +356,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         final List<ListItem<PhilmMovie>> result = new ArrayList<ListItem<PhilmMovie>>(items.size());
         final HashSet<PhilmMovie> movies = new HashSet<PhilmMovie>(items);
 
-        ArrayMap<Filter, List<ListItem<PhilmMovie>>> sectionsItemLists = null;
+        Map<Filter, List<ListItem<PhilmMovie>>> sectionsItemLists = null;
 
         for (MovieController.Filter filter : sectionProcessingOrder) {
             List<ListItem<PhilmMovie>> sectionItems = null;
@@ -375,7 +376,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             if (!PhilmCollections.isEmpty(sectionItems)) {
                 if (sectionsItemLists == null) {
-                    sectionsItemLists = new ArrayMap<Filter, List<ListItem<PhilmMovie>>>();
+                    sectionsItemLists = new HashMap<Filter, List<ListItem<PhilmMovie>>>();
                 }
                 sectionsItemLists.put(filter, sectionItems);
             }
@@ -503,9 +504,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void markMovieRating(String imdbId, Rating rating) {
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "markMovieRating: " + imdbId + ". " + rating.name());
-        }
+        mLogger.d(LOG_TAG, "markMovieRating: " + imdbId + ". " + rating.name());
         mExecutor.execute(new SubmitMovieRatingRunnable(imdbId, rating));
     }
 
@@ -831,11 +830,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private abstract class BaseMovieTraktRunnable<R> extends TraktNetworkCallRunnable<R> {
-
-        public BaseMovieTraktRunnable(Trakt traktClient) {
-            super(traktClient);
-        }
-
         @Override
         public void onPreTraktCall() {
             showLoadingProgress(true);
@@ -855,13 +849,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchTrendingRunnable extends BaseMovieTraktRunnable<List<Movie>> {
-        public FetchTrendingRunnable() {
-            super(mTraktClient);
-        }
-
         @Override
-        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.philmMoviesService().trending();
+        public List<Movie> doBackgroundCall() throws RetrofitError {
+            return mTraktClient.philmMoviesService().trending();
         }
 
         @Override
@@ -885,13 +875,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         private final String mUsername;
 
         FetchLibraryRunnable(String username) {
-            super(mTraktClient);
             mUsername = Preconditions.checkNotNull(username, "username cannot be null");
         }
 
         @Override
-        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.philmUserService().libraryMoviesAll(mUsername);
+        public List<Movie> doBackgroundCall() throws RetrofitError {
+            return mTraktClient.philmUserService().libraryMoviesAll(mUsername);
         }
 
         @Override
@@ -913,13 +902,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         private final String mUsername;
 
         FetchWatchlistRunnable(String username) {
-            super(mTraktClient);
             mUsername = Preconditions.checkNotNull(username, "username cannot be null");
         }
 
         @Override
-        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.philmUserService().watchlistMovies(mUsername);
+        public List<Movie> doBackgroundCall() throws RetrofitError {
+            return mTraktClient.philmUserService().watchlistMovies(mUsername);
         }
 
         @Override
@@ -941,13 +929,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         private final SearchResult mSearchResult;
 
         SearchMoviesRunnable(SearchResult searchResult) {
-            super(mTraktClient);
             mSearchResult = Preconditions.checkNotNull(searchResult, "searchResult cannot be null");
         }
 
         @Override
-        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.philmSearchService().movies(mSearchResult.getQuery());
+        public List<Movie> doBackgroundCall() throws RetrofitError {
+            return mTraktClient.philmSearchService().movies(mSearchResult.getQuery());
         }
 
         @Override
@@ -963,15 +950,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         private final String mImdbId;
 
         BaseMovieActionTraktRunnable(String imdbId) {
-            super(mTraktClient);
             mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
         }
 
         @Override
-        public final Response doTraktCall(Trakt trakt) throws RetrofitError {
+        public final Response doBackgroundCall() throws RetrofitError {
             MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(mImdbId);
-
-            return doTraktCall(trakt, new MovieService.Movies(seenMovie));
+            return doTraktCall(mTraktClient, new MovieService.Movies(seenMovie));
         }
 
         public abstract Response doTraktCall(Trakt trakt, MovieService.Movies body);
@@ -1005,13 +990,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         private final String mImdbId;
 
         FetchDetailMovieRunnable(String imdbId) {
-            super(mTraktClient);
             mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
         }
 
         @Override
-        public Movie doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.movieService().summary(mImdbId);
+        public Movie doBackgroundCall() throws RetrofitError {
+            return mTraktClient.movieService().summary(mImdbId);
         }
 
         @Override
@@ -1031,13 +1015,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         private final String mImdbId;
 
         FetchRelatedMoviesRunnable(String imdbId) {
-            super(mTraktClient);
             mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
         }
 
         @Override
-        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.philmMovieService().related(mImdbId);
+        public List<Movie> doBackgroundCall() throws RetrofitError {
+            return mTraktClient.philmMovieService().related(mImdbId);
         }
 
         @Override
@@ -1085,14 +1068,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         private final Rating mRating;
 
         SubmitMovieRatingRunnable(String imdbId, Rating rating) {
-            super(mTraktClient);
             mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
             mRating = Preconditions.checkNotNull(rating, "rating cannot be null");
         }
 
         @Override
-        public RatingResponse doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.rateService().movie(new RateService.MovieRating(mImdbId, mRating));
+        public RatingResponse doBackgroundCall() throws RetrofitError {
+            return mTraktClient.rateService().movie(new RateService.MovieRating(mImdbId, mRating));
         }
 
         @Override

@@ -1,7 +1,5 @@
 package app.philm.in.model;
 
-import android.util.Log;
-
 public class ListItem<T> {
 
     public static final int TYPE_ITEM = 0;

@@ -6,25 +6,24 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.UserProfile;
 import com.squareup.otto.Subscribe;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import app.philm.in.AccountActivity;
 import app.philm.in.Constants;
 import app.philm.in.Display;
+import app.philm.in.accounts.PhilmAccountFetcher;
+import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
-import app.philm.in.util.AccountManagerHelper;
+import app.philm.in.util.BackgroundExecutor;
+import app.philm.in.util.Logger;
+import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.Sha1;
+import app.philm.in.util.TextUtils;
 import retrofit.RetrofitError;
 
 public class UserController extends BaseUiController<UserController.UserUi,
@@ -56,26 +55,29 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     private final UserState mUserState;
-    private final ExecutorService mExecutor;
+    private final BackgroundExecutor mExecutor;
     private final Trakt mTraktClient;
-    private final AccountManagerHelper mAccountManagerHelper;
+    private final PhilmAccountFetcher mAccountManagerHelper;
     private final DatabaseHelper mDbHelper;
+    private final Logger mLogger;
 
     private ControllerCallbacks mControllerCallbacks;
 
     public UserController(
             UserState userState,
             Trakt traktClient,
-            ExecutorService executor,
-            AccountManagerHelper accountManagerHelper,
-            DatabaseHelper dbHelper) {
+            BackgroundExecutor executor,
+            PhilmAccountFetcher accountFetcher,
+            DatabaseHelper dbHelper,
+            Logger logger) {
         super();
         mUserState = Preconditions.checkNotNull(userState, "userState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
-        mAccountManagerHelper = Preconditions.checkNotNull(accountManagerHelper,
-                "accountManagerHelper cannot be null");
+        mAccountManagerHelper = Preconditions.checkNotNull(accountFetcher,
+                "accountFetcher cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
+        mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
     }
 
     @Override
@@ -84,18 +86,18 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
         mUserState.registerForEvents(this);
 
-        Account account = mUserState.getCurrentAccount();
-        Account[] accounts = mAccountManagerHelper.getAccounts();
+        PhilmAccount account = mUserState.getCurrentAccount();
+        List<PhilmAccount> accounts = mAccountManagerHelper.getAccounts();
 
         if (account == null) {
-            if (accounts.length > 0) {
-                mUserState.setCurrentAccount(accounts[0]);
+            if (!PhilmCollections.isEmpty(accounts)) {
+                mUserState.setCurrentAccount(accounts.get(0));
             }
         } else {
             // Try and find account in account list, if removed, remove our reference
             boolean found = false;
             for (int i = 0, z = accounts.length ; i < z ; i++) {
-                if (Objects.equal(accounts[i].name, account.name)) {
+                if (Objects.equal(accounts.get(i).getAccountName(), account.getAccountName())) {
                     found = true;
                     break;
                 }
@@ -108,10 +110,10 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
     @Subscribe
     public void onAccountChanged(UserState.AccountChangedEvent event) {
-        Account currentAccount = mUserState.getCurrentAccount();
+        PhilmAccount currentAccount = mUserState.getCurrentAccount();
 
         if (currentAccount != null) {
-            final String username = currentAccount.name;
+            final String username = currentAccount.getAccountName();
             mUserState.setUsername(username);
             mTraktClient.setAuthentication(username,
                     mAccountManagerHelper.getPassword(currentAccount));
@@ -128,19 +130,17 @@ public class UserController extends BaseUiController<UserController.UserUi,
             // TODO: Also nuke rest of state
         }
 
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "onAccountChanged: " + mUserState.getUsername());
-        }
+        mLogger.d(LOG_TAG, "onAccountChanged: " + mUserState.getUsername());
     }
 
     @Override
-    public boolean handleIntent(Intent intent) {
+    public boolean handleIntent(String intentAction) {
         final Display display = getDisplay();
-        if (display != null && AccountActivity.ACTION_LOGIN.equals(intent.getAction())) {
+        if (display != null && AccountActivity.ACTION_LOGIN.equals(intentAction)) {
             display.showLogin();
             return true;
         }
-        return super.handleIntent(intent);
+        return super.handleIntent(intentAction);
     }
 
     void setControllerCallbacks(ControllerCallbacks controllerCallbacks) {
@@ -189,13 +189,12 @@ public class UserController extends BaseUiController<UserController.UserUi,
         private final String mUsername;
 
         FetchUserProfileRunnable(String username) {
-            super(mTraktClient);
             mUsername = Preconditions.checkNotNull(username, "username cannot be null");
         }
 
         @Override
-        public UserProfile doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.userService().profile(mUsername);
+        public UserProfile doBackgroundCall() throws RetrofitError {
+            return mTraktClient.userService().profile(mUsername);
         }
 
         @Override
@@ -215,15 +214,14 @@ public class UserController extends BaseUiController<UserController.UserUi,
         private final String mUsername, mPassword;
 
         CheckUserCredentialsRunnable(String username, String password) {
-            super(mTraktClient);
             mUsername = Preconditions.checkNotNull(username, "username cannot be null");
             mPassword = Preconditions.checkNotNull(password, "password cannot be null");
         }
 
         @Override
-        public String doTraktCall(Trakt trakt) {
-            trakt.setAuthentication(mUsername, mPassword);
-            return trakt.accountService().test().status;
+        public String doBackgroundCall() {
+            mTraktClient.setAuthentication(mUsername, mPassword);
+            return mTraktClient.accountService().test().status;
         }
 
         @Override
@@ -235,11 +233,11 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 return;
             }
 
-            Account[] accounts = mAccountManagerHelper.getAccounts();
-            Account account = null;
-            for (int i = 0, count = accounts.length; i < count; i++) {
-                if (mUsername.equals(accounts[i].name)) {
-                    account = accounts[i];
+            List<PhilmAccount> accounts = mAccountManagerHelper.getAccounts();
+            PhilmAccount account = null;
+            for (int i = 0, count = accounts.size(); i < count; i++) {
+                if (mUsername.equals(accounts.get(i).getAccountName())) {
+                    account = accounts.get(i);
                     break;
                 }
             }

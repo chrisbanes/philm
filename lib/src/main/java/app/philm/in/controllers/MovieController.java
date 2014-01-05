@@ -29,13 +29,14 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.SearchResult;
 import app.philm.in.network.NetworkError;
 import app.philm.in.network.TraktNetworkCallRunnable;
-import app.philm.in.state.DatabaseHelper;
+import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.util.TextUtils;
 import retrofit.RetrofitError;
 
 import static app.philm.in.util.TimeUtils.isAfterThreshold;
@@ -51,7 +52,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final MoviesState mMoviesState;
     private final BackgroundExecutor mExecutor;
     private final Trakt mTraktClient;
-    private final DatabaseHelper mDbHelper;
+    private final AsyncDatabaseHelper mDbHelper;
     private final Logger mLogger;
 
     private boolean mPopulatedLibraryFromDb = false;
@@ -61,7 +62,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             MoviesState movieState,
             Trakt traktClient,
             BackgroundExecutor executor,
-            DatabaseHelper dbHelper,
+            AsyncDatabaseHelper dbHelper,
             Logger logger) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
@@ -1158,7 +1159,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class LibraryDbLoadCallback implements DatabaseHelper.Callback<List<PhilmMovie>> {
+    private class LibraryDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
         @Override
         public void onFinished(List<PhilmMovie> result) {
             mMoviesState.setLibrary(result);
@@ -1172,7 +1173,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class WatchlistDbLoadCallback implements DatabaseHelper.Callback<List<PhilmMovie>> {
+    private class WatchlistDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
         @Override
         public void onFinished(List<PhilmMovie> result) {
             mMoviesState.setWatchlist(result);

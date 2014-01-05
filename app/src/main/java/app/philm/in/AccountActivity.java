@@ -1,6 +1,7 @@
 package app.philm.in;
 
 import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,8 +9,6 @@ import app.philm.in.controllers.MainController;
 
 public class AccountActivity extends AccountAuthenticatorActivity
         implements MainController.HostCallbacks {
-
-    public static final String ACTION_LOGIN = "philm.intent.action.LOGIN";
 
     private MainController mMainController;
     private Intent mLaunchIntent;
@@ -36,7 +35,7 @@ public class AccountActivity extends AccountAuthenticatorActivity
         mMainController.init();
 
         if (mLaunchIntent != null) {
-            mMainController.handleIntent(mLaunchIntent);
+            mMainController.handleIntent(mLaunchIntent.getAction());
             mLaunchIntent = null;
         }
     }
@@ -47,6 +46,16 @@ public class AccountActivity extends AccountAuthenticatorActivity
         mMainController.setHostCallbacks(null);
         mMainController.setDisplay(null);
         super.onPause();
+    }
+
+    @Override
+    public void setAccountAuthenticatorResult(String username, String authToken,
+            String accountType) {
+        Bundle callbackResult = new Bundle();
+        callbackResult.putString(AccountManager.KEY_ACCOUNT_NAME, username);
+        callbackResult.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
+        callbackResult.putString(AccountManager.KEY_AUTHTOKEN, authToken);
+        setAccountAuthenticatorResult(callbackResult);
     }
 
 }

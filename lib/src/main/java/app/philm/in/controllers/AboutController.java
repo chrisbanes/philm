@@ -66,7 +66,7 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
     @Override
     public boolean handleIntent(String intentAction) {
         final Display display = getDisplay();
-        if (AboutActivity.ACTION_ABOUT.equals(intentAction)) {
+        if (Display.ACTION_ABOUT.equals(intentAction)) {
             if (display != null && !display.hasMainFragment()) {
                 display.showAboutFragment();
             }

@@ -2,10 +2,10 @@ package app.philm.in.network;
 
 public abstract class BackgroundCallRunnable<R> {
 
-    public void onPreBackgroundCall() {}
+    public void preExecute() {}
 
-    public abstract R doBackgroundCall();
+    public abstract R runAsync();
 
-    public void onFinished(R result) {}
+    public void postExecute(R result) {}
 
  }

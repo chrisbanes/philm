@@ -7,16 +7,14 @@ import com.jakewharton.trakt.entities.UserProfile;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
-import app.philm.in.AccountActivity;
 import app.philm.in.Constants;
 import app.philm.in.Display;
-import app.philm.in.accounts.PhilmAccountFetcher;
+import app.philm.in.accounts.PhilmAccountManager;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.network.TraktNetworkCallRunnable;
-import app.philm.in.state.DatabaseHelper;
+import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.UserState;
 import app.philm.in.trakt.Trakt;
 import app.philm.in.util.BackgroundExecutor;
@@ -36,7 +34,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     interface ControllerCallbacks {
-        void onAddAccountCompleted(Bundle extras);
+        void onAddAccountCompleted(String username, String authToken, String authTokenType);
     }
 
     public interface UserUi extends BaseUiController.Ui<UserUiCallbacks> {
@@ -57,8 +55,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
     private final UserState mUserState;
     private final BackgroundExecutor mExecutor;
     private final Trakt mTraktClient;
-    private final PhilmAccountFetcher mAccountManagerHelper;
-    private final DatabaseHelper mDbHelper;
+    private final PhilmAccountManager mPhilmAccountManager;
+    private final AsyncDatabaseHelper mDbHelper;
     private final Logger mLogger;
 
     private ControllerCallbacks mControllerCallbacks;
@@ -67,14 +65,14 @@ public class UserController extends BaseUiController<UserController.UserUi,
             UserState userState,
             Trakt traktClient,
             BackgroundExecutor executor,
-            PhilmAccountFetcher accountFetcher,
-            DatabaseHelper dbHelper,
+            PhilmAccountManager accountFetcher,
+            AsyncDatabaseHelper dbHelper,
             Logger logger) {
         super();
         mUserState = Preconditions.checkNotNull(userState, "userState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
-        mAccountManagerHelper = Preconditions.checkNotNull(accountFetcher,
+        mPhilmAccountManager = Preconditions.checkNotNull(accountFetcher,
                 "accountFetcher cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
@@ -87,7 +85,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         mUserState.registerForEvents(this);
 
         PhilmAccount account = mUserState.getCurrentAccount();
-        List<PhilmAccount> accounts = mAccountManagerHelper.getAccounts();
+        List<PhilmAccount> accounts = mPhilmAccountManager.getAccounts();
 
         if (account == null) {
             if (!PhilmCollections.isEmpty(accounts)) {
@@ -96,7 +94,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         } else {
             // Try and find account in account list, if removed, remove our reference
             boolean found = false;
-            for (int i = 0, z = accounts.length ; i < z ; i++) {
+            for (int i = 0, z = accounts.size() ; i < z ; i++) {
                 if (Objects.equal(accounts.get(i).getAccountName(), account.getAccountName())) {
                     found = true;
                     break;
@@ -115,8 +113,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         if (currentAccount != null) {
             final String username = currentAccount.getAccountName();
             mUserState.setUsername(username);
-            mTraktClient.setAuthentication(username,
-                    mAccountManagerHelper.getPassword(currentAccount));
+            mTraktClient.setAuthentication(username, currentAccount.getPassword());
             mDbHelper.getUserProfile(username, new UserProfileDbLoadCallback());
         } else {
             mUserState.setUsername(null);
@@ -136,7 +133,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     @Override
     public boolean handleIntent(String intentAction) {
         final Display display = getDisplay();
-        if (display != null && AccountActivity.ACTION_LOGIN.equals(intentAction)) {
+        if (display != null && Display.ACTION_LOGIN.equals(intentAction)) {
             display.showLogin();
             return true;
         }
@@ -233,7 +230,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 return;
             }
 
-            List<PhilmAccount> accounts = mAccountManagerHelper.getAccounts();
+            List<PhilmAccount> accounts = mPhilmAccountManager.getAccounts();
             PhilmAccount account = null;
             for (int i = 0, count = accounts.size(); i < count; i++) {
                 if (mUsername.equals(accounts.get(i).getAccountName())) {
@@ -243,24 +240,19 @@ public class UserController extends BaseUiController<UserController.UserUi,
             }
 
             if (account == null) {
-                account = new Account(mUsername, Constants.TRAKT_ACCOUNT_TYPE);
-                mAccountManagerHelper.addAccount(account, mPassword);
-                mAccountManagerHelper.setAuthToken(account, mPassword,
-                        Constants.TRAKT_AUTHTOKEN_PASSWORD_TYPE);
+                account = new PhilmAccount(mUsername, mPassword);
+                account.setAuthToken(mPassword, Constants.TRAKT_AUTHTOKEN_PASSWORD_TYPE);
+                mPhilmAccountManager.addAccount(account);
+                mPhilmAccountManager.setAuthToken(account);
             } else {
-                mAccountManagerHelper.setPassword(account, mPassword);
+                mPhilmAccountManager.setPassword(account);
             }
 
             mUserState.setCurrentAccount(account);
 
             if (mControllerCallbacks != null) {
-                Bundle callbackResult = new Bundle();
-                callbackResult.putString(AccountManager.KEY_ACCOUNT_NAME, mUsername);
-                callbackResult.putString(AccountManager.KEY_ACCOUNT_TYPE,
+                mControllerCallbacks.onAddAccountCompleted(mUsername, mPassword,
                         Constants.TRAKT_ACCOUNT_TYPE);
-                callbackResult.putString(AccountManager.KEY_AUTHTOKEN, mPassword);
-
-                mControllerCallbacks.onAddAccountCompleted(callbackResult);
             }
         }
 
@@ -279,7 +271,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         }
     }
 
-    private class UserProfileDbLoadCallback implements DatabaseHelper.Callback<PhilmUserProfile> {
+    private class UserProfileDbLoadCallback implements AsyncDatabaseHelper.Callback<PhilmUserProfile> {
         @Override
         public void onFinished(PhilmUserProfile result) {
             mUserState.setUserProfile(result);

@@ -8,30 +8,25 @@ import app.philm.in.model.PhilmUserProfile;
 
 public interface DatabaseHelper {
 
-    public void mergeLibrary(List<PhilmMovie> library);
+    List<PhilmMovie> getLibrary();
 
-    public void mergeWatchlist(List<PhilmMovie> watchlist);
+    List<PhilmMovie> getWatchlist();
 
-    public void getWatchlist(Callback<List<PhilmMovie>> callback);
+    void put(PhilmMovie movie);
 
-    public void getLibrary(Callback<List<PhilmMovie>> callback);
+    void put(Collection<PhilmMovie> movies);
 
-    public void put(Collection<PhilmMovie> movies);
+    void delete(Collection<PhilmMovie> movies);
 
-    public void put(PhilmMovie movie);
+    PhilmUserProfile getUserProfile(String username);
 
-    public void delete(Collection<PhilmMovie> movies);
+    void put(PhilmUserProfile profile);
 
-    public void getUserProfile(String username, Callback<PhilmUserProfile> callback);
+    void delete(PhilmUserProfile profile);
 
-    public void put(PhilmUserProfile profile);
+    void deleteAllPhilmMovies();
 
-    public void delete(PhilmUserProfile profile);
+    void close();
 
-    public void close();
-
-    public interface Callback<T> {
-        public void onFinished(T result);
-    }
-
+    boolean isClosed();
 }

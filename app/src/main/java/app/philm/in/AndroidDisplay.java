@@ -128,13 +128,13 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void startAddAccountActivity() {
-        Intent intent = new Intent(AccountActivity.ACTION_LOGIN);
+        Intent intent = new Intent(ACTION_LOGIN);
         mActivity.startActivity(intent);
     }
 
     @Override
     public void startAboutActivity() {
-        Intent intent = new Intent(AboutActivity.ACTION_ABOUT);
+        Intent intent = new Intent(ACTION_ABOUT);
         mActivity.startActivity(intent);
     }
 

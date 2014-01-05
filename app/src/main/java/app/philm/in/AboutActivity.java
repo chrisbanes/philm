@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 public class AboutActivity extends BasePhilmActivity {
 
-    public static final String ACTION_ABOUT = "philm.intent.action.ABOUT";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

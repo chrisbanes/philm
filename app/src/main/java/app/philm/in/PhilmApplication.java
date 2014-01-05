@@ -31,14 +31,16 @@ public class PhilmApplication extends Application {
                 mApplicationState,
                 container.getTraktClient(),
                 container.getMultiThreadExecutor(),
-                container.getAccountManagerHelper(),
-                container.getAsyncDatabaseHelper());
+                container.getAccountFetcher(),
+                container.getAsyncDatabaseHelper(),
+                container.getLogger());
 
         MovieController movieController = new MovieController(
                 mApplicationState,
                 container.getTraktClient(),
                 container.getMultiThreadExecutor(),
-                container.getAsyncDatabaseHelper());
+                container.getAsyncDatabaseHelper(),
+                container.getLogger());
 
         AboutController aboutController = new AboutController();
 
@@ -47,7 +49,8 @@ public class PhilmApplication extends Application {
                 userController,
                 movieController,
                 aboutController,
-                container.getAsyncDatabaseHelper());
+                container.getAsyncDatabaseHelper(),
+                container.getLogger());
     }
 
     public MainController getMainController() {

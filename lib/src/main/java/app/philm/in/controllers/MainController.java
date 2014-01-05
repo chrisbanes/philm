@@ -8,12 +8,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.R;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.state.ApplicationState;
-import app.philm.in.state.DatabaseHelper;
+import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.UserState;
 import app.philm.in.util.Logger;
 
@@ -42,7 +41,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     public interface HostCallbacks {
         void finish();
 
-        void setAccountAuthenticatorResult(Bundle bundle);
+        void setAccountAuthenticatorResult(String username, String authToken, String accountType);
     }
 
     public interface MainControllerUi extends BaseUiController.Ui<MainControllerUiCallbacks> {
@@ -63,7 +62,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     private final MovieController mMovieController;
     private final AboutController mAboutController;
 
-    private final DatabaseHelper mDbHelper;
+    private final AsyncDatabaseHelper mDbHelper;
     private final ApplicationState mState;
 
     private HostCallbacks mHostCallbacks;
@@ -75,7 +74,7 @@ public class MainController extends BaseUiController<MainController.MainControll
             UserController userController,
             MovieController movieController,
             AboutController aboutController,
-            DatabaseHelper dbHelper,
+            AsyncDatabaseHelper dbHelper,
             Logger logger) {
         super();
 
@@ -92,9 +91,10 @@ public class MainController extends BaseUiController<MainController.MainControll
 
         mUserController.setControllerCallbacks(new UserController.ControllerCallbacks() {
             @Override
-            public void onAddAccountCompleted(Bundle result) {
+            public void onAddAccountCompleted(String username, String authToken,
+                    String accountType) {
                 if (mHostCallbacks != null) {
-                    mHostCallbacks.setAccountAuthenticatorResult(result);
+                    mHostCallbacks.setAccountAuthenticatorResult(username, authToken, accountType);
                     mHostCallbacks.finish();
                 }
             }
@@ -115,7 +115,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     public boolean handleIntent(String intentAction) {
         mLogger.d(LOG_TAG, "handleIntent: " + intentAction);
 
-        if (Intent.ACTION_MAIN.equals(intentAction)) {
+        if (Display.ACTION_MAIN.equals(intentAction)) {
             Display display = getDisplay();
             if (display != null && !display.hasMainFragment()) {
                 showUiItem(display, SideMenuItem.TRENDING);

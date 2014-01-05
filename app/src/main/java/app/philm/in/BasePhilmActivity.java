@@ -65,7 +65,8 @@ public abstract class BasePhilmActivity extends Activity implements MainControll
     }
 
     @Override
-    public void setAccountAuthenticatorResult(Bundle bundle) {
+    public void setAccountAuthenticatorResult(String username, String authToken,
+            String authTokenType) {
         // NO-OP
     }
 

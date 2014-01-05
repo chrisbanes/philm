@@ -5,7 +5,6 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.common.base.Preconditions;
@@ -14,12 +13,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import app.philm.in.Constants;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import nl.qbusict.cupboard.QueryResultIterable;
 
-public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
+public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseHelper {
 
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
@@ -57,7 +55,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    List<PhilmMovie> getLibrary() {
+    @Override
+    public List<PhilmMovie> getLibrary() {
         assetNotClosed();
 
         ArrayList<PhilmMovie> movies = null;
@@ -82,7 +81,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         return movies;
     }
 
-    List<PhilmMovie> getWatchlist() {
+    @Override
+    public List<PhilmMovie> getWatchlist() {
         assetNotClosed();
 
         ArrayList<PhilmMovie> movies = null;
@@ -107,7 +107,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         return movies;
     }
 
-    void put(PhilmMovie movie) {
+    @Override
+    public void put(PhilmMovie movie) {
         assetNotClosed();
 
         try {
@@ -117,7 +118,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    void put(Collection<PhilmMovie> movies) {
+    @Override
+    public void put(Collection<PhilmMovie> movies) {
         assetNotClosed();
 
         SQLiteDatabase db = null;
@@ -138,7 +140,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    void delete(Collection<PhilmMovie> movies) {
+    @Override
+    public void delete(Collection<PhilmMovie> movies) {
         assetNotClosed();
 
         SQLiteDatabase db = null;
@@ -159,7 +162,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    PhilmUserProfile getUserProfile(String username) {
+    @Override
+    public PhilmUserProfile getUserProfile(String username) {
         assetNotClosed();
 
         try {
@@ -173,7 +177,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    void put(PhilmUserProfile profile) {
+    @Override
+    public void put(PhilmUserProfile profile) {
         assetNotClosed();
         try {
             cupboard().withDatabase(getWritableDatabase()).put(profile);
@@ -182,7 +187,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    void delete(PhilmUserProfile profile) {
+    @Override
+    public void delete(PhilmUserProfile profile) {
         assetNotClosed();
         try {
             cupboard().withDatabase(getWritableDatabase()).delete(profile);
@@ -191,7 +197,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    void deleteAllPhilmMovies() {
+    @Override
+    public void deleteAllPhilmMovies() {
         assetNotClosed();
         try {
             cupboard().withDatabase(getWritableDatabase()).delete(PhilmMovie.class, null);
@@ -206,6 +213,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         super.close();
     }
 
+    @Override
     public boolean isClosed() {
         return mIsClosed;
     }

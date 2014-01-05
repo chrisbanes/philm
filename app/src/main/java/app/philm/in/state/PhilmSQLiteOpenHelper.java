@@ -24,7 +24,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
     private static final String DATABASE_NAME = "philm.db";
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     static {
         // register our models
@@ -52,7 +52,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper {
         // Note that existing columns will not be converted
         cupboard().withDatabase(db).upgradeTables();
 
-        if (oldVersion <= 9) {
+        if (oldVersion <= 10) {
             deleteAllPhilmMovies();
         }
     }

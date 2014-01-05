@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Callback;
@@ -46,6 +47,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private RatingBarLayout mRatingBarLayout;
 
     private ViewRecycler mRelatedViewRecycler;
+    private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
 
     private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
@@ -94,6 +96,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mCollectionButton = (PhilmActionButton) view.findViewById(R.id.btn_collection);
         mCollectionButton.setOnClickListener(this);
 
+        mRelatedSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_related);
         mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
         mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
     }
@@ -102,6 +105,11 @@ public class MovieDetailFragment extends PhilmMovieFragment
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
+    }
+
+    @Override
+    public void showRelatedMoviesLoadingProgress(final boolean visible) {
+        mRelatedSwitcher.setDisplayedChild(visible ? 0 : 1);
     }
 
     @Override

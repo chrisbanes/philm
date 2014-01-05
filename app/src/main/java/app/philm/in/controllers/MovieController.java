@@ -794,6 +794,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface MovieDetailUi extends MovieUi {
         void setMovie(PhilmMovie movie);
 
+        void showRelatedMoviesLoadingProgress(boolean visible);
+
         void setToggleWatchedButtonEnabled(boolean enabled);
         void setCollectionButtonEnabled(boolean enabled);
         void setWatchlistButtonEnabled(boolean enabled);
@@ -1036,6 +1038,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
+        public void onPreTraktCall() {
+            showRelatedLoadingProgress(true);
+        }
+
+        @Override
         public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
             return trakt.philmMovieService().related(mImdbId);
         }
@@ -1045,6 +1052,19 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
             movie.setRelated(mapTraktMoviesFromState(result));
             populateUis();
+        }
+
+        @Override
+        public void onFinished() {
+            showRelatedLoadingProgress(false);
+        }
+
+        private void showRelatedLoadingProgress(boolean show) {
+            for (MovieUi ui : getUis()) {
+                if (ui instanceof MovieDetailUi) {
+                    ((MovieDetailUi) ui).showRelatedMoviesLoadingProgress(show);
+                }
+            }
         }
     }
 

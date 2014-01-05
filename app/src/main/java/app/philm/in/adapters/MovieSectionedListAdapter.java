@@ -27,6 +27,7 @@ import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.view.StringManager;
 
 public class MovieSectionedListAdapter extends BaseAdapter implements
         PinnedSectionListView.PinnedSectionListAdapter {
@@ -104,7 +105,7 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                 break;
             }
             case ListItem.TYPE_SECTION:
-                ((TextView) view).setText(item.getSectionTitle());
+                ((TextView) view).setText(StringManager.getStringResId(item.getFilter()));
                 break;
         }
 

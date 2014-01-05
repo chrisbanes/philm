@@ -23,7 +23,6 @@ import java.util.Set;
 
 import app.philm.in.Constants;
 import app.philm.in.Display;
-import app.philm.in.R;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.SearchResult;
@@ -228,10 +227,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         Display display = getDisplay();
         if (display != null) {
             display.setDrawerToggleEnabled(!(ui instanceof MovieDetailUi));
-
-            if (queryType.getTitle() != 0) {
-                display.setActionBarTitle(queryType.getTitle());
-            }
+            display.setActionBarTitle(queryType);
         }
 
         switch (queryType) {
@@ -368,7 +364,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     if (sectionItems == null) {
                         sectionItems = new ArrayList<ListItem<PhilmMovie>>();
                         // Now add Title
-                        sectionItems.add(new ListItem<PhilmMovie>(filter.getTitle()));
+                        sectionItems.add(new ListItem<PhilmMovie>(filter));
                     }
                     sectionItems.add(new ListItem<PhilmMovie>(movie));
                     i.remove();
@@ -646,53 +642,42 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         /**
          * Filters {@link PhilmMovie} that are in the user's collection.
          */
-        COLLECTION(R.string.filter_collection),
+        COLLECTION,
 
         /**
          * Filters {@link PhilmMovie} that have been watched by the user.
          */
-        SEEN(R.string.filter_seen),
+        SEEN,
 
         /**
          * Filters {@link PhilmMovie} that have not been watched by the user.
          */
-        UNSEEN(R.string.filter_unseen),
+        UNSEEN,
 
         /**
          * Filters {@link PhilmMovie} that have not been released yet.
          */
-        NOT_RELEASED(R.string.filter_upcoming),
+        NOT_RELEASED,
 
         /**
          * Filters {@link PhilmMovie} that have already been released.
          */
-        RELEASED(R.string.filter_released),
+        RELEASED,
 
         /**
          * Filters {@link PhilmMovie} that are unreleased, and will be released in the far future.
          */
-        UPCOMING(R.string.filter_upcoming),
+        UPCOMING,
 
         /**
          * Filters {@link PhilmMovie} that are unreleased, and will be released in the near future.
          */
-        SOON(R.string.filter_soon),
+        SOON,
 
         /**
          * Filters {@link PhilmMovie} which are highly rated, either by the user or the public.
          */
-        HIGHLY_RATED(R.string.filter_highly_rated);
-
-
-        private final int mTitle;
-
-        private Filter(int titleResId) {
-            mTitle = titleResId;
-        }
-
-        public int getTitle() {
-            return mTitle;
-        }
+        HIGHLY_RATED;
 
         public boolean isMovieFiltered(PhilmMovie movie) {
             switch (this) {
@@ -731,22 +716,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        TRENDING(R.string.trending_title),
-        LIBRARY(R.string.library_title),
-        WATCHLIST(R.string.watchlist_title),
-        DETAIL(0),
-        SEARCH(R.string.search_title),
-        NONE(0);
-
-        private final int mTitleResId;
-
-        private MovieQueryType(int titleResId) {
-            mTitleResId = titleResId;
-        }
-
-        public int getTitle() {
-            return mTitleResId;
-        }
+        TRENDING, LIBRARY, WATCHLIST, DETAIL, SEARCH, NONE;
 
         public boolean requireLogin() {
             switch (this) {

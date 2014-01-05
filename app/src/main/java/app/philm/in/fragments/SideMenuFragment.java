@@ -18,6 +18,7 @@ import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.view.StringManager;
 import app.philm.in.view.ViewRecycler;
 
 public class SideMenuFragment extends Fragment implements MainControllerUi, View.OnClickListener {
@@ -122,7 +123,7 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
             if (button == null) {
                 button = (Button) inflater.inflate(R.layout.item_drawer, mSideItemsLayout, false);
             }
-            button.setText(item.getTitle());
+            button.setText(StringManager.getStringResId(item));
             button.setTag(item);
             button.setOnClickListener(this);
             button.setActivated(mSelectedSideMenuItem == item);

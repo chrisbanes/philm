@@ -58,8 +58,17 @@ public abstract class BasePhilmActivity extends Activity implements MainControll
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mMainController.onActivityMenuItemSelected(item.getItemId())) {
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (mMainController.onHomeButtonPressed()) {
+                    return true;
+                }
+                break;
+            case R.id.menu_about:
+                if (mMainController.onAboutButtonPressed()) {
+                    return true;
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -81,14 +81,14 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
             @Override
             public void onItemClick(AboutItem item) {
                 switch (item) {
-                    case BUILD_VERSION:
-                        break;
                     case OPEN_SOURCE:
                         Display display = getDisplay();
                         if (display != null) {
                             display.showLicencesFragment();
                         }
+                        break;     case BUILD_VERSION:
                         break;
+
                 }
             }
         };

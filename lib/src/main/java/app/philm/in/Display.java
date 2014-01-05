@@ -1,5 +1,7 @@
 package app.philm.in;
 
+import app.philm.in.controllers.MovieController;
+
 public interface Display {
 
     public static final String FRAGMENT_TAG_RATE_MOVIE = "rate_movie";
@@ -40,6 +42,8 @@ public interface Display {
     public void setDrawerToggleEnabled(boolean enabled);
 
     public void setActionBarTitle(String title);
+
+    public void setActionBarTitle(MovieController.MovieQueryType movieQueryType);
 
     public void popBackStack();
 

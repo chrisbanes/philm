@@ -1,5 +1,7 @@
 package app.philm.in.model;
 
+import app.philm.in.controllers.MovieController;
+
 public class ListItem<T> {
 
     public static final int TYPE_ITEM = 0;
@@ -7,17 +9,17 @@ public class ListItem<T> {
 
     private final int type;
     private final T item;
-    private final int titleResId;
+    private final MovieController.Filter filter;
 
     public ListItem(T item) {
         type = TYPE_ITEM;
-        titleResId = 0;
+        filter = null;
         this.item = item;
     }
 
-    public ListItem(int sectionTitle) {
+    public ListItem(MovieController.Filter filter) {
         type = TYPE_SECTION;
-        titleResId = sectionTitle;
+        this.filter = filter;
         item = null;
     }
 
@@ -29,8 +31,8 @@ public class ListItem<T> {
         return item;
     }
 
-    public int getSectionTitle() {
-        return titleResId;
+    public MovieController.Filter getFilter() {
+        return filter;
     }
 
     @Override
@@ -44,10 +46,10 @@ public class ListItem<T> {
 
         ListItem listItem = (ListItem) o;
 
-        if (titleResId != listItem.titleResId) {
+        if (type != listItem.type) {
             return false;
         }
-        if (type != listItem.type) {
+        if (filter != null ? !filter.equals(listItem.filter) : listItem.filter != null) {
             return false;
         }
         if (item != null ? !item.equals(listItem.item) : listItem.item != null) {
@@ -61,7 +63,7 @@ public class ListItem<T> {
     public int hashCode() {
         int result = type;
         result = 31 * result + (item != null ? item.hashCode() : 0);
-        result = 31 * result + titleResId;
+        result = 31 * result + (filter != null ? filter.hashCode() : 0);
         return result;
     }
 }

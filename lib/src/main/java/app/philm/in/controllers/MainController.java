@@ -4,12 +4,7 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Subscribe;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-
 import app.philm.in.Display;
-import app.philm.in.R;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.state.ApplicationState;
 import app.philm.in.state.AsyncDatabaseHelper;
@@ -21,21 +16,8 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     private static final String LOG_TAG = MainController.class.getSimpleName();
 
-    public static enum SideMenuItem {
-        TRENDING(R.string.trending_title),
-        LIBRARY(R.string.library_title),
-        WATCHLIST(R.string.watchlist_title),
-        SEARCH(R.string.search_title);
-
-        private final int mTitleResId;
-
-        private SideMenuItem(int titleResId) {
-            mTitleResId = titleResId;
-        }
-
-        public int getTitle() {
-            return mTitleResId;
-        }
+    public enum SideMenuItem {
+        TRENDING, LIBRARY, WATCHLIST, SEARCH;
     }
 
     public interface HostCallbacks {
@@ -64,10 +46,9 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     private final AsyncDatabaseHelper mDbHelper;
     private final ApplicationState mState;
+    private final Logger mLogger;
 
     private HostCallbacks mHostCallbacks;
-
-    private final Logger mLogger;
 
     public MainController(
             ApplicationState state,
@@ -218,23 +199,20 @@ public class MainController extends BaseUiController<MainController.MainControll
         mAboutController.setDisplay(display);
     }
 
-    public boolean onActivityMenuItemSelected(int menuItemId) {
+    public boolean onAboutButtonPressed() {
         Display display = getDisplay();
-
-        switch (menuItemId) {
-            case R.id.menu_about:
-                if (display != null) {
-                    display.startAboutActivity();
-                }
-                return true;
-            case android.R.id.home:
-                if (display != null) {
-                    display.popBackStack();
-                }
-                return true;
+        if (display != null) {
+            display.startAboutActivity();
         }
+        return true;
+    }
 
-        return false;
+    public boolean onHomeButtonPressed() {
+        Display display = getDisplay();
+        if (display != null) {
+            display.popBackStack();
+        }
+        return true;
     }
 
     public void setHostCallbacks(HostCallbacks hostCallbacks) {

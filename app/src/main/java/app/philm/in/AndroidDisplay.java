@@ -20,6 +20,7 @@ import app.philm.in.fragments.MovieGridFragment;
 import app.philm.in.fragments.MovieListFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.SearchListFragment;
+import app.philm.in.view.StringManager;
 
 public class AndroidDisplay implements Display {
 
@@ -140,7 +141,14 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void setActionBarTitle(int titleResId) {
-        setActionBarTitle(mActivity.getString(titleResId));
+        if (titleResId != 0) {
+            setActionBarTitle(mActivity.getString(titleResId));
+        }
+    }
+
+    @Override
+    public void setActionBarTitle(MovieController.MovieQueryType movieQueryType) {
+        setActionBarTitle(StringManager.getStringResId(movieQueryType));
     }
 
     @Override

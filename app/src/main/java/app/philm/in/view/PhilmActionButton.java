@@ -11,6 +11,7 @@ public class PhilmActionButton extends CheckableImageButton {
 
     public PhilmActionButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        setClickable(true);
         CheatSheet.setup(this);
     }
 

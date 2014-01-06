@@ -147,22 +147,24 @@ public class Display {
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {
-        final FragmentManager fm = mActivity.getFragmentManager();
-
-        // Clear Back Stack
-        for (int i = 0, count = fm.getBackStackEntryCount() ; i < count ; i++) {
-            fm.popBackStack();
-        }
+        popEntireFragmentBackStack();
 
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
     }
 
-    public void popBackStack() {
-        if (mActivity.getFragmentManager().popBackStackImmediate()) {
-            return;
+    public boolean popEntireFragmentBackStack() {
+        final FragmentManager fm = mActivity.getFragmentManager();
+        final int backStackCount = fm.getBackStackEntryCount();
+        // Clear Back Stack
+        for (int i = 0; i < backStackCount; i++) {
+            fm.popBackStack();
         }
+        return backStackCount > 0;
+    }
+
+    public void finishActivity() {
         mActivity.finish();
     }
 

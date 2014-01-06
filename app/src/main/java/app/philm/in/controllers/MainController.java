@@ -229,7 +229,10 @@ public class MainController extends BaseUiController<MainController.MainControll
                 return true;
             case android.R.id.home:
                 if (display != null) {
-                    display.popBackStack();
+                    if (display.popEntireFragmentBackStack()) {
+                        return true;
+                    }
+                    display.finishActivity();
                 }
                 return true;
         }

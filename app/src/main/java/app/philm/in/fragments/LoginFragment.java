@@ -65,6 +65,11 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     }
 
     @Override
+    public String getUiTitle() {
+        return getString(R.string.account_login);
+    }
+
+    @Override
     public void showLoadingProgress(boolean visible) {
         mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
     }

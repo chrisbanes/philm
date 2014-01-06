@@ -105,6 +105,10 @@ public class MovieDetailFragment extends PhilmMovieFragment
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
+
+        if (movie != null && hasCallbacks()) {
+            getCallbacks().onTitleChanged(movie.getTitle());
+        }
     }
 
     @Override
@@ -140,6 +144,14 @@ public class MovieDetailFragment extends PhilmMovieFragment
     @Override
     public String getRequestParameter() {
         return getArguments().getString(KEY_QUERY_MOVIE_ID);
+    }
+
+    @Override
+    public String getUiTitle() {
+        if (mMovie != null) {
+            return mMovie.getTitle();
+        }
+        return null;
     }
 
     private void populateUi() {

@@ -12,10 +12,6 @@ import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
 
-import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -121,6 +117,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Override
     protected MovieUiCallbacks createUiCallbacks(final MovieUi ui) {
         return new MovieUiCallbacks() {
+
+            @Override
+            public void onTitleChanged(String newTitle) {
+                updateDisplayTitle(newTitle);
+            }
 
             @Override
             public void addFilter(Filter filter) {
@@ -231,16 +232,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         Display display = getDisplay();
         if (display != null) {
-<<<<<<< HEAD:lib/src/main/java/app/philm/in/controllers/MovieController.java
-            display.setDrawerToggleEnabled(!(ui instanceof MovieDetailUi));
-            display.setActionBarTitle(queryType);
-=======
             display.showUpNavigation(ui instanceof MovieDetailUi);
-
-            if (queryType.getTitle() != 0) {
-                display.setActionBarTitle(queryType.getTitle());
-            }
->>>>>>> master:app/src/main/java/app/philm/in/controllers/MovieController.java
+            display.setActionBarTitle(queryType);
         }
 
         switch (queryType) {
@@ -790,6 +783,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieUiCallbacks {
+        void onTitleChanged(String newTitle);
+
         void addFilter(Filter filter);
 
         void removeFilter(Filter filter);
@@ -1005,18 +1000,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
-<<<<<<< HEAD:lib/src/main/java/app/philm/in/controllers/MovieController.java
-        public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.philmMovieService().related(mImdbId);
-=======
         public void onPreTraktCall() {
             showRelatedLoadingProgress(true);
         }
 
         @Override
-        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
-            return trakt.philmMovieService().related(mImdbId);
->>>>>>> master:app/src/main/java/app/philm/in/controllers/MovieController.java
+        public List<Movie> doBackgroundCall() throws RetrofitError {
+            return mTraktClient.philmMovieService().related(mImdbId);
         }
 
         @Override

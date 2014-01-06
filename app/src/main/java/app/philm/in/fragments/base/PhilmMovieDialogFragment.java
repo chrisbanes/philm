@@ -6,6 +6,7 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.network.NetworkError;
+import app.philm.in.view.StringManager;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -36,7 +37,7 @@ public abstract class PhilmMovieDialogFragment extends DialogFragment
 
     @Override
     public void showError(NetworkError error) {
-        showCrouton(error.getTitle(), Style.ALERT);
+        showCrouton(StringManager.getStringResId(error), Style.ALERT);
     }
 
     protected final void cancelCrouton() {

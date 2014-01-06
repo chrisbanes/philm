@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import app.philm.in.PhilmApplication;
+import app.philm.in.R;
 import app.philm.in.controllers.AboutController;
 
 public class LicencesFragment extends Fragment implements AboutController.AboutOpenSourcesUi {
@@ -35,6 +36,11 @@ public class LicencesFragment extends Fragment implements AboutController.AboutO
     public void onPause() {
         getController().detachUi(this);
         super.onPause();
+    }
+
+    @Override
+    public String getUiTitle() {
+        return getString(R.string.about_open_source_title);
     }
 
     protected final boolean hasCallbacks() {

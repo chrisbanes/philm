@@ -15,6 +15,7 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.view.StringManager;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -48,6 +49,11 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
         if (item != null && item.isVisible() != mFiltersItemVisible) {
             item.setVisible(mFiltersItemVisible);
         }
+    }
+
+    @Override
+    public String getUiTitle() {
+        return getString(StringManager.getStringResId(getMovieQueryType()));
     }
 
     @Override

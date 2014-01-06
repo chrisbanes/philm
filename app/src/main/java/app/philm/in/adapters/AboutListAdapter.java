@@ -21,6 +21,7 @@ import app.philm.in.controllers.AboutController;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
+import app.philm.in.view.StringManager;
 
 public class AboutListAdapter extends BaseAdapter {
 
@@ -65,13 +66,10 @@ public class AboutListAdapter extends BaseAdapter {
             view = mActivity.getLayoutInflater().inflate(R.layout.item_about, viewGroup, false);
         }
 
-        ((TextView) view.findViewById(android.R.id.text1)).setText(item.getTitleId());
-
-        if (item.getContentText() != null) {
-            ((TextView) view.findViewById(android.R.id.text2)).setText(item.getContentText());
-        } else {
-            ((TextView) view.findViewById(android.R.id.text2)).setText(item.getContentTextId());
-        }
+        ((TextView) view.findViewById(android.R.id.text1))
+                .setText(StringManager.getTitleResId(item));
+        ((TextView) view.findViewById(android.R.id.text2))
+                .setText(StringManager.getSubtitle(mActivity, item));
 
         return view;
     }

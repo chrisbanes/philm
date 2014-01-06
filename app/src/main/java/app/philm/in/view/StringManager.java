@@ -1,8 +1,14 @@
 package app.philm.in.view;
 
+import android.content.Context;
+
+import app.philm.in.BuildConfig;
 import app.philm.in.R;
+import app.philm.in.controllers.AboutController;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.network.NetworkError;
+import app.philm.in.util.AppUtils;
 
 public class StringManager {
 
@@ -54,6 +60,42 @@ public class StringManager {
                 return R.string.filter_highly_rated;
         }
         return 0;
+    }
+
+    public static int getStringResId(NetworkError error) {
+        switch (error) {
+            case UNAUTHORIZED:
+                return R.string.error_unauthorized;
+            case NETWORK_ERROR:
+                return R.string.error_network;
+            default:
+            case UNKNOWN:
+                return R.string.error_unknown;
+        }
+    }
+
+    public static int getTitleResId(AboutController.AboutItem item) {
+        switch (item) {
+            case BUILD_VERSION:
+                return R.string.about_build_version_title;
+            case BUILD_TIME:
+                return R.string.about_build_time_title;
+            case OPEN_SOURCE:
+                return R.string.about_open_source_title;
+        }
+        return 0;
+    }
+
+    public static String getSubtitle(Context context, AboutController.AboutItem item) {
+        switch (item) {
+            case BUILD_VERSION:
+                return AppUtils.getVersionName();
+            case BUILD_TIME:
+                return BuildConfig.BUILD_TIME;
+            case OPEN_SOURCE:
+                return context.getString(R.string.about_open_source_content);
+        }
+        return null;
     }
 
 }

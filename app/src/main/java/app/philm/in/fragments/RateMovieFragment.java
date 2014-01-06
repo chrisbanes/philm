@@ -43,6 +43,11 @@ public class RateMovieFragment extends PhilmMovieDialogFragment
     }
 
     @Override
+    public String getUiTitle() {
+        return null;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRatingDescriptions = getResources().getStringArray(R.array.movie_rating_descriptions);

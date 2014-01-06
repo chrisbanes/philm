@@ -8,6 +8,7 @@ import android.widget.ListView;
 import java.util.List;
 
 import app.philm.in.PhilmApplication;
+import app.philm.in.R;
 import app.philm.in.adapters.AboutListAdapter;
 import app.philm.in.controllers.AboutController;
 import app.philm.in.fragments.base.ListFragment;
@@ -61,6 +62,11 @@ public class AboutFragment extends ListFragment<ListView>
         if (item != null && hasCallbacks()) {
             getCallbacks().onItemClick(item);
         }
+    }
+
+    @Override
+    public String getUiTitle() {
+        return getString(R.string.about_title);
     }
 
     @Override

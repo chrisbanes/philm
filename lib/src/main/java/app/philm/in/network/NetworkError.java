@@ -1,23 +1,10 @@
 package app.philm.in.network;
 
-import app.philm.in.R;
 import retrofit.RetrofitError;
 
 public enum NetworkError {
 
-    UNAUTHORIZED(R.string.error_unauthorized),
-    NETWORK_ERROR(R.string.error_network),
-    UNKNOWN(R.string.error_unknown);
-
-    private int mTitle;
-
-    private NetworkError(int title) {
-        mTitle = title;
-    }
-
-    public int getTitle() {
-        return mTitle;
-    }
+    UNAUTHORIZED, NETWORK_ERROR, UNKNOWN;
 
     public static NetworkError from(RetrofitError error) {
         if (error.isNetworkError()) {

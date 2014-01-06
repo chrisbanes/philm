@@ -44,6 +44,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     public interface UserUiCallbacks {
+        void onTitleChanged(String newTitle);
 
         boolean isUsernameValid(String username);
 
@@ -164,6 +165,10 @@ public class UserController extends BaseUiController<UserController.UserUi,
     @Override
     protected UserUiCallbacks createUiCallbacks(final UserUi ui) {
         return new UserUiCallbacks() {
+            @Override
+            public void onTitleChanged(String newTitle) {
+                updateDisplayTitle(newTitle);
+            }
 
             @Override
             public boolean isUsernameValid(String username) {

@@ -1,52 +1,16 @@
 package app.philm.in.controllers;
 
-import android.content.Intent;
 
 import java.util.Arrays;
 import java.util.List;
 
-import app.philm.in.AboutActivity;
-import app.philm.in.BuildConfig;
 import app.philm.in.Display;
-import app.philm.in.R;
-import app.philm.in.util.AppUtils;
 
 public class AboutController extends BaseUiController<AboutController.AboutUi,
         AboutController.AboutUiCallbacks> {
 
     public static enum AboutItem {
-
-        BUILD_VERSION(R.string.about_build_version_title, AppUtils.getVersionName()),
-        BUILD_TIME(R.string.about_build_time_title, BuildConfig.BUILD_TIME),
-        OPEN_SOURCE(R.string.about_open_source_title, R.string.about_open_source_content);
-
-        private int mTitleId;
-        private int mContentTextId;
-        private String mContentText;
-
-        private AboutItem(int titleId, String contentText) {
-            mTitleId = titleId;
-            mContentTextId = 0;
-            mContentText = contentText;
-        }
-
-        private AboutItem(int titleId, int contentTextId) {
-            mTitleId = titleId;
-            mContentTextId = contentTextId;
-            mContentText = null;
-        }
-
-        public int getTitleId() {
-            return mTitleId;
-        }
-
-        public String getContentText() {
-            return mContentText;
-        }
-
-        public int getContentTextId() {
-            return mContentTextId;
-        }
+        BUILD_VERSION, BUILD_TIME, OPEN_SOURCE;
     }
 
     public interface AboutUi extends BaseUiController.Ui<AboutUiCallbacks> {}
@@ -60,6 +24,7 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
     }
 
     public interface AboutUiCallbacks {
+        void onTitleChanged(String newTitle);
         void onItemClick(AboutItem item);
     }
 
@@ -79,6 +44,11 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
     protected AboutUiCallbacks createUiCallbacks(AboutUi ui) {
         return new AboutUiCallbacks() {
             @Override
+            public void onTitleChanged(String newTitle) {
+                updateDisplayTitle(newTitle);
+            }
+
+            @Override
             public void onItemClick(AboutItem item) {
                 switch (item) {
                     case OPEN_SOURCE:
@@ -86,28 +56,23 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
                         if (display != null) {
                             display.showLicencesFragment();
                         }
-                        break;     case BUILD_VERSION:
                         break;
-
                 }
             }
         };
     }
 
     @Override
-    protected void populateUi(AboutUi ui) {
-        Display display = getDisplay();
+    protected void onUiAttached(AboutUi ui) {
+        super.onUiAttached(ui);
+    }
 
+    @Override
+    protected void populateUi(AboutUi ui) {
         if (ui instanceof AboutListUi) {
             ((AboutListUi) ui).setItems(Arrays.asList(AboutItem.values()));
-            if (display != null) {
-                display.setActionBarTitle(R.string.about_title);
-            }
         } else if (ui instanceof AboutOpenSourcesUi) {
             ((AboutOpenSourcesUi) ui).showLicences("file:///android_asset/licences.html");
-            if (display != null) {
-                display.setActionBarTitle(R.string.about_open_source_title);
-            }
         }
     }
 }

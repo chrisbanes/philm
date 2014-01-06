@@ -45,6 +45,11 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
     }
 
     @Override
+    public String getUiTitle() {
+        return null;
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 

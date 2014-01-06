@@ -6,10 +6,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import app.philm.in.Display;
+import app.philm.in.util.TextUtils;
+
 abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         extends BaseController {
 
     public interface Ui<UC> {
+        String getUiTitle();
         void setCallbacks(UC callbacks);
     }
 
@@ -27,8 +31,20 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         ui.setCallbacks(createUiCallbacks(ui));
 
         if (isInited()) {
+            final String uiTitle = ui.getUiTitle();
+            if (!TextUtils.isEmpty(uiTitle)) {
+                updateDisplayTitle(ui.getUiTitle());
+            }
+
             onUiAttached(ui);
             populateUis();
+        }
+    }
+
+    protected void updateDisplayTitle(String title) {
+        Display display = getDisplay();
+        if (display != null) {
+            display.setActionBarTitle(title);
         }
     }
 

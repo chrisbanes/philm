@@ -50,12 +50,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     private final MoviesState mMoviesState;
+
     private final BackgroundExecutor mExecutor;
+
     private final Trakt mTraktClient;
+
     private final AsyncDatabaseHelper mDbHelper;
+
     private final Logger mLogger;
 
     private boolean mPopulatedLibraryFromDb = false;
+
     private boolean mPopulatedWatchlistFromDb = false;
 
     public MovieController(
@@ -301,6 +306,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new AddMovieToWatchlistRunnable(imdbId));
     }
 
+    private void checkDetailMovieResult(PhilmMovie movie) {
+        if (PhilmCollections.isEmpty(movie.getRelated())) {
+            fetchRelatedMovies(movie.getTraktId());
+        }
+    }
+
     private void checkPhilmState(PhilmMovie movie) {
         final List<PhilmMovie> library = mMoviesState.getLibrary();
         final List<PhilmMovie> watchlist = mMoviesState.getWatchlist();
@@ -413,12 +424,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void checkDetailMovieResult(PhilmMovie movie) {
-        if (PhilmCollections.isEmpty(movie.getRelated())) {
-            fetchRelatedMovies(movie.getTraktId());
-        }
-    }
-
     private void fetchLibrary() {
         if (isLoggedIn()) {
             mExecutor.execute(new FetchLibraryRunnable(mMoviesState.getUsername()));
@@ -431,16 +436,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchRelatedMovies(String traktId) {
+        mExecutor.execute(new FetchRelatedMoviesRunnable(traktId));
+    }
+
     private void fetchSearchResults(String query) {
         Preconditions.checkNotNull(query, "query cannot be null");
         final SearchResult result = new SearchResult(query);
 
         mMoviesState.setSearchResult(result);
         mExecutor.execute(new SearchMoviesRunnable(result));
-    }
-
-    private void fetchRelatedMovies(String traktId) {
-        mExecutor.execute(new FetchRelatedMoviesRunnable(traktId));
     }
 
     private void fetchTrending() {
@@ -493,8 +498,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return mMoviesState.getMovies().get(tmdbId);
     }
 
+    private boolean hasMovieUiAttached(MovieQueryType queryType) {
+        for (MovieUi ui : getUis()) {
+            if (ui.getMovieQueryType() == queryType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isLoggedIn() {
         return mMoviesState.getCurrentAccount() != null;
+    }
+
+    private void markMovieRating(String imdbId, Rating rating) {
+        mLogger.d(LOG_TAG, "markMovieRating: " + imdbId + ". " + rating.name());
+        mExecutor.execute(new SubmitMovieRatingRunnable(imdbId, rating));
     }
 
     private void markMovieSeen(String imdbId) {
@@ -503,11 +522,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void markMovieUnseen(String imdbId) {
         mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
-    }
-
-    private void markMovieRating(String imdbId, Rating rating) {
-        mLogger.d(LOG_TAG, "markMovieRating: " + imdbId + ". " + rating.name());
-        mExecutor.execute(new SubmitMovieRatingRunnable(imdbId, rating));
     }
 
     private void persistLibraryToDb(final List<PhilmMovie> movies) {
@@ -534,11 +548,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (display != null) {
             display.setActionBarTitle(movie != null ? movie.getTitle() : null);
         }
-    }
-
-    private void populateRateUi(MovieRateUi ui) {
-        final PhilmMovie movie = getMovie(ui.getRequestParameter());
-        ui.setMovie(movie);
     }
 
     private void populateListUi(MovieListUi ui) {
@@ -594,6 +603,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         } else {
             ui.setItems(createSectionedListItemList(items, sections, sectionProcessingOrder));
         }
+    }
+
+    private void populateRateUi(MovieRateUi ui) {
+        final PhilmMovie movie = getMovie(ui.getRequestParameter());
+        ui.setMovie(movie);
     }
 
     private void populateSearchUi(SearchMovieUi ui) {
@@ -772,8 +786,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showRelatedMoviesLoadingProgress(boolean visible);
 
         void setToggleWatchedButtonEnabled(boolean enabled);
+
         void setCollectionButtonEnabled(boolean enabled);
+
         void setWatchlistButtonEnabled(boolean enabled);
+
         void setRateCircleEnabled(boolean enabled);
     }
 
@@ -1063,6 +1080,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private class SubmitMovieRatingRunnable extends BaseMovieTraktRunnable<RatingResponse> {
         private final String mImdbId;
+
         private final Rating mRating;
 
         SubmitMovieRatingRunnable(String imdbId, Rating rating) {
@@ -1166,7 +1184,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
             mPopulatedLibraryFromDb = true;
-            fetchLibraryIfNeeded();
+
+            if (hasMovieUiAttached(MovieQueryType.LIBRARY)) {
+                fetchWatchlistIfNeeded();
+            }
         }
     }
 
@@ -1180,7 +1201,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
             mPopulatedWatchlistFromDb = true;
-            fetchWatchlistIfNeeded();
+
+            if (hasMovieUiAttached(MovieQueryType.WATCHLIST)) {
+                fetchWatchlistIfNeeded();
+            }
         }
     }
 }

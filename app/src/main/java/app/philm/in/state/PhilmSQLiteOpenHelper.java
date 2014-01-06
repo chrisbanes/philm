@@ -1,13 +1,12 @@
 package app.philm.in.state;
 
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
+import com.google.common.base.Preconditions;
+
+import com.crashlytics.android.Crashlytics;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.crashlytics.android.Crashlytics;
-import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +15,8 @@ import java.util.List;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import nl.qbusict.cupboard.QueryResultIterable;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseHelper {
 

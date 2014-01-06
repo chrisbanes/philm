@@ -2,7 +2,8 @@ package app.philm.in.util;
 
 import com.google.common.base.Preconditions;
 
-import android.os.*;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 

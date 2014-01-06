@@ -1,6 +1,7 @@
 package app.philm.in.model;
 
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.Ratings;

@@ -1,7 +1,7 @@
 package app.philm.in.state;
 
-import app.philm.in.model.PhilmAccount;
 import app.philm.in.controllers.MainController;
+import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
 
 interface BaseState {

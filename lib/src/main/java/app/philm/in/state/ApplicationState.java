@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import app.philm.in.model.PhilmAccount;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.SearchResult;

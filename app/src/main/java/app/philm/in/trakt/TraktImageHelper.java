@@ -2,8 +2,6 @@ package app.philm.in.trakt;
 
 import com.google.common.base.Preconditions;
 
-import com.jakewharton.trakt.entities.Movie;
-
 import android.content.res.Resources;
 import android.text.TextUtils;
 

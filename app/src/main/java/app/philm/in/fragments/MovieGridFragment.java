@@ -14,7 +14,6 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieListFragment;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.view.StringManager;
 
 public class MovieGridFragment extends PhilmMovieListFragment<GridView> {
 

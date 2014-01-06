@@ -1,5 +1,7 @@
 package app.philm.in;
 
+import com.crashlytics.android.Crashlytics;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +10,6 @@ import android.view.MenuItem;
 
 import app.philm.in.controllers.MainController;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
-
-import com.crashlytics.android.Crashlytics;
 
 public abstract class BasePhilmActivity extends Activity implements MainController.HostCallbacks {
 

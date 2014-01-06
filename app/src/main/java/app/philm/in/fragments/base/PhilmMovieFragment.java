@@ -1,21 +1,11 @@
 package app.philm.in.fragments.base;
 
 import android.app.Fragment;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.network.NetworkError;
-import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.StringManager;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;

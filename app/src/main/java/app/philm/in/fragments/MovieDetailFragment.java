@@ -1,5 +1,10 @@
 package app.philm.in.fragments;
 
+import com.google.common.base.Preconditions;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,10 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.google.common.base.Preconditions;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import app.philm.in.Constants;
@@ -24,7 +25,6 @@ import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.view.CheatSheet;
 import app.philm.in.view.PhilmActionButton;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;

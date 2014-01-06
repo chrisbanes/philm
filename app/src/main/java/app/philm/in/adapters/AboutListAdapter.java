@@ -1,26 +1,17 @@
 package app.philm.in.adapters;
 
+import com.google.common.base.Objects;
+
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.common.base.Objects;
-import com.hb.views.PinnedSectionListView;
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
 import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.controllers.AboutController;
-import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmMovie;
-import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.view.StringManager;
 
 public class AboutListAdapter extends BaseAdapter {

@@ -3,8 +3,6 @@ package app.philm.in.adapters;
 import com.google.common.base.Objects;
 
 import com.hb.views.PinnedSectionListView;
-import com.jakewharton.trakt.entities.Movie;
-import com.jakewharton.trakt.entities.Ratings;
 import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
@@ -15,18 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
-import app.philm.in.Constants;
 import app.philm.in.R;
-import app.philm.in.controllers.MovieController;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
-import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.StringManager;
 
 public class MovieSectionedListAdapter extends BaseAdapter implements

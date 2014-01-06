@@ -1,15 +1,11 @@
 package app.philm.in;
 
-import app.philm.in.controllers.MovieController;
-
 public interface Display {
 
     public static final String FRAGMENT_TAG_RATE_MOVIE = "rate_movie";
-
     public static final String ACTION_ABOUT = "philm.intent.action.ABOUT";
     public static final String ACTION_LOGIN = "philm.intent.action.LOGIN";
     public static final String ACTION_MAIN = "android.intent.action.MAIN";
-
 
     public void showLibrary();
 

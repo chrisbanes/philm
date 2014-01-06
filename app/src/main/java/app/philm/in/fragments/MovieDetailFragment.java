@@ -25,7 +25,8 @@ import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.view.PhilmActionButton;
+import app.philm.in.view.CheatSheet;
+import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
@@ -51,7 +52,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
 
-    private PhilmActionButton mSeenButton, mWatchlistButton, mCollectionButton;
+    private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId),"movieId cannot be empty");
@@ -88,14 +89,17 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mSummaryTextView = (TextView) view.findViewById(R.id.textview_summary);
         mSummaryTextView.setOnClickListener(this);
 
-        mSeenButton = (PhilmActionButton) view.findViewById(R.id.btn_seen);
+        mSeenButton = (CheckableImageButton) view.findViewById(R.id.btn_seen);
         mSeenButton.setOnClickListener(this);
+        CheatSheet.setup(mSeenButton);
 
-        mWatchlistButton = (PhilmActionButton) view.findViewById(R.id.btn_watchlist);
+        mWatchlistButton = (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
         mWatchlistButton.setOnClickListener(this);
+        CheatSheet.setup(mWatchlistButton);
 
-        mCollectionButton = (PhilmActionButton) view.findViewById(R.id.btn_collection);
+        mCollectionButton = (CheckableImageButton) view.findViewById(R.id.btn_collection);
         mCollectionButton.setOnClickListener(this);
+        CheatSheet.setup(mCollectionButton);
 
         mRelatedSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_related);
         mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
@@ -256,15 +260,13 @@ public class MovieDetailFragment extends PhilmMovieFragment
         viewRecycler.clearRecycledViews();
     }
 
-    private void updateButtonState(PhilmActionButton button, final boolean checked,
+    private void updateButtonState(CheckableImageButton button, final boolean checked,
             final int toCheckDesc, final int toUncheckDesc) {
-        if (button.isChecked() != checked) {
-            button.setChecked(checked);
-            if (checked) {
-                button.setContentDescription(getString(toUncheckDesc));
-            } else {
-                button.setContentDescription(getString(toCheckDesc));
-            }
+        button.setChecked(checked);
+        if (checked) {
+            button.setContentDescription(getString(toUncheckDesc));
+        } else {
+            button.setContentDescription(getString(toCheckDesc));
         }
     }
 

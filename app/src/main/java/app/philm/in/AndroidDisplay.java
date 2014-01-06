@@ -140,18 +140,6 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setActionBarTitle(int titleResId) {
-        if (titleResId != 0) {
-            setActionBarTitle(mActivity.getString(titleResId));
-        }
-    }
-
-    @Override
-    public void setActionBarTitle(MovieController.MovieQueryType movieQueryType) {
-        setActionBarTitle(StringManager.getStringResId(movieQueryType));
-    }
-
-    @Override
     public void showUpNavigation(boolean show) {
         if (mActionBarDrawerToggle != null) {
             mActionBarDrawerToggle.setDrawerIndicatorEnabled(!show);

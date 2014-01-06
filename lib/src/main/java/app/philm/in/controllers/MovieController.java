@@ -233,7 +233,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         Display display = getDisplay();
         if (display != null) {
             display.showUpNavigation(ui instanceof MovieDetailUi);
-            display.setActionBarTitle(queryType);
         }
 
         switch (queryType) {

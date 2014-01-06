@@ -37,11 +37,7 @@ public interface Display {
 
     public void startAboutActivity();
 
-    public void setActionBarTitle(int titleResId);
-
     public void setActionBarTitle(String title);
-
-    public void setActionBarTitle(MovieController.MovieQueryType movieQueryType);
 
     public boolean popEntireFragmentBackStack();
 

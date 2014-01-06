@@ -24,6 +24,7 @@ import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.view.CheatSheet;
 import app.philm.in.view.PhilmActionButton;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;

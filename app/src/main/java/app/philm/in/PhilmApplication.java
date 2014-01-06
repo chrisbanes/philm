@@ -9,7 +9,6 @@ import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.controllers.UserController;
 import app.philm.in.state.ApplicationState;
-import app.philm.in.util.TypefaceManager;
 
 public class PhilmApplication extends Application {
 
@@ -31,7 +30,7 @@ public class PhilmApplication extends Application {
                 mApplicationState,
                 container.getTraktClient(),
                 container.getMultiThreadExecutor(),
-                container.getAccountFetcher(),
+                container.getAccountManager(),
                 container.getAsyncDatabaseHelper(),
                 container.getLogger());
 

@@ -248,9 +248,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 account = new PhilmAccount(mUsername, mPassword);
                 account.setAuthToken(mPassword, Constants.TRAKT_AUTHTOKEN_PASSWORD_TYPE);
                 mPhilmAccountManager.addAccount(account);
-                mPhilmAccountManager.setAuthToken(account);
             } else {
-                mPhilmAccountManager.setPassword(account);
+                mPhilmAccountManager.updatePassword(account);
             }
 
             mUserState.setCurrentAccount(account);

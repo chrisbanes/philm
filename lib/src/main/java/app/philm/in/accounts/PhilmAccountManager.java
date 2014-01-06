@@ -10,8 +10,6 @@ public interface PhilmAccountManager {
 
     public void addAccount(PhilmAccount account);
 
-    public void setAuthToken(PhilmAccount account);
-
-    public void setPassword(PhilmAccount account);
+    public void updatePassword(PhilmAccount account);
 
 }

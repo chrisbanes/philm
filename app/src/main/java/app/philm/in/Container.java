@@ -9,13 +9,13 @@ import android.content.Context;
 
 import java.util.concurrent.Executors;
 
+import app.philm.in.account.AndroidAccountManager;
 import app.philm.in.accounts.PhilmAccountManager;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.AsyncDatabaseHelperImpl;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
 import app.philm.in.trakt.Trakt;
-import app.philm.in.util.AccountManagerHelper;
 import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
@@ -41,12 +41,11 @@ public class Container {
     private BackgroundExecutor mSingleThreadExecutor;
 
     private Trakt mTrakt;
-    private AccountManagerHelper mAccountManagerHelper;
     private AsyncDatabaseHelperImpl mAsyncDatabaseHelper;
     private DatabaseHelper mDatabaseHelper;
     private TypefaceManager mTypefaceManager;
     private Logger mLogger;
-    private PhilmAccountManager mAccountFetcher;
+    private PhilmAccountManager mAccountManager;
 
     private Container(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
@@ -85,13 +84,6 @@ public class Container {
         return mTrakt;
     }
 
-    public AccountManagerHelper getAccountManagerHelper() {
-        if (mAccountManagerHelper == null) {
-            mAccountManagerHelper = new AccountManagerHelper(AccountManager.get(mContext));
-        }
-        return mAccountManagerHelper;
-    }
-
     public AsyncDatabaseHelper getAsyncDatabaseHelper() {
         if (mAsyncDatabaseHelper == null) {
             mAsyncDatabaseHelper = new AsyncDatabaseHelperImpl(
@@ -121,10 +113,10 @@ public class Container {
         return mLogger;
     }
 
-    public PhilmAccountManager getAccountFetcher() {
-        if (mAccountFetcher == null) {
-            // TODO: Create here
+    public PhilmAccountManager getAccountManager() {
+        if (mAccountManager == null) {
+            mAccountManager = new AndroidAccountManager(AccountManager.get(mContext));
         }
-        return mAccountFetcher;
+        return mAccountManager;
     }
 }

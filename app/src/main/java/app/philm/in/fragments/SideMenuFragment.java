@@ -1,15 +1,18 @@
 package app.philm.in.fragments;
 
+import com.squareup.picasso.Picasso;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-
-import com.squareup.picasso.Picasso;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -19,33 +22,38 @@ import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.view.StringManager;
-import app.philm.in.view.ViewRecycler;
 
-public class SideMenuFragment extends Fragment implements MainControllerUi, View.OnClickListener {
+public class SideMenuFragment extends Fragment implements MainControllerUi, View.OnClickListener,
+        AdapterView.OnItemClickListener {
 
     private SideMenuItem[] mSideMenuItems;
-    private SideMenuItem mSelectedSideMenuItem;
 
     private MainControllerUiCallbacks mCallbacks;
 
-    private ViewRecycler mSideItemsViewRecycler;
-    private LinearLayout mSideItemsLayout;
+    private ListView mListView;
+    private SideMenuItemAdapter mAdapter;
+
+
     private Button mAccountButton;
     private ImageView mAvatarImageView;
 
     private PhilmUserProfile mUserProfile;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
         return inflater.inflate(R.layout.fragment_drawer, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mSideItemsLayout = (LinearLayout) view.findViewById(R.id.side_items_layout);
-        mSideItemsViewRecycler = new ViewRecycler(mSideItemsLayout);
+
+        mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setOnItemClickListener(this);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        mAdapter = new SideMenuItemAdapter();
+        mListView.setAdapter(mAdapter);
 
         mAccountButton = (Button) view.findViewById(R.id.btn_account);
         mAccountButton.setOnClickListener(this);
@@ -66,12 +74,18 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
     }
 
     @Override
-    public void setSideMenuItems(SideMenuItem[] items, SideMenuItem selected) {
+    public void setSideMenuItems(final SideMenuItem[] items, final SideMenuItem selected) {
         mSideMenuItems = items;
-        mSelectedSideMenuItem = selected;
 
-        if (mSideItemsLayout != null) {
-            populateSideItems();
+        mAdapter.notifyDataSetChanged();
+
+        if (mSideMenuItems != null && selected != null) {
+            for (int i = 0; i < mSideMenuItems.length ; i++) {
+                if (mSideMenuItems[i] == selected) {
+                    mListView.setItemChecked(i, true);
+                    break;
+                }
+            }
         }
     }
 
@@ -107,30 +121,47 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
                 } else {
                     mCallbacks.addAccountRequested();
                 }
-            } else if (view.getTag() instanceof SideMenuItem) {
-                mCallbacks.onSideMenuItemSelected((SideMenuItem) view.getTag());
             }
         }
     }
 
-    private void populateSideItems() {
-        mSideItemsViewRecycler.recycleViews();
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mCallbacks != null) {
+            mCallbacks.onSideMenuItemSelected((SideMenuItem) parent.getItemAtPosition(position));
+        }
+    }
 
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
+    private class SideMenuItemAdapter extends BaseAdapter {
 
-        for (SideMenuItem item : mSideMenuItems) {
-            Button button = (Button) mSideItemsViewRecycler.getRecycledView();
-            if (button == null) {
-                button = (Button) inflater.inflate(R.layout.item_drawer, mSideItemsLayout, false);
-            }
-            button.setText(StringManager.getStringResId(item));
-            button.setTag(item);
-            button.setOnClickListener(this);
-            button.setActivated(mSelectedSideMenuItem == item);
-            mSideItemsLayout.addView(button);
+        @Override
+        public int getCount() {
+            return mSideMenuItems != null ? mSideMenuItems.length : 0;
         }
 
-        mSideItemsViewRecycler.clearRecycledViews();
+        @Override
+        public SideMenuItem getItem(int position) {
+            return mSideMenuItems[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            if (view == null) {
+                view = getActivity().getLayoutInflater()
+                        .inflate(android.R.layout.simple_list_item_activated_1, viewGroup, false);
+            }
+
+            final SideMenuItem item = getItem(position);
+            final TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            textView.setText(StringManager.getStringResId(item));
+
+            return view;
+        }
     }
 
     @Override

@@ -4,11 +4,7 @@ import com.google.common.base.Preconditions;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.graphics.ColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,7 +12,6 @@ import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieDialogFragment;
@@ -68,12 +63,6 @@ public class RateMovieFragment extends PhilmMovieDialogFragment
             }
         });
         mRatingBar.setEnabled(mMovie != null);
-
-        ColorFilter filter = new PorterDuffColorFilter(
-                getResources().getColor(R.color.primary_accent_color),
-                PorterDuff.Mode.SRC_ATOP);
-
-        mRatingBar.getProgressDrawable().setColorFilter(filter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(layout);

@@ -210,7 +210,10 @@ public class MainController extends BaseUiController<MainController.MainControll
     public boolean onHomeButtonPressed() {
         Display display = getDisplay();
         if (display != null) {
-            display.popBackStack();
+            if (display.popEntireFragmentBackStack()) {
+                return true;
+            }
+            display.finishActivity();
         }
         return true;
     }

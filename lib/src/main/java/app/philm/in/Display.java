@@ -39,12 +39,14 @@ public interface Display {
 
     public void setActionBarTitle(int titleResId);
 
-    public void setDrawerToggleEnabled(boolean enabled);
-
     public void setActionBarTitle(String title);
 
     public void setActionBarTitle(MovieController.MovieQueryType movieQueryType);
 
-    public void popBackStack();
+    public boolean popEntireFragmentBackStack();
+
+    public void showUpNavigation(boolean show);
+
+    public void finishActivity();
 
 }

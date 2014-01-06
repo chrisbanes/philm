@@ -2,6 +2,7 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.entities.ActionResponse;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.RatingResponse;
@@ -10,6 +11,10 @@ import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
+
+import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -226,8 +231,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         Display display = getDisplay();
         if (display != null) {
+<<<<<<< HEAD:lib/src/main/java/app/philm/in/controllers/MovieController.java
             display.setDrawerToggleEnabled(!(ui instanceof MovieDetailUi));
             display.setActionBarTitle(queryType);
+=======
+            display.showUpNavigation(ui instanceof MovieDetailUi);
+
+            if (queryType.getTitle() != 0) {
+                display.setActionBarTitle(queryType.getTitle());
+            }
+>>>>>>> master:app/src/main/java/app/philm/in/controllers/MovieController.java
         }
 
         switch (queryType) {
@@ -764,6 +777,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface MovieDetailUi extends MovieUi {
         void setMovie(PhilmMovie movie);
 
+        void showRelatedMoviesLoadingProgress(boolean visible);
+
         void setToggleWatchedButtonEnabled(boolean enabled);
         void setCollectionButtonEnabled(boolean enabled);
         void setWatchlistButtonEnabled(boolean enabled);
@@ -990,8 +1005,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
+<<<<<<< HEAD:lib/src/main/java/app/philm/in/controllers/MovieController.java
         public List<Movie> doBackgroundCall() throws RetrofitError {
             return mTraktClient.philmMovieService().related(mImdbId);
+=======
+        public void onPreTraktCall() {
+            showRelatedLoadingProgress(true);
+        }
+
+        @Override
+        public List<Movie> doTraktCall(Trakt trakt) throws RetrofitError {
+            return trakt.philmMovieService().related(mImdbId);
+>>>>>>> master:app/src/main/java/app/philm/in/controllers/MovieController.java
         }
 
         @Override
@@ -999,6 +1024,19 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
             movie.setRelated(mapTraktMoviesFromState(result));
             populateUis();
+        }
+
+        @Override
+        public void onFinished() {
+            showRelatedLoadingProgress(false);
+        }
+
+        private void showRelatedLoadingProgress(boolean show) {
+            for (MovieUi ui : getUis()) {
+                if (ui instanceof MovieDetailUi) {
+                    ((MovieDetailUi) ui).showRelatedMoviesLoadingProgress(show);
+                }
+            }
         }
     }
 

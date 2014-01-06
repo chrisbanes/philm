@@ -152,9 +152,12 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setDrawerToggleEnabled(boolean enabled) {
+    public void showUpNavigation(boolean show) {
         if (mActionBarDrawerToggle != null) {
-            mActionBarDrawerToggle.setDrawerIndicatorEnabled(enabled);
+            mActionBarDrawerToggle.setDrawerIndicatorEnabled(!show);
+        } else {
+            mActivity.getActionBar().setDisplayHomeAsUpEnabled(show);
+            mActivity.getActionBar().setHomeButtonEnabled(true);
         }
     }
 
@@ -167,12 +170,7 @@ public class AndroidDisplay implements Display {
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {
-        final FragmentManager fm = mActivity.getFragmentManager();
-
-        // Clear Back Stack
-        for (int i = 0, count = fm.getBackStackEntryCount(); i < count; i++) {
-            fm.popBackStack();
-        }
+        popEntireFragmentBackStack();
 
         mActivity.getFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
@@ -180,10 +178,18 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void popBackStack() {
-        if (mActivity.getFragmentManager().popBackStackImmediate()) {
-            return;
+    public boolean popEntireFragmentBackStack() {
+        final FragmentManager fm = mActivity.getFragmentManager();
+        final int backStackCount = fm.getBackStackEntryCount();
+        // Clear Back Stack
+        for (int i = 0; i < backStackCount; i++) {
+            fm.popBackStack();
         }
+        return backStackCount > 0;
+    }
+
+    @Override
+    public void finishActivity() {
         mActivity.finish();
     }
 

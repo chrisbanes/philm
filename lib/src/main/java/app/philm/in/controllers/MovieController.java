@@ -536,18 +536,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void populateDetailUi(MovieDetailUi ui) {
         final PhilmMovie movie = getMovie(ui.getRequestParameter());
-        ui.setMovie(movie);
 
-        boolean isLoggedIn = isLoggedIn();
+        final boolean isLoggedIn = isLoggedIn();
         ui.setRateCircleEnabled(isLoggedIn);
         ui.setCollectionButtonEnabled(isLoggedIn);
         ui.setWatchlistButtonEnabled(isLoggedIn);
         ui.setToggleWatchedButtonEnabled(isLoggedIn);
 
-        Display display = getDisplay();
-        if (display != null) {
-            display.setActionBarTitle(movie != null ? movie.getTitle() : null);
-        }
+        ui.setMovie(movie);
     }
 
     private void populateListUi(MovieListUi ui) {

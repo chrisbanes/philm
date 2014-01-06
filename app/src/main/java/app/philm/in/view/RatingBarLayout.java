@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import app.philm.in.R;
+import app.philm.in.util.TextUtils;
 
 public class RatingBarLayout extends FrameLayout {
 
@@ -52,14 +53,16 @@ public class RatingBarLayout extends FrameLayout {
     }
 
     public void setRatingGlobalPercentage(int ratingGlobalPercentage) {
-        if (mRatingGlobalPercentage != ratingGlobalPercentage) {
+        if (TextUtils.isEmpty(mRatingGlobalPercentageTextView.getText()) ||
+                mRatingGlobalPercentage != ratingGlobalPercentage) {
             mRatingGlobalPercentage = ratingGlobalPercentage;
             mRatingGlobalPercentageTextView.setText(ratingGlobalPercentage + "%");
         }
     }
 
     public void setRatingGlobalVotes(int ratingGlobalVotes) {
-        if (mRatingGlobalVotes != ratingGlobalVotes) {
+        if (TextUtils.isEmpty(mRatingGlobalVotesTextView.getText())
+                || mRatingGlobalVotes != ratingGlobalVotes) {
             mRatingGlobalVotes = ratingGlobalVotes;
             mRatingGlobalVotesTextView.setText(String.valueOf(ratingGlobalVotes));
         }

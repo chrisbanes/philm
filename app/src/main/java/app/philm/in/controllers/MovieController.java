@@ -1,11 +1,8 @@
 package app.philm.in.controllers;
 
-import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.entities.ActionResponse;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.RatingResponse;
@@ -14,6 +11,10 @@ import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
+
+import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -225,7 +226,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         Display display = getDisplay();
         if (display != null) {
-            display.setDrawerToggleEnabled(!(ui instanceof MovieDetailUi));
+            display.showUpNavigation(ui instanceof MovieDetailUi);
 
             if (queryType.getTitle() != 0) {
                 display.setActionBarTitle(queryType.getTitle());

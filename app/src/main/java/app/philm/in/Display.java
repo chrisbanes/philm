@@ -133,9 +133,12 @@ public class Display {
         setActionBarTitle(mActivity.getString(titleResId));
     }
 
-    public void setDrawerToggleEnabled(boolean enabled) {
+    public void showUpNavigation(boolean show) {
         if (mActionBarDrawerToggle != null) {
-            mActionBarDrawerToggle.setDrawerIndicatorEnabled(enabled);
+            mActionBarDrawerToggle.setDrawerIndicatorEnabled(!show);
+        } else {
+            mActivity.getActionBar().setDisplayHomeAsUpEnabled(show);
+            mActivity.getActionBar().setHomeButtonEnabled(true);
         }
     }
 

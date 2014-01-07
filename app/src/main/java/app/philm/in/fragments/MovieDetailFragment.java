@@ -139,7 +139,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
 
     @Override
     public void showRelatedMoviesLoadingProgress(final boolean visible) {
-        mRelatedSwitcher.setDisplayedChild(visible ? 0 : 1);
+        mRelatedSwitcher.setDisplayedChild(visible ? 1 : 0);
     }
 
     @Override

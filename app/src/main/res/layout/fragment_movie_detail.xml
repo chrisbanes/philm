@@ -110,11 +110,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/movie_detail_related_height">
 
-                <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-
                 <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -129,6 +124,11 @@
                             android:showDividers="middle"/>
 
                 </HorizontalScrollView>
+
+                <ProgressBar
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_gravity="center" />
 
             </ViewSwitcher>
 

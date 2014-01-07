@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import app.philm.in.trakt.TraktUtils;
 import app.philm.in.util.TextUtils;
 
 public class PhilmMovie {
@@ -51,8 +52,8 @@ public class PhilmMovie {
     int year;
     long releasedTime;
 
-    int userRating = NOT_SET;
-    int userRatingAdvanced = NOT_SET;
+    int userRating;
+    int userRatingAdvanced;
     int ratingPercent;
     int ratingVotes;
 
@@ -273,64 +274,9 @@ public class PhilmMovie {
 
     private static int unbox(int currentValue, Rating rating) {
         if (rating != null) {
-            return mapRatingToInt(rating);
+            return TraktUtils.mapRatingToInt(rating);
         }
         return currentValue;
     }
 
-    public static int mapRatingToInt(Rating rating) {
-        switch (rating) {
-            default:
-            case Unrate:
-                return NOT_SET;
-            case WeakSauce:
-                return 1;
-            case Terrible:
-                return 2;
-            case Bad:
-                return 3;
-            case Poor:
-                return 4;
-            case Meh:
-                return 5;
-            case Fair:
-                return 6;
-            case Good:
-                return 7;
-            case Great:
-                return 8;
-            case Superb:
-                return 9;
-            case TotallyNinja:
-                return 10;
-        }
-    }
-
-    public static Rating mapIntToRating(int rating) {
-        switch (rating) {
-            default:
-            case NOT_SET:
-                return Rating.Unrate;
-            case 1:
-                return Rating.WeakSauce;
-            case 2:
-                return Rating.Terrible;
-            case 3:
-                return Rating.Bad;
-            case 4:
-                return Rating.Poor;
-            case 5:
-                return Rating.Meh;
-            case 6:
-                return Rating.Fair;
-            case 7:
-                return Rating.Good;
-            case 8:
-                return Rating.Great;
-            case 9:
-                return Rating.Superb;
-            case 10:
-                return Rating.TotallyNinja;
-        }
-    }
 }

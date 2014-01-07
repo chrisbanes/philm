@@ -17,6 +17,7 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieDialogFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
+import app.philm.in.trakt.TraktUtils;
 
 public class RateMovieFragment extends PhilmMovieDialogFragment
         implements DialogInterface.OnClickListener, MovieController.MovieRateUi {
@@ -81,7 +82,7 @@ public class RateMovieFragment extends PhilmMovieDialogFragment
         switch (button) {
             case DialogInterface.BUTTON_POSITIVE:
                 if (hasCallbacks()) {
-                    getCallbacks().submitRating(mMovie, PhilmMovie.mapIntToRating(getRating()));
+                    getCallbacks().submitRating(mMovie, TraktUtils.mapIntToRating(getRating()));
                 }
                 break;
         }

@@ -112,8 +112,7 @@
 
                 <HorizontalScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/spacing_minor">
+                        android:layout_height="match_parent">
 
                     <LinearLayout
                             android:id="@+id/layout_related"

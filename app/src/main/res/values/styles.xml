@@ -6,6 +6,9 @@
 
     <style name="Theme.Philm" parent="Theme.Base.Philm">
         <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
+
+        <item name="android:activatedBackgroundIndicator">
+            @drawable/activated_background_indicator</item>
     </style>
 
     <style name="Widget.Philm.ActionBar" parent="android:Widget.Holo.ActionBar.Solid">

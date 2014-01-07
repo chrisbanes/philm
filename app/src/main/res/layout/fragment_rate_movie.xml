@@ -23,4 +23,12 @@
             android:stepSize="0.5"
             style="?android:ratingBarStyle"/>
 
+    <CheckBox
+            android:id="@+id/checkbox_mark_watched"
+            android:text="@string/movie_rate_mark_watched"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:visibility="gone" />
+
 </LinearLayout>

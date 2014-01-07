@@ -605,6 +605,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void populateRateUi(MovieRateUi ui) {
         final PhilmMovie movie = getMovie(ui.getRequestParameter());
         ui.setMovie(movie);
+        ui.setMarkMovieWatchedCheckboxVisible(!movie.isWatched());
     }
 
     private void populateSearchUi(SearchMovieUi ui) {
@@ -792,6 +793,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieRateUi extends MovieUi {
+        void setMarkMovieWatchedCheckboxVisible(boolean visible);
         void setMovie(PhilmMovie movie);
     }
 

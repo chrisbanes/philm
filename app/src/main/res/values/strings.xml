@@ -88,5 +88,6 @@
     <string name="about_build_time_title">Build Time</string>
     <string name="about_open_source_title">Open-source licences</string>
     <string name="about_open_source_content">Licence details for used open-source software</string>
+    <string name="movie_rate_mark_watched">Mark Watched</string>
 
 </resources>

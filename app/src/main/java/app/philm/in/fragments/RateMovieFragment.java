@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -30,6 +31,8 @@ public class RateMovieFragment extends PhilmMovieDialogFragment
     private String[] mRatingDescriptions;
 
     private PhilmMovie mMovie;
+
+    private CheckBox mMarkMovieWatchedCheckbox;
 
     public static RateMovieFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -59,6 +62,8 @@ public class RateMovieFragment extends PhilmMovieDialogFragment
         View layout = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_rate_movie, null);
 
+        mMarkMovieWatchedCheckbox = (CheckBox) layout.findViewById(R.id.checkbox_mark_watched);
+
         mRatingDescriptionTextView = (TextView) layout.findViewById(R.id.textview_rating_desc);
 
         mRatingBar = (RatingBar) layout.findViewById(R.id.ratingbar_rating);
@@ -83,9 +88,19 @@ public class RateMovieFragment extends PhilmMovieDialogFragment
             case DialogInterface.BUTTON_POSITIVE:
                 if (hasCallbacks()) {
                     getCallbacks().submitRating(mMovie, TraktUtils.mapIntToRating(getRating()));
+
+                    if (mMarkMovieWatchedCheckbox.getVisibility() == View.VISIBLE
+                            && mMarkMovieWatchedCheckbox.isChecked()) {
+                        getCallbacks().toggleMovieSeen(mMovie);
+                    }
                 }
                 break;
         }
+    }
+
+    @Override
+    public void setMarkMovieWatchedCheckboxVisible(boolean visible) {
+        mMarkMovieWatchedCheckbox.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override

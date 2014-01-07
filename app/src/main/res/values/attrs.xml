@@ -26,4 +26,8 @@
         <attr name="font" />
     </declare-styleable>
 
+    <declare-styleable name="MovieDetailInfoLayout">
+        <attr name="title" format="string|reference" />
+    </declare-styleable>
+
 </resources>

@@ -30,6 +30,7 @@ import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
+import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
@@ -54,6 +55,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private ViewRecycler mRelatedViewRecycler;
     private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
+
+    private MovieDetailInfoLayout mRunTimeInfoLayout;
 
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -108,6 +111,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mRelatedSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_related);
         mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
         mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
+
+        mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
     }
 
     @Override
@@ -226,6 +231,9 @@ public class MovieDetailFragment extends PhilmMovieFragment
         if (related == null || related.size() != mRelatedLayout.getChildCount()) {
             populateRelatedMovies(mRelatedViewRecycler);
         }
+
+        mRunTimeInfoLayout.getContentTextView().setText(
+                getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
     }
 
     private void populateRelatedMovies(final ViewRecycler viewRecycler) {

@@ -10,6 +10,11 @@
     <string name="search_title">Search</string>
     <string name="about_title">About</string>
 
+    <string name="details">Details</string>
+
+    <string name="movie_details_runtime">Runtime</string>
+    <string name="movie_details_runtime_content">%1$d mins</string>
+
     <string name="related_movies">Related</string>
 
     <string name="button_add_account">Add Account</string>

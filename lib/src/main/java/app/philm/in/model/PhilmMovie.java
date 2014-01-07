@@ -57,7 +57,11 @@ public class PhilmMovie {
     int ratingPercent;
     int ratingVotes;
 
+    int runtime;
+
     long lastFetched;
+
+
 
     transient List<PhilmMovie> related;
 
@@ -131,6 +135,8 @@ public class PhilmMovie {
             fanartUrl = images.fanart;
             posterUrl = images.poster;
         }
+
+        runtime = unbox(runtime, movie.runtime);
 
         lastFetched = System.currentTimeMillis();
     }
@@ -230,6 +236,10 @@ public class PhilmMovie {
 
     public void setRelated(List<PhilmMovie> related) {
         this.related = related;
+    }
+
+    public int getRuntime() {
+        return runtime;
     }
 
     @Override

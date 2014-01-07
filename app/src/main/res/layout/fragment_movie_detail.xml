@@ -100,8 +100,21 @@
                     android:layout_marginBottom="@dimen/spacing_minor" />
 
             <app.philm.in.view.FontTextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="@string/details"
+                  style="@style/Widget.Philm.Movie.List.SectionHeader" />
+
+            <app.philm.in.view.MovieDetailInfoLayout
+                  android:id="@+id/layout_info_runtime"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  internal:title="@string/movie_details_runtime" />
+
+            <app.philm.in.view.FontTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_minor"
                 android:text="@string/related_movies"
                 style="@style/Widget.Philm.Movie.List.SectionHeader" />
 

@@ -163,6 +163,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     case WATCHLIST:
                         fetchWatchlist();
                         break;
+                    case DETAIL:
+                        fetchDetailMovie(ui.getRequestParameter());
+                        break;
                 }
             }
 
@@ -251,7 +254,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 fetchWatchlistIfNeeded();
                 break;
             case DETAIL:
-                fetchDetailMovieIfNeeded(ui);
+                fetchDetailMovieIfNeeded(ui.getRequestParameter());
                 break;
         }
     }
@@ -406,19 +409,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return result;
     }
 
-    private void fetchDetailMovie(MovieUi ui) {
-        fetchDetailMovie(ui.getRequestParameter());
+    private void fetchDetailMovie(String traktId) {
+        Preconditions.checkNotNull(traktId, "traktId cannot be null");
+        mExecutor.execute(new FetchDetailMovieRunnable(traktId));
     }
 
-    private void fetchDetailMovie(String imdbId) {
-        Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
-        mExecutor.execute(new FetchDetailMovieRunnable(imdbId));
-    }
+    private void fetchDetailMovieIfNeeded(String traktId) {
+        Preconditions.checkNotNull(traktId, "traktId cannot be null");
 
-    private void fetchDetailMovieIfNeeded(MovieUi ui) {
-        PhilmMovie cached = getMovie(ui.getRequestParameter());
+        PhilmMovie cached = getMovie(traktId);
         if (cached == null || requireMovieDetailFetch(cached)) {
-            fetchDetailMovie(ui);
+            fetchDetailMovie(traktId);
         } else {
             checkDetailMovieResult(cached);
         }

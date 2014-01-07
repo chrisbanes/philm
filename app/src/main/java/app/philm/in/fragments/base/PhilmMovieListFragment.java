@@ -109,8 +109,8 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
             case R.id.menu_refresh:
                 if (mCallbacks != null) {
                     mCallbacks.refresh();
+                    return true;
                 }
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }

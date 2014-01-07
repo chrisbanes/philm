@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -70,6 +73,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTraktImageHelper = new TraktImageHelper(getResources());
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -104,6 +108,23 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mRelatedSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_related);
         mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
         mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.movies_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_refresh:
+                if (hasCallbacks()) {
+                    getCallbacks().refresh();
+                    return true;
+                }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

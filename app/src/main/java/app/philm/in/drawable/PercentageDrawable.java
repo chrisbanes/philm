@@ -31,7 +31,7 @@ public class PercentageDrawable extends Drawable {
 
     private static final float PRESSED_DARKEN_RATIO = 0.15f;
 
-    private final Paint mBackgroundCirclePaint;
+    private final Paint mBackgroundArcPaint;
     private final Paint mForegroundCirclePaint;
     private final Paint mArcPaint;
     private final Paint mTextPaint;
@@ -64,8 +64,8 @@ public class PercentageDrawable extends Drawable {
         mArcPaint = new Paint();
         mArcPaint.setAntiAlias(true);
 
-        mBackgroundCirclePaint = new Paint();
-        mBackgroundCirclePaint.setAntiAlias(true);
+        mBackgroundArcPaint = new Paint();
+        mBackgroundArcPaint.setAntiAlias(true);
 
         mForegroundCirclePaint = new Paint();
         mForegroundCirclePaint.setAntiAlias(true);
@@ -81,7 +81,7 @@ public class PercentageDrawable extends Drawable {
     }
 
     public void setBackgroundCircleColor(int color) {
-        mBackgroundCirclePaint.setColor(color);
+        mBackgroundArcPaint.setColor(color);
     }
 
     public void setForegroundCircleColor(int color) {
@@ -101,15 +101,16 @@ public class PercentageDrawable extends Drawable {
     public void draw(Canvas canvas) {
         mBounds.set(getBounds());
 
-        canvas.drawCircle(mBounds.centerX(), mBounds.centerY(),
-                mBounds.height() * BACKGROUND_CIRCLE_RADIUS_RATIO, mBackgroundCirclePaint);
-
-        final float arcAngle = mCurrentValue * 360f;
+        float arcAngle = mCurrentValue * 360f;
+        final float arcStart;
         if (mAntiClockwiseMode) {
-            canvas.drawArc(mBounds, arcAngle - 90f, 360f - arcAngle, true, mArcPaint);
+            arcStart = arcAngle - 90f;
+            arcAngle = 360f - arcAngle;
         } else {
-            canvas.drawArc(mBounds, -90f, arcAngle, true, mArcPaint);
+            arcStart = -90f;
         }
+        canvas.drawArc(mBounds, arcStart + arcAngle, 360f - arcAngle, true, mBackgroundArcPaint);
+        canvas.drawArc(mBounds, arcStart, arcAngle, true, mArcPaint);
 
         canvas.drawCircle(mBounds.centerX(),
                 mBounds.centerY(),
@@ -128,7 +129,7 @@ public class PercentageDrawable extends Drawable {
     @Override
     public void setAlpha(int alpha) {
         mArcPaint.setAlpha(alpha);
-        mBackgroundCirclePaint.setAlpha(alpha);
+        mBackgroundArcPaint.setAlpha(alpha);
         mForegroundCirclePaint.setAlpha(alpha);
         mTextPaint.setAlpha(alpha);
     }
@@ -136,7 +137,7 @@ public class PercentageDrawable extends Drawable {
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
         mArcPaint.setColorFilter(colorFilter);
-        mBackgroundCirclePaint.setColorFilter(colorFilter);
+        mBackgroundArcPaint.setColorFilter(colorFilter);
         mForegroundCirclePaint.setColorFilter(colorFilter);
         mTextPaint.setColorFilter(colorFilter);
     }

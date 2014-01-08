@@ -4,12 +4,11 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/java'
-        }
-    }
+dependencies {
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.mockito:mockito-core:1.9.+'
+    testCompile 'org.objenesis:objenesis:2.+'
+    testCompile 'org.hamcrest:hamcrest-core:1.+'
 }
 
 dependencies {

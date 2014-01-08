@@ -58,10 +58,10 @@ public class PhilmMovie {
     int ratingVotes;
 
     int runtime;
+    String certification;
+    String genre;
 
     long lastFetched;
-
-
 
     transient List<PhilmMovie> related;
 
@@ -137,6 +137,9 @@ public class PhilmMovie {
         }
 
         runtime = unbox(runtime, movie.runtime);
+        if (!TextUtils.isEmpty(movie.certification)) {
+            certification = movie.certification;
+        }
 
         lastFetched = System.currentTimeMillis();
     }
@@ -240,6 +243,10 @@ public class PhilmMovie {
 
     public int getRuntime() {
         return runtime;
+    }
+
+    public String getCertification() {
+        return certification;
     }
 
     @Override

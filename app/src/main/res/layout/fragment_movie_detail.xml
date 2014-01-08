@@ -106,10 +106,16 @@
                   style="@style/Widget.Philm.Movie.List.SectionHeader" />
 
             <app.philm.in.view.MovieDetailInfoLayout
-                  android:id="@+id/layout_info_runtime"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  internal:title="@string/movie_details_runtime" />
+                android:id="@+id/layout_info_runtime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                internal:title="@string/movie_details_runtime" />
+
+            <app.philm.in.view.MovieDetailInfoLayout
+                    android:id="@+id/layout_info_certification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    internal:title="@string/movie_details_certification" />
 
             <app.philm.in.view.FontTextView
                 android:layout_width="match_parent"

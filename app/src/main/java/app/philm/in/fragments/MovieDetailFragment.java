@@ -57,6 +57,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private LinearLayout mRelatedLayout;
 
     private MovieDetailInfoLayout mRunTimeInfoLayout;
+    private MovieDetailInfoLayout mCertificationIntoLayout;
 
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -113,6 +114,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
 
         mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
+        mCertificationIntoLayout =
+                (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_certification);
     }
 
     @Override
@@ -232,8 +235,9 @@ public class MovieDetailFragment extends PhilmMovieFragment
             populateRelatedMovies(mRelatedViewRecycler);
         }
 
-        mRunTimeInfoLayout.getContentTextView().setText(
+        mRunTimeInfoLayout.setContentText(
                 getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
+        mCertificationIntoLayout.setContentText(mMovie.getCertification());
     }
 
     private void populateRelatedMovies(final ViewRecycler viewRecycler) {

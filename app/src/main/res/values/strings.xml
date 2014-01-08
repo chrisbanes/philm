@@ -14,6 +14,7 @@
 
     <string name="movie_details_runtime">Runtime</string>
     <string name="movie_details_runtime_content">%1$d mins</string>
+    <string name="movie_details_certification">Certification</string>
 
     <string name="related_movies">Related</string>
 

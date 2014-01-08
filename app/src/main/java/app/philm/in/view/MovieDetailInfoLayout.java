@@ -39,4 +39,8 @@ public class MovieDetailInfoLayout extends LinearLayout {
     public TextView getContentTextView() {
         return mContentTextView;
     }
+
+    public void setContentText(String text) {
+        mContentTextView.setText(text);
+    }
 }

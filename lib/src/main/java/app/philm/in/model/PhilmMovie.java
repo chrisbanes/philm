@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import app.philm.in.trakt.TraktUtils;
+import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
 
 public class PhilmMovie {
@@ -59,7 +60,7 @@ public class PhilmMovie {
 
     int runtime;
     String certification;
-    String genre;
+    String genres;
 
     long lastFetched;
 
@@ -134,6 +135,10 @@ public class PhilmMovie {
         if (images != null) {
             fanartUrl = images.fanart;
             posterUrl = images.poster;
+        }
+
+        if (movie.genres != null) {
+            genres = getFormatStringList(movie.genres);
         }
 
         runtime = unbox(runtime, movie.runtime);
@@ -249,6 +254,10 @@ public class PhilmMovie {
         return certification;
     }
 
+    public String getGenres() {
+        return genres;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -294,6 +303,20 @@ public class PhilmMovie {
             return TraktUtils.mapRatingToInt(rating);
         }
         return currentValue;
+    }
+
+    private static String getFormatStringList(List<String> list) {
+        if (!PhilmCollections.isEmpty(list)) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0, z = list.size() ; i < z ; i++) {
+                sb.append(list.get(i));
+                if (i < z - 1) {
+                    sb.append(", ");
+                }
+            }
+            return sb.toString();
+        }
+        return null;
     }
 
 }

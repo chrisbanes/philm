@@ -5,10 +5,9 @@
 
     <app.philm.in.view.FontTextView
           android:id="@android:id/text1"
-          android:layout_width="0px"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:gravity="right|center_vertical"
+          android:gravity="left|center_vertical"
           android:padding="2dp"
           internal:font="roboto_condensed_bold"/>
 
@@ -17,7 +16,7 @@
           android:layout_width="0px"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:gravity="left|center_vertical"
+          android:gravity="right|center_vertical"
           android:padding="2dp"
           internal:font="roboto_condensed"/>
 

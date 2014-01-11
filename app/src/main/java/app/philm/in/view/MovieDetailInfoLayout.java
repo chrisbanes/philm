@@ -40,7 +40,7 @@ public class MovieDetailInfoLayout extends LinearLayout {
         return mContentTextView;
     }
 
-    public void setContentText(String text) {
+    public void setContentText(CharSequence text) {
         mContentTextView.setText(text);
     }
 }

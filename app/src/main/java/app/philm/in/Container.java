@@ -2,6 +2,7 @@ package app.philm.in;
 
 import com.google.common.base.Preconditions;
 
+import com.jakewharton.trakt.Trakt;
 import com.squareup.otto.Bus;
 
 import android.accounts.AccountManager;
@@ -15,7 +16,6 @@ import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.AsyncDatabaseHelperImpl;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
-import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;

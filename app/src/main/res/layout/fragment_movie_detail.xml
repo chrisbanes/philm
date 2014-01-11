@@ -117,6 +117,12 @@
                     android:layout_height="wrap_content"
                     internal:title="@string/movie_details_certification" />
 
+            <app.philm.in.view.MovieDetailInfoLayout
+                    android:id="@+id/layout_info_genres"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    internal:title="@string/movie_details_genres" />
+
             <app.philm.in.view.FontTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

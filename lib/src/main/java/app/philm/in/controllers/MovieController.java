@@ -11,6 +11,7 @@ import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
+import com.uwetrottmann.tmdb.Tmdb;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +56,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private final Trakt mTraktClient;
 
+    private final Tmdb mTmdbClient;
+
     private final AsyncDatabaseHelper mDbHelper;
 
     private final Logger mLogger;
@@ -66,12 +69,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public MovieController(
             MoviesState movieState,
             Trakt traktClient,
+            Tmdb tmdbClient,
             BackgroundExecutor executor,
             AsyncDatabaseHelper dbHelper,
             Logger logger) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
+        mTmdbClient = Preconditions.checkNotNull(tmdbClient, "tmdbClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");

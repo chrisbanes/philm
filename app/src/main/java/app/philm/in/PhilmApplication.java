@@ -37,6 +37,7 @@ public class PhilmApplication extends Application {
         MovieController movieController = new MovieController(
                 mApplicationState,
                 container.getTraktClient(),
+                container.getTmdbClient(),
                 container.getMultiThreadExecutor(),
                 container.getAsyncDatabaseHelper(),
                 container.getLogger());

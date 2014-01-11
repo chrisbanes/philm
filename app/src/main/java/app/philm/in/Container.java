@@ -3,6 +3,7 @@ package app.philm.in;
 import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Bus;
+import com.uwetrottmann.tmdb.Tmdb;
 
 import android.accounts.AccountManager;
 import android.content.Context;
@@ -41,6 +42,7 @@ public class Container {
     private BackgroundExecutor mSingleThreadExecutor;
 
     private Trakt mTrakt;
+    private Tmdb mTmdb;
     private AsyncDatabaseHelperImpl mAsyncDatabaseHelper;
     private DatabaseHelper mDatabaseHelper;
     private TypefaceManager mTypefaceManager;
@@ -82,6 +84,15 @@ public class Container {
             mTrakt.setIsDebug(Constants.DEBUG_NETWORK);
         }
         return mTrakt;
+    }
+
+    public Tmdb getTmdbClient() {
+        if (mTmdb == null) {
+            mTmdb = new Tmdb();
+            mTmdb.setApiKey(Constants.TMDB_API_KEY);
+            mTmdb.setIsDebug(Constants.DEBUG_NETWORK);
+        }
+        return mTmdb;
     }
 
     public AsyncDatabaseHelper getAsyncDatabaseHelper() {

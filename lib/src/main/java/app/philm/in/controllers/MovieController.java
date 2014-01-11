@@ -15,6 +15,7 @@ import com.squareup.otto.Subscribe;
 import com.uwetrottmann.tmdb.Tmdb;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.ReleasesResult;
+import com.uwetrottmann.tmdb.entities.ResultsPage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,8 +63,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final CountryProvider mCountryProvider;
 
     private boolean mPopulatedLibraryFromDb = false;
-
     private boolean mPopulatedWatchlistFromDb = false;
+
+    private final TraktMovieEntityMapper mTraktMovieEntityMapper;
+    private final TmdbMovieEntityMapper mTmdbMovieEntityMapper;
 
     public MovieController(
             MoviesState movieState,
@@ -82,6 +85,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
         mCountryProvider = Preconditions.checkNotNull(countryProvider,
                 "countryProvider cannot be null");
+
+        mTraktMovieEntityMapper = new TraktMovieEntityMapper();
+        mTmdbMovieEntityMapper = new TmdbMovieEntityMapper();
     }
 
     @Subscribe
@@ -282,30 +288,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         } else if (ui instanceof MovieRateUi) {
             populateRateUi((MovieRateUi) ui);
         }
-    }
-
-    List<PhilmMovie> mapTraktMoviesFromState(List<Movie> rawMovies) {
-        final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(rawMovies.size());
-        for (Movie rawMovie : rawMovies) {
-            movies.add(mapTraktMovieFromState(rawMovie));
-        }
-        return movies;
-    }
-
-    PhilmMovie mapTraktMovieFromState(Movie rawMovie) {
-        final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
-
-        PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(rawMovie));
-        if (movie != null) {
-            // We already have a movie, so just update it wrapped value
-            movie.setFromMovie(rawMovie);
-        } else {
-            // No movie, so create one
-            movie = new PhilmMovie(rawMovie);
-            stateMovies.put(movie.getTraktId(), movie);
-        }
-
-        return movie;
     }
 
     private void addToCollection(String imdbId) {
@@ -868,7 +850,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             if (!PhilmCollections.isEmpty(result)) {
-                mMoviesState.setTrending(mapTraktMoviesFromState(result));
+                mMoviesState.setTrending(mTraktMovieEntityMapper.map(result));
             } else {
                 mMoviesState.setTrending(null);
             }
@@ -897,7 +879,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             if (!PhilmCollections.isEmpty(result)) {
-                List<PhilmMovie> movies = mapTraktMoviesFromState(result);
+                List<PhilmMovie> movies = mTraktMovieEntityMapper.map(result);
                 mMoviesState.setLibrary(movies);
 
                 if (isInited()) {
@@ -924,7 +906,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             if (!PhilmCollections.isEmpty(result)) {
-                List<PhilmMovie> movies = mapTraktMoviesFromState(result);
+                List<PhilmMovie> movies = mTraktMovieEntityMapper.map(result);
                 mMoviesState.setWatchlist(movies);
 
                 if (isInited()) {
@@ -936,7 +918,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class SearchMoviesRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+    private class SearchMoviesRunnable extends BaseMovieTraktRunnable<ResultsPage> {
         private final SearchResult mSearchResult;
 
         SearchMoviesRunnable(SearchResult searchResult) {
@@ -944,14 +926,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
-        public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.searchService().movies(mSearchResult.getQuery());
+        public ResultsPage doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.searchService().movie(mSearchResult.getQuery());
         }
 
         @Override
-        public void onSuccess(List<Movie> result) {
+        public void onSuccess(ResultsPage result) {
             if (Objects.equal(mSearchResult, mMoviesState.getSearchResult())) {
-                mSearchResult.setMovies(mapTraktMoviesFromState(result));
+                mSearchResult.setMovies(mTmdbMovieEntityMapper.map(result.results));
                 mMoviesState.setSearchResult(mSearchResult);
             }
         }
@@ -1011,7 +993,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(Movie result) {
-            PhilmMovie movie = mapTraktMovieFromState(result);
+            PhilmMovie movie = mTraktMovieEntityMapper.map(result);
             checkPhilmState(movie);
             if (isInited()) {
                 mDbHelper.put(movie);
@@ -1042,7 +1024,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onSuccess(List<Movie> result) {
             PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
-            movie.setRelated(mapTraktMoviesFromState(result));
+            movie.setRelated(mTraktMovieEntityMapper.map(result));
             populateUis();
         }
 
@@ -1262,6 +1244,64 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     populateUis();
                 }
             }
+        }
+    }
+
+    private abstract class MovieEntityMapper<T> {
+
+        abstract PhilmMovie map(T entity);
+
+        List<PhilmMovie> map(List<T> entities) {
+            final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(entities.size());
+            for (T entity : entities) {
+                movies.add(map(entity));
+            }
+            return movies;
+        }
+    }
+
+    private class TraktMovieEntityMapper extends
+            MovieEntityMapper<com.jakewharton.trakt.entities.Movie> {
+
+        @Override
+        PhilmMovie map(com.jakewharton.trakt.entities.Movie entity) {
+            final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
+
+            PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(entity));
+            if (movie != null) {
+                // We already have a movie, so just update it wrapped value
+                movie.setFromMovie(entity);
+            } else {
+                // No movie, so create one
+                movie = new PhilmMovie(entity);
+                stateMovies.put(movie.getTraktId(), movie);
+            }
+
+            return movie;
+        }
+    }
+
+    private class TmdbMovieEntityMapper extends
+            MovieEntityMapper<com.uwetrottmann.tmdb.entities.Movie> {
+
+        @Override
+        PhilmMovie map(com.uwetrottmann.tmdb.entities.Movie entity) {
+//            final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
+//
+//            PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(entity));
+//            if (movie != null) {
+//                // We already have a movie, so just update it wrapped value
+//                movie.setFromMovie(entity);
+//            } else {
+//                // No movie, so create one
+//                movie = new PhilmMovie(entity);
+//                stateMovies.put(movie.getTraktId(), movie);
+//            }
+//
+//            return movie;
+
+            // TODO
+            return null;
         }
     }
 

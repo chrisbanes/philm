@@ -7,6 +7,7 @@ import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
+import com.uwetrottmann.tmdb.entities.Genre;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -75,7 +76,15 @@ public class PhilmMovie {
         setFromMovie(traktEntity);
     }
 
-    public static String getTraktId(Movie rawMovie) {
+    public static String getTraktId(com.uwetrottmann.tmdb.entities.Movie rawMovie) {
+        if (!TextUtils.isEmpty(rawMovie.imdb_id)) {
+            return rawMovie.imdb_id;
+        } else {
+            return String.valueOf(rawMovie.id);
+        }
+    }
+
+    public static String getTraktId(com.jakewharton.trakt.entities.Movie rawMovie) {
         if (!TextUtils.isEmpty(rawMovie.imdb_id)) {
             return rawMovie.imdb_id;
         } else if (!TextUtils.isEmpty(rawMovie.tmdbId)) {
@@ -94,7 +103,7 @@ public class PhilmMovie {
         return title;
     }
 
-    public void setFromMovie(Movie movie) {
+    public void setFromMovie(com.jakewharton.trakt.entities.Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
 
         tmdbId = movie.tmdbId;
@@ -141,13 +150,57 @@ public class PhilmMovie {
         }
 
         if (movie.genres != null) {
-            genres = getFormatStringList(movie.genres);
+            genres = getTraktGenreFormatStringList(movie.genres);
         }
 
         runtime = unbox(runtime, movie.runtime);
         if (!TextUtils.isEmpty(movie.certification)) {
             certification = movie.certification;
         }
+
+        lastFetched = System.currentTimeMillis();
+    }
+
+    public void setFromMovie(com.uwetrottmann.tmdb.entities.Movie movie) {
+        Preconditions.checkNotNull(movie, "movie cannot be null");
+
+        tmdbId = String.valueOf(movie.id);
+        imdbId = movie.imdb_id;
+        traktId = getTraktId(movie);
+
+        if (!TextUtils.isEmpty(imdbId)) {
+            _id = new Long(imdbId.hashCode());
+            idType = ID_TYPE_IMDB;
+        } else if (!TextUtils.isEmpty(tmdbId)) {
+            _id = new Long(tmdbId.hashCode());
+            idType = ID_TYPE_TMDB;
+        } else {
+            idType = NOT_SET;
+        }
+
+        title = movie.title;
+        sortTitle = getSortTitle(title);
+
+        if (!TextUtils.isEmpty(movie.overview)) {
+            overview = movie.overview;
+        }
+
+        releasedTime = unbox(releasedTime, movie.release_date);
+
+        ratingPercent = unbox(ratingPercent, movie.vote_average);
+        ratingVotes = unbox(ratingVotes, movie.vote_count);
+
+        Images images = movie.images;
+        if (images != null) {
+            fanartUrl = images.fanart;
+            posterUrl = images.poster;
+        }
+
+        if (movie.genres != null) {
+            genres = getTmdbGenreFormatStringList(movie.genres);
+        }
+
+        runtime = unbox(runtime, movie.runtime);
 
         lastFetched = System.currentTimeMillis();
     }
@@ -322,6 +375,10 @@ public class PhilmMovie {
         return newValue != null ? newValue : currentValue;
     }
 
+    private static int unbox(int currentValue, Double newValue) {
+        return newValue != null ? ((int) (newValue * 10)) : currentValue;
+    }
+
     private static long unbox(long currentValue, Date newValue) {
         return newValue != null ? newValue.getTime() : currentValue;
     }
@@ -333,7 +390,21 @@ public class PhilmMovie {
         return currentValue;
     }
 
-    private static String getFormatStringList(List<String> list) {
+    private static String getTmdbGenreFormatStringList(List<Genre> list) {
+        if (!PhilmCollections.isEmpty(list)) {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0, z = list.size() ; i < z ; i++) {
+                sb.append(list.get(i).name);
+                if (i < z - 1) {
+                    sb.append(", ");
+                }
+            }
+            return sb.toString();
+        }
+        return null;
+    }
+
+    private static String getTraktGenreFormatStringList(List<String> list) {
         if (!PhilmCollections.isEmpty(list)) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0, z = list.size() ; i < z ; i++) {

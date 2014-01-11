@@ -6,6 +6,7 @@ import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
+import com.uwetrottmann.tmdb.entities.CountryRelease;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -63,6 +64,8 @@ public class PhilmMovie {
     String genres;
 
     long lastFetched;
+
+    String localizedCountryCode;
 
     transient List<PhilmMovie> related;
 
@@ -149,6 +152,20 @@ public class PhilmMovie {
         lastFetched = System.currentTimeMillis();
     }
 
+    public void updateFrom(CountryRelease countryRelease) {
+        Preconditions.checkNotNull(countryRelease, "countryRelease cannot be null");
+
+        if (!TextUtils.isEmpty(countryRelease.certification)) {
+            certification = countryRelease.certification;
+        }
+        if (countryRelease.release_date != null) {
+            releasedTime = countryRelease.release_date.getTime();
+        }
+        if (!TextUtils.isEmpty(countryRelease.iso_3166_1)) {
+            localizedCountryCode = countryRelease.iso_3166_1;
+        }
+    }
+
     public boolean isWatched() {
         return watched || plays > 0;
     }
@@ -164,6 +181,13 @@ public class PhilmMovie {
 
     public String getTraktId() {
         return traktId;
+    }
+
+    public int getTmdbId() {
+        if (!TextUtils.isEmpty(tmdbId)) {
+            return Integer.parseInt(tmdbId);
+        }
+        return 0;
     }
 
     public boolean inCollection() {
@@ -256,6 +280,10 @@ public class PhilmMovie {
 
     public String getGenres() {
         return genres;
+    }
+
+    public String getLocalizedCountryCode() {
+        return localizedCountryCode;
     }
 
     @Override

@@ -29,11 +29,13 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
+import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.ViewUtils;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailInfoLayout;
+import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
@@ -48,12 +50,14 @@ public class MovieDetailFragment extends PhilmMovieFragment
 
     private PhilmMovie mMovie;
 
+    private FlagUrlProvider mFlagUrlProvider;
     private TraktImageHelper mTraktImageHelper;
 
     private TextView mTitleTextView;
     private TextView mSummaryTextView;
     private ImageView mFanartImageView;
     private ImageView mPosterImageView;
+    private PhilmImageView mFlagImageView;
 
     private RatingBarLayout mRatingBarLayout;
 
@@ -83,7 +87,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTraktImageHelper = new TraktImageHelper(getResources());
+        mFlagUrlProvider = Container.getInstance(getActivity()).getFlagUrlProvider();
+        mTraktImageHelper = Container.getInstance(getActivity()).getTraktImageHelper();
         setHasOptionsMenu(true);
     }
 
@@ -125,6 +130,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
                 (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_certification);
         mGenresInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_genres);
         mReleasedInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_released);
+
+        mFlagImageView = (PhilmImageView) view.findViewById(R.id.imageview_flag);
     }
 
     @Override
@@ -254,6 +261,14 @@ public class MovieDetailFragment extends PhilmMovieFragment
         if (ViewUtils.isEmpty(mReleasedInfoLayout.getContentTextView())) {
             DATE.setTime(mMovie.getReleasedTime());
             mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
+        }
+
+        final String countryCode = mMovie.getLocalizedCountryCode();
+        if (!TextUtils.isEmpty(countryCode)) {
+            mFlagImageView.setVisibility(View.VISIBLE);
+            mFlagImageView.loadUrl(mFlagUrlProvider.getCountryFlagUrl(countryCode));
+        } else {
+            mFlagImageView.setVisibility(View.GONE);
         }
     }
 

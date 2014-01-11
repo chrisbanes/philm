@@ -18,8 +18,12 @@ import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.AsyncDatabaseHelperImpl;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
+import app.philm.in.trakt.TraktImageHelper;
+import app.philm.in.util.AndroidCountryProvider;
 import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
+import app.philm.in.util.CountryProvider;
+import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmBackgroundExecutor;
 import app.philm.in.util.TypefaceManager;
@@ -49,6 +53,9 @@ public class Container {
     private TypefaceManager mTypefaceManager;
     private Logger mLogger;
     private PhilmAccountManager mAccountManager;
+    private CountryProvider mCountryProvider;
+    private FlagUrlProvider mFlagUrlProvider;
+    private TraktImageHelper mTraktImageHelper;
 
     private DateFormat mMediumDateFormat;
 
@@ -139,5 +146,26 @@ public class Container {
             mMediumDateFormat = android.text.format.DateFormat.getMediumDateFormat(mContext);
         }
         return mMediumDateFormat;
+    }
+
+    public CountryProvider getCountryProvider() {
+        if (mCountryProvider == null) {
+            mCountryProvider = new AndroidCountryProvider(mContext);
+        }
+        return mCountryProvider;
+    }
+
+    public FlagUrlProvider getFlagUrlProvider() {
+        if (mFlagUrlProvider == null) {
+            mFlagUrlProvider = new FlagUrlProvider();
+        }
+        return mFlagUrlProvider;
+    }
+
+    public TraktImageHelper getTraktImageHelper() {
+        if (mTraktImageHelper == null) {
+            mTraktImageHelper = new TraktImageHelper(mContext.getResources());
+        }
+        return mTraktImageHelper;
     }
 }

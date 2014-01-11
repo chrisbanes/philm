@@ -40,7 +40,6 @@
         <item name="android:padding">@dimen/spacing_micro</item>
         <item name="android:paddingLeft">@dimen/spacing_major</item>
         <item name="android:background">@color/primary_accent_color</item>
-
     </style>
 
     <style name="Widget.Philm.Movie.Login.Title" parent="android:Widget">
@@ -58,6 +57,13 @@
         <item name="android:shadowDx">1.2</item>
         <item name="android:shadowDy">1.2</item>
         <item name="android:shadowRadius">1</item>
+    </style>
+
+    <style name="Widget.Philm.Movie.Detail.SectionHeader" parent="android:Widget">
+        <item name="font">roboto_condensed</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:padding">@dimen/spacing_micro</item>
+        <item name="android:paddingLeft">@dimen/spacing_major</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Summary" parent="android:Widget">

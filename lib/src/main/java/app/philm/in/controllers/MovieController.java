@@ -13,6 +13,8 @@ import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
 import com.uwetrottmann.tmdb.Tmdb;
+import com.uwetrottmann.tmdb.entities.CountryRelease;
+import com.uwetrottmann.tmdb.entities.ReleasesResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +37,7 @@ import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.util.BackgroundExecutor;
+import app.philm.in.util.CountryProvider;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
@@ -51,16 +54,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
     private final MoviesState mMoviesState;
-
     private final BackgroundExecutor mExecutor;
-
     private final Trakt mTraktClient;
-
     private final Tmdb mTmdbClient;
-
     private final AsyncDatabaseHelper mDbHelper;
-
     private final Logger mLogger;
+    private final CountryProvider mCountryProvider;
 
     private boolean mPopulatedLibraryFromDb = false;
 
@@ -72,7 +71,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             Tmdb tmdbClient,
             BackgroundExecutor executor,
             AsyncDatabaseHelper dbHelper,
-            Logger logger) {
+            Logger logger,
+            CountryProvider countryProvider) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
@@ -80,6 +80,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
+        mCountryProvider = Preconditions.checkNotNull(countryProvider,
+                "countryProvider cannot be null");
     }
 
     @Subscribe
@@ -318,6 +320,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (PhilmCollections.isEmpty(movie.getRelated())) {
             fetchRelatedMovies(movie.getTraktId());
         }
+
+        if (TextUtils.isEmpty(movie.getLocalizedCountryCode())) {
+            fetchMovieReleases(movie);
+        }
+    }
+
+    private void fetchMovieReleases(PhilmMovie movie) {
+        mExecutor.execute(new FetchTmdbReleasesRunnable(movie));
     }
 
     private void checkPhilmState(PhilmMovie movie) {
@@ -1211,4 +1221,48 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
         }
     }
+
+    private class FetchTmdbReleasesRunnable extends BaseMovieTraktRunnable<ReleasesResult> {
+        private final PhilmMovie mMovie;
+
+        FetchTmdbReleasesRunnable(PhilmMovie movie) {
+            mMovie = Preconditions.checkNotNull(movie, "movie cannot be null");
+        }
+
+        @Override
+        public ReleasesResult doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.moviesService().releases(mMovie.getTmdbId());
+        }
+
+        @Override
+        public void onSuccess(ReleasesResult result) {
+            final String countryCode = mCountryProvider.getTwoLetterCountryCode();
+
+            if (!PhilmCollections.isEmpty(result.countries)) {
+                CountryRelease countryRelease = null;
+                CountryRelease usRelease = null;
+
+                for (CountryRelease release : result.countries) {
+                    if (countryCode != null && countryCode.equalsIgnoreCase(release.iso_3166_1)) {
+                        countryRelease = release;
+                        break;
+                    } else if (CountryProvider.US_TWO_LETTER_CODE
+                            .equalsIgnoreCase(release.iso_3166_1)) {
+                        usRelease = release;
+                    }
+                }
+
+                if (countryRelease == null) {
+                    countryRelease = usRelease;
+                }
+
+                if (countryRelease != null) {
+                    mMovie.updateFrom(countryRelease);
+                    mDbHelper.put(mMovie);
+                    populateUis();
+                }
+            }
+        }
+    }
+
 }

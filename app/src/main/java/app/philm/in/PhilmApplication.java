@@ -40,7 +40,8 @@ public class PhilmApplication extends Application {
                 container.getTmdbClient(),
                 container.getMultiThreadExecutor(),
                 container.getAsyncDatabaseHelper(),
-                container.getLogger());
+                container.getLogger(),
+                container.getCountryProvider());
 
         AboutController aboutController = new AboutController();
 

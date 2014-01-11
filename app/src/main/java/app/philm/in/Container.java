@@ -2,12 +2,14 @@ package app.philm.in;
 
 import com.google.common.base.Preconditions;
 
+import com.jakewharton.trakt.Trakt;
 import com.squareup.otto.Bus;
 import com.uwetrottmann.tmdb.Tmdb;
 
 import android.accounts.AccountManager;
 import android.content.Context;
 
+import java.text.DateFormat;
 import java.util.concurrent.Executors;
 
 import app.philm.in.account.AndroidAccountManager;
@@ -16,7 +18,6 @@ import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.AsyncDatabaseHelperImpl;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
-import app.philm.in.trakt.Trakt;
 import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
@@ -48,6 +49,8 @@ public class Container {
     private TypefaceManager mTypefaceManager;
     private Logger mLogger;
     private PhilmAccountManager mAccountManager;
+
+    private DateFormat mMediumDateFormat;
 
     private Container(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
@@ -129,5 +132,12 @@ public class Container {
             mAccountManager = new AndroidAccountManager(AccountManager.get(mContext));
         }
         return mAccountManager;
+    }
+
+    public DateFormat getMediumDateFormat() {
+        if (mMediumDateFormat == null) {
+            mMediumDateFormat = android.text.format.DateFormat.getMediumDateFormat(mContext);
+        }
+        return mMediumDateFormat;
     }
 }

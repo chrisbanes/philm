@@ -3,6 +3,7 @@ package app.philm.in.controllers;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
+import com.jakewharton.trakt.Trakt;
 import com.jakewharton.trakt.entities.UserProfile;
 import com.squareup.otto.Subscribe;
 
@@ -16,7 +17,6 @@ import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.UserState;
-import app.philm.in.trakt.Trakt;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;

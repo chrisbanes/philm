@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:internal="http://schemas.android.com/apk/res-auto">
+
+    <app.philm.in.view.FontTextView
+            android:id="@android:id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:layout_marginRight="@dimen/spacing_micro"
+            android:gravity="left|center_vertical"
+            internal:font="roboto_condensed_bold"/>
+
+    <app.philm.in.view.FontTextView
+            android:id="@android:id/text2"
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="1dp"
+            android:gravity="right|center_vertical"
+            internal:font="roboto_condensed"/>
+
+</merge>

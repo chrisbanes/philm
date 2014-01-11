@@ -3,6 +3,7 @@ package app.philm.in.controllers;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
+import com.jakewharton.trakt.Trakt;
 import com.jakewharton.trakt.entities.ActionResponse;
 import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.RatingResponse;
@@ -33,7 +34,6 @@ import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
-import app.philm.in.trakt.Trakt;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
@@ -852,7 +852,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private class FetchTrendingRunnable extends BaseMovieTraktRunnable<List<Movie>> {
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.philmMoviesService().trending();
+            return mTraktClient.moviesService().trending();
         }
 
         @Override
@@ -881,7 +881,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.philmUserService().libraryMoviesAll(mUsername);
+            return mTraktClient.userService().libraryMoviesAll(mUsername);
         }
 
         @Override
@@ -908,7 +908,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.philmUserService().watchlistMovies(mUsername);
+            return mTraktClient.userService().watchlistMovies(mUsername);
         }
 
         @Override
@@ -935,7 +935,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.philmSearchService().movies(mSearchResult.getQuery());
+            return mTraktClient.searchService().movies(mSearchResult.getQuery());
         }
 
         @Override
@@ -1026,7 +1026,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.philmMovieService().related(mImdbId);
+            return mTraktClient.movieService().related(mImdbId);
         }
 
         @Override

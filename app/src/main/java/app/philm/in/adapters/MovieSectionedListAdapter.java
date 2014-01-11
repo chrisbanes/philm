@@ -13,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
+import app.philm.in.Container;
 import app.philm.in.R;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
@@ -28,14 +30,14 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
     private final Activity mActivity;
     private final TraktImageHelper mTraktImageHelper;
-    private final DateFormat mDateFormat;
+    private final Date mDate;
 
     private List<ListItem<PhilmMovie>> mItems;
 
     public MovieSectionedListAdapter(Activity activity) {
         mActivity = activity;
         mTraktImageHelper = new TraktImageHelper(activity.getResources());
-        mDateFormat = android.text.format.DateFormat.getMediumDateFormat(activity);
+        mDate = new Date();
     }
 
     public void setItems(List<ListItem<PhilmMovie>> items) {
@@ -85,8 +87,10 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                         movie.getRatingPercent(), movie.getRatingVotes()));
 
                 final TextView release = (TextView) view.findViewById(R.id.textview_release);
+                DateFormat dateFormat = Container.getInstance(mActivity).getMediumDateFormat();
+                mDate.setTime(movie.getReleasedTime());
                 release.setText(mActivity.getString(R.string.movie_release_date,
-                        mDateFormat.format(movie.getReleasedTime())));
+                        dateFormat.format(mDate)));
 
                 final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
                 Picasso.with(mActivity)

@@ -85,6 +85,11 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     }
 
     @Override
+    public boolean isModal() {
+        return false;
+    }
+
+    @Override
     public void setCallbacks(UserController.UserUiCallbacks callbacks) {
         mCallbacks = callbacks;
     }

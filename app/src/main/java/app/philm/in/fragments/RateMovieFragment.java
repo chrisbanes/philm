@@ -134,6 +134,11 @@ public class RateMovieFragment extends PhilmMovieDialogFragment
         return getArguments().getString(KEY_QUERY_MOVIE_ID);
     }
 
+    @Override
+    public boolean isModal() {
+        return true;
+    }
+
     private int getRating() {
         return Math.round(mRatingBar.getRating() * 2f);
     }

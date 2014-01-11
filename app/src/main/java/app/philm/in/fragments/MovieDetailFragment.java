@@ -204,6 +204,11 @@ public class MovieDetailFragment extends PhilmMovieFragment
         return null;
     }
 
+    @Override
+    public boolean isModal() {
+        return false;
+    }
+
     private void populateUi() {
         if (mMovie == null) {
             return;

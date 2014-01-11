@@ -43,6 +43,11 @@ public class AboutFragment extends ListFragment<ListView>
         return mCallbacks != null;
     }
 
+    @Override
+    public boolean isModal() {
+        return false;
+    }
+
     protected final AboutController.AboutUiCallbacks getCallbacks() {
         return mCallbacks;
     }

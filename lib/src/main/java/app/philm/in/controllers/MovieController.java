@@ -246,7 +246,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         Display display = getDisplay();
-        if (display != null) {
+        if (display != null && !ui.isModal()) {
             display.showUpNavigation(ui instanceof MovieDetailUi);
         }
 

@@ -15,6 +15,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     public interface Ui<UC> {
         String getUiTitle();
         void setCallbacks(UC callbacks);
+        boolean isModal();
     }
 
     private HashSet<U> mUis;

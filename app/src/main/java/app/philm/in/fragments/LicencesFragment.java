@@ -43,6 +43,11 @@ public class LicencesFragment extends Fragment implements AboutController.AboutO
         return getString(R.string.about_open_source_title);
     }
 
+    @Override
+    public boolean isModal() {
+        return false;
+    }
+
     protected final boolean hasCallbacks() {
         return mCallbacks != null;
     }

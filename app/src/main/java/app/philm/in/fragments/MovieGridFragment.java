@@ -67,6 +67,11 @@ public class MovieGridFragment extends PhilmMovieListFragment<GridView> {
     }
 
     @Override
+    public boolean isModal() {
+        return false;
+    }
+
+    @Override
     protected GridView createListView(Context context) {
         GridView gridView = new GridView(context);
         Resources res = getResources();

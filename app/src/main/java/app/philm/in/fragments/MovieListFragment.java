@@ -66,6 +66,11 @@ public class MovieListFragment extends PhilmMovieListFragment<ListView> {
     }
 
     @Override
+    public boolean isModal() {
+        return false;
+    }
+
+    @Override
     protected ListView createListView(Context context) {
         return new PinnedSectionListView(context, null);
     }

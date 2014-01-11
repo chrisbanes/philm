@@ -142,7 +142,8 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
     }
 
     protected void moveListViewToSavedPositions() {
-        if (mFirstVisiblePosition != AdapterView.INVALID_POSITION) {
+        if (mFirstVisiblePosition != AdapterView.INVALID_POSITION
+                && getListView().getFirstVisiblePosition() <= 0) {
             getListView().setSelection(mFirstVisiblePosition);
         }
     }

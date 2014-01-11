@@ -51,7 +51,7 @@
     <string name="error_unknown">Unknown error :(</string>
 
     <string name="movie_title_year">%1$s (%2$d)</string>
-    <string name="movie_rating_votes">%1$s%% - %2$d votes</string>
+    <string name="movie_rating_votes">%1$d%% - %2$d votes</string>
     <string name="movie_release_date">Release date: %1$s</string>
 
     <string name="filter_collection">In collection</string>
@@ -95,5 +95,6 @@
     <string name="about_build_time_title">Build Time</string>
     <string name="about_open_source_title">Open-source licences</string>
     <string name="about_open_source_content">Licence details for used open-source software</string>
+    <string name="movie_rate_mark_watched">Mark Watched</string>
 
 </resources>

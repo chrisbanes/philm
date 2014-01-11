@@ -8,6 +8,7 @@ import com.squareup.otto.Bus;
 import android.accounts.AccountManager;
 import android.content.Context;
 
+import java.text.DateFormat;
 import java.util.concurrent.Executors;
 
 import app.philm.in.account.AndroidAccountManager;
@@ -46,6 +47,8 @@ public class Container {
     private TypefaceManager mTypefaceManager;
     private Logger mLogger;
     private PhilmAccountManager mAccountManager;
+
+    private DateFormat mMediumDateFormat;
 
     private Container(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
@@ -118,5 +121,12 @@ public class Container {
             mAccountManager = new AndroidAccountManager(AccountManager.get(mContext));
         }
         return mAccountManager;
+    }
+
+    public DateFormat getMediumDateFormat() {
+        if (mMediumDateFormat == null) {
+            mMediumDateFormat = android.text.format.DateFormat.getMediumDateFormat(mContext);
+        }
+        return mMediumDateFormat;
     }
 }

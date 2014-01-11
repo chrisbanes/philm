@@ -12,6 +12,7 @@
 
     <string name="details">Details</string>
 
+    <string name="movie_details_released">Released</string>
     <string name="movie_details_runtime">Runtime</string>
     <string name="movie_details_runtime_content">%1$d mins</string>
     <string name="movie_details_certification">Certification</string>

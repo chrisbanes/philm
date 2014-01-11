@@ -19,15 +19,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import java.util.Date;
 import java.util.List;
 
 import app.philm.in.Constants;
+import app.philm.in.Container;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.util.ViewUtils;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailInfoLayout;
@@ -36,6 +39,8 @@ import app.philm.in.view.ViewRecycler;
 
 public class MovieDetailFragment extends PhilmMovieFragment
         implements MovieController.MovieDetailUi, View.OnClickListener {
+
+    private static final Date DATE = new Date();
 
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
@@ -56,6 +61,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
 
+    private MovieDetailInfoLayout mReleasedInfoLayout;
     private MovieDetailInfoLayout mRunTimeInfoLayout;
     private MovieDetailInfoLayout mCertificationInfoLayout;
     private MovieDetailInfoLayout mGenresInfoLayout;
@@ -118,6 +124,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mCertificationInfoLayout =
                 (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_certification);
         mGenresInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_genres);
+        mReleasedInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_released);
     }
 
     @Override
@@ -195,6 +202,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
             return;
         }
 
+        final Container container = Container.getInstance(getActivity());
+
         if (mFanartImageView.getDrawable() == null) {
             Picasso.with(getActivity())
                     .load(mTraktImageHelper.getFanartUrl(mMovie))
@@ -207,12 +216,12 @@ public class MovieDetailFragment extends PhilmMovieFragment
                     .into(mPosterImageView);
         }
 
-        if (TextUtils.isEmpty(mTitleTextView.getText())) {
+        if (ViewUtils.isEmpty(mTitleTextView)) {
             mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
                     mMovie.getYear()));
         }
 
-        if (TextUtils.isEmpty(mSummaryTextView.getText())) {
+        if (ViewUtils.isEmpty(mSummaryTextView)) {
             mSummaryTextView.setText(mMovie.getOverview());
         }
 
@@ -241,6 +250,11 @@ public class MovieDetailFragment extends PhilmMovieFragment
                 getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
         mCertificationInfoLayout.setContentText(mMovie.getCertification());
         mGenresInfoLayout.setContentText(mMovie.getGenres());
+
+        if (ViewUtils.isEmpty(mReleasedInfoLayout.getContentTextView())) {
+            DATE.setTime(mMovie.getReleasedTime());
+            mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
+        }
     }
 
     private void populateRelatedMovies(final ViewRecycler viewRecycler) {

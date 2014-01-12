@@ -28,10 +28,18 @@ public class StringManager {
         return R.string.app_name;
     }
 
-    public static int getStringResId(MainController.SideMenuItem item) {
-        switch (item) {
+    public static int getStringResId(MovieController.DiscoverTab tab) {
+        switch (tab) {
             case POPULAR:
                 return R.string.popular_title;
+        }
+        return 0;
+    }
+
+    public static int getStringResId(MainController.SideMenuItem item) {
+        switch (item) {
+            case DISCOVER:
+                return R.string.discover_title;
             case TRENDING:
                 return R.string.trending_title;
             case LIBRARY:

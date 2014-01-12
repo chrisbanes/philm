@@ -1,7 +1,7 @@
 package app.philm.in.fragments.base;
 
 
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -12,10 +12,10 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public abstract class PhilmMovieDialogFragment extends DialogFragment
-        implements MovieController.MovieUi {
+public abstract class BasePhilmMovieFragment extends Fragment implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
+
     private Crouton mCurrentCrouton;
 
     @Override
@@ -64,18 +64,6 @@ public abstract class PhilmMovieDialogFragment extends DialogFragment
     @Override
     public void setCallbacks(MovieController.MovieUiCallbacks callbacks) {
         mCallbacks = callbacks;
-    }
-
-    protected String getTitle() {
-        switch (getMovieQueryType()) {
-            case LIBRARY:
-                return getString(R.string.library_title);
-            case TRENDING:
-                return getString(R.string.trending_title);
-            case WATCHLIST:
-                return getString(R.string.watchlist_title);
-        }
-        return null;
     }
 
     private MovieController getController() {

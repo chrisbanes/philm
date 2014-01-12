@@ -1,4 +1,4 @@
-package app.philm.in.fragments;
+package app.philm.in.fragments.base;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,26 +10,15 @@ import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
-import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.PhilmMovieListFragment;
+import app.philm.in.fragments.base.BasePhilmMovieListFragment;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 
-public class MovieGridFragment extends PhilmMovieListFragment<GridView> {
+public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridView> {
 
     private static final String KEY_QUERY_TYPE = "query_type";
 
     private MovieGridAdapter mMovieGridAdapter;
-
-    public static MovieGridFragment create(MovieController.MovieQueryType type) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(KEY_QUERY_TYPE, type.ordinal());
-
-        MovieGridFragment fragment = new MovieGridFragment();
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,12 +42,6 @@ public class MovieGridFragment extends PhilmMovieListFragment<GridView> {
     public void setItems(List<ListItem<PhilmMovie>> items) {
         mMovieGridAdapter.setItems(items);
         moveListViewToSavedPositions();
-    }
-
-    @Override
-    public MovieController.MovieQueryType getMovieQueryType() {
-        final int queryType = getArguments().getInt(KEY_QUERY_TYPE);
-        return MovieController.MovieQueryType.values()[queryType];
     }
 
     @Override

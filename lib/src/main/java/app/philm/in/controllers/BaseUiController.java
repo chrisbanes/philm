@@ -18,6 +18,8 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         boolean isModal();
     }
 
+    public interface SubUi {}
+
     private HashSet<U> mUis;
 
     public BaseUiController() {
@@ -32,9 +34,11 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         ui.setCallbacks(createUiCallbacks(ui));
 
         if (isInited()) {
-            final String uiTitle = ui.getUiTitle();
-            if (!TextUtils.isEmpty(uiTitle)) {
-                updateDisplayTitle(ui.getUiTitle());
+            if (!ui.isModal() && !(ui instanceof SubUi)) {
+                final String uiTitle = ui.getUiTitle();
+                if (!TextUtils.isEmpty(uiTitle)) {
+                    updateDisplayTitle(ui.getUiTitle());
+                }
             }
 
             onUiAttached(ui);

@@ -1,7 +1,7 @@
 package app.philm.in.fragments.base;
 
 
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -12,10 +12,10 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public abstract class PhilmMovieFragment extends Fragment implements MovieController.MovieUi {
+public abstract class BasePhilmMovieDialogFragment extends DialogFragment
+        implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
-
     private Crouton mCurrentCrouton;
 
     @Override

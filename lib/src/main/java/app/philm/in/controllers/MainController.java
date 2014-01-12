@@ -17,7 +17,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     private static final String LOG_TAG = MainController.class.getSimpleName();
 
     public enum SideMenuItem {
-        POPULAR, TRENDING, LIBRARY, WATCHLIST, SEARCH;
+        DISCOVER, TRENDING, LIBRARY, WATCHLIST, SEARCH;
     }
 
     public interface HostCallbacks {
@@ -99,7 +99,7 @@ public class MainController extends BaseUiController<MainController.MainControll
         if (Display.ACTION_MAIN.equals(intentAction)) {
             Display display = getDisplay();
             if (display != null && !display.hasMainFragment()) {
-                showUiItem(display, SideMenuItem.POPULAR);
+                showUiItem(display, SideMenuItem.DISCOVER);
             }
             return true;
         }
@@ -161,8 +161,8 @@ public class MainController extends BaseUiController<MainController.MainControll
         mLogger.d(LOG_TAG, "showUiItem: " + item.name());
 
         switch (item) {
-            case POPULAR:
-                display.showPopular();
+            case DISCOVER:
+                display.showDiscover();
                 break;
             case TRENDING:
                 display.showTrending();

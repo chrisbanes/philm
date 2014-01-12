@@ -29,6 +29,6 @@
 
     <dimen name="drawer_side_menu_width">240dp</dimen>
 
-
+    <dimen name="movie_discover_tab_height">48dp</dimen>
 
 </resources>

@@ -1,4 +1,4 @@
-package app.philm.in.fragments;
+package app.philm.in.fragments.base;
 
 import com.google.common.base.Preconditions;
 
@@ -24,7 +24,6 @@ import app.philm.in.Constants;
 import app.philm.in.Container;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 
 import app.philm.in.util.FlagUrlProvider;
@@ -37,7 +36,7 @@ import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
-public class MovieDetailFragment extends PhilmMovieFragment
+public class MovieDetailFragment extends BasePhilmMovieFragment
         implements MovieController.MovieDetailUi, View.OnClickListener {
 
     private static final Date DATE = new Date();

@@ -23,10 +23,10 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public abstract class PhilmMovieListFragment<E extends AbsListView> extends ListFragment<E>
+public abstract class BasePhilmMovieListFragment<E extends AbsListView> extends ListFragment<E>
         implements MovieController.MovieListUi, AbsListView.OnScrollListener {
 
-    private static final String LOG_TAG = PhilmMovieListFragment.class.getSimpleName();
+    private static final String LOG_TAG = BasePhilmMovieListFragment.class.getSimpleName();
 
     private Set<MovieController.Filter> mFilters;
 

@@ -13,10 +13,14 @@ import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.AboutFragment;
+import app.philm.in.fragments.DiscoverTabFragment;
+import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
-import app.philm.in.fragments.MovieDetailFragment;
-import app.philm.in.fragments.MovieGridFragment;
+import app.philm.in.fragments.TrendingMoviesFragment;
+import app.philm.in.fragments.WatchlistMoviesFragment;
+import app.philm.in.fragments.base.MovieDetailFragment;
+import app.philm.in.fragments.base.MovieGridFragment;
 import app.philm.in.fragments.MovieListFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.SearchListFragment;
@@ -33,34 +37,22 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showLibrary() {
-        MovieGridFragment fragment = MovieGridFragment
-                .create(MovieController.MovieQueryType.LIBRARY);
-
-        showFragmentFromDrawer(fragment);
+        showFragmentFromDrawer(new LibraryMoviesFragment());
     }
 
     @Override
     public void showTrending() {
-        MovieGridFragment fragment = MovieGridFragment
-                .create(MovieController.MovieQueryType.TRENDING);
-
-        showFragmentFromDrawer(fragment);
+        showFragmentFromDrawer(new TrendingMoviesFragment());
     }
 
     @Override
-    public void showPopular() {
-        MovieGridFragment fragment = MovieGridFragment
-                .create(MovieController.MovieQueryType.POPULAR);
-
-        showFragmentFromDrawer(fragment);
+    public void showDiscover() {
+        showFragmentFromDrawer(new DiscoverTabFragment());
     }
 
     @Override
     public void showWatchlist() {
-        MovieListFragment fragment = MovieListFragment
-                .create(MovieController.MovieQueryType.WATCHLIST);
-
-        showFragmentFromDrawer(fragment);
+        showFragmentFromDrawer(new WatchlistMoviesFragment());
     }
 
     @Override

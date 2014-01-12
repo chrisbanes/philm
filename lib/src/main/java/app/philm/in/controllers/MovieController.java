@@ -351,6 +351,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateDetailUi((MovieDetailUi) ui);
         } else if (ui instanceof MovieRateUi) {
             populateRateUi((MovieRateUi) ui);
+        } else if (ui instanceof MovieDiscoverUi) {
+            populateMovieDiscoverUi((MovieDiscoverUi) ui);
         }
     }
 
@@ -647,6 +649,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         ui.setMovie(movie);
     }
 
+    private void populateMovieDiscoverUi(MovieDiscoverUi ui) {
+        ui.setTabs(DiscoverTab.values());
+    }
+
     private void populateListUi(MovieListUi ui) {
         final MovieQueryType queryType = ui.getMovieQueryType();
 
@@ -862,6 +868,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    public static enum DiscoverTab {
+        POPULAR;
+    }
+
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
 
         void showError(NetworkError error);
@@ -907,6 +917,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void setMarkMovieWatchedCheckboxVisible(boolean visible);
 
         void setMovie(PhilmMovie movie);
+    }
+
+    public interface MovieDiscoverUi extends MovieUi {
+        void setTabs(DiscoverTab[] tabs);
     }
 
     public interface MovieUiCallbacks {

@@ -15,12 +15,12 @@ import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.PhilmMovieDialogFragment;
+import app.philm.in.fragments.base.BasePhilmMovieDialogFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.trakt.TraktUtils;
 
-public class RateMovieFragment extends PhilmMovieDialogFragment
+public class RateMovieFragment extends BasePhilmMovieDialogFragment
         implements DialogInterface.OnClickListener, MovieController.MovieRateUi {
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";

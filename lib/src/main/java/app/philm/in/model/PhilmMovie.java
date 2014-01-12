@@ -132,10 +132,14 @@ public class PhilmMovie {
 
         Images images = movie.images;
         if (images != null) {
-            fanartUrl = images.fanart;
-            posterUrl = images.poster;
-            fanartType = TYPE_TRAKT;
-            posterType = TYPE_TRAKT;
+            if (TextUtils.isEmpty(fanartUrl)) {
+                fanartUrl = images.fanart;
+                fanartType = TYPE_TRAKT;
+            }
+            if (TextUtils.isEmpty(posterUrl)) {
+                posterUrl = images.poster;
+                posterType = TYPE_TRAKT;
+            }
         }
 
         if (movie.genres != null) {

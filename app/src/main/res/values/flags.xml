@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <integer name="trakt_poster_image_size">0</integer>
-    <integer name="trakt_fanart_image_size">0</integer>
-
-</resources>

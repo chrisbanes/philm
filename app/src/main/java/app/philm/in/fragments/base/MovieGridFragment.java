@@ -16,8 +16,6 @@ import app.philm.in.model.PhilmMovie;
 
 public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridView> {
 
-    private static final String KEY_QUERY_TYPE = "query_type";
-
     private MovieGridAdapter mMovieGridAdapter;
 
     @Override

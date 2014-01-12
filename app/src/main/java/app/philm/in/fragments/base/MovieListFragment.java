@@ -16,8 +16,6 @@ import app.philm.in.model.PhilmMovie;
 
 public abstract class MovieListFragment extends BasePhilmMovieListFragment<ListView> {
 
-    private static final String KEY_QUERY_TYPE = "query_type";
-
     private MovieSectionedListAdapter mMovieListAdapter;
 
     @Override

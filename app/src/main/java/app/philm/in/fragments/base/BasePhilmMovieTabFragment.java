@@ -5,20 +5,26 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.view.SlidingTabLayout;
 
 public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
+    private static final String SAVE_SELECTED_TAB = "selected_tab";
+
     private ViewPager mViewPager;
     private TabPagerAdapter mAdapter;
     private SlidingTabLayout mSlidingTabStrip;
+
+    private int mCurrentItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,10 +46,32 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
         mSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.primary_accent_color));
         mSlidingTabStrip.setDividerColors(getResources().getColor(R.color.primary_accent_color_dark_10));
+
+        if (savedInstanceState != null) {
+            mCurrentItem = savedInstanceState.getInt(SAVE_SELECTED_TAB);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCurrentItem = mViewPager.getCurrentItem();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SAVE_SELECTED_TAB, mCurrentItem);
+        super.onSaveInstanceState(outState);
     }
 
     protected ViewPager getViewPager() {
         return mViewPager;
+    }
+
+    protected void setFragments(List<Fragment> fragments) {
+        mAdapter.setFragments(fragments);
+        mSlidingTabStrip.notifyDataSetChanged();
+        mViewPager.setCurrentItem(mCurrentItem);
     }
 
     protected SlidingTabLayout getSlidingTabStrip() {
@@ -56,7 +84,7 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
     protected abstract String getTabTitle(int position);
 
-    public class TabPagerAdapter extends FragmentPagerAdapter {
+    protected class TabPagerAdapter extends FragmentPagerAdapter {
         private final ArrayList<Fragment> mFragments;
 
         private TabPagerAdapter(FragmentManager fm) {
@@ -64,8 +92,10 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
             mFragments = new ArrayList<Fragment>();
         }
 
-        public void addFragment(Fragment fragment) {
-            mFragments.add(fragment);
+        void setFragments(List<Fragment> fragments) {
+            mFragments.clear();
+            mFragments.addAll(fragments);
+            notifyDataSetChanged();
         }
 
         @Override

@@ -2,6 +2,8 @@ package app.philm.in.fragments;
 
 import android.support.v4.app.Fragment;
 
+import java.util.ArrayList;
+
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieTabFragment;
@@ -36,13 +38,12 @@ public class DiscoverTabFragment extends BasePhilmMovieTabFragment
     public void setTabs(MovieController.DiscoverTab[] tabs) {
         mTabs = tabs;
 
-        final TabPagerAdapter adapter = getAdapter();
-        if (adapter.getCount() == 0) {
+        if (getAdapter().getCount() == 0) {
+            ArrayList<Fragment> fragments = new ArrayList<Fragment>();
             for (int i = 0; i < tabs.length; i++) {
-                adapter.addFragment(createFragmentForTab(tabs[i]));
+                fragments.add(createFragmentForTab(tabs[i]));
             }
-            adapter.notifyDataSetChanged();
-            getSlidingTabStrip().notifyDataSetChanged();
+            setFragments(fragments);
         }
     }
 

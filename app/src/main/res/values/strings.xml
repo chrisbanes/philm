@@ -4,6 +4,7 @@
     <string name="app_name">Philm</string>
     <string name="title_film_detail">Film Detail</string>
 
+    <string name="popular_title">Popular (testing)</string>
     <string name="trending_title">Trending</string>
     <string name="library_title">Library</string>
     <string name="watchlist_title">Watchlist</string>

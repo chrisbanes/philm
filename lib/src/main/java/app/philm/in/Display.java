@@ -11,6 +11,8 @@ public interface Display {
 
     public void showTrending();
 
+    public void showPopular();
+
     public void showWatchlist();
 
     public void showLogin();

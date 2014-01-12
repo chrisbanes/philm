@@ -24,6 +24,10 @@ public interface MoviesState extends BaseState {
 
     public void setTrending(List<PhilmMovie> trending);
 
+    public List<PhilmMovie> getPopular();
+
+    public void setPopular(List<PhilmMovie> popular);
+
     public List<PhilmMovie> getWatchlist();
 
     public void setWatchlist(List<PhilmMovie> watchlist);
@@ -39,6 +43,8 @@ public interface MoviesState extends BaseState {
     public void setTmdbConfiguration(Configuration configuration);
 
     public static class LibraryChangedEvent {}
+
+    public static class PopularChangedEvent {}
 
     public static class TrendingChangedEvent {}
 

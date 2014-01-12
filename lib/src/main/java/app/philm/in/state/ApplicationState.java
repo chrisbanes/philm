@@ -31,6 +31,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private List<PhilmMovie> mLibrary;
     private List<PhilmMovie> mTrending;
+    private List<PhilmMovie> mPopular;
     private List<PhilmMovie> mWatchlist;
     private Set<MovieController.Filter> mFilters;
 
@@ -110,6 +111,19 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
         if (!Objects.equal(items, mTrending)) {
             mTrending = items;
             mEventBus.post(new TrendingChangedEvent());
+        }
+    }
+
+    @Override
+    public List<PhilmMovie> getPopular() {
+        return mPopular;
+    }
+
+    @Override
+    public void setPopular(List<PhilmMovie> items) {
+        if (!Objects.equal(items, mPopular)) {
+            mPopular = items;
+            mEventBus.post(new PopularChangedEvent());
         }
     }
 

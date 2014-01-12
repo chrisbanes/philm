@@ -52,6 +52,14 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
+    public void showPopular() {
+        MovieGridFragment fragment = MovieGridFragment
+                .create(MovieController.MovieQueryType.POPULAR);
+
+        showFragmentFromDrawer(fragment);
+    }
+
+    @Override
     public void showWatchlist() {
         MovieListFragment fragment = MovieListFragment
                 .create(MovieController.MovieQueryType.WATCHLIST);

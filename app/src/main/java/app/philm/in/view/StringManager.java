@@ -14,6 +14,8 @@ public class StringManager {
 
     public static int getStringResId(MovieController.MovieQueryType movieQueryType) {
         switch (movieQueryType) {
+            case POPULAR:
+                return R.string.popular_title;
             case TRENDING:
                 return R.string.trending_title;
             case LIBRARY:
@@ -23,11 +25,13 @@ public class StringManager {
             case SEARCH:
                 return R.string.search_title;
         }
-        return 0;
+        return R.string.app_name;
     }
 
     public static int getStringResId(MainController.SideMenuItem item) {
         switch (item) {
+            case POPULAR:
+                return R.string.popular_title;
             case TRENDING:
                 return R.string.trending_title;
             case LIBRARY:
@@ -37,7 +41,7 @@ public class StringManager {
             case SEARCH:
                 return R.string.search_title;
         }
-        return 0;
+        return R.string.app_name;
     }
 
     public static int getStringResId(MovieController.Filter filter) {

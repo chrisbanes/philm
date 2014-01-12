@@ -115,6 +115,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
+    public void onPopularChanged(MoviesState.PopularChangedEvent event) {
+        populateUis();
+    }
+
+    @Subscribe
     public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
         populateUis();
     }
@@ -200,6 +205,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @Override
             public void refresh() {
                 switch (ui.getMovieQueryType()) {
+                    case POPULAR:
+                        fetchPopular();
+                        break;
                     case TRENDING:
                         fetchTrending();
                         break;
@@ -292,6 +300,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         switch (queryType) {
             case TRENDING:
                 fetchTrendingIfNeeded();
+                break;
+            case POPULAR:
+                fetchPopularIfNeeded();
                 break;
             case LIBRARY:
                 fetchLibraryIfNeeded();
@@ -493,6 +504,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchPopular() {
+        mExecutor.execute(new FetchTmdbPopularRunnable());
+    }
+
+    private void fetchPopularIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getPopular())) {
+            fetchPopular();
+        }
+    }
+
     private void fetchWatchlist() {
         if (isLoggedIn()) {
             mExecutor.execute(new FetchWatchlistRunnable(mMoviesState.getUsername()));
@@ -619,6 +640,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         switch (queryType) {
             case TRENDING:
                 items = mMoviesState.getTrending();
+                break;
+            case POPULAR:
+                items = mMoviesState.getPopular();
                 break;
             case LIBRARY:
                 items = mMoviesState.getLibrary();
@@ -782,7 +806,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        TRENDING, LIBRARY, WATCHLIST, DETAIL, SEARCH, NONE;
+        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NONE;
 
         public boolean requireLogin() {
             switch (this) {
@@ -796,6 +820,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         public boolean supportFiltering() {
             switch (this) {
+                case POPULAR:
                 case LIBRARY:
                 case TRENDING:
                     return true;
@@ -950,6 +975,29 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 mMoviesState.setTrending(mTraktMovieEntityMapper.map(result));
             } else {
                 mMoviesState.setTrending(null);
+            }
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            for (MovieUi ui : getUis()) {
+                ui.showError(NetworkError.from(re));
+            }
+        }
+    }
+
+    private class FetchTmdbPopularRunnable extends BaseMovieTraktRunnable<List<com.uwetrottmann.tmdb.entities.Movie>> {
+        @Override
+        public List<com.uwetrottmann.tmdb.entities.Movie> doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.moviesService().popular().results;
+        }
+
+        @Override
+        public void onSuccess(List<com.uwetrottmann.tmdb.entities.Movie> result) {
+            if (!PhilmCollections.isEmpty(result)) {
+                mMoviesState.setPopular(mTmdbMovieEntityMapper.map(result));
+            } else {
+                mMoviesState.setPopular(null);
             }
         }
 

@@ -18,7 +18,7 @@ import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
-import app.philm.in.fragments.base.MovieDetailFragment;
+import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.SearchListFragment;
 

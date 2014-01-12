@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieTabFragment;
-import app.philm.in.fragments.base.MovieGridFragment;
 import app.philm.in.view.StringManager;
 
 public class DiscoverTabFragment extends BasePhilmMovieTabFragment
@@ -58,7 +57,7 @@ public class DiscoverTabFragment extends BasePhilmMovieTabFragment
     private Fragment createFragmentForTab(MovieController.DiscoverTab tab) {
         switch (tab) {
             case POPULAR:
-                return new PopularMoviesGridFragment();
+                return new PopularMoviesFragment();
         }
         return null;
     }

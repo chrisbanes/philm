@@ -4,7 +4,7 @@ package app.philm.in.fragments;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.MovieGridFragment;
 
-public class PopularMoviesGridFragment extends MovieGridFragment implements MovieController.SubUi {
+public class PopularMoviesFragment extends MovieGridFragment implements MovieController.SubUi {
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {

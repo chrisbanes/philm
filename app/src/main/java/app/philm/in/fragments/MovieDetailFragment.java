@@ -1,4 +1,4 @@
-package app.philm.in.fragments.base;
+package app.philm.in.fragments;
 
 import com.google.common.base.Preconditions;
 
@@ -24,6 +24,7 @@ import app.philm.in.Constants;
 import app.philm.in.Container;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 
 import app.philm.in.util.FlagUrlProvider;

@@ -57,7 +57,6 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private TextView mSummaryTextView;
     private PhilmImageView mFanartImageView;
     private PhilmImageView mPosterImageView;
-    private PhilmFlagImageView mFlagImageView;
 
     private RatingBarLayout mRatingBarLayout;
 
@@ -129,8 +128,6 @@ public class MovieDetailFragment extends PhilmMovieFragment
                 (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_certification);
         mGenresInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_genres);
         mReleasedInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_released);
-
-        mFlagImageView = (PhilmFlagImageView) view.findViewById(R.id.imageview_flag);
     }
 
     @Override
@@ -265,10 +262,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
 
         final String countryCode = mMovie.getLocalizedCountryCode();
         if (!TextUtils.isEmpty(countryCode)) {
-            mFlagImageView.setVisibility(View.VISIBLE);
-            mFlagImageView.loadUrl(mFlagUrlProvider.getCountryFlagUrl(countryCode));
-        } else {
-            mFlagImageView.setVisibility(View.GONE);
+            mReleasedInfoLayout.getFlagImageView()
+                    .loadUrl(mFlagUrlProvider.getCountryFlagUrl(countryCode));
         }
     }
 

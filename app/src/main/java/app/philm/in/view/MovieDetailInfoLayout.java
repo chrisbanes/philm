@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.ViewStub;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ public class MovieDetailInfoLayout extends LinearLayout {
 
     private final TextView mTitleTextView;
     private final TextView mContentTextView;
+    private PhilmFlagImageView mFlagImageView;
 
     public MovieDetailInfoLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,6 +40,14 @@ public class MovieDetailInfoLayout extends LinearLayout {
 
     public TextView getContentTextView() {
         return mContentTextView;
+    }
+
+    public PhilmFlagImageView getFlagImageView() {
+        if (mFlagImageView == null) {
+            ViewStub stub = (ViewStub) findViewById(R.id.stub_flag);
+            mFlagImageView = (PhilmFlagImageView) stub.inflate();
+        }
+        return mFlagImageView;
     }
 
     public void setContentText(CharSequence text) {

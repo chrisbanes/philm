@@ -86,6 +86,10 @@ public class StringManager {
                 return R.string.about_build_time_title;
             case OPEN_SOURCE:
                 return R.string.about_open_source_title;
+            case POWERED_BY_TMDB:
+                return R.string.about_powered_tmdb_title;
+            case POWERED_BY_TRAKT:
+                return R.string.about_powered_trakt_title;
         }
         return 0;
     }
@@ -98,6 +102,10 @@ public class StringManager {
                 return BuildConfig.BUILD_TIME;
             case OPEN_SOURCE:
                 return context.getString(R.string.about_open_source_content);
+            case POWERED_BY_TMDB:
+                return context.getString(R.string.about_powered_tmdb_content);
+            case POWERED_BY_TRAKT:
+                return context.getString(R.string.about_powered_trakt_content);
         }
         return null;
     }

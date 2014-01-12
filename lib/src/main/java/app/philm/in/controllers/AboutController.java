@@ -10,7 +10,7 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
         AboutController.AboutUiCallbacks> {
 
     public static enum AboutItem {
-        BUILD_VERSION, BUILD_TIME, OPEN_SOURCE;
+        BUILD_VERSION, BUILD_TIME, OPEN_SOURCE, POWERED_BY_TMDB, POWERED_BY_TRAKT;
     }
 
     public interface AboutUi extends BaseUiController.Ui<AboutUiCallbacks> {}

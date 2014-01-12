@@ -97,6 +97,11 @@
     <string name="about_build_time_title">Build Time</string>
     <string name="about_open_source_title">Open-source licences</string>
     <string name="about_open_source_content">Licence details for used open-source software</string>
+    <string name="about_powered_tmdb_title">Powered by TMDb</string>
+    <string name="about_powered_tmdb_content">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+    <string name="about_powered_trakt_title">Powered by trakt.tv</string>
+    <string name="about_powered_trakt_content">This product uses the trakt.tv API but is not endorsed or certified by trakt.tv.</string>
+
     <string name="movie_rate_mark_watched">Mark Watched</string>
 
 </resources>

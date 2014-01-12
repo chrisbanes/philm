@@ -27,7 +27,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private Map<String, PhilmMovie> mTmdbIdMovies;
     private Map<String, PhilmMovie> mImdbIdMovies;
-    private SearchResult mSearchResult;
+
+    private SearchPaginatedResult mSearchResult;
 
     private List<PhilmMovie> mLibrary;
     private List<PhilmMovie> mTrending;
@@ -159,12 +160,12 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public SearchResult getSearchResult() {
+    public SearchPaginatedResult getSearchResult() {
         return mSearchResult;
     }
 
     @Override
-    public void setSearchResult(SearchResult result) {
+    public void setSearchResult(SearchPaginatedResult result) {
         mSearchResult = result;
         mEventBus.post(new SearchResultChangedEvent());
     }

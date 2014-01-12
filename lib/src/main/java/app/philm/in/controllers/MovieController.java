@@ -298,6 +298,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                             fetchPopular(result.page + 1);
                         }
                         break;
+                    case SEARCH:
+                        MoviesState.SearchPaginatedResult searchResult = mMoviesState.getSearchResult();
+                        if (searchResult != null && searchResult.page < searchResult.totalPages) {
+                            fetchSearchResults(searchResult.query, searchResult.page + 1);
+                        }
+                        break;
                 }
             }
         };
@@ -549,11 +555,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchSearchResults(String query) {
-        Preconditions.checkNotNull(query, "query cannot be null");
-        final SearchResult result = new SearchResult(query);
+        mMoviesState.setSearchResult(null);
+        fetchSearchResults(query, TMDB_FIRST_PAGE);
+    }
 
-        mMoviesState.setSearchResult(result);
-        mExecutor.execute(new SearchMoviesRunnable(result));
+    private void fetchSearchResults(String query, int page) {
+        mExecutor.execute(new SearchMoviesRunnable(query, page));
     }
 
     private void fetchTmdbConfiguration() {
@@ -704,9 +711,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                         Filter.RELEASED);
                 break;
             case SEARCH:
-                SearchResult result = mMoviesState.getSearchResult();
-                if (result != null) {
-                    items = result.getMovies();
+                MoviesState.MoviePaginatedResult searchResult = mMoviesState.getSearchResult();
+                if (searchResult != null) {
+                    items = searchResult.items;
                 }
                 break;
             case NOW_PLAYING:
@@ -741,8 +748,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void populateSearchUi(SearchMovieUi ui) {
-        SearchResult result = mMoviesState.getSearchResult();
-        ui.setQuery(result != null ? result.getQuery() : null);
+        MoviesState.SearchPaginatedResult result = mMoviesState.getSearchResult();
+        ui.setQuery(result != null ? result.query : null);
 
         // Now carry on with list ui population
         populateListUi(ui);
@@ -1076,7 +1083,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             if (result != null) {
                 MoviesState.MoviePaginatedResult paginatedResult = getResultFromState();
                 if (paginatedResult == null) {
-                    paginatedResult = new MoviesState.MoviePaginatedResult();
+                    paginatedResult = createPaginatedResult();
                     paginatedResult.items = new ArrayList<PhilmMovie>();
                 }
 
@@ -1105,6 +1112,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         protected abstract MoviesState.MoviePaginatedResult getResultFromState();
 
         protected abstract void updateState(MoviesState.MoviePaginatedResult result);
+
+        protected MoviesState.MoviePaginatedResult createPaginatedResult() {
+            return new MoviesState.MoviePaginatedResult();
+        }
     }
 
     private class FetchTmdbPopularRunnable extends BasePaginatedTmdbRunnable {
@@ -1207,24 +1218,35 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class SearchMoviesRunnable extends BaseMovieTmdbRunnable<ResultsPage> {
-        private final SearchResult mSearchResult;
+    private class SearchMoviesRunnable extends BasePaginatedTmdbRunnable {
+        private final String mQuery;
 
-        SearchMoviesRunnable(SearchResult searchResult) {
-            mSearchResult = Preconditions.checkNotNull(searchResult, "searchResult cannot be null");
+        SearchMoviesRunnable(String query, int page) {
+            super(page);
+            mQuery = Preconditions.checkNotNull(query, "query cannot be null");
         }
 
         @Override
         public ResultsPage doBackgroundCall() throws RetrofitError {
-            return mTmdbClient.searchService().movie(mSearchResult.getQuery());
+            return mTmdbClient.searchService().movie(mQuery, getPage(),
+                    null, null, null, null, null);
         }
 
         @Override
-        public void onSuccess(ResultsPage result) {
-            if (Objects.equal(mSearchResult, mMoviesState.getSearchResult())) {
-                mSearchResult.setMovies(mTmdbMovieEntityMapper.map(result.results));
-                mMoviesState.setSearchResult(mSearchResult);
-            }
+        protected MoviesState.MoviePaginatedResult getResultFromState() {
+            return mMoviesState.getSearchResult();
+        }
+
+        @Override
+        protected void updateState(MoviesState.MoviePaginatedResult result) {
+            mMoviesState.setSearchResult((MoviesState.SearchPaginatedResult) result);
+        }
+
+        @Override
+        protected MoviesState.MoviePaginatedResult createPaginatedResult() {
+            MoviesState.SearchPaginatedResult result = new MoviesState.SearchPaginatedResult();
+            result.query = mQuery;
+            return result;
         }
     }
 

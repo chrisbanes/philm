@@ -36,9 +36,9 @@ public interface MoviesState extends BaseState {
 
     public void setWatchlist(List<PhilmMovie> watchlist);
 
-    public void setSearchResult(SearchResult result);
+    public void setSearchResult(SearchPaginatedResult result);
 
-    public SearchResult getSearchResult();
+    public SearchPaginatedResult getSearchResult();
 
     public Set<MovieController.Filter> getFilters();
 
@@ -61,6 +61,10 @@ public interface MoviesState extends BaseState {
     public static class TmdbConfigurationChangedEvent {}
 
     public class MoviePaginatedResult extends PaginatedResult<List<PhilmMovie>> {
+    }
+
+    public class SearchPaginatedResult extends MoviePaginatedResult {
+        public String query;
     }
 
 }

@@ -56,6 +56,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private static final String LOG_TAG = MovieController.class.getSimpleName();
 
+    private static final int TMDB_FIRST_PAGE = 1;
+
     private final MoviesState mMoviesState;
     private final BackgroundExecutor mExecutor;
     private final Trakt mTraktClient;
@@ -151,6 +153,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             mImageHelper.setTmdbPosterSizes(
                     convertTmdbImageSizes(configuration.images.poster_sizes));
         }
+        populateUis();
     }
 
     @Override
@@ -280,6 +283,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void submitRating(PhilmMovie movie, Rating rating) {
                 markMovieRating(movie.getTraktId(), rating);
             }
+
+            @Override
+            public void onScrolledToBottom() {
+                switch (ui.getMovieQueryType()) {
+                    case POPULAR:
+                        MoviesState.MoviePaginatedResult result = mMoviesState.getPopular();
+                        if (result != null && result.page < result.totalPages) {
+                            fetchPopular(result.page + 1);
+                        }
+                        break;
+                }
+            }
         };
     }
 
@@ -320,6 +335,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     protected void populateUi(final MovieUi ui) {
         if (!isLoggedIn() && ui.getMovieQueryType().requireLogin()) {
             ui.showError(NetworkError.UNAUTHORIZED);
+            return;
+        }
+
+        if (mMoviesState.getTmdbConfiguration() == null) {
+            mLogger.i(LOG_TAG, "TMDB Configuration not downloaded yet.");
             return;
         }
 
@@ -505,12 +525,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchPopular() {
-        mExecutor.execute(new FetchTmdbPopularRunnable());
+        mMoviesState.setPopular(null);
+        fetchPopular(TMDB_FIRST_PAGE);
+    }
+
+    private void fetchPopular(final int page) {
+        mExecutor.execute(new FetchTmdbPopularRunnable(page));
     }
 
     private void fetchPopularIfNeeded() {
-        if (PhilmCollections.isEmpty(mMoviesState.getPopular())) {
-            fetchPopular();
+        MoviesState.MoviePaginatedResult popular = mMoviesState.getPopular();
+        if (popular == null || PhilmCollections.isEmpty(popular.items)) {
+            fetchPopular(TMDB_FIRST_PAGE);
         }
     }
 
@@ -642,7 +668,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 items = mMoviesState.getTrending();
                 break;
             case POPULAR:
-                items = mMoviesState.getPopular();
+                MoviesState.MoviePaginatedResult popular = mMoviesState.getPopular();
+                if (popular != null) {
+                    items = popular.items;
+                }
                 break;
             case LIBRARY:
                 items = mMoviesState.getLibrary();
@@ -820,7 +849,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         public boolean supportFiltering() {
             switch (this) {
-                case POPULAR:
                 case LIBRARY:
                 case TRENDING:
                     return true;
@@ -904,6 +932,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showRateMovie(PhilmMovie movie);
 
         void submitRating(PhilmMovie movie, Rating rating);
+
+        void onScrolledToBottom();
     }
 
     private abstract class BaseMovieTraktRunnable<R> extends NetworkCallRunnable<R> {
@@ -986,18 +1016,35 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchTmdbPopularRunnable extends BaseMovieTraktRunnable<List<com.uwetrottmann.tmdb.entities.Movie>> {
-        @Override
-        public List<com.uwetrottmann.tmdb.entities.Movie> doBackgroundCall() throws RetrofitError {
-            return mTmdbClient.moviesService().popular().results;
+    private class FetchTmdbPopularRunnable extends BaseMovieTraktRunnable<ResultsPage> {
+        private final int mPage;
+
+        FetchTmdbPopularRunnable(int page) {
+            mPage = page;
         }
 
         @Override
-        public void onSuccess(List<com.uwetrottmann.tmdb.entities.Movie> result) {
-            if (!PhilmCollections.isEmpty(result)) {
-                mMoviesState.setPopular(mTmdbMovieEntityMapper.map(result));
-            } else {
-                mMoviesState.setPopular(null);
+        public ResultsPage doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.moviesService().popular(mPage, null);
+        }
+
+        @Override
+        public void onSuccess(ResultsPage result) {
+            if (result != null) {
+                MoviesState.MoviePaginatedResult popular = mMoviesState.getPopular();
+                if (popular == null) {
+                    popular = new MoviesState.MoviePaginatedResult();
+                    popular.items = new ArrayList<PhilmMovie>();
+                }
+
+                popular.items.addAll(mTmdbMovieEntityMapper.map(result.results));
+                popular.page = result.page;
+
+                if (result.total_pages != null) {
+                    popular.totalPages = result.total_pages;
+                }
+
+                mMoviesState.setPopular(popular);
             }
         }
 

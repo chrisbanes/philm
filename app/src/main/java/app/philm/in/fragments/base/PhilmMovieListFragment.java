@@ -1,15 +1,18 @@
 package app.philm.in.fragments.base;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
@@ -21,7 +24,9 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 public abstract class PhilmMovieListFragment<E extends AbsListView> extends ListFragment<E>
-        implements MovieController.MovieListUi {
+        implements MovieController.MovieListUi, AbsListView.OnScrollListener {
+
+    private static final String LOG_TAG = PhilmMovieListFragment.class.getSimpleName();
 
     private Set<MovieController.Filter> mFilters;
 
@@ -33,6 +38,9 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
 
     private int mFirstVisiblePosition;
     private int mFirstVisiblePositionTop;
+
+    private boolean mLoadMoreIsAtBottom;
+    private int mLoadMoreRequestedItemCount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,12 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
         if (item != null && item.isVisible() != mFiltersItemVisible) {
             item.setVisible(mFiltersItemVisible);
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getListView().setOnScrollListener(this);
     }
 
     @Override
@@ -155,7 +169,13 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
 
     @Override
     public void showLoadingProgress(boolean visible) {
-        setListShown(!visible);
+        if (visible) {
+            if (getListView().getCount() == 0) {
+                setListShown(false);
+            }
+        } else {
+            setListShown(true);
+        }
     }
 
     @Override
@@ -186,6 +206,34 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
                 setEmptyText(getString(R.string.empty_unknown_error, getTitle()));
                 break;
         }
+    }
+
+    @Override
+    public final void onScrollStateChanged(AbsListView view, int scrollState) {
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mLoadMoreIsAtBottom) {
+            if (onScrolledToBottom()) {
+                mLoadMoreRequestedItemCount = view.getCount();
+                mLoadMoreIsAtBottom = false;
+            }
+        }
+    }
+
+    @Override
+    public final void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+            int totalItemCount) {
+        mLoadMoreIsAtBottom = totalItemCount > mLoadMoreRequestedItemCount
+                && firstVisibleItem + visibleItemCount == totalItemCount;
+    }
+
+    protected boolean onScrolledToBottom() {
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "onScrolledToBottom");
+        }
+        if (hasCallbacks()) {
+            getCallbacks().onScrolledToBottom();
+            return true;
+        }
+        return false;
     }
 
     private void cancelCrouton() {
@@ -219,6 +267,8 @@ public abstract class PhilmMovieListFragment<E extends AbsListView> extends List
 
     private String getTitle() {
         switch (getMovieQueryType()) {
+            case POPULAR:
+                return getString(R.string.popular_title);
             case LIBRARY:
                 return getString(R.string.library_title);
             case TRENDING:

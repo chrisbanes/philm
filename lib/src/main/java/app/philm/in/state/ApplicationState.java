@@ -32,6 +32,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private List<PhilmMovie> mLibrary;
     private List<PhilmMovie> mTrending;
     private MoviePaginatedResult mPopular;
+    private MoviePaginatedResult mNowPlaying;
     private List<PhilmMovie> mWatchlist;
     private Set<MovieController.Filter> mFilters;
 
@@ -123,6 +124,17 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     public void setPopular(MoviePaginatedResult items) {
         mPopular = items;
         mEventBus.post(new PopularChangedEvent());
+    }
+
+    @Override
+    public MoviePaginatedResult getNowPlaying() {
+        return mNowPlaying;
+    }
+
+    @Override
+    public void setNowPlaying(MoviePaginatedResult nowPlaying) {
+        mNowPlaying = nowPlaying;
+        mEventBus.post(new InTheatresChangedEvent());
     }
 
     @Override

@@ -58,6 +58,8 @@ public class DiscoverTabFragment extends BasePhilmMovieTabFragment
         switch (tab) {
             case POPULAR:
                 return new PopularMoviesFragment();
+            case IN_THEATRES:
+                return new InTheatresMoviesFragment();
         }
         return null;
     }

@@ -28,6 +28,10 @@ public interface MoviesState extends BaseState {
 
     public void setPopular(MoviePaginatedResult popular);
 
+    public MoviePaginatedResult getNowPlaying();
+
+    public void setNowPlaying(MoviePaginatedResult nowPlaying);
+
     public List<PhilmMovie> getWatchlist();
 
     public void setWatchlist(List<PhilmMovie> watchlist);
@@ -45,6 +49,8 @@ public interface MoviesState extends BaseState {
     public static class LibraryChangedEvent {}
 
     public static class PopularChangedEvent {}
+
+    public static class InTheatresChangedEvent {}
 
     public static class TrendingChangedEvent {}
 

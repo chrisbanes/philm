@@ -32,6 +32,8 @@ public class StringManager {
         switch (tab) {
             case POPULAR:
                 return R.string.popular_title;
+            case IN_THEATRES:
+                return R.string.in_theatres_title;
         }
         return 0;
     }

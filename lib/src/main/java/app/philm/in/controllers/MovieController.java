@@ -364,7 +364,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void checkDetailMovieResult(PhilmMovie movie) {
         if (PhilmCollections.isEmpty(movie.getRelated())) {
-            fetchRelatedMovies(movie.getTraktId());
+            fetchRelatedMovies(movie);
         }
 
         if (TextUtils.isEmpty(movie.getLocalizedCountryCode())) {
@@ -498,8 +498,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new FetchTmdbReleasesRunnable(movie));
     }
 
-    private void fetchRelatedMovies(String traktId) {
-        mExecutor.execute(new FetchRelatedMoviesRunnable(traktId));
+    private void fetchRelatedMovies(PhilmMovie movie) {
+        if (movie.getTmdbId() != null) {
+            mExecutor.execute(new FetchTmdbRelatedMoviesRunnable(movie.getTmdbId()));
+        } else if (!TextUtils.isEmpty(movie.getImdbId())) {
+            mExecutor.execute(new FetchRelatedMoviesRunnable(movie.getImdbId()));
+        }
     }
 
     private void fetchSearchResults(String query) {
@@ -1220,6 +1224,44 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         public void onSuccess(List<Movie> result) {
             PhilmMovie movie = getMovie(mId);
             movie.setRelated(mTraktMovieEntityMapper.map(result));
+            populateUis();
+        }
+
+        @Override
+        public void onFinished() {
+            showRelatedLoadingProgress(false);
+        }
+
+        private void showRelatedLoadingProgress(boolean show) {
+            for (MovieUi ui : getUis()) {
+                if (ui instanceof MovieDetailUi) {
+                    ((MovieDetailUi) ui).showRelatedMoviesLoadingProgress(show);
+                }
+            }
+        }
+    }
+
+    private class FetchTmdbRelatedMoviesRunnable extends BaseMovieTraktRunnable<ResultsPage> {
+        private final int mId;
+
+        FetchTmdbRelatedMoviesRunnable(int id) {
+            mId = id;
+        }
+
+        @Override
+        public void onPreTraktCall() {
+            showRelatedLoadingProgress(true);
+        }
+
+        @Override
+        public ResultsPage doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.moviesService().similarMovies(mId);
+        }
+
+        @Override
+        public void onSuccess(ResultsPage result) {
+            PhilmMovie movie = getMovie(String.valueOf(mId));
+            movie.setRelated(mTmdbMovieEntityMapper.map(result.results));
             populateUis();
         }
 

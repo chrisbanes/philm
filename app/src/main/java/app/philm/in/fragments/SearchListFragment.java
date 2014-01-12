@@ -10,6 +10,7 @@ import android.widget.SearchView;
 
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.fragments.base.MovieListFragment;
 
 public class SearchListFragment extends MovieListFragment implements MovieController.SearchMovieUi {
 

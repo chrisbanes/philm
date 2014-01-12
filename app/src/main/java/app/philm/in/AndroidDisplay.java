@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
-import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.DiscoverTabFragment;
 import app.philm.in.fragments.LibraryMoviesFragment;
@@ -20,8 +19,6 @@ import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.fragments.base.MovieDetailFragment;
-import app.philm.in.fragments.base.MovieGridFragment;
-import app.philm.in.fragments.MovieListFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.SearchListFragment;
 

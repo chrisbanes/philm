@@ -12,7 +12,9 @@ import app.philm.in.model.SearchResult;
 
 public interface MoviesState extends BaseState {
 
-    public Map<String, PhilmMovie> getMovies();
+    public Map<String, PhilmMovie> getTmdbIdMovies();
+
+    public Map<String, PhilmMovie> getImdbIdMovies();
 
     public List<PhilmMovie> getLibrary();
 

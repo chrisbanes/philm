@@ -125,7 +125,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState.setLibrary(null);
         mMoviesState.setTrending(null);
         mMoviesState.setWatchlist(null);
-        mMoviesState.getMovies().clear();
+        mMoviesState.getImdbIdMovies().clear();
+        mMoviesState.getTmdbIdMovies().clear();
+
+        // TODO: Clear Database Too
     }
 
     @Subscribe
@@ -526,8 +529,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return filteredMovies;
     }
 
-    private PhilmMovie getMovie(String tmdbId) {
-        return mMoviesState.getMovies().get(tmdbId);
+    private PhilmMovie getMovie(String id) {
+        if (mMoviesState.getImdbIdMovies().containsKey(id)) {
+            return mMoviesState.getImdbIdMovies().get(id);
+        } else if (mMoviesState.getTmdbIdMovies().containsKey(id)) {
+            return mMoviesState.getTmdbIdMovies().get(id);
+        }
+        return null;
+    }
+
+    private PhilmMovie putMovie(PhilmMovie movie) {
+        if (!TextUtils.isEmpty(movie.getImdbId())) {
+            mMoviesState.getImdbIdMovies().put(movie.getImdbId(), movie);
+        }
+        if (movie.getTmdbId() != null) {
+            mMoviesState.getTmdbIdMovies().put(String.valueOf(movie.getTmdbId()), movie);
+        }
+        return null;
     }
 
     private boolean hasMovieUiAttached(MovieQueryType queryType) {
@@ -1021,16 +1039,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private abstract class BaseMovieActionTraktRunnable extends BaseMovieTraktRunnable<Response> {
+        private final String mId;
 
-        private final String mImdbId;
-
-        BaseMovieActionTraktRunnable(String imdbId) {
-            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+        BaseMovieActionTraktRunnable(String id) {
+            mId = Preconditions.checkNotNull(id, "id cannot be null");
         }
 
         @Override
         public final Response doBackgroundCall() throws RetrofitError {
-            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(mImdbId);
+            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(mId);
             return doTraktCall(mTraktClient, new MovieService.Movies(seenMovie));
         }
 
@@ -1049,13 +1066,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         private void onActionCompleted(final boolean successful) {
             if (successful) {
-                PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
+                PhilmMovie movie = getMovie(mId);
                 if (movie != null) {
                     movieRequiresModifying(movie);
                     checkPhilmState(movie);
                     populateUis();
                 } else {
-                    fetchDetailMovie(mImdbId);
+                    fetchDetailMovie(mId);
                 }
             }
         }
@@ -1088,11 +1105,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchRelatedMoviesRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+        private final String mId;
 
-        private final String mImdbId;
-
-        FetchRelatedMoviesRunnable(String imdbId) {
-            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+        FetchRelatedMoviesRunnable(String id) {
+            mId = Preconditions.checkNotNull(id, "id cannot be null");
         }
 
         @Override
@@ -1102,12 +1118,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.movieService().related(mImdbId);
+            return mTraktClient.movieService().related(mId);
         }
 
         @Override
         public void onSuccess(List<Movie> result) {
-            PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
+            PhilmMovie movie = getMovie(mId);
             movie.setRelated(mTraktMovieEntityMapper.map(result));
             populateUis();
         }
@@ -1161,25 +1177,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class SubmitMovieRatingRunnable extends BaseMovieTraktRunnable<RatingResponse> {
-
-        private final String mImdbId;
-
+        private final String mId;
         private final Rating mRating;
 
-        SubmitMovieRatingRunnable(String imdbId, Rating rating) {
-            mImdbId = Preconditions.checkNotNull(imdbId, "imdbId cannot be null");
+        SubmitMovieRatingRunnable(String id, Rating rating) {
+            mId = Preconditions.checkNotNull(id, "id cannot be null");
             mRating = Preconditions.checkNotNull(rating, "rating cannot be null");
         }
 
         @Override
         public RatingResponse doBackgroundCall() throws RetrofitError {
-            return mTraktClient.rateService().movie(new RateService.MovieRating(mImdbId, mRating));
+            return mTraktClient.rateService().movie(new RateService.MovieRating(mId, mRating));
         }
 
         @Override
         public void onSuccess(RatingResponse result) {
             if ("success".equals(result.status)) {
-                PhilmMovie movie = mMoviesState.getMovies().get(mImdbId);
+                PhilmMovie movie = getMovie(mId);
                 if (movie != null) {
                     if (result.rating != null) {
                         movie.setUserRatingAdvanced(result.rating);
@@ -1194,9 +1208,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class AddMovieToWatchlistRunnable extends BaseMovieActionTraktRunnable {
-
-        AddMovieToWatchlistRunnable(String imdbId) {
-            super(imdbId);
+        AddMovieToWatchlistRunnable(String id) {
+            super(id);
         }
 
         @Override
@@ -1211,9 +1224,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class RemoveMovieFromWatchlistRunnable extends BaseMovieActionTraktRunnable {
-
-        RemoveMovieFromWatchlistRunnable(String imdbId) {
-            super(imdbId);
+        RemoveMovieFromWatchlistRunnable(String id) {
+            super(id);
         }
 
         @Override
@@ -1228,9 +1240,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class AddMovieToCollectionRunnable extends BaseMovieActionTraktRunnable {
-
-        AddMovieToCollectionRunnable(String imdbId) {
-            super(imdbId);
+        AddMovieToCollectionRunnable(String id) {
+            super(id);
         }
 
         @Override
@@ -1245,9 +1256,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class RemoveMovieFromCollectionRunnable extends BaseMovieActionTraktRunnable {
-
-        RemoveMovieFromCollectionRunnable(String imdbId) {
-            super(imdbId);
+        RemoveMovieFromCollectionRunnable(String id) {
+            super(id);
         }
 
         @Override
@@ -1268,7 +1278,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             mMoviesState.setLibrary(result);
             if (!PhilmCollections.isEmpty(result)) {
                 for (PhilmMovie movie : result) {
-                    mMoviesState.getMovies().put(movie.getTraktId(), movie);
+                    putMovie(movie);
                 }
             }
             mPopulatedLibraryFromDb = true;
@@ -1287,7 +1297,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             mMoviesState.setWatchlist(result);
             if (!PhilmCollections.isEmpty(result)) {
                 for (PhilmMovie movie : result) {
-                    mMoviesState.getMovies().put(movie.getTraktId(), movie);
+                    putMovie(movie);
                 }
             }
             mPopulatedWatchlistFromDb = true;
@@ -1299,7 +1309,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchTmdbReleasesRunnable extends BaseMovieTraktRunnable<ReleasesResult> {
-
         private final PhilmMovie mMovie;
 
         FetchTmdbReleasesRunnable(PhilmMovie movie) {
@@ -1360,18 +1369,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         PhilmMovie map(com.jakewharton.trakt.entities.Movie entity) {
-            final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
-
-            PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(entity));
-            if (movie != null) {
-                // We already have a movie, so just update it wrapped value
-                movie.setFromMovie(entity);
-            } else {
+            PhilmMovie movie = getMovie(entity.imdb_id);
+            if (movie == null) {
                 // No movie, so create one
                 movie = new PhilmMovie();
-                movie.setFromMovie(entity);
-                stateMovies.put(movie.getTraktId(), movie);
             }
+            // We already have a movie, so just update it wrapped value
+            movie.setFromMovie(entity);
+            putMovie(movie);
 
             return movie;
         }
@@ -1382,18 +1387,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         PhilmMovie map(com.uwetrottmann.tmdb.entities.Movie entity) {
-            final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
-
-            PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(entity));
-            if (movie != null) {
-                // We already have a movie, so just update it wrapped value
-                movie.setFromMovie(entity);
-            } else {
+            PhilmMovie movie = getMovie(String.valueOf(entity.id));
+            if (movie == null) {
                 // No movie, so create one
                 movie = new PhilmMovie();
-                movie.setFromMovie(entity);
-                stateMovies.put(movie.getTraktId(), movie);
             }
+            // We already have a movie, so just update it wrapped value
+            movie.setFromMovie(entity);
+            putMovie(movie);
 
             return movie;
         }

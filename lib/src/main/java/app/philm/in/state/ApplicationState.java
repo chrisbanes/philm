@@ -25,7 +25,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private final Bus mEventBus;
 
-    private Map<String, PhilmMovie> mMovies;
+    private Map<String, PhilmMovie> mTmdbIdMovies;
+    private Map<String, PhilmMovie> mImdbIdMovies;
     private SearchResult mSearchResult;
 
     private List<PhilmMovie> mLibrary;
@@ -71,11 +72,19 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     ///////////////////////////
 
     @Override
-    public Map<String, PhilmMovie> getMovies() {
-        if (mMovies == null) {
-            mMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
+    public Map<String, PhilmMovie> getTmdbIdMovies() {
+        if (mTmdbIdMovies == null) {
+            mTmdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
         }
-        return mMovies;
+        return mTmdbIdMovies;
+    }
+
+    @Override
+    public Map<String, PhilmMovie> getImdbIdMovies() {
+        if (mImdbIdMovies == null) {
+            mImdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
+        }
+        return mImdbIdMovies;
     }
 
     @Override

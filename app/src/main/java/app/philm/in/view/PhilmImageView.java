@@ -45,6 +45,7 @@ public class PhilmImageView extends ImageView {
                 mMovieToLoad = movie;
             }
         } else {
+            mMovieToLoad = null;
             setImageDrawable(null);
         }
     }
@@ -54,7 +55,7 @@ public class PhilmImageView extends ImageView {
     }
 
     public void loadBackdropUrl(PhilmMovie movie, Callback listener) {
-        if (!TextUtils.isEmpty(movie.getPosterUrl())) {
+        if (!TextUtils.isEmpty(movie.getFanartUrl())) {
             mCallback = listener;
             if (canLoadImage()) {
                 loadUrlImmediate(movie, TYPE_BACKDROP);
@@ -63,6 +64,7 @@ public class PhilmImageView extends ImageView {
                 mMovieToLoad = movie;
             }
         } else {
+            mMovieToLoad = null;
             setImageDrawable(null);
         }
     }

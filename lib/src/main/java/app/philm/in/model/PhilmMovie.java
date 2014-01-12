@@ -9,6 +9,7 @@ import com.uwetrottmann.tmdb.entities.Configuration;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.Genre;
 
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +26,8 @@ public class PhilmMovie {
     public static final int TYPE_IMDB = 2;
     public static final int TYPE_TRAKT = 3;
 
+    private static final Calendar CALENDAR = Calendar.getInstance();
+
     public static final Comparator<PhilmMovie> COMPARATOR = new Comparator<PhilmMovie>() {
         @Override
         public int compare(PhilmMovie movie, PhilmMovie movie2) {
@@ -38,9 +41,8 @@ public class PhilmMovie {
     Long _id;
     int idType;
 
-    String traktId;
     String imdbId;
-    String tmdbId;
+    Integer tmdbId;
     String title;
     String sortTitle;
     String overview;
@@ -75,23 +77,6 @@ public class PhilmMovie {
 
     public PhilmMovie() {}
 
-    public static String getTraktId(com.uwetrottmann.tmdb.entities.Movie rawMovie) {
-        if (!TextUtils.isEmpty(rawMovie.imdb_id)) {
-            return rawMovie.imdb_id;
-        } else {
-            return String.valueOf(rawMovie.id);
-        }
-    }
-
-    public static String getTraktId(com.jakewharton.trakt.entities.Movie rawMovie) {
-        if (!TextUtils.isEmpty(rawMovie.imdb_id)) {
-            return rawMovie.imdb_id;
-        } else if (!TextUtils.isEmpty(rawMovie.tmdbId)) {
-            return rawMovie.tmdbId;
-        }
-        return null;
-    }
-
     private static String getSortTitle(String title) {
         for (int i = 0, z = TITLE_PREFIXES.length; i < z; i++) {
             final String prefix = TITLE_PREFIXES[i];
@@ -105,18 +90,21 @@ public class PhilmMovie {
     public void setFromMovie(com.jakewharton.trakt.entities.Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
 
-        tmdbId = movie.tmdbId;
+        if (!TextUtils.isEmpty(movie.tmdbId)) {
+            tmdbId = Integer.parseInt(movie.tmdbId);
+        }
         imdbId = movie.imdb_id;
-        traktId = getTraktId(movie);
 
-        if (!TextUtils.isEmpty(imdbId)) {
-            _id = new Long(imdbId.hashCode());
-            idType = TYPE_IMDB;
-        } else if (!TextUtils.isEmpty(tmdbId)) {
-            _id = new Long(tmdbId.hashCode());
-            idType = TYPE_TMDB;
-        } else {
-            idType = NOT_SET;
+        if (_id == null || idType == NOT_SET) {
+            if (!TextUtils.isEmpty(imdbId)) {
+                _id = new Long(imdbId.hashCode());
+                idType = TYPE_IMDB;
+            } else if (tmdbId != null) {
+                _id = new Long(tmdbId);
+                idType = TYPE_TMDB;
+            } else {
+                idType = NOT_SET;
+            }
         }
 
         title = movie.title;
@@ -165,18 +153,21 @@ public class PhilmMovie {
     public void setFromMovie(com.uwetrottmann.tmdb.entities.Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
 
-        tmdbId = String.valueOf(movie.id);
-        imdbId = movie.imdb_id;
-        traktId = getTraktId(movie);
+        tmdbId = movie.id;
+        if (!TextUtils.isEmpty(movie.imdb_id)) {
+            imdbId = movie.imdb_id;
+        }
 
-        if (!TextUtils.isEmpty(imdbId)) {
-            _id = new Long(imdbId.hashCode());
-            idType = TYPE_IMDB;
-        } else if (!TextUtils.isEmpty(tmdbId)) {
-            _id = new Long(tmdbId.hashCode());
-            idType = TYPE_TMDB;
-        } else {
-            idType = NOT_SET;
+        if (_id == null || idType == NOT_SET) {
+            if (!TextUtils.isEmpty(imdbId)) {
+                _id = new Long(imdbId.hashCode());
+                idType = TYPE_IMDB;
+            } else if (tmdbId != null) {
+                _id = new Long(tmdbId);
+                idType = TYPE_TMDB;
+            } else {
+                idType = NOT_SET;
+            }
         }
 
         title = movie.title;
@@ -187,6 +178,11 @@ public class PhilmMovie {
         }
 
         releasedTime = unbox(releasedTime, movie.release_date);
+
+        if (year == 0 && releasedTime > 0) {
+            CALENDAR.setTimeInMillis(releasedTime);
+            year = CALENDAR.get(Calendar.YEAR);
+        }
 
         ratingPercent = unbox(ratingPercent, movie.vote_average);
         ratingVotes = unbox(ratingVotes, movie.vote_count);
@@ -236,15 +232,12 @@ public class PhilmMovie {
         return _id;
     }
 
-    public String getTraktId() {
-        return traktId;
+    public String getImdbId() {
+        return imdbId;
     }
 
-    public int getTmdbId() {
-        if (!TextUtils.isEmpty(tmdbId)) {
-            return Integer.parseInt(tmdbId);
-        }
-        return 0;
+    public Integer getTmdbId() {
+        return tmdbId;
     }
 
     public boolean inCollection() {
@@ -351,6 +344,16 @@ public class PhilmMovie {
         return posterType;
     }
 
+    public String getTraktId() {
+        if (!TextUtils.isEmpty(imdbId)) {
+            return imdbId;
+        } else if (tmdbId != null) {
+            return String.valueOf(tmdbId);
+        }
+        // TODO return the slugs
+        return null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -362,10 +365,10 @@ public class PhilmMovie {
 
         PhilmMovie that = (PhilmMovie) o;
 
-        if (year != that.year) {
+        if (imdbId != null ? !imdbId.equals(that.imdbId) : that.imdbId != null) {
             return false;
         }
-        if (traktId != null ? !traktId.equals(that.traktId) : that.traktId != null) {
+        if (tmdbId != null ? !tmdbId.equals(that.tmdbId) : that.tmdbId != null) {
             return false;
         }
 
@@ -374,8 +377,8 @@ public class PhilmMovie {
 
     @Override
     public int hashCode() {
-        int result = traktId != null ? traktId.hashCode() : 0;
-        result = 31 * result + year;
+        int result = imdbId != null ? imdbId.hashCode() : 0;
+        result = 31 * result + (tmdbId != null ? tmdbId.hashCode() : 0);
         return result;
     }
 

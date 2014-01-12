@@ -40,6 +40,7 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.spacing_minor));
 
         mSlidingTabStrip = (SlidingTabLayout) view.findViewById(R.id.viewpager_tabs);
         mSlidingTabStrip.setViewPager(mViewPager);

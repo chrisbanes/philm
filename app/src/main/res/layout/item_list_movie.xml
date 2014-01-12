@@ -7,7 +7,7 @@
               android:foreground="?android:attr/selectableItemBackground"
               android:baselineAligned="false">
 
-    <ImageView
+    <app.philm.in.view.PhilmImageView
             android:id="@+id/imageview_poster"
             android:layout_width="@dimen/movie_list_image_width"
             android:layout_height="match_parent"

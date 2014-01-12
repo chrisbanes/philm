@@ -3,9 +3,9 @@ package app.philm.in.model;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Images;
-import com.jakewharton.trakt.entities.Movie;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
+import com.uwetrottmann.tmdb.entities.Configuration;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.Genre;
 
@@ -21,8 +21,9 @@ public class PhilmMovie {
 
     public static final int NOT_SET = 0;
 
-    private static final int ID_TYPE_TMDB = 1;
-    private static final int ID_TYPE_IMDB = 2;
+    public static final int TYPE_TMDB = 1;
+    public static final int TYPE_IMDB = 2;
+    public static final int TYPE_TRAKT = 3;
 
     public static final Comparator<PhilmMovie> COMPARATOR = new Comparator<PhilmMovie>() {
         @Override
@@ -45,7 +46,9 @@ public class PhilmMovie {
     String overview;
 
     String posterUrl;
+    int posterType;
     String fanartUrl;
+    int fanartType;
 
     boolean inWatchlist;
     boolean inCollection;
@@ -71,10 +74,6 @@ public class PhilmMovie {
     transient List<PhilmMovie> related;
 
     public PhilmMovie() {}
-
-    public PhilmMovie(Movie traktEntity) {
-        setFromMovie(traktEntity);
-    }
 
     public static String getTraktId(com.uwetrottmann.tmdb.entities.Movie rawMovie) {
         if (!TextUtils.isEmpty(rawMovie.imdb_id)) {
@@ -112,10 +111,10 @@ public class PhilmMovie {
 
         if (!TextUtils.isEmpty(imdbId)) {
             _id = new Long(imdbId.hashCode());
-            idType = ID_TYPE_IMDB;
+            idType = TYPE_IMDB;
         } else if (!TextUtils.isEmpty(tmdbId)) {
             _id = new Long(tmdbId.hashCode());
-            idType = ID_TYPE_TMDB;
+            idType = TYPE_TMDB;
         } else {
             idType = NOT_SET;
         }
@@ -147,6 +146,8 @@ public class PhilmMovie {
         if (images != null) {
             fanartUrl = images.fanart;
             posterUrl = images.poster;
+            fanartType = TYPE_TRAKT;
+            posterType = TYPE_TRAKT;
         }
 
         if (movie.genres != null) {
@@ -170,10 +171,10 @@ public class PhilmMovie {
 
         if (!TextUtils.isEmpty(imdbId)) {
             _id = new Long(imdbId.hashCode());
-            idType = ID_TYPE_IMDB;
+            idType = TYPE_IMDB;
         } else if (!TextUtils.isEmpty(tmdbId)) {
             _id = new Long(tmdbId.hashCode());
-            idType = ID_TYPE_TMDB;
+            idType = TYPE_TMDB;
         } else {
             idType = NOT_SET;
         }
@@ -190,10 +191,13 @@ public class PhilmMovie {
         ratingPercent = unbox(ratingPercent, movie.vote_average);
         ratingVotes = unbox(ratingVotes, movie.vote_count);
 
-        Images images = movie.images;
-        if (images != null) {
-            fanartUrl = images.fanart;
-            posterUrl = images.poster;
+        if (!TextUtils.isEmpty(movie.backdrop_path)) {
+            fanartUrl = movie.backdrop_path;
+            fanartType = TYPE_TMDB;
+        }
+        if (!TextUtils.isEmpty(movie.poster_path)) {
+            posterUrl = movie.poster_path;
+            posterType = TYPE_TMDB;
         }
 
         if (movie.genres != null) {
@@ -337,6 +341,14 @@ public class PhilmMovie {
 
     public String getLocalizedCountryCode() {
         return localizedCountryCode;
+    }
+
+    public int getFanartType() {
+        return fanartType;
+    }
+
+    public int getPosterType() {
+        return posterType;
     }
 
     @Override

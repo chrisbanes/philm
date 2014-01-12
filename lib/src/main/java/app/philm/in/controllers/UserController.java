@@ -14,7 +14,7 @@ import app.philm.in.Display;
 import app.philm.in.accounts.PhilmAccountManager;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
-import app.philm.in.network.TraktNetworkCallRunnable;
+import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.UserState;
 import app.philm.in.util.BackgroundExecutor;
@@ -187,7 +187,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         };
     }
 
-    private class FetchUserProfileRunnable extends TraktNetworkCallRunnable<UserProfile> {
+    private class FetchUserProfileRunnable extends NetworkCallRunnable<UserProfile> {
         private final String mUsername;
 
         FetchUserProfileRunnable(String username) {
@@ -212,7 +212,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         }
     }
 
-    private class CheckUserCredentialsRunnable extends TraktNetworkCallRunnable<String> {
+    private class CheckUserCredentialsRunnable extends NetworkCallRunnable<String> {
         private final String mUsername, mPassword;
 
         CheckUserCredentialsRunnable(String username, String password) {

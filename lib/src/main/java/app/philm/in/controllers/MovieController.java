@@ -13,6 +13,7 @@ import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
 import com.squareup.otto.Subscribe;
 import com.uwetrottmann.tmdb.Tmdb;
+import com.uwetrottmann.tmdb.entities.Configuration;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.ReleasesResult;
 import com.uwetrottmann.tmdb.entities.ResultsPage;
@@ -32,13 +33,14 @@ import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.SearchResult;
+import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.network.NetworkError;
-import app.philm.in.network.TraktNetworkCallRunnable;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.CountryProvider;
+import app.philm.in.util.ImageHelper;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
@@ -61,12 +63,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final AsyncDatabaseHelper mDbHelper;
     private final Logger mLogger;
     private final CountryProvider mCountryProvider;
-
-    private boolean mPopulatedLibraryFromDb = false;
-    private boolean mPopulatedWatchlistFromDb = false;
-
+    private final ImageHelper mImageHelper;
     private final TraktMovieEntityMapper mTraktMovieEntityMapper;
     private final TmdbMovieEntityMapper mTmdbMovieEntityMapper;
+    private boolean mPopulatedLibraryFromDb = false;
+    private boolean mPopulatedWatchlistFromDb = false;
 
     public MovieController(
             MoviesState movieState,
@@ -75,7 +76,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             BackgroundExecutor executor,
             AsyncDatabaseHelper dbHelper,
             Logger logger,
-            CountryProvider countryProvider) {
+            CountryProvider countryProvider,
+            ImageHelper imageHelper) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
@@ -85,9 +87,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
         mCountryProvider = Preconditions.checkNotNull(countryProvider,
                 "countryProvider cannot be null");
+        mImageHelper = Preconditions.checkNotNull(imageHelper, "imageHelper cannot be null");
 
         mTraktMovieEntityMapper = new TraktMovieEntityMapper();
         mTmdbMovieEntityMapper = new TmdbMovieEntityMapper();
+    }
+
+    private static int[] convertTmdbImageSizes(List<String> stringSizes) {
+        int[] intSizes = new int[stringSizes.size() - 1];
+        for (int i = 0; i < intSizes.length; i++) {
+            String size = stringSizes.get(i);
+            if (size.charAt(0) == 'w') {
+                intSizes[i] = Integer.parseInt(size.substring(1));
+            }
+        }
+        return intSizes;
     }
 
     @Subscribe
@@ -119,11 +133,27 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         populateUis();
     }
 
+    @Subscribe
+    public void onTmdbConfigurationChanged(MoviesState.TmdbConfigurationChangedEvent event) {
+        Configuration configuration = mMoviesState.getTmdbConfiguration();
+        if (configuration != null) {
+            mImageHelper.setTmdbBaseUrl(configuration.images.base_url);
+            mImageHelper.setTmdbFanartSizes(
+                    convertTmdbImageSizes(configuration.images.backdrop_sizes));
+            mImageHelper.setTmdbPosterSizes(
+                    convertTmdbImageSizes(configuration.images.poster_sizes));
+        }
+    }
+
     @Override
     protected void onInited() {
         super.onInited();
         populateStateFromDb();
         mMoviesState.registerForEvents(this);
+
+        if (mMoviesState.getTmdbConfiguration() == null) {
+            fetchTmdbConfiguration();
+        }
     }
 
     @Override
@@ -308,10 +338,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void fetchMovieReleases(PhilmMovie movie) {
-        mExecutor.execute(new FetchTmdbReleasesRunnable(movie));
-    }
-
     private void checkPhilmState(PhilmMovie movie) {
         final List<PhilmMovie> library = mMoviesState.getLibrary();
         final List<PhilmMovie> watchlist = mMoviesState.getWatchlist();
@@ -434,6 +460,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchMovieReleases(PhilmMovie movie) {
+        mExecutor.execute(new FetchTmdbReleasesRunnable(movie));
+    }
+
     private void fetchRelatedMovies(String traktId) {
         mExecutor.execute(new FetchRelatedMoviesRunnable(traktId));
     }
@@ -444,6 +474,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         mMoviesState.setSearchResult(result);
         mExecutor.execute(new SearchMoviesRunnable(result));
+    }
+
+    private void fetchTmdbConfiguration() {
+        mExecutor.execute(new FetchTmdbConfigurationRunnable());
     }
 
     private void fetchTrending() {
@@ -754,6 +788,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
+
         void showError(NetworkError error);
 
         void showLoadingProgress(boolean visible);
@@ -764,6 +799,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieListUi extends MovieUi {
+
         void setItems(List<ListItem<PhilmMovie>> items);
 
         void setFiltersVisibility(boolean visible);
@@ -772,10 +808,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface SearchMovieUi extends MovieListUi {
+
         void setQuery(String query);
     }
 
     public interface MovieDetailUi extends MovieUi {
+
         void setMovie(PhilmMovie movie);
 
         void showRelatedMoviesLoadingProgress(boolean visible);
@@ -790,11 +828,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieRateUi extends MovieUi {
+
         void setMarkMovieWatchedCheckboxVisible(boolean visible);
+
         void setMovie(PhilmMovie movie);
     }
 
     public interface MovieUiCallbacks {
+
         void onTitleChanged(String newTitle);
 
         void addFilter(Filter filter);
@@ -822,7 +863,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void submitRating(PhilmMovie movie, Rating rating);
     }
 
-    private abstract class BaseMovieTraktRunnable<R> extends TraktNetworkCallRunnable<R> {
+    private abstract class BaseMovieTraktRunnable<R> extends NetworkCallRunnable<R> {
+
         @Override
         public void onPreTraktCall() {
             showLoadingProgress(true);
@@ -841,7 +883,44 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private abstract class BaseMovieTmdbRunnable<R> extends NetworkCallRunnable<R> {
+        @Override
+        public void onPreTraktCall() {
+            showLoadingProgress(true);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            for (MovieUi ui : getUis()) {
+                ui.showError(NetworkError.from(re));
+            }
+        }
+
+        @Override
+        public void onFinished() {
+            showLoadingProgress(false);
+        }
+    }
+
+    private class FetchTmdbConfigurationRunnable extends NetworkCallRunnable<Configuration> {
+        @Override
+        public Configuration doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.configurationService().configuration();
+        }
+
+        @Override
+        public void onSuccess(Configuration result) {
+            mMoviesState.setTmdbConfiguration(result);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            // Ignore
+        }
+    }
+
     private class FetchTrendingRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
             return mTraktClient.moviesService().trending();
@@ -865,6 +944,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchLibraryRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+
         private final String mUsername;
 
         FetchLibraryRunnable(String username) {
@@ -892,6 +972,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchWatchlistRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+
         private final String mUsername;
 
         FetchWatchlistRunnable(String username) {
@@ -918,7 +999,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class SearchMoviesRunnable extends BaseMovieTraktRunnable<ResultsPage> {
+    private class SearchMoviesRunnable extends BaseMovieTmdbRunnable<ResultsPage> {
         private final SearchResult mSearchResult;
 
         SearchMoviesRunnable(SearchResult searchResult) {
@@ -940,6 +1021,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private abstract class BaseMovieActionTraktRunnable extends BaseMovieTraktRunnable<Response> {
+
         private final String mImdbId;
 
         BaseMovieActionTraktRunnable(String imdbId) {
@@ -980,6 +1062,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchDetailMovieRunnable extends BaseMovieTraktRunnable<Movie> {
+
         private final String mImdbId;
 
         FetchDetailMovieRunnable(String imdbId) {
@@ -1005,6 +1088,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchRelatedMoviesRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+
         private final String mImdbId;
 
         FetchRelatedMoviesRunnable(String imdbId) {
@@ -1043,6 +1127,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class MarkMovieSeenRunnable extends BaseMovieActionTraktRunnable {
+
         MarkMovieSeenRunnable(String imdbId) {
             super(imdbId);
         }
@@ -1059,6 +1144,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class MarkMovieUnseenRunnable extends BaseMovieActionTraktRunnable {
+
         MarkMovieUnseenRunnable(String imdbId) {
             super(imdbId);
         }
@@ -1075,6 +1161,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class SubmitMovieRatingRunnable extends BaseMovieTraktRunnable<RatingResponse> {
+
         private final String mImdbId;
 
         private final Rating mRating;
@@ -1107,6 +1194,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class AddMovieToWatchlistRunnable extends BaseMovieActionTraktRunnable {
+
         AddMovieToWatchlistRunnable(String imdbId) {
             super(imdbId);
         }
@@ -1123,6 +1211,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class RemoveMovieFromWatchlistRunnable extends BaseMovieActionTraktRunnable {
+
         RemoveMovieFromWatchlistRunnable(String imdbId) {
             super(imdbId);
         }
@@ -1139,6 +1228,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class AddMovieToCollectionRunnable extends BaseMovieActionTraktRunnable {
+
         AddMovieToCollectionRunnable(String imdbId) {
             super(imdbId);
         }
@@ -1155,6 +1245,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class RemoveMovieFromCollectionRunnable extends BaseMovieActionTraktRunnable {
+
         RemoveMovieFromCollectionRunnable(String imdbId) {
             super(imdbId);
         }
@@ -1171,6 +1262,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class LibraryDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
+
         @Override
         public void onFinished(List<PhilmMovie> result) {
             mMoviesState.setLibrary(result);
@@ -1187,7 +1279,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class WatchlistDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
+    private class WatchlistDbLoadCallback
+            implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
+
         @Override
         public void onFinished(List<PhilmMovie> result) {
             mMoviesState.setWatchlist(result);
@@ -1205,6 +1299,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchTmdbReleasesRunnable extends BaseMovieTraktRunnable<ReleasesResult> {
+
         private final PhilmMovie mMovie;
 
         FetchTmdbReleasesRunnable(PhilmMovie movie) {
@@ -1273,7 +1368,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 movie.setFromMovie(entity);
             } else {
                 // No movie, so create one
-                movie = new PhilmMovie(entity);
+                movie = new PhilmMovie();
+                movie.setFromMovie(entity);
                 stateMovies.put(movie.getTraktId(), movie);
             }
 
@@ -1286,22 +1382,20 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         PhilmMovie map(com.uwetrottmann.tmdb.entities.Movie entity) {
-//            final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
-//
-//            PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(entity));
-//            if (movie != null) {
-//                // We already have a movie, so just update it wrapped value
-//                movie.setFromMovie(entity);
-//            } else {
-//                // No movie, so create one
-//                movie = new PhilmMovie(entity);
-//                stateMovies.put(movie.getTraktId(), movie);
-//            }
-//
-//            return movie;
+            final Map<String, PhilmMovie> stateMovies = mMoviesState.getMovies();
 
-            // TODO
-            return null;
+            PhilmMovie movie = stateMovies.get(PhilmMovie.getTraktId(entity));
+            if (movie != null) {
+                // We already have a movie, so just update it wrapped value
+                movie.setFromMovie(entity);
+            } else {
+                // No movie, so create one
+                movie = new PhilmMovie();
+                movie.setFromMovie(entity);
+                stateMovies.put(movie.getTraktId(), movie);
+            }
+
+            return movie;
         }
     }
 

@@ -1,5 +1,7 @@
 package app.philm.in.state;
 
+import com.uwetrottmann.tmdb.entities.Configuration;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +32,10 @@ public interface MoviesState extends BaseState {
 
     public Set<MovieController.Filter> getFilters();
 
+    public Configuration getTmdbConfiguration();
+
+    public void setTmdbConfiguration(Configuration configuration);
+
     public static class LibraryChangedEvent {}
 
     public static class TrendingChangedEvent {}
@@ -37,5 +43,7 @@ public interface MoviesState extends BaseState {
     public static class WatchlistChangedEvent {}
 
     public static class SearchResultChangedEvent {}
+
+    public static class TmdbConfigurationChangedEvent {}
 
 }

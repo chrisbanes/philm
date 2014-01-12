@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:foreground="?android:attr/selectableItemBackground">
 
-    <ImageView
+    <app.philm.in.view.PhilmImageView
         android:id="@+id/imageview_poster"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

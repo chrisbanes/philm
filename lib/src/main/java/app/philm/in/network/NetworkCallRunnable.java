@@ -2,7 +2,7 @@ package app.philm.in.network;
 
 import retrofit.RetrofitError;
 
-public abstract class TraktNetworkCallRunnable<R> {
+public abstract class NetworkCallRunnable<R> {
 
     public void onPreTraktCall() {}
 

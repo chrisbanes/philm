@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 
 import app.philm.in.Constants;
 import app.philm.in.network.BackgroundCallRunnable;
-import app.philm.in.network.TraktNetworkCallRunnable;
+import app.philm.in.network.NetworkCallRunnable;
 import retrofit.RetrofitError;
 
 public class PhilmBackgroundExecutor implements BackgroundExecutor {
@@ -26,7 +26,7 @@ public class PhilmBackgroundExecutor implements BackgroundExecutor {
     }
 
     @Override
-    public <R> void execute(TraktNetworkCallRunnable<R> runnable) {
+    public <R> void execute(NetworkCallRunnable<R> runnable) {
         mExecutorService.execute(new TraktNetworkRunner<R>(runnable));
     }
 
@@ -74,9 +74,9 @@ public class PhilmBackgroundExecutor implements BackgroundExecutor {
 
     class TraktNetworkRunner<R> implements Runnable {
 
-        private final TraktNetworkCallRunnable<R> mBackgroundRunnable;
+        private final NetworkCallRunnable<R> mBackgroundRunnable;
 
-        TraktNetworkRunner(TraktNetworkCallRunnable<R> runnable) {
+        TraktNetworkRunner(NetworkCallRunnable<R> runnable) {
             mBackgroundRunnable = runnable;
         }
 

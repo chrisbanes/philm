@@ -9,7 +9,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -20,7 +20,7 @@ import app.philm.in.Container;
 import app.philm.in.R;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.trakt.TraktImageHelper;
+import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.StringManager;
 
 public class MovieSectionedListAdapter extends BaseAdapter implements
@@ -29,14 +29,12 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
     private static final String LOG_TAG = MovieSectionedListAdapter.class.getSimpleName();
 
     private final Activity mActivity;
-    private final TraktImageHelper mTraktImageHelper;
     private final Date mDate;
 
     private List<ListItem<PhilmMovie>> mItems;
 
     public MovieSectionedListAdapter(Activity activity) {
         mActivity = activity;
-        mTraktImageHelper = new TraktImageHelper(activity.getResources());
         mDate = new Date();
     }
 
@@ -92,11 +90,9 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                 release.setText(mActivity.getString(R.string.movie_release_date,
                         dateFormat.format(mDate)));
 
-                final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
-                Picasso.with(mActivity)
-                        .load(mTraktImageHelper.getPosterUrl(item.getItem()))
-                        .into(imageView);
-
+                final PhilmImageView imageView =
+                        (PhilmImageView) view.findViewById(R.id.imageview_poster);
+                imageView.loadPosterUrl(movie);
                 break;
             }
             case ListItem.TYPE_SECTION:

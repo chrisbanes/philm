@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         internal:contentOverlay="@dimen/movie_detail_content_overlay">
 
-    <ImageView
+    <app.philm.in.view.PhilmImageView
             android:id="@+id/imageview_fanart"
             android:layout_width="match_parent"
             android:layout_height="@dimen/movie_detail_fanart_height"
@@ -28,7 +28,7 @@
                 android:paddingBottom="@dimen/spacing_minor"
                 android:paddingRight="@dimen/spacing_minor">
 
-            <ImageView
+            <app.philm.in.view.PhilmImageView
                     android:id="@+id/imageview_poster"
                     android:layout_width="@dimen/movie_detail_poster_width"
                     android:layout_height="@dimen/movie_detail_poster_height"
@@ -112,7 +112,7 @@
                         android:text="@string/details"
                         style="@style/Widget.Philm.Movie.Detail.SectionHeader"/>
 
-                <app.philm.in.view.PhilmImageView
+                <app.philm.in.view.PhilmFlagImageView
                         android:id="@+id/imageview_flag"
                         android:padding="@dimen/spacing_micro"
                         android:layout_height="match_parent"

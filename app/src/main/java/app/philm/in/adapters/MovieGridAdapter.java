@@ -3,13 +3,11 @@ package app.philm.in.adapters;
 import com.google.common.base.Objects;
 
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,19 +15,17 @@ import java.util.List;
 import app.philm.in.R;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.trakt.TraktImageHelper;
+import app.philm.in.view.PhilmImageView;
 
 public class MovieGridAdapter extends BaseAdapter {
 
     private static final String LOG_TAG = MovieGridAdapter.class.getSimpleName();
 
     private final Activity mActivity;
-    private final TraktImageHelper mTraktImageHelper;
     private List<ListItem<PhilmMovie>> mItems;
 
     public MovieGridAdapter(Activity activity) {
         mActivity = activity;
-        mTraktImageHelper = new TraktImageHelper(activity.getResources());
     }
 
     public void setItems(List<ListItem<PhilmMovie>> items) {
@@ -67,20 +63,18 @@ public class MovieGridAdapter extends BaseAdapter {
         title.setText(movie.getTitle());
         title.setVisibility(View.VISIBLE);
 
-        final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
-        Picasso.with(mActivity)
-                .load(mTraktImageHelper.getPosterUrl(movie))
-                .into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        title.setVisibility(View.GONE);
-                    }
+        final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
+        imageView.loadPosterUrl(movie, new Callback() {
+            @Override
+            public void onSuccess() {
+                title.setVisibility(View.GONE);
+            }
 
-                    @Override
-                    public void onError() {
-                        title.setVisibility(View.VISIBLE);
-                    }
-                });
+            @Override
+            public void onError() {
+                title.setVisibility(View.VISIBLE);
+            }
+        });
 
         return view;
     }

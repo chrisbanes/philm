@@ -28,13 +28,14 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.PhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.trakt.TraktImageHelper;
+
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.ViewUtils;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailInfoLayout;
+import app.philm.in.view.PhilmFlagImageView;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
@@ -51,13 +52,12 @@ public class MovieDetailFragment extends PhilmMovieFragment
     private PhilmMovie mMovie;
 
     private FlagUrlProvider mFlagUrlProvider;
-    private TraktImageHelper mTraktImageHelper;
 
     private TextView mTitleTextView;
     private TextView mSummaryTextView;
-    private ImageView mFanartImageView;
-    private ImageView mPosterImageView;
-    private PhilmImageView mFlagImageView;
+    private PhilmImageView mFanartImageView;
+    private PhilmImageView mPosterImageView;
+    private PhilmFlagImageView mFlagImageView;
 
     private RatingBarLayout mRatingBarLayout;
 
@@ -88,7 +88,6 @@ public class MovieDetailFragment extends PhilmMovieFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFlagUrlProvider = Container.getInstance(getActivity()).getFlagUrlProvider();
-        mTraktImageHelper = Container.getInstance(getActivity()).getTraktImageHelper();
         setHasOptionsMenu(true);
     }
 
@@ -101,8 +100,8 @@ public class MovieDetailFragment extends PhilmMovieFragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mFanartImageView = (ImageView) view.findViewById(R.id.imageview_fanart);
-        mPosterImageView = (ImageView) view.findViewById(R.id.imageview_poster);
+        mFanartImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
+        mPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
         mRatingBarLayout = (RatingBarLayout) view.findViewById(R.id.rating_bar_layout);
 
@@ -131,7 +130,7 @@ public class MovieDetailFragment extends PhilmMovieFragment
         mGenresInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_genres);
         mReleasedInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_released);
 
-        mFlagImageView = (PhilmImageView) view.findViewById(R.id.imageview_flag);
+        mFlagImageView = (PhilmFlagImageView) view.findViewById(R.id.imageview_flag);
     }
 
     @Override
@@ -217,15 +216,11 @@ public class MovieDetailFragment extends PhilmMovieFragment
         final Container container = Container.getInstance(getActivity());
 
         if (mFanartImageView.getDrawable() == null) {
-            Picasso.with(getActivity())
-                    .load(mTraktImageHelper.getFanartUrl(mMovie))
-                    .into(mFanartImageView);
+            mFanartImageView.loadBackdropUrl(mMovie);
         }
 
         if (mPosterImageView.getDrawable() == null) {
-            Picasso.with(getActivity())
-                    .load(mTraktImageHelper.getPosterUrl(mMovie, TraktImageHelper.TYPE_SMALL))
-                    .into(mPosterImageView);
+            mPosterImageView.loadPosterUrl(mMovie);
         }
 
         if (ViewUtils.isEmpty(mTitleTextView)) {
@@ -305,20 +300,19 @@ public class MovieDetailFragment extends PhilmMovieFragment
                 final TextView title = (TextView) view.findViewById(R.id.textview_title);
                 title.setText(movie.getTitle());
 
-                final ImageView imageView = (ImageView) view.findViewById(R.id.imageview_poster);
-                Picasso.with(getActivity())
-                        .load(mTraktImageHelper.getPosterUrl(movie, TraktImageHelper.TYPE_SMALL))
-                        .into(imageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                title.setVisibility(View.GONE);
-                            }
+                final PhilmImageView imageView =
+                        (PhilmImageView) view.findViewById(R.id.imageview_poster);
+                imageView.loadPosterUrl(movie, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        title.setVisibility(View.GONE);
+                    }
 
-                            @Override
-                            public void onError() {
-                                title.setVisibility(View.VISIBLE);
-                            }
-                        });
+                    @Override
+                    public void onError() {
+                        title.setVisibility(View.VISIBLE);
+                    }
+                });
 
                 view.setOnClickListener(clickListener);
                 view.setTag(movie);

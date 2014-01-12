@@ -18,12 +18,12 @@ import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.AsyncDatabaseHelperImpl;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
-import app.philm.in.trakt.TraktImageHelper;
 import app.philm.in.util.AndroidCountryProvider;
 import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.CountryProvider;
 import app.philm.in.util.FlagUrlProvider;
+import app.philm.in.util.ImageHelper;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmBackgroundExecutor;
 import app.philm.in.util.TypefaceManager;
@@ -55,7 +55,7 @@ public class Container {
     private PhilmAccountManager mAccountManager;
     private CountryProvider mCountryProvider;
     private FlagUrlProvider mFlagUrlProvider;
-    private TraktImageHelper mTraktImageHelper;
+    private ImageHelper mImageHelper;
 
     private DateFormat mMediumDateFormat;
 
@@ -162,10 +162,10 @@ public class Container {
         return mFlagUrlProvider;
     }
 
-    public TraktImageHelper getTraktImageHelper() {
-        if (mTraktImageHelper == null) {
-            mTraktImageHelper = new TraktImageHelper(mContext.getResources());
+    public ImageHelper getImageHelper() {
+        if (mImageHelper == null) {
+            mImageHelper = new ImageHelper();
         }
-        return mTraktImageHelper;
+        return mImageHelper;
     }
 }

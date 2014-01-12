@@ -1,6 +1,7 @@
 package app.philm.in.fragments.base;
 
-import android.app.Fragment;
+
+import android.support.v4.app.Fragment;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;

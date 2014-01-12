@@ -3,7 +3,6 @@ package app.philm.in.fragments;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -35,7 +33,6 @@ import app.philm.in.util.ViewUtils;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailInfoLayout;
-import app.philm.in.view.PhilmFlagImageView;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;

@@ -6,12 +6,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
 
 import app.philm.in.controllers.MainController;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public abstract class BasePhilmActivity extends Activity implements MainController.HostCallbacks {
+public abstract class BasePhilmActivity extends FragmentActivity
+        implements MainController.HostCallbacks {
 
     private MainController mMainController;
     private Intent mLaunchIntent;

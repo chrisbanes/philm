@@ -1,51 +1,39 @@
 package app.philm.in;
 
-import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
-import android.content.Intent;
 import android.os.Bundle;
 
-import app.philm.in.controllers.MainController;
+public class AccountActivity extends BasePhilmActivity {
 
-public class AccountActivity extends AccountAuthenticatorActivity
-        implements MainController.HostCallbacks {
+    private AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
+    private Bundle mResultBundle = null;
 
-    private MainController mMainController;
-    private Intent mLaunchIntent;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_account);
-        mMainController = PhilmApplication.from(this).getMainController();
-        mLaunchIntent = getIntent();
+    /**
+     * Set the result that is to be sent as the result of the request that caused this
+     * Activity to be launched. If result is null or this method is never called then
+     * the request will be canceled.
+     * @param result this is returned as the result of the AbstractAccountAuthenticator request
+     */
+    public final void setAccountAuthenticatorResult(Bundle result) {
+        mResultBundle = result;
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        mLaunchIntent = intent;
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        mMainController.setDisplay(new AndroidDisplay(this));
-        mMainController.setHostCallbacks(this);
-        mMainController.init();
-
-        if (mLaunchIntent != null) {
-            mMainController.handleIntent(mLaunchIntent.getAction());
-            mLaunchIntent = null;
+    /**
+     * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
+     */
+    public void finish() {
+        if (mAccountAuthenticatorResponse != null) {
+            // send the result bundle back if set, otherwise send an error.
+            if (mResultBundle != null) {
+                mAccountAuthenticatorResponse.onResult(mResultBundle);
+            } else {
+                mAccountAuthenticatorResponse.onError(
+                        AccountManager.ERROR_CODE_CANCELED, "canceled");
+            }
+            mAccountAuthenticatorResponse = null;
         }
-    }
-
-    @Override
-    protected void onPause() {
-        mMainController.suspend();
-        mMainController.setHostCallbacks(null);
-        mMainController.setDisplay(null);
-        super.onPause();
+        super.finish();
     }
 
     @Override
@@ -58,4 +46,19 @@ public class AccountActivity extends AccountAuthenticatorActivity
         setAccountAuthenticatorResult(callbackResult);
     }
 
+    /**
+     * Retreives the AccountAuthenticatorResponse from either the intent of the icicle, if the
+     * icicle is non-zero.
+     * @param icicle the save instance data of this Activity, may be null
+     */
+    protected void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+
+        mAccountAuthenticatorResponse =
+                getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+
+        if (mAccountAuthenticatorResponse != null) {
+            mAccountAuthenticatorResponse.onRequestContinued();
+        }
+    }
 }

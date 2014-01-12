@@ -3,12 +3,12 @@ package app.philm.in;
 import com.google.common.base.Preconditions;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.controllers.MovieController;
@@ -23,14 +23,10 @@ import app.philm.in.fragments.SearchListFragment;
 
 public class AndroidDisplay implements Display {
 
-    private final Activity mActivity;
+    private final FragmentActivity mActivity;
     private final ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    public AndroidDisplay(Activity activity) {
-        this(activity, null);
-    }
-
-    public AndroidDisplay(Activity activity, ActionBarDrawerToggle actionBarDrawerToggle) {
+    public AndroidDisplay(FragmentActivity activity, ActionBarDrawerToggle actionBarDrawerToggle) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mActionBarDrawerToggle = actionBarDrawerToggle;
     }
@@ -71,7 +67,7 @@ public class AndroidDisplay implements Display {
     public void showLogin() {
         LoginFragment fragment = LoginFragment.create();
 
-        mActivity.getFragmentManager().beginTransaction()
+        mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
     }
@@ -80,7 +76,7 @@ public class AndroidDisplay implements Display {
     public void showMovieDetailFragment(String movieId) {
         MovieDetailFragment fragment = MovieDetailFragment.create(movieId);
 
-        mActivity.getFragmentManager().beginTransaction()
+        mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -91,7 +87,7 @@ public class AndroidDisplay implements Display {
     public void showSearchFragment() {
         SearchListFragment fragment = new SearchListFragment();
 
-        mActivity.getFragmentManager().beginTransaction()
+        mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
     }
@@ -99,7 +95,7 @@ public class AndroidDisplay implements Display {
     @Override
     public void showAboutFragment() {
         AboutFragment fragment = new AboutFragment();
-        mActivity.getFragmentManager().beginTransaction()
+        mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
     }
@@ -108,7 +104,7 @@ public class AndroidDisplay implements Display {
     public void showLicencesFragment() {
         LicencesFragment fragment = new LicencesFragment();
 
-        mActivity.getFragmentManager().beginTransaction()
+        mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -118,7 +114,7 @@ public class AndroidDisplay implements Display {
     @Override
     public void showRateMovieFragment(String movieId) {
         RateMovieFragment fragment = RateMovieFragment.create(movieId);
-        fragment.show(mActivity.getFragmentManager(), FRAGMENT_TAG_RATE_MOVIE);
+        fragment.show(mActivity.getSupportFragmentManager(), FRAGMENT_TAG_RATE_MOVIE);
     }
 
     @Override
@@ -167,14 +163,14 @@ public class AndroidDisplay implements Display {
     private void showFragmentFromDrawer(Fragment fragment) {
         popEntireFragmentBackStack();
 
-        mActivity.getFragmentManager().beginTransaction()
+        mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
                 .commit();
     }
 
     @Override
     public boolean popEntireFragmentBackStack() {
-        final FragmentManager fm = mActivity.getFragmentManager();
+        final FragmentManager fm = mActivity.getSupportFragmentManager();
         final int backStackCount = fm.getBackStackEntryCount();
         // Clear Back Stack
         for (int i = 0; i < backStackCount; i++) {

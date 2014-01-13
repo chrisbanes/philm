@@ -5,27 +5,31 @@
 
     <app.philm.in.view.FontTextView
             android:id="@android:id/text1"
-            android:layout_width="0px"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="1dp"
             android:layout_marginRight="@dimen/spacing_micro"
             android:gravity="left|center_vertical"
             internal:font="roboto_condensed_bold"/>
 
+    <View android:layout_weight="1"
+          android:layout_height="wrap_content"
+          android:layout_width="0px" />
+
     <ViewStub
             android:id="@+id/stub_flag"
             android:inflatedId="@+id/imageview_flag"
             android:layout="@layout/include_imageview_flag"
-            android:layout_height="12dp"
-            android:layout_width="18dp"
+            android:layout_height="@dimen/movie_detail_flag_height"
+            android:layout_width="@dimen/movie_detail_flag_width"
+            android:layout_marginLeft="@dimen/spacing_minor"
             android:layout_gravity="center_vertical"/>
 
     <app.philm.in.view.FontTextView
             android:id="@android:id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_minor"
+            android:layout_marginLeft="@dimen/spacing_micro"
             android:padding="1dp"
             android:gravity="right|center_vertical"
             internal:font="roboto_condensed"/>

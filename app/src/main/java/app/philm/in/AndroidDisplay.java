@@ -74,11 +74,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showSearchFragment() {
-        SearchListFragment fragment = new SearchListFragment();
-
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .commit();
+        showFragmentFromDrawer(new SearchListFragment());
     }
 
     @Override
@@ -149,14 +145,6 @@ public class AndroidDisplay implements Display {
         }
     }
 
-    private void showFragmentFromDrawer(Fragment fragment) {
-        popEntireFragmentBackStack();
-
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .commit();
-    }
-
     @Override
     public boolean popEntireFragmentBackStack() {
         final FragmentManager fm = mActivity.getSupportFragmentManager();
@@ -171,6 +159,14 @@ public class AndroidDisplay implements Display {
     @Override
     public void finishActivity() {
         mActivity.finish();
+    }
+
+    private void showFragmentFromDrawer(Fragment fragment) {
+        popEntireFragmentBackStack();
+
+        mActivity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .commit();
     }
 
 }

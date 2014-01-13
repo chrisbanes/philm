@@ -52,7 +52,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         cupboard().withDatabase(db).upgradeTables();
 
         if (oldVersion <= 10) {
-            deleteAllPhilmMovies();
+            deleteAllPhilmMovies(db);
         }
     }
 
@@ -200,12 +200,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
 
     @Override
     public void deleteAllPhilmMovies() {
-        assetNotClosed();
-        try {
-            cupboard().withDatabase(getWritableDatabase()).delete(PhilmMovie.class, null);
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-        }
+        deleteAllPhilmMovies(getWritableDatabase());
     }
 
     @Override
@@ -217,6 +212,15 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
     @Override
     public boolean isClosed() {
         return mIsClosed;
+    }
+
+    public void deleteAllPhilmMovies(SQLiteDatabase db) {
+        assetNotClosed();
+        try {
+            cupboard().withDatabase(db).delete(PhilmMovie.class, null);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
     }
 
     private void assetNotClosed() {

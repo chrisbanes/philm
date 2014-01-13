@@ -108,7 +108,9 @@ public class PhilmMovie {
         }
 
         title = movie.title;
-        sortTitle = getSortTitle(title);
+        if (!TextUtils.isEmpty(title)) {
+            sortTitle = getSortTitle(title);
+        }
 
         if (!TextUtils.isEmpty(movie.overview)) {
             overview = movie.overview;
@@ -175,7 +177,9 @@ public class PhilmMovie {
         }
 
         title = movie.title;
-        sortTitle = getSortTitle(title);
+        if (!TextUtils.isEmpty(title)) {
+            sortTitle = getSortTitle(title);
+        }
 
         if (!TextUtils.isEmpty(movie.overview)) {
             overview = movie.overview;

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Philm</string>
+    <string name="title_film_detail">Film Detail</string>
+
+    <string name="discover_title">Discover (testing)</string>
+    <string name="popular_title">Popular</string>
+    <string name="trending_title">Trending</string>
+    <string name="library_title">Library</string>
+    <string name="watchlist_title">Watchlist</string>
+    <string name="search_title">Search</string>
+    <string name="about_title">About</string>
+    <string name="in_theatres_title">In theatres</string>
+
+    <string name="details">Details</string>
+
+    <string name="movie_details_released">Released</string>
+    <string name="movie_details_runtime">Runtime</string>
+    <string name="movie_details_runtime_content">%1$d mins</string>
+    <string name="movie_details_certification">Certification</string>
+    <string name="movie_details_genres">Genres</string>
+
+    <string name="related_movies">Related</string>
+
+    <string name="button_add_account">Add Account</string>
+
+    <string name="login_prompt">Login to trakt.tv</string>
+
+    <string name="drawer_open_content_desc">Drawer open</string>
+    <string name="drawer_closed_content_desc">Drawer closed</string>
+
+    <string name="account_username_hint">Username</string>
+    <string name="account_password_hint">Password</string>
+    <string name="account_login">Login</string>
+
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_about">About</string>
+
+    <string name="menu_filter">Filter</string>
+    <string name="menu_filter_clear">Clear</string>
+
+    <string name="empty_missing_account">%1$s could not be retrieved as you are not logged in.</string>
+    <string name="empty_network_error">%1$s could not be retrieved due to an network error. Check your internet connection and try again.</string>
+    <string name="empty_unknown_error">%1$s could not be retrieved due to an unknown error.</string>
+
+    <string name="login_username_empty">Username is empty.</string>
+    <string name="login_password_empty">Password is empty.</string>
+
+    <string name="login_authorization_error">The username or password were incorrect. Please try again.</string>
+
+    <string name="error_unauthorized">Unauthorized</string>
+    <string name="error_network">Network error</string>
+    <string name="error_unknown">Unknown error :(</string>
+
+    <string name="movie_title_year">%1$s (%2$d)</string>
+    <string name="movie_rating_votes">%1$d%% - %2$d votes</string>
+    <string name="movie_release_date">Release date: %1$s</string>
+
+    <string name="filter_collection">In collection</string>
+    <string name="filter_seen">Seen</string>
+    <string name="filter_unseen">Unseen</string>
+    <string name="filter_upcoming">Upcoming</string>
+    <string name="filter_soon">Soon</string>
+    <string name="filter_released">Released</string>
+    <string name="filter_highly_rated">Highly Rated</string>
+
+    <string name="action_add_watchlist">Add to watchlist</string>
+    <string name="action_remove_watchlist">Remove from watchlist</string>
+    <string name="action_add_collection">Add to collection</string>
+    <string name="action_remove_collection">Remove from collection</string>
+    <string name="action_mark_seen">Mark as seen</string>
+    <string name="action_mark_unseen">Mark as unseen</string>
+
+    <string name="search_hint_movies">Search movies</string>
+
+    <string name="search_empty">Search for movies by entering text above</string>
+
+    <string name="movie_detail_votes">Votes</string>
+    <string name="movie_detail_global">Global</string>
+    <string name="movie_detail_rate">Rate</string>
+
+    <string-array name="movie_rating_descriptions">
+        <item>Unrated</item>
+        <item>Weak sauce</item>
+        <item>Terrible</item>
+        <item>Bad</item>
+        <item>Poor</item>
+        <item>Meh</item>
+        <item>Fair</item>
+        <item>Good</item>
+        <item>Great</item>
+        <item>Superb</item>
+        <item>Totally Ninja</item>
+    </string-array>
+
+    <string name="about_build_version_title">Build Version</string>
+    <string name="about_build_time_title">Build Time</string>
+    <string name="about_open_source_title">Open-source licences</string>
+    <string name="about_open_source_content">Licence details for used open-source software</string>
+    <string name="about_powered_tmdb_title">Powered by TMDb</string>
+    <string name="about_powered_tmdb_content">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+    <string name="about_powered_trakt_title">Powered by trakt.tv</string>
+    <string name="about_powered_trakt_content">This product uses the trakt.tv API but is not endorsed or certified by trakt.tv.</string>
+
+    <string name="movie_rate_mark_watched">Mark Watched</string>
+
+</resources>

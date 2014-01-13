@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Philm</string>
+    <string name="title_film_detail">Détails du film</string>
+
+    <string name="discover_title">Discover (testing)</string>
+    <string name="popular_title">Popular</string>
+    <string name="trending_title">Tendances</string>
+    <string name="library_title">Bibliothèque</string>
+    <string name="watchlist_title">À voir</string>
+    <string name="search_title">Recherche</string>
+    <string name="about_title">À propos</string>
+    <string name="in_theatres_title">In theatres</string>
+
+    <string name="details">Details</string>
+
+    <string name="movie_details_released">Released</string>
+    <string name="movie_details_runtime">Runtime</string>
+    <string name="movie_details_runtime_content">%1$d mins</string>
+    <string name="movie_details_certification">Certification</string>
+    <string name="movie_details_genres">Genres</string>
+
+    <string name="related_movies">Sur le même thème</string>
+
+    <string name="button_add_account">Ajouter un compte</string>
+
+    <string name="login_prompt">Se connecter à trackt.tv</string>
+
+    <string name="drawer_open_content_desc">Drawer open</string>
+    <string name="drawer_closed_content_desc">Drawer closed</string>
+
+    <string name="account_username_hint">Nom d\'utilisateur</string>
+    <string name="account_password_hint">Mot de passe</string>
+    <string name="account_login">Login</string>
+
+    <string name="menu_refresh">Actualiser</string>
+    <string name="menu_search">Recherche</string>
+    <string name="menu_about">À propos</string>
+
+    <string name="menu_filter">Filtrer</string>
+    <string name="menu_filter_clear">Déselectionner</string>
+
+    <string name="empty_missing_account">%1$s n\'a pas pu être récupéré car vous n\'êtes pas connecté.</string>
+    <string name="empty_network_error">%1$s n\'a pas pu être récupéré à cause d\'une erreur de connexion. Vérifiez votre connexion internet et recommencez.</string>
+    <string name="empty_unknown_error">%1$s n\'a pas pu être récupéré à cause d\'une erreur inconnue.</string>
+
+    <string name="login_username_empty">Le nom d\'utilisateur est vide.</string>
+    <string name="login_password_empty">Le mot de passe est vide.</string>
+
+    <string name="login_authorization_error">Le nom d\'utilisateur ou le mot de passe est incorrect. Veuillez réessayer.</string>
+
+    <string name="error_unauthorized">Non autorisé</string>
+    <string name="error_network">Erreur de réseau</string>
+    <string name="error_unknown">Erreur inconnue :(</string>
+
+    <string name="movie_title_year">%1$s (%2$d)</string>
+    <string name="movie_rating_votes">%1$d%% - %2$d votes</string>
+    <string name="movie_release_date">Date de sortie : %1$s</string>
+
+    <string name="filter_collection">Dans la collection</string>
+    <string name="filter_seen">Vus</string>
+    <string name="filter_unseen">Non vus</string>
+    <string name="filter_upcoming">À venir</string>
+    <string name="filter_soon">Bientôt</string>
+    <string name="filter_released">Sortis</string>
+    <string name="filter_highly_rated">Bien notés</string>
+
+    <string name="action_add_watchlist">Ajouter dans la liste à voir</string>
+    <string name="action_remove_watchlist">Supprimer de la liste à voir</string>
+    <string name="action_add_collection">Ajouter à la collection</string>
+    <string name="action_remove_collection">Supprimer de la collection</string>
+    <string name="action_mark_seen">Marquer comme vu</string>
+    <string name="action_mark_unseen">Marquer comme non vu</string>
+
+    <string name="search_hint_movies">Rechercher des films</string>
+
+    <string name="search_empty">Recherchez des films en saisissant du texte au dessus</string>
+
+    <string name="movie_detail_votes">Votes</string>
+    <string name="movie_detail_global">Global</string>
+    <string name="movie_detail_rate">Noter</string>
+
+    <string-array name="movie_rating_descriptions">
+        <item>Non noté</item>
+        <item>Nul</item>
+        <item>Terrible</item>
+        <item>Mauvais</item>
+        <item>Bof</item>
+        <item>Meh</item>
+        <item>Acceptable</item>
+        <item>Bien</item>
+        <item>Très bien</item>
+        <item>Superbe</item>
+        <item>Totalement Ninja</item>
+    </string-array>
+
+    <string name="about_build_version_title">Version de Build</string>
+    <string name="about_build_time_title">Moment du build</string>
+    <string name="about_open_source_title">Licences open-source</string>
+    <string name="about_open_source_content">Détails des licences pour les modules open-source utilisés</string>
+    <string name="about_powered_tmdb_title">Powered by TMDb</string>
+    <string name="about_powered_tmdb_content">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+    <string name="about_powered_trakt_title">Powered by trakt.tv</string>
+    <string name="about_powered_trakt_content">This product uses the trakt.tv API but is not endorsed or certified by trakt.tv.</string>
+
+    <string name="movie_rate_mark_watched">Marquer comme regardé</string>
+
+</resources>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Philm</string>
+    <string name="title_film_detail">Details</string>
+
+    <string name="discover_title">Discover (testing)</string>
+    <string name="popular_title">Popular</string>
+    <string name="trending_title">Angesagt</string>
+    <string name="library_title">Bibliothek</string>
+    <string name="watchlist_title">Beobachten</string>
+    <string name="search_title">Suche</string>
+    <string name="about_title">Über</string>
+    <string name="in_theatres_title">In theatres</string>
+
+    <string name="details">Details</string>
+
+    <string name="movie_details_released">Released</string>
+    <string name="movie_details_runtime">Runtime</string>
+    <string name="movie_details_runtime_content">%1$d mins</string>
+    <string name="movie_details_certification">Certification</string>
+    <string name="movie_details_genres">Genres</string>
+
+    <string name="related_movies">Ähnliche</string>
+
+    <string name="button_add_account">Konto hinzufügen</string>
+
+    <string name="login_prompt">Bei trakt.tv anmelden</string>
+
+    <string name="drawer_open_content_desc">Einschub geöffnet</string>
+    <string name="drawer_closed_content_desc">Einschub geschlossen</string>
+
+    <string name="account_username_hint">Benutzername</string>
+    <string name="account_password_hint">Kennwort</string>
+    <string name="account_login">Anmeldung</string>
+
+    <string name="menu_refresh">Aktualisieren</string>
+    <string name="menu_search">Suche</string>
+    <string name="menu_about">Über</string>
+
+    <string name="menu_filter">Filter</string>
+    <string name="menu_filter_clear">Löschen</string>
+
+    <string name="empty_missing_account">%1$s konnte nicht abgerufen werden, da Sie nicht angemeldet sind.</string>
+    <string name="empty_network_error">%1$s konnte wegen eines Netzwerkfehlers nicht abgerufen werden. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.</string>
+    <string name="empty_unknown_error">%1$s konnte auf Grund eines unbekannten Fehlers nicht empfangen werden.</string>
+
+    <string name="login_username_empty">Benutzername ist leer.</string>
+    <string name="login_password_empty">Kennwort ist leer.</string>
+
+    <string name="login_authorization_error">Benutzername und Kennwort sind nicht korrekt.. Bitte versuchen Sie es erneut.</string>
+
+    <string name="error_unauthorized">Keine Berechtigung</string>
+    <string name="error_network">Netzwerkfehler</string>
+    <string name="error_unknown">Unbekannter Fehler :(</string>
+
+    <string name="movie_title_year">%1$s (%2$d)</string>
+    <string name="movie_rating_votes">%1$d%% - %2$d Stimmen</string>
+    <string name="movie_release_date">Veröffentlicht: %1$s</string>
+
+    <string name="filter_collection">In der Sammlung</string>
+    <string name="filter_seen">Gesehen</string>
+    <string name="filter_unseen">Ungesehen</string>
+    <string name="filter_upcoming">Demnächst</string>
+    <string name="filter_soon">Bald</string>
+    <string name="filter_released">Veröffentlicht</string>
+    <string name="filter_highly_rated">Beste Bewertung</string>
+
+    <string name="action_add_watchlist">Beobachten</string>
+    <string name="action_remove_watchlist">Nicht mehr beobachten</string>
+    <string name="action_add_collection">Zur Sammlung hinzufügen</string>
+    <string name="action_remove_collection">Aus Sammlung entfernen</string>
+    <string name="action_mark_seen">Als gesehen markieren</string>
+    <string name="action_mark_unseen">Als ungesehen markieren</string>
+
+    <string name="search_hint_movies">Film suchen</string>
+
+    <string name="search_empty">Filme suchen</string>
+
+    <string name="movie_detail_votes">Bewertungen</string>
+    <string name="movie_detail_global">Global</string>
+    <string name="movie_detail_rate">Bewerten</string>
+
+    <string-array name="movie_rating_descriptions">
+        <item>Ohne Bewertung</item>
+        <item>Schwach</item>
+        <item>Furchtbar</item>
+        <item>Schlecht</item>
+        <item>Schwach</item>
+        <item>Egal</item>
+        <item>Fair</item>
+        <item>Gut</item>
+        <item>Großartig</item>
+        <item>Spitze</item>
+        <item>Absolut Spitze</item>
+    </string-array>
+
+    <string name="about_build_version_title">Version</string>
+    <string name="about_build_time_title">Versionsdatum</string>
+    <string name="about_open_source_title">Open Source Lizenzen</string>
+    <string name="about_open_source_content">Lizenzinformationen für Open Source Software</string>
+    <string name="about_powered_tmdb_title">Powered by TMDb</string>
+    <string name="about_powered_tmdb_content">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+    <string name="about_powered_trakt_title">Powered by trakt.tv</string>
+    <string name="about_powered_trakt_content">This product uses the trakt.tv API but is not endorsed or certified by trakt.tv.</string>
+
+    <string name="movie_rate_mark_watched">Als gesehen markieren</string>
+
+</resources>

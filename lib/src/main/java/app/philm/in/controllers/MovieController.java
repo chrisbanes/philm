@@ -150,14 +150,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onTmdbConfigurationChanged(MoviesState.TmdbConfigurationChangedEvent event) {
-        Configuration configuration = mMoviesState.getTmdbConfiguration();
-        if (configuration != null) {
-            mImageHelper.setTmdbBaseUrl(configuration.images.base_url);
-            mImageHelper.setTmdbFanartSizes(
-                    convertTmdbImageSizes(configuration.images.backdrop_sizes));
-            mImageHelper.setTmdbPosterSizes(
-                    convertTmdbImageSizes(configuration.images.poster_sizes));
-        }
         populateUis();
     }
 
@@ -1038,6 +1030,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void onSuccess(Configuration result) {
+            if (result != null) {
+                mImageHelper.setTmdbBaseUrl(result.images.base_url);
+                mImageHelper.setTmdbFanartSizes(
+                        convertTmdbImageSizes(result.images.backdrop_sizes));
+                mImageHelper.setTmdbPosterSizes(
+                        convertTmdbImageSizes(result.images.poster_sizes));
+            }
+
             mMoviesState.setTmdbConfiguration(result);
         }
 

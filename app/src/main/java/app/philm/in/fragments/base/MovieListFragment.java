@@ -1,6 +1,5 @@
 package app.philm.in.fragments.base;
 
-import com.hb.views.PinnedSectionListView;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,9 +9,9 @@ import android.widget.ListView;
 import java.util.List;
 
 import app.philm.in.adapters.MovieSectionedListAdapter;
-import app.philm.in.fragments.base.BasePhilmMovieListFragment;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.view.PinnedSectionListView;
 
 public abstract class MovieListFragment extends BasePhilmMovieListFragment<ListView> {
 
@@ -53,7 +52,7 @@ public abstract class MovieListFragment extends BasePhilmMovieListFragment<ListV
 
     @Override
     protected ListView createListView(Context context) {
-        return new PinnedSectionListView(context, null);
+        return new PinnedSectionListView(context);
     }
 
 }

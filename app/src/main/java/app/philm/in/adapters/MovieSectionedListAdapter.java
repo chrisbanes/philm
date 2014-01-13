@@ -2,14 +2,10 @@ package app.philm.in.adapters;
 
 import com.google.common.base.Objects;
 
-import com.hb.views.PinnedSectionListView;
-import com.squareup.picasso.Picasso;
-
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -21,6 +17,7 @@ import app.philm.in.R;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.view.PhilmImageView;
+import app.philm.in.view.PinnedSectionListView;
 import app.philm.in.view.StringManager;
 
 public class MovieSectionedListAdapter extends BaseAdapter implements

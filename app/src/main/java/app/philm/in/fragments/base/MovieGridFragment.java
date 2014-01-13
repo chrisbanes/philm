@@ -10,7 +10,6 @@ import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
-import app.philm.in.fragments.base.BasePhilmMovieListFragment;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 

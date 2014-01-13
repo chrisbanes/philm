@@ -1,6 +1,5 @@
 package app.philm.in.controllers;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.Trakt;
@@ -32,7 +31,6 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.model.SearchResult;
 import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;

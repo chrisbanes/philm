@@ -8,7 +8,6 @@ import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.model.SearchResult;
 
 public interface MoviesState extends BaseState {
 

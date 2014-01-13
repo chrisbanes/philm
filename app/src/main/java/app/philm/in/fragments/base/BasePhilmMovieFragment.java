@@ -4,7 +4,6 @@ package app.philm.in.fragments.base;
 import android.support.v4.app.Fragment;
 
 import app.philm.in.PhilmApplication;
-import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;

@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
-import com.uwetrottmann.tmdb.entities.Configuration;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.Genre;
 

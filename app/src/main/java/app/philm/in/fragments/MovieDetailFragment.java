@@ -26,7 +26,6 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
-
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.ViewUtils;
@@ -245,14 +244,24 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             populateRelatedMovies(mRelatedViewRecycler);
         }
 
-        mRunTimeInfoLayout.setContentText(
-                getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
-        mCertificationInfoLayout.setContentText(mMovie.getCertification());
-        mGenresInfoLayout.setContentText(mMovie.getGenres());
-
-        DATE.setTime(mMovie.getReleasedTime());
-        mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
-
+        if (mMovie.getRuntime() > 0) {
+            mRunTimeInfoLayout.setContentText(
+                    getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
+            mRunTimeInfoLayout.setVisibility(View.VISIBLE);
+        }
+        if (!TextUtils.isEmpty(mMovie.getCertification())) {
+            mCertificationInfoLayout.setContentText(mMovie.getCertification());
+            mCertificationInfoLayout.setVisibility(View.VISIBLE);
+        }
+        if (!TextUtils.isEmpty(mMovie.getGenres())) {
+            mGenresInfoLayout.setContentText(mMovie.getGenres());
+            mCertificationInfoLayout.setVisibility(View.VISIBLE);
+        }
+        if (mMovie.getReleasedTime() > 0) {
+            DATE.setTime(mMovie.getReleasedTime());
+            mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
+            mReleasedInfoLayout.setVisibility(View.VISIBLE);
+        }
         final String countryCode = mMovie.getLocalizedCountryCode();
         if (!TextUtils.isEmpty(countryCode)) {
             mReleasedInfoLayout.getFlagImageView()

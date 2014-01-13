@@ -217,10 +217,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             mPosterImageView.loadPosterUrl(mMovie);
         }
 
-        if (ViewUtils.isEmpty(mTitleTextView)) {
-            mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
-                    mMovie.getYear()));
-        }
+        mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
+                mMovie.getYear()));
 
         if (ViewUtils.isEmpty(mSummaryTextView)) {
             mSummaryTextView.setText(mMovie.getOverview());
@@ -252,10 +250,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         mCertificationInfoLayout.setContentText(mMovie.getCertification());
         mGenresInfoLayout.setContentText(mMovie.getGenres());
 
-        if (ViewUtils.isEmpty(mReleasedInfoLayout.getContentTextView())) {
-            DATE.setTime(mMovie.getReleasedTime());
-            mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
-        }
+        DATE.setTime(mMovie.getReleasedTime());
+        mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
 
         final String countryCode = mMovie.getLocalizedCountryCode();
         if (!TextUtils.isEmpty(countryCode)) {

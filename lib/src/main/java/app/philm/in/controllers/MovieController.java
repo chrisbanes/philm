@@ -125,6 +125,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
+    public void onUpcomingChanged(MoviesState.UpcomingChangedEvent event) {
+        populateUis();
+    }
+
+    @Subscribe
     public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
         populateUis();
     }

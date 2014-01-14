@@ -42,7 +42,8 @@ public class PhilmApplication extends Application {
                 container.getAsyncDatabaseHelper(),
                 container.getLogger(),
                 container.getCountryProvider(),
-                container.getImageHelper());
+                container.getImageHelper(),
+                container.getFileManager());
 
         AboutController aboutController = new AboutController();
 

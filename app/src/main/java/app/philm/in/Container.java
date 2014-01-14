@@ -19,9 +19,11 @@ import app.philm.in.state.AsyncDatabaseHelperImpl;
 import app.philm.in.state.DatabaseHelper;
 import app.philm.in.state.PhilmSQLiteOpenHelper;
 import app.philm.in.util.AndroidCountryProvider;
+import app.philm.in.util.AndroidFileManager;
 import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.CountryProvider;
+import app.philm.in.util.FileManager;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.Logger;
@@ -56,6 +58,7 @@ public class Container {
     private CountryProvider mCountryProvider;
     private FlagUrlProvider mFlagUrlProvider;
     private ImageHelper mImageHelper;
+    private FileManager mFileManager;
 
     private DateFormat mMediumDateFormat;
 
@@ -167,5 +170,12 @@ public class Container {
             mImageHelper = new ImageHelper();
         }
         return mImageHelper;
+    }
+
+    public FileManager getFileManager() {
+        if (mFileManager == null) {
+            mFileManager = new AndroidFileManager(mContext.getFilesDir());
+        }
+        return mFileManager;
     }
 }

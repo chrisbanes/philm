@@ -38,6 +38,7 @@ import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.CountryProvider;
+import app.philm.in.util.FileManager;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
@@ -66,6 +67,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final ImageHelper mImageHelper;
     private final TraktMovieEntityMapper mTraktMovieEntityMapper;
     private final TmdbMovieEntityMapper mTmdbMovieEntityMapper;
+    private final FileManager mFileManager;
+
     private boolean mPopulatedLibraryFromDb = false;
     private boolean mPopulatedWatchlistFromDb = false;
 
@@ -77,7 +80,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             AsyncDatabaseHelper dbHelper,
             Logger logger,
             CountryProvider countryProvider,
-            ImageHelper imageHelper) {
+            ImageHelper imageHelper,
+            FileManager fileManager) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
@@ -88,6 +92,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mCountryProvider = Preconditions.checkNotNull(countryProvider,
                 "countryProvider cannot be null");
         mImageHelper = Preconditions.checkNotNull(imageHelper, "imageHelper cannot be null");
+        mFileManager = Preconditions.checkNotNull(fileManager, "fileManager cannot be null");
 
         mTraktMovieEntityMapper = new TraktMovieEntityMapper();
         mTmdbMovieEntityMapper = new TmdbMovieEntityMapper();

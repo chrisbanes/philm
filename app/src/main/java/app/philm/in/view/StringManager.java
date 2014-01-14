@@ -34,6 +34,8 @@ public class StringManager {
                 return R.string.popular_title;
             case IN_THEATRES:
                 return R.string.in_theatres_title;
+            case UPCOMING:
+                return R.string.upcoming_title;
         }
         return 0;
     }

@@ -31,6 +31,10 @@ public interface MoviesState extends BaseState {
 
     public void setNowPlaying(MoviePaginatedResult nowPlaying);
 
+    public MoviePaginatedResult getUpcoming();
+
+    public void setUpcoming(MoviePaginatedResult upcoming);
+
     public List<PhilmMovie> getWatchlist();
 
     public void setWatchlist(List<PhilmMovie> watchlist);
@@ -56,6 +60,8 @@ public interface MoviesState extends BaseState {
     public static class WatchlistChangedEvent {}
 
     public static class SearchResultChangedEvent {}
+
+    public static class UpcomingChangedEvent {}
 
     public static class TmdbConfigurationChangedEvent {}
 

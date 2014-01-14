@@ -33,6 +33,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private List<PhilmMovie> mTrending;
     private MoviePaginatedResult mPopular;
     private MoviePaginatedResult mNowPlaying;
+    private MoviePaginatedResult mUpcoming;
     private List<PhilmMovie> mWatchlist;
     private Set<MovieController.Filter> mFilters;
 
@@ -180,6 +181,17 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
             mTmdbConfiguration = configuration;
             mEventBus.post(new TmdbConfigurationChangedEvent());
         }
+    }
+
+    @Override
+    public MoviePaginatedResult getUpcoming() {
+        return mUpcoming;
+    }
+
+    @Override
+    public void setUpcoming(MoviePaginatedResult upcoming) {
+        mUpcoming = upcoming;
+        mEventBus.post(new UpcomingChangedEvent());
     }
 
     ///////////////////////////

@@ -281,20 +281,32 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void onScrolledToBottom() {
+                MoviesState.MoviePaginatedResult result;
+
                 switch (ui.getMovieQueryType()) {
                     case POPULAR:
-                        MoviesState.MoviePaginatedResult result = mMoviesState.getPopular();
-                        if (result != null && result.page < result.totalPages) {
+                        result = mMoviesState.getPopular();
+                        if (canFetchNextPage(result)) {
                             fetchPopular(result.page + 1);
                         }
                         break;
                     case SEARCH:
                         MoviesState.SearchPaginatedResult searchResult = mMoviesState.getSearchResult();
-                        if (searchResult != null && searchResult.page < searchResult.totalPages) {
+                        if (canFetchNextPage(searchResult)) {
                             fetchSearchResults(searchResult.query, searchResult.page + 1);
                         }
                         break;
+                    case UPCOMING:
+                        result = mMoviesState.getUpcoming();
+                        if (canFetchNextPage(result)) {
+                            fetchUpcoming(result.page + 1);
+                        }
+                        break;
                 }
+            }
+
+            private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
+                return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
         };
     }
@@ -331,6 +343,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case NOW_PLAYING:
                 fetchNowPlayingIfNeeded();
+                break;
+            case UPCOMING:
+                fetchUpcomingIfNeeded();
                 break;
         }
     }
@@ -536,6 +551,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchUpcoming() {
+        mMoviesState.setUpcoming(null);
+        fetchUpcoming(TMDB_FIRST_PAGE);
+    }
+
+    private void fetchUpcoming(final int page) {
+        mExecutor.execute(new FetchTmdbUpcomingRunnable(page));
+    }
+
+    private void fetchUpcomingIfNeeded() {
+        MoviesState.MoviePaginatedResult upcoming = mMoviesState.getUpcoming();
+        if (upcoming == null || PhilmCollections.isEmpty(upcoming.items)) {
+            fetchUpcoming(TMDB_FIRST_PAGE);
+        }
+    }
+
     private void fetchRelatedMovies(PhilmMovie movie) {
         if (movie.getTmdbId() != null) {
             mExecutor.execute(new FetchTmdbRelatedMoviesRunnable(movie.getTmdbId()));
@@ -712,6 +743,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     items = nowPlaying.items;
                 }
                 break;
+            case UPCOMING:
+                MoviesState.MoviePaginatedResult upcoming = mMoviesState.getUpcoming();
+                if (upcoming != null) {
+                    items = upcoming.items;
+                }
+                break;
         }
 
         if (requireFiltering && !PhilmCollections.isEmpty(items)) {
@@ -872,7 +909,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, NONE;
+        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, NONE;
 
         public boolean requireLogin() {
             switch (this) {
@@ -896,7 +933,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum DiscoverTab {
-        POPULAR, IN_THEATRES;
+        POPULAR, IN_THEATRES, UPCOMING;
     }
 
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
@@ -1117,7 +1154,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchTmdbPopularRunnable extends BasePaginatedTmdbRunnable {
-
         FetchTmdbPopularRunnable(int page) {
             super(page);
         }
@@ -1139,7 +1175,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class FetchTmdbNowPlayingRunnable extends BasePaginatedTmdbRunnable {
-
         FetchTmdbNowPlayingRunnable(int page) {
             super(page);
         }
@@ -1157,6 +1192,27 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         protected void updateState(MoviesState.MoviePaginatedResult result) {
             mMoviesState.setNowPlaying(result);
+        }
+    }
+
+    private class FetchTmdbUpcomingRunnable extends BasePaginatedTmdbRunnable {
+        FetchTmdbUpcomingRunnable(int page) {
+            super(page);
+        }
+
+        @Override
+        public ResultsPage doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.moviesService().upcoming(getPage(), null);
+        }
+
+        @Override
+        protected MoviesState.MoviePaginatedResult getResultFromState() {
+            return mMoviesState.getUpcoming();
+        }
+
+        @Override
+        protected void updateState(MoviesState.MoviePaginatedResult result) {
+            mMoviesState.setUpcoming(result);
         }
     }
 

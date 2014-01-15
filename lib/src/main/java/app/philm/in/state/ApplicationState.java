@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Bus;
-import com.uwetrottmann.tmdb.entities.Configuration;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +16,7 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.model.TmdbConfiguration;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
 
@@ -42,7 +42,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private String mUsername;
     private MainController.SideMenuItem mSelectedSideMenuItem;
 
-    private Configuration mTmdbConfiguration;
+    private TmdbConfiguration mTmdbConfiguration;
 
     public ApplicationState(Bus eventBus) {
         mEventBus = Preconditions.checkNotNull(eventBus, "eventBus cannot null");
@@ -171,12 +171,12 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public Configuration getTmdbConfiguration() {
+    public TmdbConfiguration getTmdbConfiguration() {
         return mTmdbConfiguration;
     }
 
     @Override
-    public void setTmdbConfiguration(Configuration configuration) {
+    public void setTmdbConfiguration(TmdbConfiguration configuration) {
         if (!Objects.equal(configuration, mTmdbConfiguration)) {
             mTmdbConfiguration = configuration;
             mEventBus.post(new TmdbConfigurationChangedEvent());

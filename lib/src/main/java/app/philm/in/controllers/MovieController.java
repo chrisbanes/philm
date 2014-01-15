@@ -1,6 +1,7 @@
 package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 
 import com.jakewharton.trakt.Trakt;
 import com.jakewharton.trakt.entities.ActionResponse;
@@ -17,6 +18,10 @@ import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.ReleasesResult;
 import com.uwetrottmann.tmdb.entities.ResultsPage;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +36,7 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.TmdbConfiguration;
 import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
@@ -54,6 +60,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
 
     private static final String LOG_TAG = MovieController.class.getSimpleName();
+    private static final String FILENAME_TMDB_CONFIG = "tmdb.config";
 
     private static final int TMDB_FIRST_PAGE = 1;
 
@@ -96,17 +103,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         mTraktMovieEntityMapper = new TraktMovieEntityMapper();
         mTmdbMovieEntityMapper = new TmdbMovieEntityMapper();
-    }
-
-    private static int[] convertTmdbImageSizes(List<String> stringSizes) {
-        int[] intSizes = new int[stringSizes.size() - 1];
-        for (int i = 0; i < intSizes.length; i++) {
-            String size = stringSizes.get(i);
-            if (size.charAt(0) == 'w') {
-                intSizes[i] = Integer.parseInt(size.substring(1));
-            }
-        }
-        return intSizes;
     }
 
     @Subscribe
@@ -1067,20 +1063,42 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchTmdbConfigurationRunnable extends NetworkCallRunnable<Configuration> {
+    private class FetchTmdbConfigurationRunnable extends NetworkCallRunnable<TmdbConfiguration> {
         @Override
-        public Configuration doBackgroundCall() throws RetrofitError {
-            return mTmdbClient.configurationService().configuration();
+        public TmdbConfiguration doBackgroundCall() throws RetrofitError {
+            TmdbConfiguration configuration = getConfigFromFile();
+
+            if (configuration != null && configuration.isValid()) {
+                if (Constants.DEBUG) {
+                    mLogger.d(LOG_TAG, "Got valid TMDB config from file");
+                }
+            } else {
+                if (Constants.DEBUG) {
+                    mLogger.d(LOG_TAG, "Fectching TMDB config from network");
+                }
+
+                // No config in file, so download from web
+                Configuration tmdbConfig = mTmdbClient.configurationService().configuration();
+
+                if (tmdbConfig != null) {
+                    // Downloaded config from web so file it to file
+                    configuration = new TmdbConfiguration();
+                    configuration.setFromTmdb(tmdbConfig);
+                    writeConfigToFile(configuration);
+                } else {
+                    configuration = null;
+                }
+            }
+
+            return configuration;
         }
 
         @Override
-        public void onSuccess(Configuration result) {
+        public void onSuccess(TmdbConfiguration result) {
             if (result != null) {
-                mImageHelper.setTmdbBaseUrl(result.images.base_url);
-                mImageHelper.setTmdbFanartSizes(
-                        convertTmdbImageSizes(result.images.backdrop_sizes));
-                mImageHelper.setTmdbPosterSizes(
-                        convertTmdbImageSizes(result.images.poster_sizes));
+                mImageHelper.setTmdbBaseUrl(result.getImagesBaseUrl());
+                mImageHelper.setTmdbFanartSizes(result.getImagesBackdropSizes());
+                mImageHelper.setTmdbPosterSizes(result.getImagesPosterSizes());
             }
 
             mMoviesState.setTmdbConfiguration(result);
@@ -1089,6 +1107,55 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public void onError(RetrofitError re) {
             // Ignore
+        }
+
+        private TmdbConfiguration getConfigFromFile() {
+            File file = mFileManager.getFile(FILENAME_TMDB_CONFIG);
+            if (file.exists()) {
+                FileReader reader = null;
+                try {
+                    reader = new FileReader(file);
+                    Gson gson = new Gson();
+                    return gson.fromJson(reader, TmdbConfiguration.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        private void writeConfigToFile(TmdbConfiguration configuration) {
+            FileWriter writer = null;
+
+            try {
+                File file = mFileManager.getFile(FILENAME_TMDB_CONFIG);
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+
+                writer = new FileWriter(file, false);
+                Gson gson = new Gson();
+                gson.toJson(configuration, writer);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (writer != null) {
+                    try {
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 

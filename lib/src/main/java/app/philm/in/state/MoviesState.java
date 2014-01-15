@@ -1,13 +1,12 @@
 package app.philm.in.state;
 
-import com.uwetrottmann.tmdb.entities.Configuration;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.TmdbConfiguration;
 
 public interface MoviesState extends BaseState {
 
@@ -45,9 +44,9 @@ public interface MoviesState extends BaseState {
 
     public Set<MovieController.Filter> getFilters();
 
-    public Configuration getTmdbConfiguration();
+    public TmdbConfiguration getTmdbConfiguration();
 
-    public void setTmdbConfiguration(Configuration configuration);
+    public void setTmdbConfiguration(TmdbConfiguration configuration);
 
     public static class LibraryChangedEvent {}
 

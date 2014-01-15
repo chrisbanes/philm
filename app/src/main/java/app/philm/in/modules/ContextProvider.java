@@ -10,6 +10,7 @@ import java.io.File;
 
 import javax.inject.Singleton;
 
+import app.philm.in.modules.qualifiers.ApplicationContext;
 import dagger.Module;
 import dagger.Provides;
 
@@ -25,8 +26,8 @@ public class ContextProvider {
         mApplicationContext = Preconditions.checkNotNull(context, "context cannot be null");
     }
 
-    @Provides
-    public Context provideContext() {
+    @Provides @ApplicationContext
+    public Context provideApplicationContext() {
         return mApplicationContext;
     }
 

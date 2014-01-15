@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import app.philm.in.adapters.MovieSectionedListAdapter;
 import app.philm.in.fragments.MovieDetailFragment;
+import app.philm.in.modules.qualifiers.ApplicationContext;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.TypefaceManager;
 import app.philm.in.view.FontTextView;
@@ -40,7 +41,7 @@ public class ViewUtilProvider {
     }
 
     @Provides @Singleton
-    public DateFormat provideMediumDateFormat(Context context) {
+    public DateFormat provideMediumDateFormat(@ApplicationContext Context context) {
         return android.text.format.DateFormat.getMediumDateFormat(context);
     }
 

@@ -5,9 +5,10 @@ import android.content.Context;
 
 import java.io.File;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
+import app.philm.in.modules.qualifiers.ApplicationContext;
+import app.philm.in.modules.qualifiers.ForDatabase;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.AsyncDatabaseHelperImpl;
 import app.philm.in.state.DatabaseHelper;
@@ -34,13 +35,13 @@ public class PersistenceProvider {
     }
 
     @Provides @Singleton
-    public DatabaseHelper getDatabaseHelper(Context context) {
+    public DatabaseHelper getDatabaseHelper(@ApplicationContext Context context) {
         return new PhilmSQLiteOpenHelper(context);
     }
 
     @Provides @Singleton
     public AsyncDatabaseHelper getAsyncDatabaseHelper(
-            @Named("single") BackgroundExecutor executor,
+            @ForDatabase BackgroundExecutor executor,
             DatabaseHelper databaseHelper) {
         return new AsyncDatabaseHelperImpl(executor, databaseHelper);
     }

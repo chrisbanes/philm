@@ -33,13 +33,13 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.TmdbConfiguration;
+import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
@@ -87,7 +87,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             MoviesState movieState,
             Trakt traktClient,
             Tmdb tmdbClient,
-            @Named("multi") BackgroundExecutor executor,
+            @GeneralPurpose BackgroundExecutor executor,
             AsyncDatabaseHelper dbHelper,
             Logger logger,
             CountryProvider countryProvider,

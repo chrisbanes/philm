@@ -6,9 +6,11 @@ import android.content.Context;
 
 import java.util.concurrent.Executors;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
+import app.philm.in.modules.qualifiers.ApplicationContext;
+import app.philm.in.modules.qualifiers.ForDatabase;
+import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.util.AndroidCountryProvider;
 import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
@@ -42,18 +44,18 @@ public class UtilProvider {
     }
 
     @Provides @Singleton
-    public CountryProvider getCountryProvider(Context context) {
+    public CountryProvider provideCountryProvider(@ApplicationContext Context context) {
         return new AndroidCountryProvider(context);
     }
 
-    @Provides @Singleton @Named("multi")
+    @Provides @Singleton @GeneralPurpose
     public BackgroundExecutor provideMultiThreadExecutor() {
         final int numberCores = Runtime.getRuntime().availableProcessors();
         return new PhilmBackgroundExecutor(Executors.newFixedThreadPool(numberCores * 2 + 1));
     }
 
-    @Provides @Singleton @Named("single")
-    public BackgroundExecutor provideSingleThreadExecutor() {
+    @Provides @Singleton @ForDatabase
+    public BackgroundExecutor provideDatabaseThreadExecutor() {
         return new PhilmBackgroundExecutor(Executors.newSingleThreadExecutor());
     }
 

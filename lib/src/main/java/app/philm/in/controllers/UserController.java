@@ -10,13 +10,13 @@ import com.squareup.otto.Subscribe;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.accounts.PhilmAccountManager;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.UserState;
@@ -69,7 +69,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     public UserController(
             UserState userState,
             Trakt traktClient,
-            @Named("multi") BackgroundExecutor executor,
+            @GeneralPurpose BackgroundExecutor executor,
             PhilmAccountManager accountFetcher,
             AsyncDatabaseHelper dbHelper,
             Logger logger) {

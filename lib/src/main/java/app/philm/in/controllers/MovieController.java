@@ -497,9 +497,19 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return result;
     }
 
-    private void fetchDetailMovie(String traktId) {
-        Preconditions.checkNotNull(traktId, "traktId cannot be null");
-        mExecutor.execute(new FetchDetailMovieRunnable(traktId));
+    private void fetchDetailMovie(String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = getMovie(id);
+        if (movie != null && movie.getTmdbId() != null) {
+            fetchDetailMovieFromTmdb(movie.getTmdbId());
+
+            if (isLoggedIn()) {
+                fetchDetailMovieFromTrakt(id);
+            }
+        } else {
+            fetchDetailMovieFromTrakt(id);
+        }
     }
 
     private void fetchDetailMovieIfNeeded(String traktId) {
@@ -511,6 +521,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         } else {
             checkDetailMovieResult(cached);
         }
+    }
+
+    private void fetchDetailMovieFromTrakt(String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+        mExecutor.execute(new FetchDetailMovieRunnable(id));
+    }
+
+    private void fetchDetailMovieFromTmdb(int tmdbId) {
+        mExecutor.execute(new FetchTmdbDetailMovieRunnable(tmdbId));
     }
 
     private void fetchLibrary() {
@@ -1028,27 +1047,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void onScrolledToBottom();
     }
 
-    private abstract class BaseMovieTraktRunnable<R> extends NetworkCallRunnable<R> {
+    private abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
-        @Override
-        public void onPreTraktCall() {
-            showLoadingProgress(true);
-        }
-
-        @Override
-        public void onError(RetrofitError re) {
-            for (MovieUi ui : getUis()) {
-                ui.showError(NetworkError.from(re));
-            }
-        }
-
-        @Override
-        public void onFinished() {
-            showLoadingProgress(false);
-        }
-    }
-
-    private abstract class BaseMovieTmdbRunnable<R> extends NetworkCallRunnable<R> {
         @Override
         public void onPreTraktCall() {
             showLoadingProgress(true);
@@ -1163,7 +1163,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchTrendingRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+    private class FetchTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
 
         @Override
         public List<Movie> doBackgroundCall() throws RetrofitError {
@@ -1187,7 +1187,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private abstract class BasePaginatedTmdbRunnable extends BaseMovieTmdbRunnable<ResultsPage> {
+    private abstract class BasePaginatedTmdbRunnable extends BaseMovieRunnable<ResultsPage> {
         private final int mPage;
 
         BasePaginatedTmdbRunnable(int page) {
@@ -1297,7 +1297,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchLibraryRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+    private class FetchLibraryRunnable extends BaseMovieRunnable<List<Movie>> {
 
         private final String mUsername;
 
@@ -1325,7 +1325,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchWatchlistRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+    private class FetchWatchlistRunnable extends BaseMovieRunnable<List<Movie>> {
 
         private final String mUsername;
 
@@ -1385,7 +1385,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private abstract class BaseMovieActionTraktRunnable extends BaseMovieTraktRunnable<Response> {
+    private abstract class BaseMovieActionTraktRunnable extends BaseMovieRunnable<Response> {
         private final String mId;
 
         BaseMovieActionTraktRunnable(String id) {
@@ -1425,7 +1425,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchDetailMovieRunnable extends BaseMovieTraktRunnable<Movie> {
+    private class FetchDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
         private final String mImdbId;
 
@@ -1451,7 +1451,33 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchRelatedMoviesRunnable extends BaseMovieTraktRunnable<List<Movie>> {
+    private class FetchTmdbDetailMovieRunnable
+            extends BaseMovieRunnable<com.uwetrottmann.tmdb.entities.Movie> {
+        private final int mTmdbId;
+
+        FetchTmdbDetailMovieRunnable(int tmdbId) {
+            mTmdbId = tmdbId;
+        }
+
+        @Override
+        public com.uwetrottmann.tmdb.entities.Movie doBackgroundCall() throws RetrofitError {
+            return mTmdbClient.moviesService().summary(mTmdbId);
+        }
+
+        @Override
+        public void onSuccess(com.uwetrottmann.tmdb.entities.Movie result) {
+            PhilmMovie movie = mTmdbMovieEntityMapper.map(result);
+            checkPhilmState(movie);
+            if (isInited()) {
+                mDbHelper.put(movie);
+            }
+
+            populateUis();
+            checkDetailMovieResult(movie);
+        }
+    }
+
+    private class FetchRelatedMoviesRunnable extends BaseMovieRunnable<List<Movie>> {
         private final String mId;
 
         FetchRelatedMoviesRunnable(String id) {
@@ -1489,7 +1515,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchTmdbRelatedMoviesRunnable extends BaseMovieTraktRunnable<ResultsPage> {
+    private class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPage> {
         private final int mId;
 
         FetchTmdbRelatedMoviesRunnable(int id) {
@@ -1561,7 +1587,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class SubmitMovieRatingRunnable extends BaseMovieTraktRunnable<RatingResponse> {
+    private class SubmitMovieRatingRunnable extends BaseMovieRunnable<RatingResponse> {
         private final String mId;
         private final Rating mRating;
 
@@ -1693,7 +1719,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private class FetchTmdbReleasesRunnable extends BaseMovieTraktRunnable<ReleasesResult> {
+    private class FetchTmdbReleasesRunnable extends BaseMovieRunnable<ReleasesResult> {
         private final PhilmMovie mMovie;
 
         FetchTmdbReleasesRunnable(PhilmMovie movie) {

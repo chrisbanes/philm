@@ -16,24 +16,31 @@ public class AndroidCountryProvider implements CountryProvider {
 
     private final Context mContext;
 
+    private String mCountryCode;
+
     public AndroidCountryProvider(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
     }
 
     @Override
     public String getTwoLetterCountryCode() {
-        // Try getting it from the SIM/Network
-        String code = getTwoLetterCountryCodeFromSim();
+        if (mCountryCode == null) {
+            // Try getting it from the SIM/Network
+            String code = getTwoLetterCountryCodeFromSim();
 
-        if (code == null) {
-            // TODO: Fallback to last location
+            if (code == null) {
+                code = getTwoLetterCountryCodeFromLocale();
+                // TODO: Fallback to last location
+            }
+
+            mCountryCode = code;
         }
 
         if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "getTwoLetterCountryCode: " + code);
+            Log.d(LOG_TAG, "getTwoLetterCountryCode: " + mCountryCode);
         }
 
-        return code;
+        return mCountryCode;
     }
 
     private String getTwoLetterCountryCodeFromSim() {
@@ -51,6 +58,17 @@ public class AndroidCountryProvider implements CountryProvider {
                 // network country code is available
                 return networkCountry.toLowerCase(Locale.US);
             }
+        }
+
+        return null;
+    }
+
+    private String getTwoLetterCountryCodeFromLocale() {
+        final Locale locale = Locale.getDefault();
+
+        final String countryCode = locale.getCountry();
+        if (!TextUtils.isEmpty(countryCode)) {
+            return countryCode;
         }
 
         return null;

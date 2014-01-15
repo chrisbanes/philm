@@ -4,6 +4,8 @@ package app.philm.in.controllers;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import app.philm.in.Display;
 
 public class AboutController extends BaseUiController<AboutController.AboutUi,
@@ -26,6 +28,10 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
     public interface AboutUiCallbacks {
         void onTitleChanged(String newTitle);
         void onItemClick(AboutItem item);
+    }
+
+    @Inject
+    public AboutController() {
     }
 
     @Override

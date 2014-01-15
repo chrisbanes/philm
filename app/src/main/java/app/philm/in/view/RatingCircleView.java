@@ -7,13 +7,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
+import javax.inject.Inject;
+
+import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.drawable.PercentageDrawable;
+import app.philm.in.util.TypefaceManager;
 
 public class RatingCircleView extends ImageView {
 
     private PercentageDrawable mDrawable;
     private String mRatePrompt;
+
+    @Inject TypefaceManager mTypefaceManager;
 
     public RatingCircleView(Context context) {
         this(context, null);
@@ -25,6 +31,8 @@ public class RatingCircleView extends ImageView {
 
     public RatingCircleView(Context context, AttributeSet attrs,int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        PhilmApplication.from(context).getObjectGraph().inject(this);
+
         mDrawable = new PercentageDrawable();
         setImageDrawable(mDrawable);
 
@@ -38,7 +46,7 @@ public class RatingCircleView extends ImageView {
         mDrawable.setTextColor(a.getColor(R.styleable.RatingCircleView_textColor, 0));
         mRatePrompt = a.getString(R.styleable.RatingCircleView_ratePrompt);
 
-        Typeface typeface = FontTextView.getFont(context,
+        Typeface typeface = FontTextView.getFont(mTypefaceManager,
                 a.getInt(R.styleable.RatingCircleView_font, 0));
         if (typeface != null) {
             mDrawable.setTypeface(typeface);

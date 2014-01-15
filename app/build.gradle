@@ -8,11 +8,12 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:0.7.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.+'
     }
 }
 apply plugin: 'android'
 apply plugin: 'crashlytics'
+apply plugin: 'android-apt'
 
 repositories {
     mavenCentral()
@@ -77,6 +78,8 @@ dependencies {
     compile ("de.keyboardsurfer.android.widget:crouton:1.8.+@aar") {
         exclude group: 'com.google.android', module: 'support-v4'
     }
+
+    apt 'com.squareup.dagger:dagger-compiler:1.+'
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }

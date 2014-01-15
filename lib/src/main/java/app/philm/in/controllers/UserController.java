@@ -9,6 +9,9 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.accounts.PhilmAccountManager;
@@ -62,10 +65,11 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
     private ControllerCallbacks mControllerCallbacks;
 
+    @Inject
     public UserController(
             UserState userState,
             Trakt traktClient,
-            BackgroundExecutor executor,
+            @Named("multi") BackgroundExecutor executor,
             PhilmAccountManager accountFetcher,
             AsyncDatabaseHelper dbHelper,
             Logger logger) {

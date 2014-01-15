@@ -8,8 +8,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
+import javax.inject.Inject;
+
 import app.philm.in.Constants;
-import app.philm.in.Container;
+import app.philm.in.PhilmApplication;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
@@ -19,7 +21,7 @@ public class PhilmImageView extends ImageView {
     private static final int TYPE_BACKDROP = 0;
     private static final int TYPE_POSTER = 1;
 
-    private final ImageHelper mImageHelper;
+    @Inject ImageHelper mImageHelper;
 
     private int mType;
     private PhilmMovie mMovieToLoad;
@@ -28,7 +30,7 @@ public class PhilmImageView extends ImageView {
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mImageHelper = Container.getInstance(context).getImageHelper();
+        PhilmApplication.from(context).getObjectGraph().inject(this);
     }
 
     public void loadPosterUrl(PhilmMovie movie) {

@@ -7,7 +7,9 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import app.philm.in.Container;
+import javax.inject.Inject;
+
+import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.util.TypefaceManager;
 
@@ -18,6 +20,8 @@ public class FontTextView extends TextView {
     public static final int FONT_ROBOTO_CONDENSED_LIGHT = 3;
     public static final int FONT_ROBOTO_CONDENSED_BOLD = 4;
     public static final int FONT_ROBOTO_SLAB = 5;
+
+    @Inject TypefaceManager mTypefaceManager;
 
     public FontTextView(Context context) {
         this(context, null);
@@ -30,6 +34,8 @@ public class FontTextView extends TextView {
     public FontTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        PhilmApplication.from(context).getObjectGraph().inject(this);
+
         if (!isInEditMode()) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FontTextView);
             setFont(a.getInt(R.styleable.FontTextView_font, 0));
@@ -37,17 +43,15 @@ public class FontTextView extends TextView {
         }
     }
 
-
     public void setFont(final int customFont) {
-        Typeface typeface = getFont(getContext(), customFont);
+        Typeface typeface = getFont(mTypefaceManager, customFont);
         if (typeface != null) {
             setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
             setTypeface(typeface);
         }
     }
 
-    public static Typeface getFont(Context context, final int customFont) {
-        TypefaceManager typefaceManager = Container.getInstance(context).getTypefaceManager();
+    public static Typeface getFont(TypefaceManager typefaceManager, final int customFont) {
         Typeface typeface = null;
 
         switch (customFont) {

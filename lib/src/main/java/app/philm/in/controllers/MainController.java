@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Subscribe;
 
+import javax.inject.Inject;
+
 import app.philm.in.Display;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.state.ApplicationState;
@@ -50,6 +52,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     private HostCallbacks mHostCallbacks;
 
+    @Inject
     public MainController(
             ApplicationState state,
             UserController userController,

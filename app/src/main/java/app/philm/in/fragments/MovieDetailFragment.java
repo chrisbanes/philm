@@ -17,11 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import app.philm.in.Constants;
-import app.philm.in.Container;
+import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
@@ -47,7 +50,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private PhilmMovie mMovie;
 
-    private FlagUrlProvider mFlagUrlProvider;
+    @Inject FlagUrlProvider mFlagUrlProvider;
+    @Inject DateFormat mMediumDateFormatter;
 
     private TextView mTitleTextView;
     private TextView mSummaryTextView;
@@ -83,7 +87,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFlagUrlProvider = Container.getInstance(getActivity()).getFlagUrlProvider();
+        PhilmApplication.from(getActivity()).getObjectGraph().inject(this);
+
         setHasOptionsMenu(true);
     }
 
@@ -208,8 +213,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             return;
         }
 
-        final Container container = Container.getInstance(getActivity());
-
         if (mFanartImageView.getDrawable() == null) {
             mFanartImageView.loadBackdropUrl(mMovie);
         }
@@ -261,7 +264,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
         if (mMovie.getReleasedTime() > 0) {
             DATE.setTime(mMovie.getReleasedTime());
-            mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
+            mReleasedInfoLayout.setContentText(mMediumDateFormatter.format(DATE));
             mReleasedInfoLayout.setVisibility(View.VISIBLE);
 
             final String countryCode = mMovie.getReleaseCountryCode();

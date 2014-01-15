@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
@@ -79,11 +82,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private boolean mPopulatedLibraryFromDb = false;
     private boolean mPopulatedWatchlistFromDb = false;
 
+    @Inject
     public MovieController(
             MoviesState movieState,
             Trakt traktClient,
             Tmdb tmdbClient,
-            BackgroundExecutor executor,
+            @Named("multi") BackgroundExecutor executor,
             AsyncDatabaseHelper dbHelper,
             Logger logger,
             CountryProvider countryProvider,

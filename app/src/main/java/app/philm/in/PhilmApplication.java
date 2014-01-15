@@ -4,11 +4,13 @@ package app.philm.in;
 import android.app.Application;
 import android.content.Context;
 
-import app.philm.in.controllers.AboutController;
+import javax.inject.Inject;
+
 import app.philm.in.controllers.MainController;
-import app.philm.in.controllers.MovieController;
-import app.philm.in.controllers.UserController;
-import app.philm.in.state.ApplicationState;
+import app.philm.in.modules.ApplicationModule;
+import app.philm.in.modules.ContextProvider;
+import app.philm.in.modules.ViewUtilProvider;
+import dagger.ObjectGraph;
 
 public class PhilmApplication extends Application {
 
@@ -16,47 +18,28 @@ public class PhilmApplication extends Application {
         return (PhilmApplication) context.getApplicationContext();
     }
 
-    private ApplicationState mApplicationState;
-    private MainController mMainController;
+    @Inject MainController mMainController;
+
+    private ObjectGraph mObjectGraph;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        final Container container = Container.getInstance(this);
-        mApplicationState = new ApplicationState(container.getEventBus());
+        mObjectGraph = ObjectGraph.create(
+                new ContextProvider(this),
+                new ApplicationModule(),
+                new ViewUtilProvider()
+        );
 
-        UserController userController = new UserController(
-                mApplicationState,
-                container.getTraktClient(),
-                container.getMultiThreadExecutor(),
-                container.getAccountManager(),
-                container.getAsyncDatabaseHelper(),
-                container.getLogger());
-
-        MovieController movieController = new MovieController(
-                mApplicationState,
-                container.getTraktClient(),
-                container.getTmdbClient(),
-                container.getMultiThreadExecutor(),
-                container.getAsyncDatabaseHelper(),
-                container.getLogger(),
-                container.getCountryProvider(),
-                container.getImageHelper(),
-                container.getFileManager());
-
-        AboutController aboutController = new AboutController();
-
-        mMainController = new MainController(
-                mApplicationState,
-                userController,
-                movieController,
-                aboutController,
-                container.getAsyncDatabaseHelper(),
-                container.getLogger());
+        mObjectGraph.inject(this);
     }
 
     public MainController getMainController() {
         return mMainController;
+    }
+
+    public ObjectGraph getObjectGraph() {
+        return mObjectGraph;
     }
 }

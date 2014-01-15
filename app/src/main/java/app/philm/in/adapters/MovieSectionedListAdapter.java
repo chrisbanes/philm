@@ -12,7 +12,9 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
-import app.philm.in.Container;
+import javax.inject.Inject;
+
+import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
@@ -25,6 +27,8 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
     private static final String LOG_TAG = MovieSectionedListAdapter.class.getSimpleName();
 
+    @Inject DateFormat mMediumDateFormatter;
+
     private final Activity mActivity;
     private final Date mDate;
 
@@ -33,6 +37,8 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
     public MovieSectionedListAdapter(Activity activity) {
         mActivity = activity;
         mDate = new Date();
+
+        PhilmApplication.from(activity).getObjectGraph().inject(this);
     }
 
     public void setItems(List<ListItem<PhilmMovie>> items) {
@@ -82,10 +88,9 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                         movie.getRatingPercent(), movie.getRatingVotes()));
 
                 final TextView release = (TextView) view.findViewById(R.id.textview_release);
-                DateFormat dateFormat = Container.getInstance(mActivity).getMediumDateFormat();
                 mDate.setTime(movie.getReleasedTime());
                 release.setText(mActivity.getString(R.string.movie_release_date,
-                        dateFormat.format(mDate)));
+                        mMediumDateFormatter.format(mDate)));
 
                 final PhilmImageView imageView =
                         (PhilmImageView) view.findViewById(R.id.imageview_poster);

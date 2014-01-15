@@ -15,6 +15,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:1.3.+'
     compile 'com.squareup.retrofit:retrofit:1.3.+'
     compile 'com.squareup:otto:1.3.+'
+    compile 'com.squareup.dagger:dagger:1.+'
     compile 'com.google.guava:guava:15.+'
 
     compile fileTree(dir: 'libs', include: '*.jar')

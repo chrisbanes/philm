@@ -30,8 +30,7 @@ import dagger.Provides;
                 MovieSectionedListAdapter.class,
                 MovieDetailFragment.class
         },
-        library = true,
-        complete = false
+        library = true
 )
 public class ViewUtilProvider {
 

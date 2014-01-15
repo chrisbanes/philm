@@ -15,8 +15,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(
-        library = true,
-        complete = false
+        library = true
 )
 public class ContextProvider {
 

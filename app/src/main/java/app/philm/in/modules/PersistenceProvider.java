@@ -21,7 +21,6 @@ import dagger.Provides;
 
 @Module(
         library = true,
-        complete = false,
         includes = {
                 ContextProvider.class,
                 UtilProvider.class

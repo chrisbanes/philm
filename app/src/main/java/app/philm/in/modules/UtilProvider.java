@@ -23,7 +23,6 @@ import dagger.Provides;
 
 @Module(
         includes = ContextProvider.class,
-        complete = false,
         library = true
 )
 public class UtilProvider {

@@ -12,7 +12,6 @@ import dagger.Provides;
 
 @Module(
         library = true,
-        complete = false,
         includes = UtilProvider.class
 )
 public class StateProvider {

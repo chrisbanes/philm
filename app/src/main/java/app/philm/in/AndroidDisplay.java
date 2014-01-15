@@ -112,7 +112,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public boolean hasMainFragment() {
-        return mActivity.getFragmentManager().findFragmentById(R.id.fragment_main) != null;
+        return mActivity.getSupportFragmentManager().findFragmentById(R.id.fragment_main) != null;
     }
 
     @Override

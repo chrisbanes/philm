@@ -231,7 +231,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void showMovieDetail(PhilmMovie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    if (TextUtils.isEmpty(movie.getTraktId()) {
+                    if (TextUtils.isEmpty(movie.getTraktId())) {
                         // TODO: Should be do something better here
                     } else {
                         display.showMovieDetailFragment(movie.getTraktId());

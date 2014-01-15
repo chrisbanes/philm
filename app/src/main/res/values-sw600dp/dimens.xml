@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="spacing_micro">4dp</dimen>
-    <dimen name="spacing_minor">8dp</dimen>
-    <dimen name="spacing_major">16dp</dimen>
-
     <dimen name="movie_grid_item_width">140dp</dimen>
-    <dimen name="movie_grid_item_height">240dp</dimen>
+    <!-- Should be movie_grid_item_width * 1.6 -->
+    <dimen name="movie_grid_item_height">224dp</dimen>
+
+    <dimen name="movie_detail_poster_width">100dp</dimen>
+    <!-- Should be movie_detail_poster_width * 1.6 -->
+    <dimen name="movie_detail_poster_height">160dp</dimen>
+
+    <!-- Should be movie_detail_poster_height + movie_detail_fanart_padding -->
+    <dimen name="movie_detail_content_overlay">176dp</dimen>
 
     <dimen name="movie_detail_fanart_height">300dp</dimen>
-    <dimen name="movie_detail_poster_width">100dp</dimen>
-    <dimen name="movie_detail_poster_height">170dp</dimen>
-    <dimen name="movie_detail_content_overlay">178dp</dimen>
+    <dimen name="movie_detail_fanart_padding">@dimen/spacing_major</dimen>
+
     <dimen name="movie_detail_title_textsize">32dp</dimen>
     <dimen name="movie_detail_summary_textsize">18dp</dimen>
 

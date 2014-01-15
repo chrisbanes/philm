@@ -12,18 +12,23 @@
 
     <dimen name="movie_grid_spacing">1dp</dimen>
     <dimen name="movie_grid_item_width">100dp</dimen>
-    <dimen name="movie_grid_item_height">170dp</dimen>
+    <!-- Should be movie_grid_item_width * 1.6 -->
+    <dimen name="movie_grid_item_height">160dp</dimen>
+
+    <dimen name="movie_detail_poster_width">70dp</dimen>
+    <!-- Should be movie_detail_poster_width * 1.6 -->
+    <dimen name="movie_detail_poster_height">105dp</dimen>
+
+    <!-- Should be movie_detail_poster_height + movie_detail_fanart_padding -->
+    <dimen name="movie_detail_content_overlay">113dp</dimen>
 
     <dimen name="movie_detail_fanart_height">200dp</dimen>
-    <dimen name="movie_detail_poster_width">70dp</dimen>
-    <dimen name="movie_detail_poster_height">100dp</dimen>
-    <dimen name="movie_detail_content_overlay">108dp</dimen>
+    <dimen name="movie_detail_fanart_padding">@dimen/spacing_minor</dimen>
+
     <dimen name="movie_detail_title_textsize">26dp</dimen>
     <dimen name="movie_detail_summary_textsize">16dp</dimen>
-
     <dimen name="movie_detail_flag_width">18dp</dimen>
     <dimen name="movie_detail_flag_height">12dp</dimen>
-
     <dimen name="movie_detail_related_item_width">80dp</dimen>
     <dimen name="movie_detail_related_height">120dp</dimen>
 

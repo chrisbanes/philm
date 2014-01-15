@@ -398,7 +398,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             fetchRelatedMovies(movie);
         }
 
-        if (TextUtils.isEmpty(movie.getLocalizedCountryCode())) {
+        if (TextUtils.isEmpty(movie.getReleaseCountryCode())) {
             fetchMovieReleases(movie);
         }
     }

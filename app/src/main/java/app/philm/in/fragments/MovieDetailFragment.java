@@ -64,6 +64,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private MovieDetailInfoLayout mRunTimeInfoLayout;
     private MovieDetailInfoLayout mCertificationInfoLayout;
     private MovieDetailInfoLayout mGenresInfoLayout;
+    private MovieDetailInfoLayout mLanguageInfoLayout;
 
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -120,10 +121,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
 
         mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
-        mCertificationInfoLayout =
-                (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_certification);
+        mCertificationInfoLayout = (MovieDetailInfoLayout)
+                view.findViewById(R.id.layout_info_certification);
         mGenresInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_genres);
         mReleasedInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_released);
+        mLanguageInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_language);
     }
 
     @Override
@@ -255,18 +257,27 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
         if (!TextUtils.isEmpty(mMovie.getGenres())) {
             mGenresInfoLayout.setContentText(mMovie.getGenres());
-            mCertificationInfoLayout.setVisibility(View.VISIBLE);
+            mGenresInfoLayout.setVisibility(View.VISIBLE);
         }
         if (mMovie.getReleasedTime() > 0) {
             DATE.setTime(mMovie.getReleasedTime());
             mReleasedInfoLayout.setContentText(container.getMediumDateFormat().format(DATE));
             mReleasedInfoLayout.setVisibility(View.VISIBLE);
+
+            final String countryCode = mMovie.getReleaseCountryCode();
+            if (!TextUtils.isEmpty(countryCode)) {
+                loadFlagImage(countryCode, mReleasedInfoLayout);
+            }
         }
-        final String countryCode = mMovie.getLocalizedCountryCode();
-        if (!TextUtils.isEmpty(countryCode)) {
-            mReleasedInfoLayout.getFlagImageView()
-                    .loadUrl(mFlagUrlProvider.getCountryFlagUrl(countryCode));
+
+        if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {
+            mLanguageInfoLayout.setContentText(mMovie.getMainLanguageTitle());
+            mLanguageInfoLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void loadFlagImage(final String countryCode, final MovieDetailInfoLayout infoLayout) {
+        infoLayout.getFlagImageView().loadUrl(mFlagUrlProvider.getCountryFlagUrl(countryCode));
     }
 
     private void populateRelatedMovies(final ViewRecycler viewRecycler) {

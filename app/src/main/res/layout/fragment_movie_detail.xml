@@ -135,6 +135,13 @@
                     android:visibility="gone"
                     internal:title="@string/movie_details_genres"/>
 
+            <app.philm.in.view.MovieDetailInfoLayout
+                  android:id="@+id/layout_info_language"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:visibility="gone"
+                  internal:title="@string/movie_details_language"/>
+
             <app.philm.in.view.FontTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

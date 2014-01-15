@@ -7,6 +7,7 @@ import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.Genre;
+import com.uwetrottmann.tmdb.entities.SpokenLanguage;
 
 import java.util.Calendar;
 import java.util.Comparator;
@@ -67,6 +68,8 @@ public class PhilmMovie {
     int runtime;
     String certification;
     String genres;
+
+    String mainLanguageTitle;
 
     long lastFetched;
 
@@ -207,6 +210,13 @@ public class PhilmMovie {
             genres = getTmdbGenreFormatStringList(movie.genres);
         }
 
+        if (!PhilmCollections.isEmpty(movie.spoken_languages)) {
+            SpokenLanguage mainLanguage = movie.spoken_languages.get(0);
+            if (mainLanguage != null) {
+                mainLanguageTitle = mainLanguage.name;
+            }
+        }
+
         runtime = unbox(runtime, movie.runtime);
 
         lastFetched = System.currentTimeMillis();
@@ -339,7 +349,7 @@ public class PhilmMovie {
         return genres;
     }
 
-    public String getLocalizedCountryCode() {
+    public String getReleaseCountryCode() {
         return localizedCountryCode;
     }
 
@@ -359,6 +369,10 @@ public class PhilmMovie {
         }
         // TODO return the slugs
         return null;
+    }
+
+    public String getMainLanguageTitle() {
+        return mainLanguageTitle;
     }
 
     @Override

@@ -60,7 +60,7 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
         gridView.setColumnWidth(res.getDimensionPixelSize(R.dimen.movie_grid_item_width));
         gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
         gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setFastScrollEnabled(true);
+        gridView.setFastScrollAlwaysVisible(true);
 
         return gridView;
     }

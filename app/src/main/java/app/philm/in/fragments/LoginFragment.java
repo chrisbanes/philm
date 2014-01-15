@@ -2,9 +2,11 @@ package app.philm.in.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -14,7 +16,8 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.UserController;
 
-public class LoginFragment extends Fragment implements UserController.UserUi, View.OnClickListener {
+public class LoginFragment extends Fragment implements UserController.UserUi, View.OnClickListener,
+        TextView.OnEditorActionListener {
 
     private static final String KEY_NEW_ACCOUNT = "new_account";
 
@@ -41,7 +44,9 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         mUsername = (EditText) view.findViewById(R.id.edit_login);
+        mUsername.setOnEditorActionListener(this);
         mPassword = (EditText) view.findViewById(R.id.edit_password);
+        mPassword.setOnEditorActionListener(this);
 
         mLoginButton = (Button) view.findViewById(R.id.btn_submit);
         mLoginButton.setOnClickListener(this);
@@ -98,24 +103,41 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_submit:
-                mErrorTextView.setVisibility(View.GONE);
-                if (mCallbacks != null) {
-                    final String username = mUsername.getText().toString().trim();
-                    if (!mCallbacks.isUsernameValid(username)) {
-                        mUsername.setError(getString(R.string.login_username_empty));
-                        return;
-                    }
-                    mUsername.setError(null);
+                submit();
+                break;
+        }
+    }
 
-                    final String password = mPassword.getText().toString().trim();
-                    if (!mCallbacks.isPasswordValid(password)) {
-                        mPassword.setError(getString(R.string.login_password_empty));
-                        return;
-                    }
-                    mPassword.setError(null);
+    @Override
+    public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+        if (textView == mPassword) {
+            switch (actionId) {
+                case EditorInfo.IME_ACTION_DONE:
+                    submit();
+                    return true;
+            }
+        }
+        return false;
+    }
 
-                    mCallbacks.login(username, password);
-                }
+    private void submit() {
+        mErrorTextView.setVisibility(View.GONE);
+        if (mCallbacks != null) {
+            final String username = mUsername.getText().toString().trim();
+            if (!mCallbacks.isUsernameValid(username)) {
+                mUsername.setError(getString(R.string.login_username_empty));
+                return;
+            }
+            mUsername.setError(null);
+
+            final String password = mPassword.getText().toString().trim();
+            if (!mCallbacks.isPasswordValid(password)) {
+                mPassword.setError(getString(R.string.login_password_empty));
+                return;
+            }
+            mPassword.setError(null);
+
+            mCallbacks.login(username, password);
         }
     }
 

@@ -25,7 +25,8 @@
 
         </activity>
 
-        <activity android:name=".AccountActivity">
+        <activity android:name=".AccountActivity"
+              android:windowSoftInputMode="adjustResize">
 
             <intent-filter>
                 <action android:name="philm.intent.action.LOGIN" />

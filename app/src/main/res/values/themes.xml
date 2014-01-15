@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
+    </style>
+
+    <style name="Theme.Philm" parent="Theme.Base.Philm">
+        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
+
+        <item name="android:editTextBackground">@drawable/philmcolor_edit_text_holo_dark</item>
+        <item name="android:textColorHighlight">@color/primary_accent_color_translucent</item>
+        <item name="android:textSelectHandleLeft">
+            @drawable/philmcolor_text_select_handle_left
+        </item>
+        <item name="android:textSelectHandleRight">
+            @drawable/philmcolor_text_select_handle_right
+        </item>
+        <item name="android:textSelectHandle">@drawable/philmcolor_text_select_handle_middle</item>
+
+        <item name="android:listChoiceIndicatorMultiple">
+            @drawable/philmcolor_btn_check_holo_dark
+        </item>
+        <item name="android:listChoiceIndicatorSingle">
+            @drawable/philmcolor_btn_radio_holo_dark
+        </item>
+        <item name="android:listChoiceBackgroundIndicator">
+            @drawable/philmcolor_list_selector_holo_dark
+        </item>
+        <item name="android:activatedBackgroundIndicator">
+            @drawable/philmcolor_activated_background_holo_dark
+        </item>
+        <item name="android:fastScrollThumbDrawable">
+            @drawable/philmcolor_fastscroll_thumb_holo
+        </item>
+
+        <item name="android:dropDownSpinnerStyle">@style/Widget.Philm.Spinner</item>
+
+        <item name="android:progressBarStyleHorizontal">@style/Widget.Philm.ProgressBar</item>
+
+        <item name="android:ratingBarStyle">@style/Widget.Philm.RatingBar</item>
+
+
+    </style>
+
+</resources>

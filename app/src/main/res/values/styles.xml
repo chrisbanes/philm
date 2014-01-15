@@ -1,16 +1,5 @@
 <resources>
 
-    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
-    </style>
-
-
-    <style name="Theme.Philm" parent="Theme.Base.Philm">
-        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
-
-        <item name="android:activatedBackgroundIndicator">
-            @drawable/activated_background_indicator</item>
-    </style>
-
     <style name="Widget.Philm.ActionBar" parent="android:Widget.Holo.ActionBar.Solid">
     </style>
 
@@ -90,5 +79,25 @@
         <item name="android:textSize">22dp</item>
     </style>
 
+    <style name="Widget.Philm.Spinner" parent="android:Widget.Holo.Spinner">
+        <item name="android:background">@drawable/philmcolor_spinner_background_holo_dark</item>
+        <item name="android:dropDownSelector">
+            @drawable/philmcolor_list_selector_holo_dark
+        </item>
+    </style>
+
+    <style name="Widget.Philm.ProgressBar" parent="android:Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">
+            @drawable/philmcolor_progress_horizontal_holo_dark
+        </item>
+        <item name="android:indeterminateDrawable">
+            @drawable/philmcolor_progress_indeterminate_horizontal_holo_dark
+        </item>
+    </style>
+
+    <style name="Widget.Philm.RatingBar" parent="android:Widget.Holo.RatingBar">
+        <item name="android:progressDrawable">@drawable/philmcolor_ratingbar_full_holo_dark</item>
+        <item name="android:indeterminateDrawable">@drawable/philmcolor_ratingbar_full_holo_dark</item>
+    </style>
 
 </resources>

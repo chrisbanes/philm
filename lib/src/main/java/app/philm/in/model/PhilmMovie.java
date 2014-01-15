@@ -275,7 +275,7 @@ public class PhilmMovie {
         return posterUrl;
     }
 
-    public String getFanartUrl() {
+    public String getBackdropUrl() {
         return fanartUrl;
     }
 

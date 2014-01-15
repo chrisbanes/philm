@@ -1097,7 +1097,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         public void onSuccess(TmdbConfiguration result) {
             if (result != null) {
                 mImageHelper.setTmdbBaseUrl(result.getImagesBaseUrl());
-                mImageHelper.setTmdbFanartSizes(result.getImagesBackdropSizes());
+                mImageHelper.setTmdbBackdropSizes(result.getImagesBackdropSizes());
                 mImageHelper.setTmdbPosterSizes(result.getImagesPosterSizes());
             }
 

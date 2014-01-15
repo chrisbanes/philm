@@ -55,7 +55,7 @@ public class PhilmImageView extends ImageView {
     }
 
     public void loadBackdropUrl(PhilmMovie movie, Callback listener) {
-        if (!TextUtils.isEmpty(movie.getFanartUrl())) {
+        if (!TextUtils.isEmpty(movie.getBackdropUrl())) {
             mCallback = listener;
             if (canLoadImage()) {
                 loadUrlImmediate(movie, TYPE_BACKDROP);

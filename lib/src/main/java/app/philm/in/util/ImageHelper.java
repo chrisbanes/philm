@@ -7,14 +7,14 @@ import app.philm.in.model.PhilmMovie;
 public class ImageHelper {
 
     private static final int[] TRAKT_POSTER_SIZES = { 138, 300 };
-    private static final int[] TRAKT_FANART_SIZES = { 218, 940 };
+    private static final int[] TRAKT_BACKDROP_SIZES = { 218, 940 };
 
     private String mTmdbBaseUrl;
     private int[] mTmdbPosterSizes;
-    private int[] mTmdbFanartSizes;
+    private int[] mTmdbBackdropSizes;
 
-    public void setTmdbFanartSizes(int[] tmdbFanartSizes) {
-        mTmdbFanartSizes = tmdbFanartSizes;
+    public void setTmdbBackdropSizes(int[] tmdbBackdropSizes) {
+        mTmdbBackdropSizes = tmdbBackdropSizes;
     }
 
     public void setTmdbPosterSizes(int[] tmdbPosterSizes) {
@@ -26,28 +26,44 @@ public class ImageHelper {
     }
 
     public String getPosterUrl(final PhilmMovie movie, final int width) {
-        final String posterUrl = movie.getPosterUrl();
-        Preconditions.checkNotNull(posterUrl, "movie must have poster url");
+        final String imageUrl = movie.getPosterUrl();
+        Preconditions.checkNotNull(imageUrl, "movie must have poster url");
 
         switch (movie.getPosterType()) {
             case PhilmMovie.TYPE_TMDB:
-                return buildTmdbUrl(mTmdbBaseUrl, posterUrl, selectSize(width, mTmdbPosterSizes));
+                return buildTmdbPosterUrl(imageUrl, width);
             default:
             case PhilmMovie.TYPE_TRAKT:
-                return buildTraktUrl(posterUrl, selectSize(width, TRAKT_POSTER_SIZES));
+                return buildTraktUrl(imageUrl, selectSize(width, TRAKT_POSTER_SIZES));
         }
     }
 
     public String getFanartUrl(final PhilmMovie movie, final int width) {
-        final String fanartUrl = movie.getFanartUrl();
-        Preconditions.checkNotNull(fanartUrl, "movie must have backdrop url");
+        final String imageUrl = movie.getBackdropUrl();
+        Preconditions.checkNotNull(imageUrl, "movie must have backdrop url");
 
         switch (movie.getFanartType()) {
             case PhilmMovie.TYPE_TMDB:
-                return buildTmdbUrl(mTmdbBaseUrl, fanartUrl, selectSize(width, mTmdbFanartSizes));
+                return buildTmdbBackdropUrl(imageUrl, width);
             default:
             case PhilmMovie.TYPE_TRAKT:
-                return buildTraktUrl(fanartUrl, selectSize(width, TRAKT_FANART_SIZES));
+                return buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES));
+        }
+    }
+
+    private String buildTmdbPosterUrl(String imageUrl, int width) {
+        if (mTmdbBaseUrl != null && mTmdbPosterSizes != null) {
+            return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbPosterSizes));
+        } else {
+            return null;
+        }
+    }
+
+    private String buildTmdbBackdropUrl(String imageUrl, int width) {
+        if (mTmdbBaseUrl != null && mTmdbBackdropSizes != null) {
+            return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbBackdropSizes));
+        } else {
+            return null;
         }
     }
 
@@ -95,7 +111,11 @@ public class ImageHelper {
 
     private static String buildTmdbUrl(String baseUrl, String imagePath, int width) {
         StringBuilder url = new StringBuilder(baseUrl);
-        url.append('w').append(width);
+        if (width == Integer.MAX_VALUE) {
+            url.append("original");
+        } else {
+            url.append('w').append(width);
+        }
         url.append(imagePath);
         return url.toString();
     }

@@ -1,5 +1,7 @@
 package app.philm.in.fragments;
 
+import com.google.common.base.Preconditions;
+
 import android.support.v4.app.Fragment;
 
 import java.util.ArrayList;
@@ -36,9 +38,10 @@ public class DiscoverTabFragment extends BasePhilmMovieTabFragment
 
     @Override
     public void setTabs(MovieController.DiscoverTab[] tabs) {
+        Preconditions.checkNotNull(tabs, "tabs cannot be null");
         mTabs = tabs;
 
-        if (getAdapter().getCount() == 0) {
+        if (getAdapter().getCount() != tabs.length) {
             ArrayList<Fragment> fragments = new ArrayList<Fragment>();
             for (int i = 0; i < tabs.length; i++) {
                 fragments.add(createFragmentForTab(tabs[i]));
@@ -63,6 +66,8 @@ public class DiscoverTabFragment extends BasePhilmMovieTabFragment
                 return new InTheatresMoviesFragment();
             case UPCOMING:
                 return new UpcomingMoviesFragment();
+            case RECOMMENDED:
+                return new RecommendedMoviesFragment();
         }
         return null;
     }

@@ -38,6 +38,10 @@ public interface MoviesState extends BaseState {
 
     public void setWatchlist(List<PhilmMovie> watchlist);
 
+    public List<PhilmMovie> getRecommended();
+
+    public void setRecommended(List<PhilmMovie> recommended);
+
     public void setSearchResult(SearchPaginatedResult result);
 
     public SearchPaginatedResult getSearchResult();
@@ -61,6 +65,8 @@ public interface MoviesState extends BaseState {
     public static class SearchResultChangedEvent {}
 
     public static class UpcomingChangedEvent {}
+
+    public static class RecommendedChangedEvent {}
 
     public static class TmdbConfigurationChangedEvent {}
 

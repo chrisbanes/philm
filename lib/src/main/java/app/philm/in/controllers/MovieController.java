@@ -11,6 +11,7 @@ import com.jakewharton.trakt.entities.Response;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.MovieService;
 import com.jakewharton.trakt.services.RateService;
+import com.jakewharton.trakt.services.RecommendationsService;
 import com.squareup.otto.Subscribe;
 import com.uwetrottmann.tmdb.Tmdb;
 import com.uwetrottmann.tmdb.entities.Configuration;
@@ -143,16 +144,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public void onAccountChanged(UserState.AccountChangedEvent event) {
         // Nuke all Movie State...
         mMoviesState.setLibrary(null);
-        mMoviesState.setTrending(null);
         mMoviesState.setWatchlist(null);
+        mMoviesState.setRecommended(null);
         mMoviesState.getImdbIdMovies().clear();
         mMoviesState.getTmdbIdMovies().clear();
 
         // TODO: Clear Database Too
+
+        populateUis();
     }
 
     @Subscribe
     public void onSearchResultChanged(MoviesState.SearchResultChangedEvent event) {
+        populateUis();
+    }
+
+    @Subscribe
+    public void onRecommendedChanged(MoviesState.RecommendedChangedEvent event) {
         populateUis();
     }
 
@@ -227,6 +235,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                         break;
                     case DETAIL:
                         fetchDetailMovie(ui.getRequestParameter());
+                        break;
+                    case RECOMMENDED:
+                        fetchRecommended();
                         break;
                 }
             }
@@ -330,7 +341,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         final MovieQueryType queryType = ui.getMovieQueryType();
 
         if (queryType.requireLogin() && !isLoggedIn()) {
-            mLogger.i(LOG_TAG, queryType.name() + " UI Attached but not logged in");
             return;
         }
 
@@ -360,6 +370,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case UPCOMING:
                 fetchUpcomingIfNeeded();
+                break;
+            case RECOMMENDED:
+                fetchRecommendedIfNeeded();
                 break;
         }
     }
@@ -617,6 +630,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new SearchMoviesRunnable(query, page));
     }
 
+    private void fetchRecommended() {
+        Preconditions.checkState(isLoggedIn(), "Must be logged in to trakt for recommendations");
+        mExecutor.execute(new FetchTraktRecommendationsRunnable());
+    }
+
+    private void fetchRecommendedIfNeeded() {
+        if (PhilmCollections.isEmpty(mMoviesState.getRecommended())) {
+            fetchRecommended();
+        }
+    }
+
     private void fetchTmdbConfiguration() {
         mExecutor.execute(new FetchTmdbConfigurationRunnable());
     }
@@ -782,6 +806,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     items = upcoming.items;
                 }
                 break;
+            case RECOMMENDED:
+                items = mMoviesState.getRecommended();
+                break;
         }
 
         if (requireFiltering && !PhilmCollections.isEmpty(items)) {
@@ -798,7 +825,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void populateMovieDiscoverUi(MovieDiscoverUi ui) {
-        ui.setTabs(DiscoverTab.values());
+        if (isLoggedIn()) {
+            ui.setTabs(DiscoverTab.POPULAR, DiscoverTab.IN_THEATRES, DiscoverTab.UPCOMING,
+                    DiscoverTab.RECOMMENDED);
+        } else {
+            ui.setTabs(DiscoverTab.POPULAR, DiscoverTab.IN_THEATRES, DiscoverTab.UPCOMING);
+        }
     }
 
     private void populateRateUi(MovieRateUi ui) {
@@ -942,12 +974,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, NONE;
+        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, RECOMMENDED,
+        NONE;
 
         public boolean requireLogin() {
             switch (this) {
                 case WATCHLIST:
                 case LIBRARY:
+                case RECOMMENDED:
                     return true;
                 default:
                     return false;
@@ -966,7 +1000,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum DiscoverTab {
-        POPULAR, IN_THEATRES, UPCOMING;
+        POPULAR, IN_THEATRES, UPCOMING, RECOMMENDED;
     }
 
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
@@ -1017,7 +1051,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieDiscoverUi extends MovieUi {
-        void setTabs(DiscoverTab[] tabs);
+        void setTabs(DiscoverTab... tabs);
     }
 
     public interface MovieUiCallbacks {
@@ -1351,6 +1385,27 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (isInited()) {
                     persistWatchlistToDb(movies);
                 }
+            } else {
+                mMoviesState.setWatchlist(null);
+            }
+        }
+    }
+
+    private class FetchTraktRecommendationsRunnable extends BaseMovieRunnable<List<Movie>> {
+        @Override
+        public List<Movie> doBackgroundCall() throws RetrofitError {
+            RecommendationsService.RecommendationsQuery query
+                    = new RecommendationsService.RecommendationsQuery();
+            query.hideCollected(true);
+            query.hideWatchlisted(true);
+
+            return mTraktClient.recommendationsService().movies(query);
+        }
+
+        @Override
+        public void onSuccess(List<Movie> result) {
+            if (!PhilmCollections.isEmpty(result)) {
+                mMoviesState.setRecommended(mTraktMovieEntityMapper.map(result));
             } else {
                 mMoviesState.setWatchlist(null);
             }

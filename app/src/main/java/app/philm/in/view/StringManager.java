@@ -36,6 +36,8 @@ public class StringManager {
                 return R.string.in_theatres_title;
             case UPCOMING:
                 return R.string.upcoming_title;
+            case RECOMMENDED:
+                return R.string.recommended_title;
         }
         return 0;
     }

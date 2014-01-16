@@ -221,9 +221,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @Override
             public void refresh() {
                 switch (ui.getMovieQueryType()) {
-                    case POPULAR:
-                        fetchPopular();
-                        break;
                     case TRENDING:
                         fetchTrending();
                         break;
@@ -236,8 +233,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     case DETAIL:
                         fetchDetailMovie(ui.getRequestParameter());
                         break;
+                    case POPULAR:
+                        fetchPopular();
+                        break;
                     case RECOMMENDED:
                         fetchRecommended();
+                        break;
+                    case UPCOMING:
+                        fetchUpcoming();
+                        break;
+                    case NOW_PLAYING:
+                        fetchNowPlaying();
                         break;
                 }
             }
@@ -1559,6 +1565,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 for (int i = 0; i < mIds.length; i++) {
                     onSuccessfulAction(mIds[i]);
                 }
+                populateUis();
             }
         }
 
@@ -1567,10 +1574,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             if (movie != null) {
                 movieRequiresModifying(movie);
                 checkPhilmState(movie);
-                populateUis();
-            } else {
-                // TODO Make
-                fetchDetailMovie(movieId);
             }
         }
     }

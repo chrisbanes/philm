@@ -366,9 +366,10 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView> extends 
 
                 final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(checkedItems.size());
                 for (int i = 0, z = checkedItems.size(); i < z; i++) {
-                    if (checkedItems.get(i)) {
+                    if (checkedItems.valueAt(i)) {
+                        final int index = checkedItems.keyAt(i);
                         ListItem<PhilmMovie> listItem =
-                                (ListItem<PhilmMovie>) listView.getItemAtPosition(i);
+                                (ListItem<PhilmMovie>) listView.getItemAtPosition(index);
                         if (listItem.getType() == ListItem.TYPE_ITEM) {
                             movies.add(listItem.getItem());
                         }

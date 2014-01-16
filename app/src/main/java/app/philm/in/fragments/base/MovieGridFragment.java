@@ -26,6 +26,21 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final GridView gridView = getListView();
+        final Resources res = getResources();
+
+        gridView.setNumColumns(GridView.AUTO_FIT);
+        gridView.setColumnWidth(res.getDimensionPixelSize(R.dimen.movie_grid_item_width));
+        gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
+        gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
+        gridView.setFastScrollAlwaysVisible(true);
+        gridView.setDrawSelectorOnTop(true);
+    }
+
+    @Override
     public void onListItemClick(GridView l, View v, int position, long id) {
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
@@ -53,16 +68,7 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
 
     @Override
     protected GridView createListView(Context context) {
-        GridView gridView = new GridView(context);
-        Resources res = getResources();
-
-        gridView.setNumColumns(GridView.AUTO_FIT);
-        gridView.setColumnWidth(res.getDimensionPixelSize(R.dimen.movie_grid_item_width));
-        gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setFastScrollAlwaysVisible(true);
-
-        return gridView;
+        return new GridView(context);
     }
 
 }

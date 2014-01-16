@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/movie_grid_item_height"
-        android:foreground="?android:attr/selectableItemBackground">
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="@dimen/movie_grid_item_height"
+             android:foreground="?android:attr/activatedBackgroundIndicator">
 
     <app.philm.in.view.PhilmImageView
             android:id="@+id/imageview_poster"

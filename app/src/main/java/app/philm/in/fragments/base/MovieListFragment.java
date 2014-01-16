@@ -26,6 +26,14 @@ public abstract class MovieListFragment extends BasePhilmMovieListFragment<ListV
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ListView lv = getListView();
+        lv.setDrawSelectorOnTop(true);
+    }
+
+    @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);

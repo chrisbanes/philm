@@ -257,9 +257,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @Override
             public void toggleMovieSeen(PhilmMovie movie) {
                 if (movie.isWatched()) {
-                    markMovieUnseen(movie.getTraktId());
+                    markMoviesUnseen(movie.getTraktId());
                 } else {
-                    markMovieSeen(movie.getTraktId());
+                    markMoviesSeen(movie.getTraktId());
                 }
             }
 
@@ -278,6 +278,57 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     removeFromCollection(movie.getTraktId());
                 } else {
                     addToCollection(movie.getTraktId());
+                }
+            }
+
+            @Override
+            public void setMoviesInCollection(List<PhilmMovie> movies, boolean inCollection) {
+                final ArrayList<String> ids = new ArrayList<String>(movies.size());
+                for (PhilmMovie movie : movies) {
+                    if (inCollection != movie.inCollection()) {
+                        ids.add(movie.getTraktId());
+                    }
+                }
+
+                final String[] idsArray = new String[ids.size()];
+                if (inCollection) {
+                    addToCollection(ids.toArray(idsArray));
+                } else {
+                    removeFromCollection(ids.toArray(idsArray));
+                }
+            }
+
+            @Override
+            public void setMoviesInWatchlist(List<PhilmMovie> movies, boolean inWatchlist) {
+                final ArrayList<String> ids = new ArrayList<String>(movies.size());
+                for (PhilmMovie movie : movies) {
+                    if (inWatchlist != movie.inWatchlist()) {
+                        ids.add(movie.getTraktId());
+                    }
+                }
+
+                final String[] idsArray = new String[ids.size()];
+                if (inWatchlist) {
+                    addToWatchlist(ids.toArray(idsArray));
+                } else {
+                    removeFromWatchlist(ids.toArray(idsArray));
+                }
+            }
+
+            @Override
+            public void setMoviesSeen(List<PhilmMovie> movies, boolean seen) {
+                final ArrayList<String> ids = new ArrayList<String>(movies.size());
+                for (PhilmMovie movie : movies) {
+                    if (seen != movie.isWatched()) {
+                        ids.add(movie.getTraktId());
+                    }
+                }
+
+                final String[] idsArray = new String[ids.size()];
+                if (seen) {
+                    markMoviesSeen(ids.toArray(idsArray));
+                } else {
+                    markMoviesUnseen(ids.toArray(idsArray));
                 }
             }
 
@@ -402,12 +453,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void addToCollection(String imdbId) {
-        mExecutor.execute(new AddMovieToCollectionRunnable(imdbId));
+    private void addToCollection(String... ids) {
+        mExecutor.execute(new AddMovieToCollectionRunnable(ids));
     }
 
-    private void addToWatchlist(String imdbId) {
-        mExecutor.execute(new AddMovieToWatchlistRunnable(imdbId));
+    private void addToWatchlist(String... ids) {
+        mExecutor.execute(new AddMovieToWatchlistRunnable(ids));
     }
 
     private void checkDetailMovieResult(PhilmMovie movie) {
@@ -718,12 +769,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mExecutor.execute(new SubmitMovieRatingRunnable(imdbId, rating));
     }
 
-    private void markMovieSeen(String imdbId) {
-        mExecutor.execute(new MarkMovieSeenRunnable(imdbId));
+    private void markMoviesSeen(String... ids) {
+        mExecutor.execute(new MarkMovieSeenRunnable(ids));
     }
 
-    private void markMovieUnseen(String imdbId) {
-        mExecutor.execute(new MarkMovieUnseenRunnable(imdbId));
+    private void markMoviesUnseen(String... ids) {
+        mExecutor.execute(new MarkMovieUnseenRunnable(ids));
     }
 
     private void persistLibraryToDb(final List<PhilmMovie> movies) {
@@ -819,6 +870,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             ui.setItems(null);
         } else if (PhilmCollections.isEmpty(sections)) {
             ui.setItems(createListItemList(items));
+
+            if (isLoggedIn()) {
+                ui.allowedBatchOperations(MovieOperation.MARK_SEEN,
+                        MovieOperation.ADD_TO_COLLECTION, MovieOperation.ADD_TO_WATCHLIST);
+            } else {
+                ui.disableBatchOperations();
+            }
         } else {
             ui.setItems(createSectionedListItemList(items, sections, sectionProcessingOrder));
         }
@@ -866,12 +924,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return null;
     }
 
-    private void removeFromCollection(String imdbId) {
-        mExecutor.execute(new RemoveMovieFromCollectionRunnable(imdbId));
+    private void removeFromCollection(String... ids) {
+        mExecutor.execute(new RemoveMovieFromCollectionRunnable(ids));
     }
 
-    private void removeFromWatchlist(String imdbId) {
-        mExecutor.execute(new RemoveMovieFromWatchlistRunnable(imdbId));
+    private void removeFromWatchlist(String... ids) {
+        mExecutor.execute(new RemoveMovieFromWatchlistRunnable(ids));
     }
 
     private void removeMutuallyExclusiveFilters(final Filter filter) {
@@ -999,6 +1057,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    public static enum MovieOperation {
+        MARK_SEEN, ADD_TO_COLLECTION, ADD_TO_WATCHLIST
+    }
+
     public static enum DiscoverTab {
         POPULAR, IN_THEATRES, UPCOMING, RECOMMENDED;
     }
@@ -1021,6 +1083,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void setFiltersVisibility(boolean visible);
 
         void showActiveFilters(Set<Filter> filters);
+
+        void allowedBatchOperations(MovieOperation... operations);
+
+        void disableBatchOperations();
     }
 
     public interface SearchMovieUi extends MovieListUi {
@@ -1073,6 +1139,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void toggleInWatchlist(PhilmMovie movie);
 
         void toggleInCollection(PhilmMovie movie);
+
+        void setMoviesSeen(List<PhilmMovie> movies, boolean seen);
+
+        void setMoviesInWatchlist(List<PhilmMovie> movies, boolean inWatchlist);
+
+        void setMoviesInCollection(List<PhilmMovie> movies, boolean inCollection);
 
         void search(String query);
 
@@ -1445,16 +1517,28 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private abstract class BaseMovieActionTraktRunnable extends BaseMovieRunnable<Response> {
-        private final String mId;
+        private final String[] mIds;
 
-        BaseMovieActionTraktRunnable(String id) {
-            mId = Preconditions.checkNotNull(id, "id cannot be null");
+        BaseMovieActionTraktRunnable(String[] id) {
+            mIds = Preconditions.checkNotNull(id, "id cannot be null");
         }
 
         @Override
         public final Response doBackgroundCall() throws RetrofitError {
-            MovieService.SeenMovie seenMovie = new MovieService.SeenMovie(mId);
-            return doTraktCall(mTraktClient, new MovieService.Movies(seenMovie));
+            MovieService.Movies body;
+
+            if (mIds.length == 1) {
+                body = new MovieService.Movies(new MovieService.SeenMovie(mIds[0]));
+            } else {
+                final ArrayList<MovieService.SeenMovie> seenMovies
+                        = new ArrayList<MovieService.SeenMovie>(mIds.length);
+                for (int i = 0 ; i < mIds.length ; i++) {
+                    seenMovies.add(new MovieService.SeenMovie(mIds[i]));
+                }
+                body = new MovieService.Movies(seenMovies);
+            }
+
+            return doTraktCall(mTraktClient, body);
         }
 
         public abstract Response doTraktCall(Trakt trakt, MovieService.Movies body);
@@ -1462,7 +1546,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         @Override
         public final void onSuccess(Response result) {
             if (result instanceof ActionResponse) {
-                onActionCompleted(((ActionResponse) result).skipped == 0);
+                onActionCompleted(((ActionResponse) result).skipped < mIds.length);
             } else {
                 onActionCompleted("success".equals(result.status));
             }
@@ -1472,14 +1556,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         private void onActionCompleted(final boolean successful) {
             if (successful) {
-                PhilmMovie movie = getMovie(mId);
-                if (movie != null) {
-                    movieRequiresModifying(movie);
-                    checkPhilmState(movie);
-                    populateUis();
-                } else {
-                    fetchDetailMovie(mId);
+                for (int i = 0; i < mIds.length; i++) {
+                    onSuccessfulAction(mIds[i]);
                 }
+            }
+        }
+
+        private void onSuccessfulAction(final String movieId) {
+            PhilmMovie movie = getMovie(movieId);
+            if (movie != null) {
+                movieRequiresModifying(movie);
+                checkPhilmState(movie);
+                populateUis();
+            } else {
+                // TODO Make
+                fetchDetailMovie(movieId);
             }
         }
     }
@@ -1614,8 +1705,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private class MarkMovieSeenRunnable extends BaseMovieActionTraktRunnable {
 
-        MarkMovieSeenRunnable(String imdbId) {
-            super(imdbId);
+        MarkMovieSeenRunnable(String... ids) {
+            super(ids);
         }
 
         @Override
@@ -1631,8 +1722,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private class MarkMovieUnseenRunnable extends BaseMovieActionTraktRunnable {
 
-        MarkMovieUnseenRunnable(String imdbId) {
-            super(imdbId);
+        MarkMovieUnseenRunnable(String... ids) {
+            super(ids);
         }
 
         @Override
@@ -1678,8 +1769,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class AddMovieToWatchlistRunnable extends BaseMovieActionTraktRunnable {
-        AddMovieToWatchlistRunnable(String id) {
-            super(id);
+
+        AddMovieToWatchlistRunnable(String... ids) {
+            super(ids);
         }
 
         @Override
@@ -1694,8 +1786,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class RemoveMovieFromWatchlistRunnable extends BaseMovieActionTraktRunnable {
-        RemoveMovieFromWatchlistRunnable(String id) {
-            super(id);
+
+        RemoveMovieFromWatchlistRunnable(String... ids) {
+            super(ids);
         }
 
         @Override
@@ -1710,8 +1803,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class AddMovieToCollectionRunnable extends BaseMovieActionTraktRunnable {
-        AddMovieToCollectionRunnable(String id) {
-            super(id);
+
+        AddMovieToCollectionRunnable(String... ids) {
+            super(ids);
         }
 
         @Override
@@ -1726,8 +1820,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class RemoveMovieFromCollectionRunnable extends BaseMovieActionTraktRunnable {
-        RemoveMovieFromCollectionRunnable(String id) {
-            super(id);
+
+        RemoveMovieFromCollectionRunnable(String... ids) {
+            super(ids);
         }
 
         @Override

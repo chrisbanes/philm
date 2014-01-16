@@ -12,8 +12,7 @@
 
     <dimen name="movie_grid_spacing">1dp</dimen>
     <dimen name="movie_grid_item_width">100dp</dimen>
-    <!-- Should be movie_grid_item_width * 1.6 -->
-    <dimen name="movie_grid_item_height">160dp</dimen>
+    <dimen name="movie_grid_item_height">170dp</dimen>
 
     <dimen name="movie_detail_poster_width">70dp</dimen>
     <!-- Should be movie_detail_poster_width * 1.6 -->

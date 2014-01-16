@@ -20,12 +20,14 @@ import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -80,6 +82,8 @@ public class PinnedSectionListView extends ListView {
     private GradientDrawable mShadowDrawable;
     private int mSectionsDistanceY;
     private int mShadowHeight;
+
+    private Paint mPinnedPaint;
 
     /**
      * Delegating listener, can be null.
@@ -149,9 +153,6 @@ public class PinnedSectionListView extends ListView {
                 }
             }
         }
-
-        ;
-
     };
 
     /**
@@ -196,7 +197,10 @@ public class PinnedSectionListView extends ListView {
     private void initView() {
         setOnScrollListener(mOnScrollListener);
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        initShadow(true);
+        initShadow(false);
+
+        mPinnedPaint = new Paint();
+        mPinnedPaint.setColor(getThemeBackgroundColor());
     }
 
     //-- public API methods
@@ -224,6 +228,18 @@ public class PinnedSectionListView extends ListView {
                 mShadowDrawable = null;
                 mShadowHeight = 0;
             }
+        }
+    }
+
+    private int getThemeBackgroundColor() {
+        final TypedValue value = new TypedValue();
+        getContext().getTheme()
+                .resolveAttribute(android.R.attr.colorBackground,  value, true);
+        switch (value.type) {
+            case TypedValue.TYPE_REFERENCE:
+                return getResources().getColor(value.resourceId);
+            default:
+                return value.data;
         }
     }
 
@@ -471,6 +487,13 @@ public class PinnedSectionListView extends ListView {
 
             canvas.translate(pLeft, pTop + mTranslateY);
             drawChild(canvas, mPinnedSection.view, getDrawingTime());
+
+            if (mTranslateY < 0) {
+                final float percentage = Math.abs(mTranslateY) / (float) view.getHeight();
+                mPinnedPaint.setAlpha(Math.round(percentage * Byte.MAX_VALUE));
+                canvas.drawRect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom(),
+                        mPinnedPaint);
+            }
 
             if (mShadowDrawable != null && mSectionsDistanceY > 0) {
                 mShadowDrawable.setBounds(mPinnedSection.view.getLeft(),

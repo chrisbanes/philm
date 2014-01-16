@@ -12,7 +12,7 @@ import app.philm.in.modules.ContextProvider;
 import app.philm.in.modules.ViewUtilProvider;
 import dagger.ObjectGraph;
 
-public class PhilmApplication extends Application {
+public class PhilmApplication extends Application implements Injector {
 
     public static PhilmApplication from(Context context) {
         return (PhilmApplication) context.getApplicationContext();
@@ -41,5 +41,10 @@ public class PhilmApplication extends Application {
 
     public ObjectGraph getObjectGraph() {
         return mObjectGraph;
+    }
+
+    @Override
+    public void inject(Object object) {
+        mObjectGraph.inject(object);
     }
 }

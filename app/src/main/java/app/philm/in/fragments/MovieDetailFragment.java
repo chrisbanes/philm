@@ -87,7 +87,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PhilmApplication.from(getActivity()).getObjectGraph().inject(this);
+        PhilmApplication.from(getActivity()).inject(this);
 
         setHasOptionsMenu(true);
     }

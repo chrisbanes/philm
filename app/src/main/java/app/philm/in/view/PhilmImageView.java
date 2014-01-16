@@ -30,7 +30,7 @@ public class PhilmImageView extends ImageView {
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        PhilmApplication.from(context).getObjectGraph().inject(this);
+        PhilmApplication.from(context).inject(this);
     }
 
     public void loadPosterUrl(PhilmMovie movie) {

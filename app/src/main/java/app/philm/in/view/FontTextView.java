@@ -34,7 +34,7 @@ public class FontTextView extends TextView {
     public FontTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        PhilmApplication.from(context).getObjectGraph().inject(this);
+        PhilmApplication.from(context).inject(this);
 
         if (!isInEditMode()) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FontTextView);

@@ -31,7 +31,7 @@ public class RatingCircleView extends ImageView {
 
     public RatingCircleView(Context context, AttributeSet attrs,int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        PhilmApplication.from(context).getObjectGraph().inject(this);
+        PhilmApplication.from(context).inject(this);
 
         mDrawable = new PercentageDrawable();
         setImageDrawable(mDrawable);

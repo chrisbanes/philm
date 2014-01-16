@@ -38,7 +38,7 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
         mActivity = activity;
         mDate = new Date();
 
-        PhilmApplication.from(activity).getObjectGraph().inject(this);
+        PhilmApplication.from(activity).inject(this);
     }
 
     public void setItems(List<ListItem<PhilmMovie>> items) {

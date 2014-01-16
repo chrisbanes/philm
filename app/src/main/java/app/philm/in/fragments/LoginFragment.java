@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import app.philm.in.PhilmApplication;
@@ -24,14 +23,8 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     private UserController.UserUiCallbacks mCallbacks;
 
     private EditText mUsername;
-
     private EditText mPassword;
-
     private Button mLoginButton;
-
-    private TextView mErrorTextView;
-
-    private ProgressBar mProgressBar;
 
     public static LoginFragment create() {
         LoginFragment fragment = new LoginFragment();
@@ -50,9 +43,6 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
 
         mLoginButton = (Button) view.findViewById(R.id.btn_submit);
         mLoginButton.setOnClickListener(this);
-
-        mErrorTextView = (TextView) view.findViewById(R.id.textview_error_message);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressbar);
 
         return view;
     }
@@ -76,15 +66,14 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
 
     @Override
     public void showLoadingProgress(boolean visible) {
-        mProgressBar.setVisibility(visible ? View.VISIBLE : View.GONE);
+        getActivity().setProgressBarIndeterminateVisibility(visible);
     }
 
     @Override
     public void showError(UserController.Error error) {
         switch (error) {
             case BAD_AUTH:
-                mErrorTextView.setText(R.string.login_authorization_error);
-                mErrorTextView.setVisibility(View.VISIBLE);
+                mPassword.setError(getString(R.string.login_authorization_error));
                 break;
         }
     }
@@ -121,7 +110,8 @@ public class LoginFragment extends Fragment implements UserController.UserUi, Vi
     }
 
     private void submit() {
-        mErrorTextView.setVisibility(View.GONE);
+        mPassword.setError(null);
+
         if (mCallbacks != null) {
             final String username = mUsername.getText().toString().trim();
             if (!mCallbacks.isUsernameValid(username)) {

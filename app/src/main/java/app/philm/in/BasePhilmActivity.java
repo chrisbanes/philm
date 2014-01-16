@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
+import android.view.Window;
 
 import app.philm.in.controllers.MainController;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -22,6 +23,11 @@ public abstract class BasePhilmActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
         mMainController = PhilmApplication.from(this).getMainController();
+
+        // Request Progress Bar in Action Bar
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
+        // Record launch intent
         mLaunchIntent = getIntent();
     }
 
@@ -82,7 +88,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         Crouton.clearCroutonsForActivity(this);
+        super.onDestroy();
     }
 }

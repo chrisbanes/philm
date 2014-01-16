@@ -18,8 +18,8 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="@string/login_prompt"
-              style="@style/Widget.Philm.Movie.Login.Title"
-              android:padding="@dimen/spacing_major" />
+              android:padding="@dimen/spacing_major"
+              style="@style/Widget.Philm.Movie.Login.Title" />
 
         <EditText
               android:id="@+id/edit_login"
@@ -29,6 +29,7 @@
               android:maxLines="1"
               android:layout_marginTop="@dimen/spacing_major"
               android:singleLine="true"
+              android:inputType="textNoSuggestions"
               android:imeOptions="actionNext"
               android:nextFocusDown="@+id/edit_password" />
 
@@ -41,21 +42,6 @@
               android:singleLine="true"
               android:imeOptions="actionDone"
               android:layout_marginTop="@dimen/spacing_major" />
-
-        <app.philm.in.view.FontTextView
-              android:id="@+id/textview_error_message"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/spacing_major"
-              android:visibility="gone" />
-
-        <ProgressBar
-              android:id="@+id/progressbar"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:visibility="gone"
-              android:layout_marginTop="@dimen/spacing_major"
-              style="?android:attr/progressBarStyleLarge" />
 
     </LinearLayout>
 

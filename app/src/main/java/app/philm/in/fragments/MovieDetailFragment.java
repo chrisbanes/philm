@@ -3,6 +3,7 @@ package app.philm.in.fragments;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.FlagUrlProvider;
+import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.ViewUtils;
 import app.philm.in.view.CheatSheet;
@@ -50,6 +52,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private PhilmMovie mMovie;
 
+    @Inject ImageHelper mImageHelper;
     @Inject FlagUrlProvider mFlagUrlProvider;
     @Inject DateFormat mMediumDateFormatter;
 
@@ -280,7 +283,13 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     }
 
     private void loadFlagImage(final String countryCode, final MovieDetailInfoLayout infoLayout) {
-        infoLayout.getFlagImageView().loadUrl(mFlagUrlProvider.getCountryFlagUrl(countryCode));
+        final String flagUrl = mFlagUrlProvider.getCountryFlagUrl(countryCode);
+        final int width = getResources().getDimensionPixelSize(R.dimen.movie_detail_flag_width);
+        final int height = getResources().getDimensionPixelSize(R.dimen.movie_detail_flag_height);
+
+        Picasso.with(getActivity())
+                .load(mImageHelper.getResizedUrl(flagUrl, width, height, "gif"))
+                .into(infoLayout);
     }
 
     private void populateRelatedMovies(final ViewRecycler viewRecycler) {

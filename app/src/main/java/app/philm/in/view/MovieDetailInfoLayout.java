@@ -1,21 +1,25 @@
 package app.philm.in.view;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.ViewStub;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.util.TextUtils;
 
-public class MovieDetailInfoLayout extends LinearLayout {
+public class MovieDetailInfoLayout extends LinearLayout implements Target {
 
     private final TextView mTitleTextView;
     private final TextView mContentTextView;
-    private PhilmFlagImageView mFlagImageView;
 
     public MovieDetailInfoLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,15 +46,24 @@ public class MovieDetailInfoLayout extends LinearLayout {
         return mContentTextView;
     }
 
-    public PhilmFlagImageView getFlagImageView() {
-        if (mFlagImageView == null) {
-            ViewStub stub = (ViewStub) findViewById(R.id.stub_flag);
-            mFlagImageView = (PhilmFlagImageView) stub.inflate();
-        }
-        return mFlagImageView;
-    }
-
     public void setContentText(CharSequence text) {
         mContentTextView.setText(text);
+    }
+
+    @Override
+    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+        mContentTextView.setCompoundDrawablesWithIntrinsicBounds(
+                new BitmapDrawable(getResources(), bitmap),
+                null, null, null);
+    }
+
+    @Override
+    public void onBitmapFailed(Drawable drawable) {
+        mContentTextView.setCompoundDrawables(null, null, null, null);
+    }
+
+    @Override
+    public void onPrepareLoad(Drawable drawable) {
+        mContentTextView.setCompoundDrawables(null, null, null, null);
     }
 }

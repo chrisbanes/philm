@@ -51,6 +51,15 @@ public class ImageHelper {
         }
     }
 
+    public String getResizedUrl(String url, int width, int height, String format) {
+        StringBuffer sb = new StringBuffer("http://api.imgble.com/");
+        sb.append(url);
+        sb.append('/').append(width);
+        sb.append('/').append(height);
+        sb.append("/").append(format);
+        return sb.toString();
+    }
+
     private String buildTmdbPosterUrl(String imageUrl, int width) {
         if (mTmdbBaseUrl != null && mTmdbPosterSizes != null) {
             return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbPosterSizes));

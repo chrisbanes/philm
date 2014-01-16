@@ -4,34 +4,24 @@
        xmlns:internal="http://schemas.android.com/apk/res-auto">
 
     <app.philm.in.view.FontTextView
-            android:id="@android:id/text1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="1dp"
-            android:layout_marginRight="@dimen/spacing_micro"
-            android:gravity="left|center_vertical"
-            internal:font="roboto_condensed_bold"/>
-
-    <View android:layout_weight="1"
+          android:id="@android:id/text1"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_width="0px" />
+          android:padding="1dp"
+          android:layout_marginRight="@dimen/spacing_micro"
+          android:gravity="left|center_vertical"
+          internal:font="roboto_condensed_bold" />
 
-    <ViewStub
-            android:id="@+id/stub_flag"
-            android:inflatedId="@+id/imageview_flag"
-            android:layout="@layout/include_imageview_flag"
-            android:layout_height="@dimen/movie_detail_flag_height"
-            android:layout_width="@dimen/movie_detail_flag_width"
-            android:layout_marginLeft="@dimen/spacing_minor"
-            android:layout_gravity="center_vertical"/>
+    <View android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_weight="1" />
 
     <app.philm.in.view.FontTextView
-            android:id="@android:id/text2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_micro"
-            android:padding="1dp"
-            android:gravity="right|center_vertical"
-            internal:font="roboto_condensed"/>
+          android:id="@android:id/text2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:drawablePadding="@dimen/spacing_micro"
+          android:padding="1dp"
+          internal:font="roboto_condensed" />
 
 </merge>

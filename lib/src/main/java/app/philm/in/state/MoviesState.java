@@ -20,6 +20,12 @@ public interface MoviesState extends BaseState {
 
     public Map<String, PhilmMovie> getImdbIdMovies();
 
+    public PhilmMovie getMovie(String id);
+
+    public PhilmMovie getMovie(int id);
+
+    public void putMovie(PhilmMovie movie);
+
     public List<PhilmMovie> getLibrary();
 
     public void setLibrary(List<PhilmMovie> library);

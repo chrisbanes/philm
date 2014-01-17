@@ -2,14 +2,13 @@ package app.philm.in.tasks;
 
 import com.uwetrottmann.tmdb.entities.ResultsPage;
 
-import app.philm.in.controllers.MovieController;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
 public class FetchTmdbUpcomingRunnable extends BaseTmdbPaginatedRunnable {
 
-    FetchTmdbUpcomingRunnable(MovieController.MovieUi ui, int page) {
-        super(ui, page);
+    public FetchTmdbUpcomingRunnable(int page) {
+        super(page);
     }
 
     @Override

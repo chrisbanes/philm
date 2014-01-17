@@ -1,7 +1,6 @@
 package app.philm.in.tasks;
 
 import com.google.gson.Gson;
-
 import com.uwetrottmann.tmdb.Tmdb;
 import com.uwetrottmann.tmdb.entities.Configuration;
 

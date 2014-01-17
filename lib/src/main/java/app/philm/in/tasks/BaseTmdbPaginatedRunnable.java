@@ -4,15 +4,13 @@ import com.uwetrottmann.tmdb.entities.ResultsPage;
 
 import java.util.ArrayList;
 
-import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.state.MoviesState;
 
 abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> {
     private final int mPage;
 
-    BaseTmdbPaginatedRunnable(MovieController.MovieUi ui, int page) {
-        super(ui);
+    BaseTmdbPaginatedRunnable(int page) {
         mPage = page;
     }
 

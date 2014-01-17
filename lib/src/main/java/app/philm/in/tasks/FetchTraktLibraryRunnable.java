@@ -1,12 +1,10 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.entities.Movie;
 
 import java.util.List;
 
-import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
@@ -15,8 +13,7 @@ public class FetchTraktLibraryRunnable extends BaseMovieRunnable<List<Movie>> {
 
     private final String mUsername;
 
-    public FetchTraktLibraryRunnable(MovieController.MovieUi ui, String username) {
-        super(ui);
+    public FetchTraktLibraryRunnable(String username) {
         mUsername = Preconditions.checkNotNull(username, "username cannot be null");
     }
 
@@ -30,10 +27,7 @@ public class FetchTraktLibraryRunnable extends BaseMovieRunnable<List<Movie>> {
         if (!PhilmCollections.isEmpty(result)) {
             List<PhilmMovie> movies = mLazyTraktMovieEntityMapper.get().map(result);
             mMoviesState.setLibrary(movies);
-
-            if (isInited()) {
-                persistLibraryToDb(movies);
-            }
+            mDbHelper.get().mergeLibrary(movies);
         } else {
             mMoviesState.setLibrary(null);
         }

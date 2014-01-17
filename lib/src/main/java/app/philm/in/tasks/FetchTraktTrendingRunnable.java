@@ -4,14 +4,12 @@ import com.jakewharton.trakt.entities.Movie;
 
 import java.util.List;
 
-import app.philm.in.controllers.MovieController;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
-public class FetchTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
+public class FetchTraktTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
 
-    public FetchTrendingRunnable(MovieController.MovieUi ui) {
-        super(ui);
+    public FetchTraktTrendingRunnable() {
     }
 
     @Override

@@ -5,14 +5,12 @@ import com.jakewharton.trakt.services.RecommendationsService;
 
 import java.util.List;
 
-import app.philm.in.controllers.MovieController;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
 public class FetchTraktRecommendationsRunnable extends BaseMovieRunnable<List<Movie>> {
 
-    public FetchTraktRecommendationsRunnable(MovieController.MovieUi ui) {
-        super(ui);
+    public FetchTraktRecommendationsRunnable() {
     }
 
     @Override

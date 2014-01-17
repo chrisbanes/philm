@@ -1,62 +1,96 @@
 package app.philm.in.tasks;
 
-import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.Trakt;
 import com.uwetrottmann.tmdb.Tmdb;
 
-import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import app.philm.in.controllers.MovieController;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.network.NetworkError;
+import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.MoviesState;
+import app.philm.in.util.PhilmCollections;
 import dagger.Lazy;
 import retrofit.RetrofitError;
 
-abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
+public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
+
+    @Inject MoviesState mMoviesState;
 
     @Inject Lazy<Tmdb> mLazyTmdbClient;
     @Inject Lazy<Trakt> mLazyTraktClient;
-    @Inject MoviesState mMoviesState;
+
+    @Inject Lazy<AsyncDatabaseHelper> mDbHelper;
 
     @Inject Lazy<MoviesState.TraktMovieEntityMapper> mLazyTraktMovieEntityMapper;
     @Inject Lazy<MoviesState.TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
 
-    private final WeakReference<MovieController.MovieUi> mMovieUiWeakReference;
+    private MovieTaskCallback mCallback;
 
-    public BaseMovieRunnable(MovieController.MovieUi ui) {
-        Preconditions.checkNotNull(ui, "ui cannot be null");
-        mMovieUiWeakReference = new WeakReference<MovieController.MovieUi>(ui);
+    protected boolean hasCallback() {
+        return mCallback != null;
+    }
+
+    public void setCallback(MovieTaskCallback callback) {
+        mCallback = callback;
     }
 
     @Override
     public void onPreTraktCall() {
-        MovieController.MovieUi ui = getUi();
-        if (ui != null) {
-            ui.showLoadingProgress(true);
+        if (mCallback != null) {
+            mCallback.showLoadingProgress(true);
         }
     }
 
     @Override
     public void onError(RetrofitError re) {
-        MovieController.MovieUi ui = getUi();
-        if (ui != null) {
-            ui.showError(NetworkError.from(re));
+        if (mCallback != null) {
+            mCallback.showError(NetworkError.from(re));
         }
     }
 
     @Override
     public void onFinished() {
-        MovieController.MovieUi ui = getUi();
-        if (ui != null) {
-            ui.showLoadingProgress(false);
+        if (mCallback != null) {
+            mCallback.showLoadingProgress(false);
         }
     }
 
-    protected MovieController.MovieUi getUi() {
-        return mMovieUiWeakReference.get();
+    protected MovieTaskCallback getCallback() {
+        return mCallback;
+    }
+
+    protected void checkPhilmState(PhilmMovie movie) {
+        final List<PhilmMovie> library = mMoviesState.getLibrary();
+        final List<PhilmMovie> watchlist = mMoviesState.getWatchlist();
+
+        if (!PhilmCollections.isEmpty(library)) {
+            final boolean shouldBeInLibrary = movie.isWatched() || movie.inCollection();
+
+            if (shouldBeInLibrary != library.contains(movie)) {
+                if (shouldBeInLibrary) {
+                    library.add(movie);
+                    Collections.sort(library, PhilmMovie.COMPARATOR);
+                } else {
+                    library.remove(movie);
+                }
+            }
+        }
+
+        if (!PhilmCollections.isEmpty(watchlist)) {
+            final boolean shouldBeInWatchlist = movie.inWatchlist();
+            if (shouldBeInWatchlist != watchlist.contains(movie)) {
+                if (shouldBeInWatchlist) {
+                    watchlist.add(movie);
+                    Collections.sort(watchlist, PhilmMovie.COMPARATOR);
+                } else {
+                    watchlist.remove(movie);
+                }
+            }
+        }
     }
 }

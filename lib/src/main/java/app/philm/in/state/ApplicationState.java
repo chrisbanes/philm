@@ -17,6 +17,7 @@ import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.TmdbConfiguration;
+import app.philm.in.util.TextUtils;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
 
@@ -90,6 +91,32 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
             mImdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
         }
         return mImdbIdMovies;
+    }
+
+    @Override
+    public PhilmMovie getMovie(final String id) {
+        PhilmMovie movie = mTmdbIdMovies.get(id);
+
+        if (movie == null) {
+            movie = mImdbIdMovies.get(id);
+        }
+
+        return movie;
+    }
+
+    @Override
+    public PhilmMovie getMovie(int id) {
+        return getMovie(String.valueOf(id));
+    }
+
+    @Override
+    public void putMovie(PhilmMovie movie) {
+        if (!TextUtils.isEmpty(movie.getImdbId())) {
+            mImdbIdMovies.put(movie.getImdbId(), movie);
+        }
+        if (movie.getTmdbId() != null) {
+            mTmdbIdMovies.put(String.valueOf(movie.getTmdbId()), movie);
+        }
     }
 
     @Override

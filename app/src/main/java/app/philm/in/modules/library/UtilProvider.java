@@ -1,4 +1,4 @@
-package app.philm.in.modules;
+package app.philm.in.modules.library;
 
 import com.squareup.otto.Bus;
 
@@ -6,8 +6,10 @@ import android.content.Context;
 
 import java.util.concurrent.Executors;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import app.philm.in.modules.library.ContextProvider;
 import app.philm.in.modules.qualifiers.ApplicationContext;
 import app.philm.in.modules.qualifiers.ForDatabase;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
@@ -16,6 +18,7 @@ import app.philm.in.util.AndroidLogger;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.CountryProvider;
 import app.philm.in.util.ImageHelper;
+import app.philm.in.util.Injector;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmBackgroundExecutor;
 import dagger.Module;

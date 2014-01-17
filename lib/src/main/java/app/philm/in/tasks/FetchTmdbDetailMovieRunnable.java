@@ -20,7 +20,7 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
     }
 
     @Override
-    public void onSuccessfulResult(Movie result) {
+    public void onSuccess(Movie result) {
         PhilmMovie movie = mLazyTmdbMovieEntityMapper.get().map(result);
         checkPhilmState(movie);
         mDbHelper.get().put(movie);

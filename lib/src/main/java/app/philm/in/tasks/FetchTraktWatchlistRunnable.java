@@ -23,7 +23,7 @@ public class FetchTraktWatchlistRunnable extends BaseMovieRunnable<List<Movie>> 
     }
 
     @Override
-    public void onSuccessfulResult(List<Movie> result) {
+    public void onSuccess(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
             List<PhilmMovie> movies = mLazyTraktMovieEntityMapper.get().map(result);
             mMoviesState.setWatchlist(movies);

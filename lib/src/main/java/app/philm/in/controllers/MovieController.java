@@ -53,6 +53,7 @@ import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.CountryProvider;
 import app.philm.in.util.FileManager;
 import app.philm.in.util.ImageHelper;
+import app.philm.in.util.Injector;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
@@ -78,6 +79,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final CountryProvider mCountryProvider;
     private final ImageHelper mImageHelper;
     private final FileManager mFileManager;
+    private final Injector mInjector;
 
     private boolean mPopulatedLibraryFromDb = false;
     private boolean mPopulatedWatchlistFromDb = false;
@@ -92,7 +94,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             Logger logger,
             CountryProvider countryProvider,
             ImageHelper imageHelper,
-            FileManager fileManager) {
+            FileManager fileManager,
+            Injector injector) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
@@ -104,6 +107,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 "countryProvider cannot be null");
         mImageHelper = Preconditions.checkNotNull(imageHelper, "imageHelper cannot be null");
         mFileManager = Preconditions.checkNotNull(fileManager, "fileManager cannot be null");
+        mInjector = Preconditions.checkNotNull(injector, "injector cannot be null");
     }
 
     @Subscribe
@@ -581,7 +585,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             task.setCallback(callback);
         }
 
-        // TODO: Inject the task
+        mInjector.inject(task);
 
         mExecutor.execute(task);
     }
@@ -614,13 +618,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchDetailMovieFromTrakt(MovieUi ui, String id) {
         Preconditions.checkNotNull(id, "id cannot be null");
-        executeTask(new FetchTraktDetailMovieRunnable(id),
-                new DetailedMovieTaskCallback(ui));
+        executeTask(new FetchTraktDetailMovieRunnable(id), ui);
     }
 
     private void fetchDetailMovieFromTmdb(MovieUi ui, int id) {
-        executeTask(new FetchTmdbDetailMovieRunnable(id),
-                new DetailedMovieTaskCallback(ui));
+        executeTask(new FetchTmdbDetailMovieRunnable(id), ui);
     }
 
     private void fetchLibrary(MovieUi ui) {
@@ -718,7 +720,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchTmdbConfiguration() {
-        mExecutor.execute(new FetchTmdbConfigurationRunnable());
+        FetchTmdbConfigurationRunnable task = new FetchTmdbConfigurationRunnable();
+        mInjector.inject(task);
+        mExecutor.execute(task);
     }
 
     private void fetchTrending(MovieUi ui) {
@@ -941,12 +945,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return isAfterThreshold(movie.getLastFetchedTime(),
                 Constants.STALE_MOVIE_DETAIL_THRESHOLD)
                 || TextUtils.isEmpty(movie.getOverview());
-    }
-
-    private void showLoadingProgress(boolean show) {
-        for (MovieUi ui : getUis()) {
-            ui.showLoadingProgress(show);
-        }
     }
 
     public static enum Filter {
@@ -1216,14 +1214,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void populateUis() {
-            if (mUi != null) {
-                populateUi(mUi);
-            }
-        }
-
-        @Override
-        public void onSuccess() {
-            // NO-OP
+            populateUis();
         }
 
     }
@@ -1241,20 +1232,5 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
         }
 
-    }
-
-    private class DetailedMovieTaskCallback extends BaseTaskCallback {
-
-        DetailedMovieTaskCallback(MovieUi ui) {
-            super(ui);
-        }
-
-        @Override
-        public void onSuccess() {
-            PhilmMovie movie = mMoviesState.getMovie(mUi.getRequestParameter());
-            if (movie != null) {
-                checkDetailMovieResult(mUi, movie);
-            }
-        }
     }
 }

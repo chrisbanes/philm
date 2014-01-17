@@ -11,6 +11,4 @@ public interface MovieTaskCallback {
 
     public void populateUis();
 
-    public void onSuccess();
-
 }

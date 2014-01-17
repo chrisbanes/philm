@@ -6,7 +6,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Inject;
+
+import app.philm.in.Constants;
 import app.philm.in.Display;
+import app.philm.in.util.Logger;
 import app.philm.in.util.TextUtils;
 
 abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
@@ -20,6 +24,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
     public interface SubUi {}
 
+    @Inject Logger mLogger;
     private HashSet<U> mUis;
 
     public BaseUiController() {
@@ -79,6 +84,9 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     protected void onUiDetached(U ui) {}
 
     protected void populateUis() {
+        if (Constants.DEBUG) {
+            mLogger.d(getClass().getSimpleName(), "populateUis");
+        }
         for (U ui : mUis) {
             populateUi(ui);
         }

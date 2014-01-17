@@ -19,7 +19,7 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
     }
 
     @Override
-    public void onSuccessfulResult(ResultsPage result) {
+    public void onSuccess(ResultsPage result) {
         PhilmMovie movie = mMoviesState.getMovie(String.valueOf(mId));
         movie.setRelated(mLazyTmdbMovieEntityMapper.get().map(result.results));
 

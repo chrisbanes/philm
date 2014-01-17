@@ -9,6 +9,8 @@ import javax.inject.Singleton;
 
 import app.philm.in.adapters.MovieSectionedListAdapter;
 import app.philm.in.fragments.MovieDetailFragment;
+import app.philm.in.modules.library.ContextProvider;
+import app.philm.in.modules.library.UtilProvider;
 import app.philm.in.modules.qualifiers.ApplicationContext;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.TypefaceManager;
@@ -29,8 +31,7 @@ import dagger.Provides;
                 RatingCircleView.class,
                 MovieSectionedListAdapter.class,
                 MovieDetailFragment.class
-        },
-        library = true
+        }
 )
 public class ViewUtilProvider {
 

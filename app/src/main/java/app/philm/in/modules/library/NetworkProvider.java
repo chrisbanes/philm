@@ -1,4 +1,4 @@
-package app.philm.in.modules;
+package app.philm.in.modules.library;
 
 import com.jakewharton.trakt.Trakt;
 import com.uwetrottmann.tmdb.Tmdb;

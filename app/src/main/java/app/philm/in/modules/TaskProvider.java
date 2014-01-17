@@ -1,5 +1,9 @@
 package app.philm.in.modules;
 
+import app.philm.in.modules.library.NetworkProvider;
+import app.philm.in.modules.library.PersistenceProvider;
+import app.philm.in.modules.library.StateProvider;
+import app.philm.in.modules.library.UtilProvider;
 import app.philm.in.tasks.AddToTraktCollectionRunnable;
 import app.philm.in.tasks.AddToTraktWatchlistRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;

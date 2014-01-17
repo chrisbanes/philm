@@ -98,4 +98,17 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
     protected abstract UC createUiCallbacks(U ui);
 
+    protected int getId(U ui) {
+        return ui.hashCode();
+    }
+
+    protected U findUi(final int id) {
+        for (U ui : mUis) {
+            if (getId(ui) == id) {
+                return ui;
+            }
+        }
+        return null;
+    }
+
 }

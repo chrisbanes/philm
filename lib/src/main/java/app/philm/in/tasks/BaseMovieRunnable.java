@@ -54,6 +54,17 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
     }
 
     @Override
+    public final void onSuccess(R result) {
+        onSuccessfulResult(result);
+
+        if (mCallback != null) {
+            mCallback.onSuccess();
+        }
+    }
+
+    public abstract void onSuccessfulResult(R result);
+
+    @Override
     public void onFinished() {
         if (mCallback != null) {
             mCallback.showLoadingProgress(false);

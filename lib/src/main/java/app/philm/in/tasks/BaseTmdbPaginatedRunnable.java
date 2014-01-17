@@ -15,7 +15,9 @@ abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> 
     }
 
     @Override
-    public final void onSuccess(ResultsPage result) {
+    public final void onSuccessfulResult(ResultsPage result) {
+        super.onSuccess(result);
+
         if (result != null) {
             MoviesState.MoviePaginatedResult paginatedResult = getResultFromState();
             if (paginatedResult == null) {

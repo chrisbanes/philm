@@ -9,7 +9,9 @@ import javax.inject.Inject;
 import app.philm.in.controllers.MainController;
 import app.philm.in.modules.ApplicationModule;
 import app.philm.in.modules.ContextProvider;
+import app.philm.in.modules.TaskProvider;
 import app.philm.in.modules.ViewUtilProvider;
+import app.philm.in.util.Injector;
 import dagger.ObjectGraph;
 
 public class PhilmApplication extends Application implements Injector {
@@ -29,7 +31,8 @@ public class PhilmApplication extends Application implements Injector {
         mObjectGraph = ObjectGraph.create(
                 new ContextProvider(this),
                 new ApplicationModule(),
-                new ViewUtilProvider()
+                new ViewUtilProvider(),
+                new TaskProvider()
         );
 
         mObjectGraph.inject(this);

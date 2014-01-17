@@ -18,7 +18,7 @@ public class FetchTraktTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
     }
 
     @Override
-    public void onSuccess(List<Movie> result) {
+    public void onSuccessfulResult(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
             mMoviesState.setTrending(mLazyTraktMovieEntityMapper.get().map(result));
         } else {

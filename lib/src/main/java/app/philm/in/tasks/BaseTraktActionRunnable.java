@@ -39,7 +39,7 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
     public abstract Response doTraktCall(Trakt trakt, MovieService.Movies body);
 
     @Override
-    public final void onSuccess(Response result) {
+    public final void onSuccessfulResult(Response result) {
         if (result instanceof ActionResponse) {
             onActionCompleted(((ActionResponse) result).skipped < mIds.length);
         } else {

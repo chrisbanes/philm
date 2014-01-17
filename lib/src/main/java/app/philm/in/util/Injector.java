@@ -1,4 +1,4 @@
-package app.philm.in;
+package app.philm.in.util;
 
 public interface Injector {
 

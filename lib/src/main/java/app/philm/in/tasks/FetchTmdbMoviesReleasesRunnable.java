@@ -25,7 +25,7 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
     }
 
     @Override
-    public void onSuccess(ReleasesResult result) {
+    public void onSuccessfulResult(ReleasesResult result) {
         final String countryCode = mCountryProvider.getTwoLetterCountryCode();
 
         if (!PhilmCollections.isEmpty(result.countries)) {

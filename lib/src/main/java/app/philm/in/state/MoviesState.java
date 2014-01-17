@@ -1,12 +1,18 @@
 package app.philm.in.state;
 
+import com.google.common.base.Preconditions;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.TmdbConfiguration;
+import app.philm.in.util.TextUtils;
 
 public interface MoviesState extends BaseState {
 
@@ -75,6 +81,90 @@ public interface MoviesState extends BaseState {
 
     public class SearchPaginatedResult extends MoviePaginatedResult {
         public String query;
+    }
+
+
+    static abstract class MovieEntityMapper<T> {
+        final MoviesState mMoviesState;
+
+        MovieEntityMapper(MoviesState state) {
+            mMoviesState = Preconditions.checkNotNull(state, "state cannot be null");
+        }
+
+        public abstract PhilmMovie map(T entity);
+
+        public List<PhilmMovie> map(List<T> entities) {
+            final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(entities.size());
+            for (T entity : entities) {
+                movies.add(map(entity));
+            }
+            return movies;
+        }
+
+        PhilmMovie getMovie(String id) {
+            if (mMoviesState.getImdbIdMovies().containsKey(id)) {
+                return mMoviesState.getImdbIdMovies().get(id);
+            } else if (mMoviesState.getTmdbIdMovies().containsKey(id)) {
+                return mMoviesState.getTmdbIdMovies().get(id);
+            }
+            return null;
+        }
+
+        void putMovie(PhilmMovie movie) {
+            if (!TextUtils.isEmpty(movie.getImdbId())) {
+                mMoviesState.getImdbIdMovies().put(movie.getImdbId(), movie);
+            }
+            if (movie.getTmdbId() != null) {
+                mMoviesState.getTmdbIdMovies().put(String.valueOf(movie.getTmdbId()), movie);
+            }
+        }
+
+    }
+
+    public static class TraktMovieEntityMapper extends
+            MovieEntityMapper<com.jakewharton.trakt.entities.Movie> {
+
+        @Inject
+        TraktMovieEntityMapper(MoviesState state) {
+            super(state);
+        }
+
+        @Override
+        public PhilmMovie map(com.jakewharton.trakt.entities.Movie entity) {
+            PhilmMovie movie = getMovie(entity.imdb_id);
+            if (movie == null) {
+                // No movie, so create one
+                movie = new PhilmMovie();
+            }
+            // We already have a movie, so just update it wrapped value
+            movie.setFromMovie(entity);
+            putMovie(movie);
+
+            return movie;
+        }
+    }
+
+    public static class TmdbMovieEntityMapper extends
+            MovieEntityMapper<com.uwetrottmann.tmdb.entities.Movie> {
+
+        @Inject
+        TmdbMovieEntityMapper(MoviesState state) {
+            super(state);
+        }
+
+        @Override
+        public PhilmMovie map(com.uwetrottmann.tmdb.entities.Movie entity) {
+            PhilmMovie movie = getMovie(String.valueOf(entity.id));
+            if (movie == null) {
+                // No movie, so create one
+                movie = new PhilmMovie();
+            }
+            // We already have a movie, so just update it wrapped value
+            movie.setFromMovie(entity);
+            putMovie(movie);
+
+            return movie;
+        }
     }
 
 }

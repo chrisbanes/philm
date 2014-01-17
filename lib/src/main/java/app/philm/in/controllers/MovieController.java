@@ -46,6 +46,7 @@ import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
+import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.CountryProvider;
 import app.philm.in.util.FileManager;
@@ -64,7 +65,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
 
     private static final String LOG_TAG = MovieController.class.getSimpleName();
-    private static final String FILENAME_TMDB_CONFIG = "tmdb.config";
+
 
     private static final int TMDB_FIRST_PAGE = 1;
 
@@ -920,14 +921,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private PhilmMovie putMovie(PhilmMovie movie) {
+    private void putMovie(PhilmMovie movie) {
         if (!TextUtils.isEmpty(movie.getImdbId())) {
             mMoviesState.getImdbIdMovies().put(movie.getImdbId(), movie);
         }
         if (movie.getTmdbId() != null) {
             mMoviesState.getTmdbIdMovies().put(String.valueOf(movie.getTmdbId()), movie);
         }
-        return null;
     }
 
     private void removeFromCollection(String... ids) {
@@ -1163,332 +1163,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void onScrolledToBottom();
     }
 
-    private abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
-        @Override
-        public void onPreTraktCall() {
-            showLoadingProgress(true);
-        }
 
-        @Override
-        public void onError(RetrofitError re) {
-            for (MovieUi ui : getUis()) {
-                ui.showError(NetworkError.from(re));
-            }
-        }
 
-        @Override
-        public void onFinished() {
-            showLoadingProgress(false);
-        }
-    }
-
-    private class FetchTmdbConfigurationRunnable extends NetworkCallRunnable<TmdbConfiguration> {
-        @Override
-        public TmdbConfiguration doBackgroundCall() throws RetrofitError {
-            TmdbConfiguration configuration = getConfigFromFile();
-
-            if (configuration != null && configuration.isValid()) {
-                if (Constants.DEBUG) {
-                    mLogger.d(LOG_TAG, "Got valid TMDB config from file");
-                }
-            } else {
-                if (Constants.DEBUG) {
-                    mLogger.d(LOG_TAG, "Fectching TMDB config from network");
-                }
-
-                // No config in file, so download from web
-                Configuration tmdbConfig = mTmdbClient.configurationService().configuration();
-
-                if (tmdbConfig != null) {
-                    // Downloaded config from web so file it to file
-                    configuration = new TmdbConfiguration();
-                    configuration.setFromTmdb(tmdbConfig);
-                    writeConfigToFile(configuration);
-                } else {
-                    configuration = null;
-                }
-            }
-
-            return configuration;
-        }
-
-        @Override
-        public void onSuccess(TmdbConfiguration result) {
-            if (result != null) {
-                mImageHelper.setTmdbBaseUrl(result.getImagesBaseUrl());
-                mImageHelper.setTmdbBackdropSizes(result.getImagesBackdropSizes());
-                mImageHelper.setTmdbPosterSizes(result.getImagesPosterSizes());
-            }
-
-            mMoviesState.setTmdbConfiguration(result);
-        }
-
-        @Override
-        public void onError(RetrofitError re) {
-            // Ignore
-        }
-
-        private TmdbConfiguration getConfigFromFile() {
-            File file = mFileManager.getFile(FILENAME_TMDB_CONFIG);
-            if (file.exists()) {
-                FileReader reader = null;
-                try {
-                    reader = new FileReader(file);
-                    Gson gson = new Gson();
-                    return gson.fromJson(reader, TmdbConfiguration.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (reader != null) {
-                        try {
-                            reader.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-
-        private void writeConfigToFile(TmdbConfiguration configuration) {
-            FileWriter writer = null;
-
-            try {
-                File file = mFileManager.getFile(FILENAME_TMDB_CONFIG);
-                if (!file.exists()) {
-                    file.createNewFile();
-                }
-
-                writer = new FileWriter(file, false);
-                Gson gson = new Gson();
-                gson.toJson(configuration, writer);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (writer != null) {
-                    try {
-                        writer.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    private class FetchTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
-
-        @Override
-        public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.moviesService().trending();
-        }
-
-        @Override
-        public void onSuccess(List<Movie> result) {
-            if (!PhilmCollections.isEmpty(result)) {
-                mMoviesState.setTrending(mTraktMovieEntityMapper.map(result));
-            } else {
-                mMoviesState.setTrending(null);
-            }
-        }
-
-        @Override
-        public void onError(RetrofitError re) {
-            for (MovieUi ui : getUis()) {
-                ui.showError(NetworkError.from(re));
-            }
-        }
-    }
-
-    private abstract class BasePaginatedTmdbRunnable extends BaseMovieRunnable<ResultsPage> {
-        private final int mPage;
-
-        BasePaginatedTmdbRunnable(int page) {
-            mPage = page;
-        }
-
-        @Override
-        public final void onSuccess(ResultsPage result) {
-            if (result != null) {
-                MoviesState.MoviePaginatedResult paginatedResult = getResultFromState();
-                if (paginatedResult == null) {
-                    paginatedResult = createPaginatedResult();
-                    paginatedResult.items = new ArrayList<PhilmMovie>();
-                }
-
-                paginatedResult.items.addAll(mTmdbMovieEntityMapper.map(result.results));
-                paginatedResult.page = result.page;
-
-                if (result.total_pages != null) {
-                    paginatedResult.totalPages = result.total_pages;
-                }
-
-                updateState(paginatedResult);
-            }
-        }
-
-        @Override
-        public void onError(RetrofitError re) {
-            for (MovieUi ui : getUis()) {
-                ui.showError(NetworkError.from(re));
-            }
-        }
-
-        protected int getPage() {
-            return mPage;
-        }
-
-        protected abstract MoviesState.MoviePaginatedResult getResultFromState();
-
-        protected abstract void updateState(MoviesState.MoviePaginatedResult result);
-
-        protected MoviesState.MoviePaginatedResult createPaginatedResult() {
-            return new MoviesState.MoviePaginatedResult();
-        }
-    }
-
-    private class FetchTmdbPopularRunnable extends BasePaginatedTmdbRunnable {
-        FetchTmdbPopularRunnable(int page) {
-            super(page);
-        }
-
-        @Override
-        public ResultsPage doBackgroundCall() throws RetrofitError {
-            return mTmdbClient.moviesService().popular(getPage(), null);
-        }
-
-        @Override
-        protected MoviesState.MoviePaginatedResult getResultFromState() {
-            return mMoviesState.getPopular();
-        }
-
-        @Override
-        protected void updateState(MoviesState.MoviePaginatedResult result) {
-            mMoviesState.setPopular(result);
-        }
-    }
-
-    private class FetchTmdbNowPlayingRunnable extends BasePaginatedTmdbRunnable {
-        FetchTmdbNowPlayingRunnable(int page) {
-            super(page);
-        }
-
-        @Override
-        public ResultsPage doBackgroundCall() throws RetrofitError {
-            return mTmdbClient.moviesService().nowPlaying(getPage(), null);
-        }
-
-        @Override
-        protected MoviesState.MoviePaginatedResult getResultFromState() {
-            return mMoviesState.getNowPlaying();
-        }
-
-        @Override
-        protected void updateState(MoviesState.MoviePaginatedResult result) {
-            mMoviesState.setNowPlaying(result);
-        }
-    }
-
-    private class FetchTmdbUpcomingRunnable extends BasePaginatedTmdbRunnable {
-        FetchTmdbUpcomingRunnable(int page) {
-            super(page);
-        }
-
-        @Override
-        public ResultsPage doBackgroundCall() throws RetrofitError {
-            return mTmdbClient.moviesService().upcoming(getPage(), null);
-        }
-
-        @Override
-        protected MoviesState.MoviePaginatedResult getResultFromState() {
-            return mMoviesState.getUpcoming();
-        }
-
-        @Override
-        protected void updateState(MoviesState.MoviePaginatedResult result) {
-            mMoviesState.setUpcoming(result);
-        }
-    }
-
-    private class FetchLibraryRunnable extends BaseMovieRunnable<List<Movie>> {
-
-        private final String mUsername;
-
-        FetchLibraryRunnable(String username) {
-            mUsername = Preconditions.checkNotNull(username, "username cannot be null");
-        }
-
-        @Override
-        public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.userService().libraryMoviesAll(mUsername);
-        }
-
-        @Override
-        public void onSuccess(List<Movie> result) {
-            if (!PhilmCollections.isEmpty(result)) {
-                List<PhilmMovie> movies = mTraktMovieEntityMapper.map(result);
-                mMoviesState.setLibrary(movies);
-
-                if (isInited()) {
-                    persistLibraryToDb(movies);
-                }
-            } else {
-                mMoviesState.setLibrary(null);
-            }
-        }
-    }
-
-    private class FetchWatchlistRunnable extends BaseMovieRunnable<List<Movie>> {
-
-        private final String mUsername;
-
-        FetchWatchlistRunnable(String username) {
-            mUsername = Preconditions.checkNotNull(username, "username cannot be null");
-        }
-
-        @Override
-        public List<Movie> doBackgroundCall() throws RetrofitError {
-            return mTraktClient.userService().watchlistMovies(mUsername);
-        }
-
-        @Override
-        public void onSuccess(List<Movie> result) {
-            if (!PhilmCollections.isEmpty(result)) {
-                List<PhilmMovie> movies = mTraktMovieEntityMapper.map(result);
-                mMoviesState.setWatchlist(movies);
-
-                if (isInited()) {
-                    persistWatchlistToDb(movies);
-                }
-            } else {
-                mMoviesState.setWatchlist(null);
-            }
-        }
-    }
-
-    private class FetchTraktRecommendationsRunnable extends BaseMovieRunnable<List<Movie>> {
-        @Override
-        public List<Movie> doBackgroundCall() throws RetrofitError {
-            RecommendationsService.RecommendationsQuery query
-                    = new RecommendationsService.RecommendationsQuery();
-            query.hideCollected(true);
-            query.hideWatchlisted(true);
-
-            return mTraktClient.recommendationsService().movies(query);
-        }
-
-        @Override
-        public void onSuccess(List<Movie> result) {
-            if (!PhilmCollections.isEmpty(result)) {
-                mMoviesState.setRecommended(mTraktMovieEntityMapper.map(result));
-            } else {
-                mMoviesState.setWatchlist(null);
-            }
-        }
-    }
 
     private class SearchMoviesRunnable extends BasePaginatedTmdbRunnable {
         private final String mQuery;
@@ -1916,55 +1593,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     populateUis();
                 }
             }
-        }
-    }
-
-    private abstract class MovieEntityMapper<T> {
-
-        abstract PhilmMovie map(T entity);
-
-        List<PhilmMovie> map(List<T> entities) {
-            final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(entities.size());
-            for (T entity : entities) {
-                movies.add(map(entity));
-            }
-            return movies;
-        }
-    }
-
-    private class TraktMovieEntityMapper extends
-            MovieEntityMapper<com.jakewharton.trakt.entities.Movie> {
-
-        @Override
-        PhilmMovie map(com.jakewharton.trakt.entities.Movie entity) {
-            PhilmMovie movie = getMovie(entity.imdb_id);
-            if (movie == null) {
-                // No movie, so create one
-                movie = new PhilmMovie();
-            }
-            // We already have a movie, so just update it wrapped value
-            movie.setFromMovie(entity);
-            putMovie(movie);
-
-            return movie;
-        }
-    }
-
-    private class TmdbMovieEntityMapper extends
-            MovieEntityMapper<com.uwetrottmann.tmdb.entities.Movie> {
-
-        @Override
-        PhilmMovie map(com.uwetrottmann.tmdb.entities.Movie entity) {
-            PhilmMovie movie = getMovie(String.valueOf(entity.id));
-            if (movie == null) {
-                // No movie, so create one
-                movie = new PhilmMovie();
-            }
-            // We already have a movie, so just update it wrapped value
-            movie.setFromMovie(entity);
-            putMovie(movie);
-
-            return movie;
         }
     }
 

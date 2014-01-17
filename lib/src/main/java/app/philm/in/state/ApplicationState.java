@@ -49,6 +49,9 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     public ApplicationState(Bus eventBus) {
         mEventBus = Preconditions.checkNotNull(eventBus, "eventBus cannot null");
+
+        mTmdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
+        mImdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
     }
 
     @Override
@@ -79,17 +82,11 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     @Override
     public Map<String, PhilmMovie> getTmdbIdMovies() {
-        if (mTmdbIdMovies == null) {
-            mTmdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
-        }
         return mTmdbIdMovies;
     }
 
     @Override
     public Map<String, PhilmMovie> getImdbIdMovies() {
-        if (mImdbIdMovies == null) {
-            mImdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
-        }
         return mImdbIdMovies;
     }
 

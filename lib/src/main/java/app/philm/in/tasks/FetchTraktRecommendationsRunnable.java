@@ -20,15 +20,15 @@ public class FetchTraktRecommendationsRunnable extends BaseMovieRunnable<List<Mo
         query.hideCollected(true);
         query.hideWatchlisted(true);
 
-        return mLazyTraktClient.get().recommendationsService().movies(query);
+        return getTraktClient().recommendationsService().movies(query);
     }
 
     @Override
     public void onSuccess(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
-            mMoviesState.setRecommended(mLazyTraktMovieEntityMapper.get().map(result));
+            mMoviesState.setRecommended(getTraktEntityMapper().map(result));
         } else {
-            mMoviesState.setWatchlist(null);
+            mMoviesState.setRecommended(null);
         }
     }
 }

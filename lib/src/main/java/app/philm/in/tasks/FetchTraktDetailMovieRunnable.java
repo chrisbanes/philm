@@ -1,9 +1,11 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.entities.Movie;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
 public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
@@ -16,19 +18,15 @@ public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
     @Override
     public Movie doBackgroundCall() throws RetrofitError {
-        return mLazyTraktClient.get().movieService().summary(mId);
+        return getTraktClient().movieService().summary(mId);
     }
 
     @Override
     public void onSuccess(Movie result) {
-        PhilmMovie movie = mLazyTraktMovieEntityMapper.get().map(result);
+        PhilmMovie movie = getTraktEntityMapper().map(result);
         checkPhilmState(movie);
-        mDbHelper.get().put(movie);
+        getDbHelper().put(movie);
 
-        if (hasCallback()) {
-            getCallback().populateUis();
-        }
-
-        // TODO: checkDetailMovieResult(movie);
+        getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(movie));
     }
 }

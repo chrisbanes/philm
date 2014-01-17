@@ -1,14 +1,13 @@
 package app.philm.in.controllers;
 
 import com.google.common.base.Preconditions;
-import com.jakewharton.trakt.Trakt;
+
 import com.jakewharton.trakt.enumerations.Rating;
 import com.squareup.otto.Subscribe;
-import com.uwetrottmann.tmdb.Tmdb;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,14 +44,12 @@ import app.philm.in.tasks.FetchTraktRelatedMoviesRunnable;
 import app.philm.in.tasks.FetchTraktTrendingRunnable;
 import app.philm.in.tasks.FetchTraktWatchlistRunnable;
 import app.philm.in.tasks.MarkTraktMovieSeenRunnable;
+import app.philm.in.tasks.MarkTraktMovieUnseenRunnable;
 import app.philm.in.tasks.MovieTaskCallback;
 import app.philm.in.tasks.RemoveFromTraktCollectionRunnable;
 import app.philm.in.tasks.RemoveFromTraktWatchlistRunnable;
 import app.philm.in.tasks.SubmitTraktMovieRatingRunnable;
 import app.philm.in.util.BackgroundExecutor;
-import app.philm.in.util.CountryProvider;
-import app.philm.in.util.FileManager;
-import app.philm.in.util.ImageHelper;
 import app.philm.in.util.Injector;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
@@ -72,13 +69,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private final MoviesState mMoviesState;
     private final BackgroundExecutor mExecutor;
-    private final Trakt mTraktClient;
-    private final Tmdb mTmdbClient;
     private final AsyncDatabaseHelper mDbHelper;
     private final Logger mLogger;
-    private final CountryProvider mCountryProvider;
-    private final ImageHelper mImageHelper;
-    private final FileManager mFileManager;
     private final Injector mInjector;
 
     private boolean mPopulatedLibraryFromDb = false;
@@ -87,26 +79,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Inject
     public MovieController(
             MoviesState movieState,
-            Trakt traktClient,
-            Tmdb tmdbClient,
             @GeneralPurpose BackgroundExecutor executor,
             AsyncDatabaseHelper dbHelper,
             Logger logger,
-            CountryProvider countryProvider,
-            ImageHelper imageHelper,
-            FileManager fileManager,
             Injector injector) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
-        mTraktClient = Preconditions.checkNotNull(traktClient, "trackClient cannot be null");
-        mTmdbClient = Preconditions.checkNotNull(tmdbClient, "tmdbClient cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
-        mCountryProvider = Preconditions.checkNotNull(countryProvider,
-                "countryProvider cannot be null");
-        mImageHelper = Preconditions.checkNotNull(imageHelper, "imageHelper cannot be null");
-        mFileManager = Preconditions.checkNotNull(fileManager, "fileManager cannot be null");
         mInjector = Preconditions.checkNotNull(injector, "injector cannot be null");
     }
 
@@ -167,6 +148,40 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Subscribe
     public void onTmdbConfigurationChanged(MoviesState.TmdbConfigurationChangedEvent event) {
         populateUis();
+    }
+
+    @Subscribe
+     public void onMovieDetailChanged(MoviesState.MovieInformationUpdatedEvent event) {
+        // TODO: finding the UI is hacky. Could easily be wrong UI
+        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        if (ui != null) {
+            populateUi(ui);
+        }
+        checkDetailMovieResult(ui, event.item);
+    }
+
+    @Subscribe
+    public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
+        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        if (ui != null) {
+            populateUi(ui);
+        }
+    }
+
+    @Subscribe
+    public void onMovieRelatedItemsChanged(MoviesState.MovieRelatedItemsUpdatedEvent event) {
+        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        if (ui != null) {
+            populateUi(ui);
+        }
+    }
+
+    @Subscribe
+    public void onMovieReleasesChanged(MoviesState.MovieReleasesUpdatedEvent event) {
+        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        if (ui != null) {
+            populateUi(ui);
+        }
     }
 
     @Override
@@ -252,11 +267,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void showMovieDetail(PhilmMovie movie) {
                 Display display = getDisplay();
                 if (display != null) {
-                    if (TextUtils.isEmpty(movie.getTraktId())) {
-                        // TODO: Should be do something better here
-                    } else {
+                    if (!TextUtils.isEmpty(movie.getTraktId())) {
                         display.showMovieDetailFragment(movie.getTraktId());
                     }
+                    // TODO: Handle the else case
                 }
             }
 
@@ -477,36 +491,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void checkPhilmState(PhilmMovie movie) {
-        final List<PhilmMovie> library = mMoviesState.getLibrary();
-        final List<PhilmMovie> watchlist = mMoviesState.getWatchlist();
-
-        if (!PhilmCollections.isEmpty(library)) {
-            final boolean shouldBeInLibrary = movie.isWatched() || movie.inCollection();
-
-            if (shouldBeInLibrary != library.contains(movie)) {
-                if (shouldBeInLibrary) {
-                    library.add(movie);
-                    Collections.sort(library, PhilmMovie.COMPARATOR);
-                } else {
-                    library.remove(movie);
-                }
-            }
-        }
-
-        if (!PhilmCollections.isEmpty(watchlist)) {
-            final boolean shouldBeInWatchlist = movie.inWatchlist();
-            if (shouldBeInWatchlist != watchlist.contains(movie)) {
-                if (shouldBeInWatchlist) {
-                    watchlist.add(movie);
-                    Collections.sort(watchlist, PhilmMovie.COMPARATOR);
-                } else {
-                    watchlist.remove(movie);
-                }
-            }
-        }
-    }
-
     private List<ListItem<PhilmMovie>> createListItemList(final List<PhilmMovie> items) {
         Preconditions.checkNotNull(items, "items cannot be null");
 
@@ -571,10 +555,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return result;
     }
 
-//    private <R> void executeTask(BaseMovieRunnable<R> task) {
-//        executeTask(task, (MovieTaskCallback) null);
-//    }
-
     private <R> void executeTask(BaseMovieRunnable<R> task, MovieUi ui) {
         Preconditions.checkNotNull(ui, "ui cannot be null");
         executeTask(task, new BaseTaskCallback(ui));
@@ -584,9 +564,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (callback != null) {
             task.setCallback(callback);
         }
-
         mInjector.inject(task);
-
         mExecutor.execute(task);
     }
 
@@ -784,7 +762,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void markMovieRating(MovieUi ui, String imdbId, Rating rating) {
-        mLogger.d(LOG_TAG, "submitMovieRating: " + imdbId + ". " + rating.name());
+        if (Constants.DEBUG) {
+            mLogger.d(LOG_TAG, "submitMovieRating: " + imdbId + ". " + rating.name());
+        }
         executeTask(new SubmitTraktMovieRatingRunnable(imdbId, rating), ui);
     }
 
@@ -793,7 +773,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void markMoviesUnseen(MovieUi ui, String... ids) {
-        executeTask(new MarkTraktMovieSeenRunnable(ids), ui);
+        executeTask(new MarkTraktMovieUnseenRunnable(ids), ui);
     }
 
     private void populateDetailUi(MovieDetailUi ui) {
@@ -1055,7 +1035,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum DiscoverTab {
-        POPULAR, IN_THEATRES, UPCOMING, RECOMMENDED;
+        POPULAR, IN_THEATRES, UPCOMING, RECOMMENDED
     }
 
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
@@ -1192,29 +1172,40 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private class BaseTaskCallback implements MovieTaskCallback {
 
-        final MovieUi mUi;
+        private final WeakReference<MovieUi> mUiRef;
 
         BaseTaskCallback(MovieUi ui) {
-            mUi = ui;
+            Preconditions.checkNotNull(ui, "ui cannot be null");
+            mUiRef = new WeakReference<MovieUi>(ui);
         }
 
         @Override
         public void showLoadingProgress(boolean show) {
-            if (mUi != null) {
-                mUi.showLoadingProgress(show);
+            MovieUi ui = getUi();
+            if (ui != null) {
+                ui.showLoadingProgress(show);
             }
         }
 
         @Override
         public void showError(NetworkError error) {
-            if (mUi != null) {
-                mUi.showError(error);
+            MovieUi ui = getUi();
+            if (ui != null) {
+                ui.showError(error);
             }
         }
 
         @Override
-        public void populateUis() {
-            populateUis();
+        public void populateUi() {
+            MovieUi ui = getUi();
+            if (ui != null) {
+                MovieController.this.populateUi(ui);
+            }
+            //MovieController.this.populateUis();
+        }
+
+        protected MovieUi getUi() {
+            return mUiRef.get();
         }
 
     }
@@ -1227,8 +1218,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         @Override
         public void showLoadingProgress(boolean show) {
-            if (mUi instanceof MovieController.MovieDetailUi) {
-                ((MovieController.MovieDetailUi) mUi).showRelatedMoviesLoadingProgress(show);
+            MovieUi ui = getUi();
+            if (ui instanceof MovieController.MovieDetailUi) {
+                ((MovieController.MovieDetailUi) ui).showRelatedMoviesLoadingProgress(show);
+            } else {
+                super.showLoadingProgress(show);
             }
         }
 

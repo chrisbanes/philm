@@ -1,11 +1,13 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.entities.Movie;
 
 import java.util.List;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
 public class FetchTraktRelatedMoviesRunnable extends BaseMovieRunnable<List<Movie>> {
@@ -17,16 +19,14 @@ public class FetchTraktRelatedMoviesRunnable extends BaseMovieRunnable<List<Movi
 
     @Override
     public List<Movie> doBackgroundCall() throws RetrofitError {
-        return mLazyTraktClient.get().movieService().related(mId);
+        return getTraktClient().movieService().related(mId);
     }
 
     @Override
     public void onSuccess(List<Movie> result) {
         PhilmMovie movie = mMoviesState.getMovie(mId);
-        movie.setRelated(mLazyTraktMovieEntityMapper.get().map(result));
+        movie.setRelated(getTraktEntityMapper().map(result));
 
-        if (hasCallback()) {
-            getCallback().populateUis();
-        }
+        getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(movie));
     }
 }

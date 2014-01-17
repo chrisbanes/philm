@@ -1,6 +1,7 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.entities.Movie;
 
 import java.util.List;
@@ -19,15 +20,15 @@ public class FetchTraktWatchlistRunnable extends BaseMovieRunnable<List<Movie>> 
 
     @Override
     public List<Movie> doBackgroundCall() throws RetrofitError {
-        return mLazyTraktClient.get().userService().watchlistMovies(mUsername);
+        return getTraktClient().userService().watchlistMovies(mUsername);
     }
 
     @Override
     public void onSuccess(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
-            List<PhilmMovie> movies = mLazyTraktMovieEntityMapper.get().map(result);
+            List<PhilmMovie> movies = getTraktEntityMapper().map(result);
             mMoviesState.setWatchlist(movies);
-            mDbHelper.get().mergeWatchlist(movies);
+            getDbHelper().mergeWatchlist(movies);
         } else {
             mMoviesState.setWatchlist(null);
         }

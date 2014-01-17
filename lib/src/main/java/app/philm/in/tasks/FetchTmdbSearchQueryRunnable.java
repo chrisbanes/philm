@@ -1,6 +1,7 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
+
 import com.uwetrottmann.tmdb.entities.ResultsPage;
 
 import app.philm.in.state.MoviesState;
@@ -16,7 +17,7 @@ public class FetchTmdbSearchQueryRunnable extends BaseTmdbPaginatedRunnable {
 
     @Override
     public ResultsPage doBackgroundCall() throws RetrofitError {
-        return mLazyTmdbClient.get().searchService()
+        return getTmdbClient().searchService()
                 .movie(mQuery, getPage(), null, null, null, null, null);
     }
 

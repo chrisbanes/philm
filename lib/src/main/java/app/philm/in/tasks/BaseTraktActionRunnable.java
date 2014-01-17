@@ -1,6 +1,7 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.Trakt;
 import com.jakewharton.trakt.entities.ActionResponse;
 import com.jakewharton.trakt.entities.Response;
@@ -33,7 +34,7 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
             body = new MovieService.Movies(seenMovies);
         }
 
-        return doTraktCall(mLazyTraktClient.get(), body);
+        return doTraktCall(getTraktClient(), body);
     }
 
     public abstract Response doTraktCall(Trakt trakt, MovieService.Movies body);
@@ -54,7 +55,7 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
             for (int i = 0; i < mIds.length; i++) {
                 onSuccessfulAction(mIds[i]);
             }
-            getCallback().populateUis();
+            getCallback().populateUi();
         }
     }
 

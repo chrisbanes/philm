@@ -1,14 +1,17 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
+
 import com.jakewharton.trakt.entities.RatingResponse;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.RateService;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
 public class SubmitTraktMovieRatingRunnable extends BaseMovieRunnable<RatingResponse> {
+
     private final String mId;
     private final Rating mRating;
 
@@ -19,7 +22,7 @@ public class SubmitTraktMovieRatingRunnable extends BaseMovieRunnable<RatingResp
 
     @Override
     public RatingResponse doBackgroundCall() throws RetrofitError {
-        return mLazyTraktClient.get().rateService().movie(new RateService.MovieRating(mId, mRating));
+        return getTraktClient().rateService().movie(new RateService.MovieRating(mId, mRating));
     }
 
     @Override
@@ -32,11 +35,9 @@ public class SubmitTraktMovieRatingRunnable extends BaseMovieRunnable<RatingResp
                 } else {
                     movie.setUserRatingAdvanced(mRating);
                 }
-                mDbHelper.get().put(movie);
+                getDbHelper().put(movie);
 
-                if (hasCallback()) {
-                    getCallback().populateUis();
-                }
+                getEventBus().post(new MoviesState.MovieUserRatingChangedEvent(movie));
             }
         }
     }

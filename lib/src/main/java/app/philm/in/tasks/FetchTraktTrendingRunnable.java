@@ -14,13 +14,13 @@ public class FetchTraktTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
 
     @Override
     public List<Movie> doBackgroundCall() throws RetrofitError {
-        return mLazyTraktClient.get().moviesService().trending();
+        return getTraktClient().moviesService().trending();
     }
 
     @Override
     public void onSuccess(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
-            mMoviesState.setTrending(mLazyTraktMovieEntityMapper.get().map(result));
+            mMoviesState.setTrending(getTraktEntityMapper().map(result));
         } else {
             mMoviesState.setTrending(null);
         }

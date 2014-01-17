@@ -6,6 +6,7 @@ import com.uwetrottmann.tmdb.entities.ReleasesResult;
 import javax.inject.Inject;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.state.MoviesState;
 import app.philm.in.util.CountryProvider;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
@@ -21,7 +22,7 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
 
     @Override
     public ReleasesResult doBackgroundCall() throws RetrofitError {
-        return mLazyTmdbClient.get().moviesService().releases(mId);
+        return getTmdbClient().moviesService().releases(mId);
     }
 
     @Override
@@ -50,11 +51,9 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
                 PhilmMovie movie = mMoviesState.getMovie(mId);
                 if (movie != null) {
                     movie.updateFrom(countryRelease);
-                    mDbHelper.get().put(movie);
+                    getDbHelper().put(movie);
 
-                    if (hasCallback()) {
-                        getCallback().populateUis();
-                    }
+                    getEventBus().post(new MoviesState.MovieReleasesUpdatedEvent(movie));
                 }
             }
         }

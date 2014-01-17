@@ -4,6 +4,7 @@ package app.philm.in.tasks;
 import com.uwetrottmann.tmdb.entities.Movie;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
 public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
@@ -16,19 +17,15 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
     @Override
     public Movie doBackgroundCall() throws RetrofitError {
-        return mLazyTmdbClient.get().moviesService().summary(mId);
+        return getTmdbClient().moviesService().summary(mId);
     }
 
     @Override
     public void onSuccess(Movie result) {
-        PhilmMovie movie = mLazyTmdbMovieEntityMapper.get().map(result);
+        PhilmMovie movie = getTmdbEntityMapper().map(result);
         checkPhilmState(movie);
-        mDbHelper.get().put(movie);
+        getDbHelper().put(movie);
 
-        if (hasCallback()) {
-            getCallback().populateUis();
-        }
-
-        // TODO: checkDetailMovieResult(movie);
+        getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(movie));
     }
 }

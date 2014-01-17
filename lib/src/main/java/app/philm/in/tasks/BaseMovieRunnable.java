@@ -1,6 +1,7 @@
 package app.philm.in.tasks;
 
 import com.jakewharton.trakt.Trakt;
+import com.squareup.otto.Bus;
 import com.uwetrottmann.tmdb.Tmdb;
 
 import java.util.Collections;
@@ -23,11 +24,10 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
     @Inject Lazy<Tmdb> mLazyTmdbClient;
     @Inject Lazy<Trakt> mLazyTraktClient;
-
     @Inject Lazy<AsyncDatabaseHelper> mDbHelper;
-
     @Inject Lazy<MoviesState.TraktMovieEntityMapper> mLazyTraktMovieEntityMapper;
     @Inject Lazy<MoviesState.TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
+    @Inject Lazy<Bus> mEventBus;
 
     private MovieTaskCallback mCallback;
 
@@ -92,5 +92,29 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
                 }
             }
         }
+    }
+
+    protected Tmdb getTmdbClient() {
+        return mLazyTmdbClient.get();
+    }
+
+    protected Trakt getTraktClient() {
+        return mLazyTraktClient.get();
+    }
+
+    protected AsyncDatabaseHelper getDbHelper() {
+        return mDbHelper.get();
+    }
+
+    protected MoviesState.TraktMovieEntityMapper getTraktEntityMapper() {
+        return mLazyTraktMovieEntityMapper.get();
+    }
+
+    protected MoviesState.TmdbMovieEntityMapper getTmdbEntityMapper() {
+        return mLazyTmdbMovieEntityMapper.get();
+    }
+
+    protected Bus getEventBus() {
+        return mEventBus.get();
     }
 }

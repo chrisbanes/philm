@@ -82,6 +82,30 @@ public interface MoviesState extends BaseState {
 
     public static class TmdbConfigurationChangedEvent {}
 
+    public static class MovieInformationUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
+        public MovieInformationUpdatedEvent(PhilmMovie item) {
+            super(item);
+        }
+    }
+
+    public static class MovieReleasesUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
+        public MovieReleasesUpdatedEvent(PhilmMovie item) {
+            super(item);
+        }
+    }
+
+    public static class MovieRelatedItemsUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
+        public MovieRelatedItemsUpdatedEvent(PhilmMovie item) {
+            super(item);
+        }
+    }
+
+    public static class MovieUserRatingChangedEvent extends BaseArgumentEvent<PhilmMovie> {
+        public MovieUserRatingChangedEvent(PhilmMovie item) {
+            super(item);
+        }
+    }
+
     public class MoviePaginatedResult extends PaginatedResult<List<PhilmMovie>> {
     }
 

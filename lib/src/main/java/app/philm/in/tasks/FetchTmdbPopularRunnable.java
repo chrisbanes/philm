@@ -13,7 +13,7 @@ public class FetchTmdbPopularRunnable extends BaseTmdbPaginatedRunnable {
 
     @Override
     public ResultsPage doBackgroundCall() throws RetrofitError {
-        return mLazyTmdbClient.get().moviesService().popular(getPage(), null);
+        return getTmdbClient().moviesService().popular(getPage(), null);
     }
 
     @Override

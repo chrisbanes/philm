@@ -12,7 +12,8 @@ public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
     private final String mId;
 
-    public FetchTraktDetailMovieRunnable(String imdbId) {
+    public FetchTraktDetailMovieRunnable(int callingId, String imdbId) {
+        super(callingId);
         mId = Preconditions.checkNotNull(imdbId, "id cannot be null");
     }
 
@@ -27,6 +28,6 @@ public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
         checkPhilmState(movie);
         getDbHelper().put(movie);
 
-        getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(movie));
+        getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));
     }
 }

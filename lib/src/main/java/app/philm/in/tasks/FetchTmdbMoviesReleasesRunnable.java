@@ -16,7 +16,8 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
     @Inject CountryProvider mCountryProvider;
     private final int mId;
 
-    public FetchTmdbMoviesReleasesRunnable(int id) {
+    public FetchTmdbMoviesReleasesRunnable(int callingId, int id) {
+        super(callingId);
         mId = id;
     }
 
@@ -53,7 +54,8 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
                     movie.updateFrom(countryRelease);
                     getDbHelper().put(movie);
 
-                    getEventBus().post(new MoviesState.MovieReleasesUpdatedEvent(movie));
+                    getEventBus().post(
+                            new MoviesState.MovieReleasesUpdatedEvent(getCallingId(), movie));
                 }
             }
         }

@@ -15,7 +15,8 @@ public class SubmitTraktMovieRatingRunnable extends BaseMovieRunnable<RatingResp
     private final String mId;
     private final Rating mRating;
 
-    public SubmitTraktMovieRatingRunnable(String id, Rating rating) {
+    public SubmitTraktMovieRatingRunnable(int callingId, String id, Rating rating) {
+        super(callingId);
         mId = Preconditions.checkNotNull(id, "id cannot be null");
         mRating = Preconditions.checkNotNull(rating, "rating cannot be null");
     }
@@ -37,7 +38,7 @@ public class SubmitTraktMovieRatingRunnable extends BaseMovieRunnable<RatingResp
                 }
                 getDbHelper().put(movie);
 
-                getEventBus().post(new MoviesState.MovieUserRatingChangedEvent(movie));
+                getEventBus().post(new MoviesState.MovieUserRatingChangedEvent(getCallingId(), movie));
             }
         }
     }

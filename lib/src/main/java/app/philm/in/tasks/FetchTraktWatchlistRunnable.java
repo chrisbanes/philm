@@ -14,7 +14,8 @@ public class FetchTraktWatchlistRunnable extends BaseMovieRunnable<List<Movie>> 
 
     private final String mUsername;
 
-    public FetchTraktWatchlistRunnable(String username) {
+    public FetchTraktWatchlistRunnable(int callingId, String username) {
+        super(callingId);
         mUsername = Preconditions.checkNotNull(username, "username cannot be null");
     }
 

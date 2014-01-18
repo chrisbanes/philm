@@ -13,7 +13,8 @@ import retrofit.RetrofitError;
 public class FetchTraktRelatedMoviesRunnable extends BaseMovieRunnable<List<Movie>> {
     private final String mId;
 
-    public FetchTraktRelatedMoviesRunnable(String id) {
+    public FetchTraktRelatedMoviesRunnable(int callingId, String id) {
+        super(callingId);
         mId = Preconditions.checkNotNull(id, "id cannot be null");
     }
 
@@ -27,6 +28,6 @@ public class FetchTraktRelatedMoviesRunnable extends BaseMovieRunnable<List<Movi
         PhilmMovie movie = mMoviesState.getMovie(mId);
         movie.setRelated(getTraktEntityMapper().map(result));
 
-        getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(movie));
+        getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(getCallingId(), movie));
     }
 }

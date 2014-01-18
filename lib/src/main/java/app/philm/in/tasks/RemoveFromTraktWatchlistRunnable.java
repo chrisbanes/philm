@@ -9,8 +9,8 @@ import retrofit.RetrofitError;
 
 public class RemoveFromTraktWatchlistRunnable extends BaseTraktActionRunnable {
 
-    public RemoveFromTraktWatchlistRunnable(String... ids) {
-        super(ids);
+    public RemoveFromTraktWatchlistRunnable(int callingId, String... ids) {
+        super(callingId, ids);
     }
 
     @Override

@@ -10,7 +10,8 @@ import app.philm.in.state.MoviesState;
 abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> {
     private final int mPage;
 
-    BaseTmdbPaginatedRunnable(int page) {
+    BaseTmdbPaginatedRunnable(int callingId, int page) {
+        super(callingId);
         mPage = page;
     }
 

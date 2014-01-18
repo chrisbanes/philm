@@ -11,7 +11,8 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
     private final int mId;
 
-    public FetchTmdbDetailMovieRunnable(int id) {
+    public FetchTmdbDetailMovieRunnable(int callingId, int id) {
+        super(callingId);
         mId = id;
     }
 
@@ -21,11 +22,11 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
     }
 
     @Override
-    public void onSuccess(Movie result) {
+     public void onSuccess(Movie result) {
         PhilmMovie movie = getTmdbEntityMapper().map(result);
         checkPhilmState(movie);
         getDbHelper().put(movie);
 
-        getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(movie));
+        getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));
     }
 }

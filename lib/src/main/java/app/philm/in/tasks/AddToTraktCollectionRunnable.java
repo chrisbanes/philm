@@ -9,8 +9,8 @@ import retrofit.RetrofitError;
 
 public class AddToTraktCollectionRunnable extends BaseTraktActionRunnable {
 
-    public AddToTraktCollectionRunnable(String... ids) {
-        super(ids);
+    public AddToTraktCollectionRunnable(int callingId, String... ids) {
+        super(callingId, ids);
     }
 
     @Override

@@ -9,8 +9,8 @@ import retrofit.RetrofitError;
 
 public class MarkTraktMovieSeenRunnable extends BaseTraktActionRunnable {
 
-    public MarkTraktMovieSeenRunnable(String... ids) {
-        super(ids);
+    public MarkTraktMovieSeenRunnable(int callingId, String... ids) {
+        super(callingId, ids);
     }
 
     @Override

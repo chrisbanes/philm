@@ -7,8 +7,8 @@ import retrofit.RetrofitError;
 
 public class FetchTmdbPopularRunnable extends BaseTmdbPaginatedRunnable {
 
-    public FetchTmdbPopularRunnable(int page) {
-        super(page);
+    public FetchTmdbPopularRunnable(int callingId, int page) {
+        super(callingId, page);
     }
 
     @Override

@@ -10,7 +10,8 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
 
     private final int mId;
 
-    public FetchTmdbRelatedMoviesRunnable(int id) {
+    public FetchTmdbRelatedMoviesRunnable(int callingId, int id) {
+        super(callingId);
         mId = id;
     }
 
@@ -24,7 +25,7 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
         PhilmMovie movie = mMoviesState.getMovie(String.valueOf(mId));
         movie.setRelated(getTmdbEntityMapper().map(result.results));
 
-        getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(movie));
+        getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(getCallingId(), movie));
     }
 
 }

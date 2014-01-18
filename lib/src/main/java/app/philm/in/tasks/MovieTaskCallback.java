@@ -9,6 +9,4 @@ public interface MovieTaskCallback {
 
     public void showError(NetworkError error);
 
-    public void populateUi();
-
 }

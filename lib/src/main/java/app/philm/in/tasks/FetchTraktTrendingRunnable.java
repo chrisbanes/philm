@@ -9,7 +9,8 @@ import retrofit.RetrofitError;
 
 public class FetchTraktTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
 
-    public FetchTraktTrendingRunnable() {
+    public FetchTraktTrendingRunnable(int callingId) {
+        super(callingId);
     }
 
     @Override

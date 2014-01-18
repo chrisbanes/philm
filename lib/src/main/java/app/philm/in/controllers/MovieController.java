@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.squareup.otto.Subscribe;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -151,9 +150,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
+    public void onMovieFlagsChanged(MoviesState.MovieFlagsUpdatedEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null) {
+            // Refetch the recommended tab if the UI if event came from recommended
+            if (MovieQueryType.RECOMMENDED == ui.getMovieQueryType()) {
+                fetchRecommended(event.callingId);
+            }
+
+            populateUi(ui);
+        }
+    }
+
+    @Subscribe
      public void onMovieDetailChanged(MoviesState.MovieInformationUpdatedEvent event) {
         // TODO: finding the UI is hacky. Could easily be wrong UI
-        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
         }
@@ -162,7 +174,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
-        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
         }
@@ -170,7 +182,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieRelatedItemsChanged(MoviesState.MovieRelatedItemsUpdatedEvent event) {
-        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
         }
@@ -178,7 +190,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieReleasesChanged(MoviesState.MovieReleasesUpdatedEvent event) {
-        MovieUi ui = getMovieUiAttached(MovieQueryType.DETAIL);
+        MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
         }
@@ -476,11 +488,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void addToCollection(final int callingId, String... ids) {
-        executeTask(new AddToTraktCollectionRunnable(ids), callingId);
+        executeTask(new AddToTraktCollectionRunnable(callingId, ids), callingId);
     }
 
     private void addToWatchlist(final int callingId, String... ids) {
-        executeTask(new AddToTraktWatchlistRunnable(ids), callingId);
+        executeTask(new AddToTraktWatchlistRunnable(callingId, ids), callingId);
     }
 
     private void checkDetailMovieResult(final int callingId, PhilmMovie movie) {
@@ -597,16 +609,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchDetailMovieFromTrakt(final int callingId, String id) {
         Preconditions.checkNotNull(id, "id cannot be null");
-        executeTask(new FetchTraktDetailMovieRunnable(id), callingId);
+        executeTask(new FetchTraktDetailMovieRunnable(callingId, id), callingId);
     }
 
     private void fetchDetailMovieFromTmdb(final int callingId, int id) {
-        executeTask(new FetchTmdbDetailMovieRunnable(id), callingId);
+        executeTask(new FetchTmdbDetailMovieRunnable(callingId, id), callingId);
     }
 
     private void fetchLibrary(final int callingId) {
         if (isLoggedIn()) {
-            executeTask(new FetchTraktLibraryRunnable(mMoviesState.getUsername()), callingId);
+            executeTask(new FetchTraktLibraryRunnable(callingId, mMoviesState.getUsername()), callingId);
         }
     }
 
@@ -617,7 +629,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchMovieReleases(final int callingId, int tmdbId) {
-        executeTask(new FetchTmdbMoviesReleasesRunnable(tmdbId), callingId);
+        executeTask(new FetchTmdbMoviesReleasesRunnable(callingId, tmdbId), callingId);
     }
 
     private void fetchNowPlaying(final int callingId) {
@@ -626,7 +638,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchNowPlaying(final int callingId, final int page) {
-        executeTask(new FetchTmdbNowPlayingRunnable(page), callingId);
+        executeTask(new FetchTmdbNowPlayingRunnable(callingId, page), callingId);
     }
 
     private void fetchNowPlayingIfNeeded(final int callingId) {
@@ -642,7 +654,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchPopular(final int callingId, final int page) {
-        executeTask(new FetchTmdbPopularRunnable(page), callingId);
+        executeTask(new FetchTmdbPopularRunnable(callingId, page), callingId);
     }
 
     private void fetchPopularIfNeeded(final int callingId) {
@@ -658,7 +670,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchUpcoming(final int callingId, final int page) {
-        executeTask(new FetchTmdbUpcomingRunnable(page), callingId);
+        executeTask(new FetchTmdbUpcomingRunnable(callingId, page), callingId);
     }
 
     private void fetchUpcomingIfNeeded(final int callingId) {
@@ -670,10 +682,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchRelatedMovies(final int callingId, PhilmMovie movie) {
         if (movie.getTmdbId() != null) {
-            executeTask(new FetchTmdbRelatedMoviesRunnable(movie.getTmdbId()),
+            executeTask(new FetchTmdbRelatedMoviesRunnable(callingId, movie.getTmdbId()),
                     new RelatedMoviesTaskCallback(callingId));
         } else if (!TextUtils.isEmpty(movie.getImdbId())) {
-            executeTask(new FetchTraktRelatedMoviesRunnable(movie.getImdbId()),
+            executeTask(new FetchTraktRelatedMoviesRunnable(callingId, movie.getImdbId()),
                     new RelatedMoviesTaskCallback(callingId));
         }
     }
@@ -684,12 +696,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchSearchResults(final int callingId, String query, int page) {
-        executeTask(new FetchTmdbSearchQueryRunnable(query, page), callingId);
+        executeTask(new FetchTmdbSearchQueryRunnable(callingId, query, page), callingId);
     }
 
     private void fetchRecommended(final int callingId) {
         Preconditions.checkState(isLoggedIn(), "Must be logged in to trakt for recommendations");
-        executeTask(new FetchTraktRecommendationsRunnable(), callingId);
+        executeTask(new FetchTraktRecommendationsRunnable(callingId), callingId);
     }
 
     private void fetchRecommendedIfNeeded(final int callingId) {
@@ -705,7 +717,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchTrending(final int callingId) {
-        executeTask(new FetchTraktTrendingRunnable(), callingId);
+        executeTask(new FetchTraktTrendingRunnable(callingId), callingId);
     }
 
     private void fetchTrendingIfNeeded(final int callingId) {
@@ -716,7 +728,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchWatchlist(final int callingId) {
         if (isLoggedIn()) {
-            executeTask(new FetchTraktWatchlistRunnable(mMoviesState.getUsername()), callingId);
+            executeTask(new FetchTraktWatchlistRunnable(callingId, mMoviesState.getUsername()), callingId);
         }
     }
 
@@ -766,15 +778,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (Constants.DEBUG) {
             mLogger.d(LOG_TAG, "submitMovieRating: " + imdbId + ". " + rating.name());
         }
-        executeTask(new SubmitTraktMovieRatingRunnable(imdbId, rating), callingId);
+        executeTask(new SubmitTraktMovieRatingRunnable(callingId, imdbId, rating), callingId);
     }
 
     private void markMoviesSeen(final int callingId, String... ids) {
-        executeTask(new MarkTraktMovieSeenRunnable(ids), callingId);
+        executeTask(new MarkTraktMovieSeenRunnable(callingId, ids), callingId);
     }
 
     private void markMoviesUnseen(final int callingId, String... ids) {
-        executeTask(new MarkTraktMovieUnseenRunnable(ids), callingId);
+        executeTask(new MarkTraktMovieUnseenRunnable(callingId, ids), callingId);
     }
 
     private void populateDetailUi(MovieDetailUi ui) {
@@ -905,11 +917,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void removeFromCollection(final int callingId, String... ids) {
-        executeTask(new RemoveFromTraktCollectionRunnable(ids), callingId);
+        executeTask(new RemoveFromTraktCollectionRunnable(callingId, ids), callingId);
     }
 
     private void removeFromWatchlist(final int callingId, String... ids) {
-        executeTask(new RemoveFromTraktWatchlistRunnable(ids), callingId);
+        executeTask(new RemoveFromTraktWatchlistRunnable(callingId, ids), callingId);
     }
 
     private void removeMutuallyExclusiveFilters(final Filter filter) {
@@ -1172,10 +1184,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private class BaseTaskCallback implements MovieTaskCallback {
-        final int uiId;
+        private final int mCallingId;
 
-        BaseTaskCallback(int uiId) {
-            this.uiId = uiId;
+        BaseTaskCallback(int callingId) {
+            mCallingId = callingId;
         }
 
         @Override
@@ -1194,17 +1206,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
         }
 
-        @Override
-        public void populateUi() {
-            MovieUi ui = getUi();
-            if (ui != null) {
-                MovieController.this.populateUi(ui);
-            }
-            //MovieController.this.populateUis();
-        }
-
         protected MovieUi getUi() {
-            return findUi(uiId);
+            return findUi(mCallingId);
         }
 
     }

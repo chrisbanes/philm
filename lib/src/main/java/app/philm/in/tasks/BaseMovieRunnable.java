@@ -29,7 +29,13 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
     @Inject Lazy<MoviesState.TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
     @Inject Lazy<Bus> mEventBus;
 
+
+    private final int mCallingId;
     private MovieTaskCallback mCallback;
+
+    public BaseMovieRunnable(int callingId) {
+        mCallingId = callingId;
+    }
 
     protected boolean hasCallback() {
         return mCallback != null;
@@ -116,5 +122,9 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
     protected Bus getEventBus() {
         return mEventBus.get();
+    }
+
+    protected int getCallingId() {
+        return mCallingId;
     }
 }

@@ -10,12 +10,14 @@ import com.jakewharton.trakt.services.MovieService;
 import java.util.ArrayList;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
 abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
     private final String[] mIds;
 
-    BaseTraktActionRunnable(String[] id) {
+    BaseTraktActionRunnable(int callingId, String[] id) {
+        super(callingId);
         mIds = Preconditions.checkNotNull(id, "id cannot be null");
     }
 
@@ -52,18 +54,25 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
 
     private void onActionCompleted(final boolean successful) {
         if (successful) {
+            ArrayList<PhilmMovie> result = new ArrayList<PhilmMovie>(mIds.length);
             for (int i = 0; i < mIds.length; i++) {
-                onSuccessfulAction(mIds[i]);
+                PhilmMovie movie = onSuccessfulAction(mIds[i]);
+                if (movie != null) {
+                    result.add(movie);
+                }
             }
-            getCallback().populateUi();
+
+            getEventBus().post(new MoviesState.MovieFlagsUpdatedEvent(getCallingId(), result));
         }
     }
 
-    private void onSuccessfulAction(final String movieId) {
+    private PhilmMovie onSuccessfulAction(final String movieId) {
         PhilmMovie movie = mMoviesState.getMovie(movieId);
         if (movie != null) {
             movieRequiresModifying(movie);
             checkPhilmState(movie);
+            return movie;
         }
+        return null;
     }
 }

@@ -10,8 +10,8 @@ import retrofit.RetrofitError;
 public class FetchTmdbSearchQueryRunnable extends BaseTmdbPaginatedRunnable {
     private final String mQuery;
 
-    public FetchTmdbSearchQueryRunnable(String query, int page) {
-        super(page);
+    public FetchTmdbSearchQueryRunnable(int callingId, String query, int page) {
+        super(callingId, page);
         mQuery = Preconditions.checkNotNull(query, "query cannot be null");
     }
 

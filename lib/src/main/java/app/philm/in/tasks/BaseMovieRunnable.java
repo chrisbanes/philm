@@ -13,6 +13,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkCallRunnable;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
+import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import app.philm.in.util.PhilmCollections;
 import dagger.Lazy;
@@ -29,45 +30,25 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
     @Inject Lazy<MoviesState.TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
     @Inject Lazy<Bus> mEventBus;
 
-
     private final int mCallingId;
-    private MovieTaskCallback mCallback;
 
     public BaseMovieRunnable(int callingId) {
         mCallingId = callingId;
     }
 
-    protected boolean hasCallback() {
-        return mCallback != null;
-    }
-
-    public void setCallback(MovieTaskCallback callback) {
-        mCallback = callback;
-    }
-
     @Override
     public void onPreTraktCall() {
-        if (mCallback != null) {
-            mCallback.showLoadingProgress(true);
-        }
+        getEventBus().post(createLoadingProgressEvent(true));
     }
 
     @Override
     public void onError(RetrofitError re) {
-        if (mCallback != null) {
-            mCallback.showError(NetworkError.from(re));
-        }
+        getEventBus().post(new BaseState.ShowErrorEvent(getCallingId(), NetworkError.from(re)));
     }
 
     @Override
     public void onFinished() {
-        if (mCallback != null) {
-            mCallback.showLoadingProgress(false);
-        }
-    }
-
-    protected MovieTaskCallback getCallback() {
-        return mCallback;
+        getEventBus().post(createLoadingProgressEvent(false));
     }
 
     protected void checkPhilmState(PhilmMovie movie) {
@@ -126,5 +107,9 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
     protected int getCallingId() {
         return mCallingId;
+    }
+
+    protected Object createLoadingProgressEvent(boolean show) {
+        return new BaseState.ShowLoadingProgressEvent(getCallingId(), show);
     }
 }

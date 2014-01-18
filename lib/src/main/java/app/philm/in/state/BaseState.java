@@ -5,8 +5,9 @@ import com.google.common.base.Objects;
 import app.philm.in.controllers.MainController;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.network.NetworkError;
 
-interface BaseState {
+public interface BaseState {
 
     public void setSelectedSideMenuItem(MainController.SideMenuItem item);
 
@@ -50,6 +51,32 @@ interface BaseState {
         @Override
         public int hashCode() {
             return items != null ? items.hashCode() : 0;
+        }
+    }
+
+    public static class ShowLoadingProgressEvent {
+        public final int callingId;
+        public final boolean show;
+
+        public ShowLoadingProgressEvent(int callingId, boolean show) {
+            this.callingId = callingId;
+            this.show = show;
+        }
+    }
+
+    public static class ShowRelatedLoadingProgressEvent extends ShowLoadingProgressEvent {
+        public ShowRelatedLoadingProgressEvent(int callingId, boolean show) {
+            super(callingId, show);
+        }
+    }
+
+    public static class ShowErrorEvent {
+        public final int callingId;
+        public final NetworkError error;
+
+        public ShowErrorEvent(int callingId, NetworkError error) {
+            this.callingId = callingId;
+            this.error = error;
         }
     }
 

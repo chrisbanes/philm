@@ -23,6 +23,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
+import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.tasks.AddToTraktCollectionRunnable;
@@ -44,7 +45,6 @@ import app.philm.in.tasks.FetchTraktTrendingRunnable;
 import app.philm.in.tasks.FetchTraktWatchlistRunnable;
 import app.philm.in.tasks.MarkTraktMovieSeenRunnable;
 import app.philm.in.tasks.MarkTraktMovieUnseenRunnable;
-import app.philm.in.tasks.MovieTaskCallback;
 import app.philm.in.tasks.RemoveFromTraktCollectionRunnable;
 import app.philm.in.tasks.RemoveFromTraktWatchlistRunnable;
 import app.philm.in.tasks.SubmitTraktMovieRatingRunnable;
@@ -193,6 +193,31 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
+        }
+    }
+
+    @Subscribe
+    public void onNetworkError(BaseState.ShowErrorEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null && null != event.error) {
+            ui.showError(event.error);
+        }
+    }
+
+    @Subscribe
+     public void onLoadingProgressVisibilityChanged(BaseState.ShowLoadingProgressEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null) {
+            ui.showLoadingProgress(event.show);
+        }
+    }
+
+    @Subscribe
+    public void onRelatedMoviesLoadingProgressVisibilityChanged(
+            BaseState.ShowRelatedLoadingProgressEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
+            ((MovieController.MovieDetailUi) ui).showRelatedMoviesLoadingProgress(event.show);
         }
     }
 
@@ -488,11 +513,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void addToCollection(final int callingId, String... ids) {
-        executeTask(new AddToTraktCollectionRunnable(callingId, ids), callingId);
+        executeTask(new AddToTraktCollectionRunnable(callingId, ids));
     }
 
     private void addToWatchlist(final int callingId, String... ids) {
-        executeTask(new AddToTraktWatchlistRunnable(callingId, ids), callingId);
+        executeTask(new AddToTraktWatchlistRunnable(callingId, ids));
     }
 
     private void checkDetailMovieResult(final int callingId, PhilmMovie movie) {
@@ -569,14 +594,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return result;
     }
 
-    private <R> void executeTask(BaseMovieRunnable<R> task, int callingId) {
-        executeTask(task, new BaseTaskCallback(callingId));
-    }
-
-    private <R> void executeTask(BaseMovieRunnable<R> task, MovieTaskCallback callback) {
-        if (callback != null) {
-            task.setCallback(callback);
-        }
+    private <R> void executeTask(BaseMovieRunnable<R> task) {
         mInjector.inject(task);
         mExecutor.execute(task);
     }
@@ -596,6 +614,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchDetailMovieFromTmdb(final int callingId, int id) {
+        executeTask(new FetchTmdbDetailMovieRunnable(callingId, id));
+    }
+
+    private void fetchDetailMovieFromTrakt(final int callingId, String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+        executeTask(new FetchTraktDetailMovieRunnable(callingId, id));
+    }
+
     private void fetchDetailMovieIfNeeded(final int callingId, String id) {
         Preconditions.checkNotNull(id, "id cannot be null");
 
@@ -607,18 +634,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void fetchDetailMovieFromTrakt(final int callingId, String id) {
-        Preconditions.checkNotNull(id, "id cannot be null");
-        executeTask(new FetchTraktDetailMovieRunnable(callingId, id), callingId);
-    }
-
-    private void fetchDetailMovieFromTmdb(final int callingId, int id) {
-        executeTask(new FetchTmdbDetailMovieRunnable(callingId, id), callingId);
-    }
-
     private void fetchLibrary(final int callingId) {
         if (isLoggedIn()) {
-            executeTask(new FetchTraktLibraryRunnable(callingId, mMoviesState.getUsername()), callingId);
+            executeTask(new FetchTraktLibraryRunnable(callingId, mMoviesState.getUsername()));
         }
     }
 
@@ -629,7 +647,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchMovieReleases(final int callingId, int tmdbId) {
-        executeTask(new FetchTmdbMoviesReleasesRunnable(callingId, tmdbId), callingId);
+        executeTask(new FetchTmdbMoviesReleasesRunnable(callingId, tmdbId));
     }
 
     private void fetchNowPlaying(final int callingId) {
@@ -638,7 +656,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchNowPlaying(final int callingId, final int page) {
-        executeTask(new FetchTmdbNowPlayingRunnable(callingId, page), callingId);
+        executeTask(new FetchTmdbNowPlayingRunnable(callingId, page));
     }
 
     private void fetchNowPlayingIfNeeded(final int callingId) {
@@ -654,7 +672,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchPopular(final int callingId, final int page) {
-        executeTask(new FetchTmdbPopularRunnable(callingId, page), callingId);
+        executeTask(new FetchTmdbPopularRunnable(callingId, page));
     }
 
     private void fetchPopularIfNeeded(final int callingId) {
@@ -664,29 +682,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void fetchUpcoming(final int callingId) {
-        mMoviesState.setUpcoming(null);
-        fetchUpcoming(callingId, TMDB_FIRST_PAGE);
+    private void fetchRecommended(final int callingId) {
+        Preconditions.checkState(isLoggedIn(), "Must be logged in to trakt for recommendations");
+        executeTask(new FetchTraktRecommendationsRunnable(callingId));
     }
 
-    private void fetchUpcoming(final int callingId, final int page) {
-        executeTask(new FetchTmdbUpcomingRunnable(callingId, page), callingId);
-    }
-
-    private void fetchUpcomingIfNeeded(final int callingId) {
-        MoviesState.MoviePaginatedResult upcoming = mMoviesState.getUpcoming();
-        if (upcoming == null || PhilmCollections.isEmpty(upcoming.items)) {
-            fetchUpcoming(callingId, TMDB_FIRST_PAGE);
+    private void fetchRecommendedIfNeeded(final int callingId) {
+        if (PhilmCollections.isEmpty(mMoviesState.getRecommended())) {
+            fetchRecommended(callingId);
         }
     }
 
     private void fetchRelatedMovies(final int callingId, PhilmMovie movie) {
         if (movie.getTmdbId() != null) {
-            executeTask(new FetchTmdbRelatedMoviesRunnable(callingId, movie.getTmdbId()),
-                    new RelatedMoviesTaskCallback(callingId));
+            executeTask(new FetchTmdbRelatedMoviesRunnable(callingId, movie.getTmdbId()));
         } else if (!TextUtils.isEmpty(movie.getImdbId())) {
-            executeTask(new FetchTraktRelatedMoviesRunnable(callingId, movie.getImdbId()),
-                    new RelatedMoviesTaskCallback(callingId));
+            executeTask(new FetchTraktRelatedMoviesRunnable(callingId, movie.getImdbId()));
         }
     }
 
@@ -696,18 +707,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchSearchResults(final int callingId, String query, int page) {
-        executeTask(new FetchTmdbSearchQueryRunnable(callingId, query, page), callingId);
-    }
-
-    private void fetchRecommended(final int callingId) {
-        Preconditions.checkState(isLoggedIn(), "Must be logged in to trakt for recommendations");
-        executeTask(new FetchTraktRecommendationsRunnable(callingId), callingId);
-    }
-
-    private void fetchRecommendedIfNeeded(final int callingId) {
-        if (PhilmCollections.isEmpty(mMoviesState.getRecommended())) {
-            fetchRecommended(callingId);
-        }
+        executeTask(new FetchTmdbSearchQueryRunnable(callingId, query, page));
     }
 
     private void fetchTmdbConfiguration() {
@@ -717,7 +717,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchTrending(final int callingId) {
-        executeTask(new FetchTraktTrendingRunnable(callingId), callingId);
+        executeTask(new FetchTraktTrendingRunnable(callingId));
     }
 
     private void fetchTrendingIfNeeded(final int callingId) {
@@ -726,9 +726,25 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchUpcoming(final int callingId) {
+        mMoviesState.setUpcoming(null);
+        fetchUpcoming(callingId, TMDB_FIRST_PAGE);
+    }
+
+    private void fetchUpcoming(final int callingId, final int page) {
+        executeTask(new FetchTmdbUpcomingRunnable(callingId, page));
+    }
+
+    private void fetchUpcomingIfNeeded(final int callingId) {
+        MoviesState.MoviePaginatedResult upcoming = mMoviesState.getUpcoming();
+        if (upcoming == null || PhilmCollections.isEmpty(upcoming.items)) {
+            fetchUpcoming(callingId, TMDB_FIRST_PAGE);
+        }
+    }
+
     private void fetchWatchlist(final int callingId) {
         if (isLoggedIn()) {
-            executeTask(new FetchTraktWatchlistRunnable(callingId, mMoviesState.getUsername()), callingId);
+            executeTask(new FetchTraktWatchlistRunnable(callingId, mMoviesState.getUsername()));
         }
     }
 
@@ -778,15 +794,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (Constants.DEBUG) {
             mLogger.d(LOG_TAG, "submitMovieRating: " + imdbId + ". " + rating.name());
         }
-        executeTask(new SubmitTraktMovieRatingRunnable(callingId, imdbId, rating), callingId);
+        executeTask(new SubmitTraktMovieRatingRunnable(callingId, imdbId, rating));
     }
 
     private void markMoviesSeen(final int callingId, String... ids) {
-        executeTask(new MarkTraktMovieSeenRunnable(callingId, ids), callingId);
+        executeTask(new MarkTraktMovieSeenRunnable(callingId, ids));
     }
 
     private void markMoviesUnseen(final int callingId, String... ids) {
-        executeTask(new MarkTraktMovieUnseenRunnable(callingId, ids), callingId);
+        executeTask(new MarkTraktMovieUnseenRunnable(callingId, ids));
     }
 
     private void populateDetailUi(MovieDetailUi ui) {
@@ -917,11 +933,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void removeFromCollection(final int callingId, String... ids) {
-        executeTask(new RemoveFromTraktCollectionRunnable(callingId, ids), callingId);
+        executeTask(new RemoveFromTraktCollectionRunnable(callingId, ids));
     }
 
     private void removeFromWatchlist(final int callingId, String... ids) {
-        executeTask(new RemoveFromTraktWatchlistRunnable(callingId, ids), callingId);
+        executeTask(new RemoveFromTraktWatchlistRunnable(callingId, ids));
     }
 
     private void removeMutuallyExclusiveFilters(final Filter filter) {
@@ -1181,52 +1197,5 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 fetchWatchlistIfNeeded(getId(ui));
             }
         }
-    }
-
-    private class BaseTaskCallback implements MovieTaskCallback {
-        private final int mCallingId;
-
-        BaseTaskCallback(int callingId) {
-            mCallingId = callingId;
-        }
-
-        @Override
-        public void showLoadingProgress(boolean show) {
-            MovieUi ui = getUi();
-            if (ui != null) {
-                ui.showLoadingProgress(show);
-            }
-        }
-
-        @Override
-        public void showError(NetworkError error) {
-            MovieUi ui = getUi();
-            if (ui != null) {
-                ui.showError(error);
-            }
-        }
-
-        protected MovieUi getUi() {
-            return findUi(mCallingId);
-        }
-
-    }
-
-    private class RelatedMoviesTaskCallback extends BaseTaskCallback {
-
-        RelatedMoviesTaskCallback(int uiId) {
-            super(uiId);
-        }
-
-        @Override
-        public void showLoadingProgress(boolean show) {
-            MovieUi ui = getUi();
-            if (ui instanceof MovieController.MovieDetailUi) {
-                ((MovieController.MovieDetailUi) ui).showRelatedMoviesLoadingProgress(show);
-            } else {
-                super.showLoadingProgress(show);
-            }
-        }
-
     }
 }

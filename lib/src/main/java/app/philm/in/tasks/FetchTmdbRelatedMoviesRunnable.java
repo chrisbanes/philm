@@ -3,6 +3,7 @@ package app.philm.in.tasks;
 import com.uwetrottmann.tmdb.entities.ResultsPage;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
@@ -28,4 +29,8 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
         getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(getCallingId(), movie));
     }
 
+    @Override
+    protected Object createLoadingProgressEvent(boolean show) {
+        return new BaseState.ShowRelatedLoadingProgressEvent(getCallingId(), show);
+    }
 }

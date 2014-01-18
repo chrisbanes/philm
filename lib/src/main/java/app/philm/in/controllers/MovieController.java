@@ -168,8 +168,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
+            checkDetailMovieResult(event.callingId, event.item);
         }
-        checkDetailMovieResult(getId(ui), event.item);
     }
 
     @Subscribe
@@ -684,6 +684,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchRecommended(final int callingId) {
         Preconditions.checkState(isLoggedIn(), "Must be logged in to trakt for recommendations");
+        mMoviesState.setRecommended(null);
         executeTask(new FetchTraktRecommendationsRunnable(callingId));
     }
 

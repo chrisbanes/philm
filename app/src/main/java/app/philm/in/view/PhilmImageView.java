@@ -101,12 +101,18 @@ public class PhilmImageView extends ImageView {
                 break;
         }
 
-        if (url != null && !Objects.equal(url, mLoadedUrl)) {
-            Picasso.with(getContext()).load(url).into(this, mCallback);
-            mLoadedUrl = url;
+        if (url != null) {
+            if (!Objects.equal(url, mLoadedUrl)) {
+                Picasso.with(getContext()).load(url).into(this, mCallback);
+                mLoadedUrl = url;
 
-            if (Constants.DEBUG) {
-                Log.d("PhilmImageView", "Loading " + url);
+                if (Constants.DEBUG) {
+                    Log.d("PhilmImageView", "Loading " + url);
+                }
+            } else {
+                if (mCallback != null) {
+                    mCallback.onSuccess();
+                }
             }
         }
     }

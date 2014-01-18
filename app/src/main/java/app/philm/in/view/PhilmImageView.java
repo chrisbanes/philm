@@ -1,5 +1,7 @@
 package app.philm.in.view;
 
+import com.google.common.base.Objects;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +27,8 @@ public class PhilmImageView extends ImageView {
 
     private int mType;
     private PhilmMovie mMovieToLoad;
+
+    private String mLoadedUrl;
 
     private Callback mCallback;
 
@@ -97,8 +101,9 @@ public class PhilmImageView extends ImageView {
                 break;
         }
 
-        if (url != null) {
+        if (url != null && !Objects.equal(url, mLoadedUrl)) {
             Picasso.with(getContext()).load(url).into(this, mCallback);
+            mLoadedUrl = url;
 
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);

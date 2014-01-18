@@ -25,10 +25,12 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     public interface SubUi {}
 
     @Inject Logger mLogger;
-    private HashSet<U> mUis;
+    private final Set<U> mUis;
+    private final Set<U> mUnmodifiableUis;
 
     public BaseUiController() {
         mUis = new HashSet<U>();
+        mUnmodifiableUis = Collections.unmodifiableSet(mUis);
     }
 
     public final void attachUi(U ui) {
@@ -67,7 +69,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     }
 
     protected final Set<U> getUis() {
-        return Collections.unmodifiableSet(mUis);
+        return mUnmodifiableUis;
     }
 
     protected void onInited() {
@@ -93,7 +95,6 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     }
 
     protected void populateUi(U ui) {
-
     }
 
     protected abstract UC createUiCallbacks(U ui);

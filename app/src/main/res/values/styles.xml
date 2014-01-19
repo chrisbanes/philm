@@ -91,12 +91,9 @@
     </style>
 
     <style name="Widget.Philm.ProgressBar" parent="android:Widget.Holo.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">
-            @drawable/philmcolor_progress_horizontal_holo_dark
-        </item>
-        <item name="android:indeterminateDrawable">
-            @drawable/philmcolor_progress_indeterminate_horizontal_holo_dark
-        </item>
+        <item name="spb_color">@color/primary_accent_color</item>
+        <item name="android:minHeight">4dp</item>
+        <item name="android:maxHeight">4dp</item>
     </style>
 
     <style name="Widget.Philm.RatingBar" parent="android:Widget.Holo.RatingBar">

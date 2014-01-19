@@ -18,6 +18,8 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+
 public abstract class ListFragment<E extends AbsListView> extends Fragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
     static final int INTERNAL_PROGRESS_CONTAINER_ID = 0x00ff0002;
@@ -111,7 +113,7 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
 
         // ------------------------------------------------------------------
 
-        ProgressBar secondaryProgress = new ProgressBar(context, null,
+        ProgressBar secondaryProgress = new SmoothProgressBar(context, null,
                 android.R.attr.progressBarStyleHorizontal);
         secondaryProgress.setId(INTERNAL_SECONDARY_PROGRESS_ID);
         secondaryProgress.setVisibility(View.GONE);

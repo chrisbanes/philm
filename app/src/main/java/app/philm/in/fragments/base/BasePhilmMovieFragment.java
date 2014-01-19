@@ -36,6 +36,11 @@ public abstract class BasePhilmMovieFragment extends Fragment implements MovieCo
     }
 
     @Override
+    public void showSecondaryLoadingProgress(boolean visible) {
+        // NO-OP
+    }
+
+    @Override
     public void showError(NetworkError error) {
         showCrouton(StringManager.getStringResId(error), Style.ALERT);
     }

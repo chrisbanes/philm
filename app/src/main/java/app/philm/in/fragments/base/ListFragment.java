@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
     static final int INTERNAL_PROGRESS_CONTAINER_ID = 0x00ff0002;
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
+    static final int INTERNAL_SECONDARY_PROGRESS_ID = 0x00ff0004;
 
     final private Handler mHandler = new Handler();
 
@@ -43,6 +45,7 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
     TextView mStandardEmptyView;
     View mProgressContainer;
     View mListContainer;
+    View mSecondaryProgressView;
     CharSequence mEmptyText;
     boolean mListShown;
 
@@ -107,6 +110,15 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
         // ------------------------------------------------------------------
+
+        ProgressBar secondaryProgress = new ProgressBar(context, null,
+                android.R.attr.progressBarStyleHorizontal);
+        secondaryProgress.setId(INTERNAL_SECONDARY_PROGRESS_ID);
+        secondaryProgress.setVisibility(View.GONE);
+        secondaryProgress.setIndeterminate(true);
+        root.addView(secondaryProgress, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.BOTTOM));
 
         root.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
@@ -290,6 +302,20 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
         }
     }
 
+    public void setSecondaryProgressShown(boolean visible) {
+        Animation anim;
+        if (visible) {
+            mSecondaryProgressView.setVisibility(View.VISIBLE);
+            anim = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in);
+        } else {
+            mSecondaryProgressView.setVisibility(View.GONE);
+            anim = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out);
+        }
+
+        anim.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
+        mSecondaryProgressView.startAnimation(anim);
+    }
+
     /**
      * Get the ListAdapter associated with this activity's ListView.
      */
@@ -317,6 +343,7 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
                 mStandardEmptyView.setVisibility(View.GONE);
             }
             mProgressContainer = root.findViewById(INTERNAL_PROGRESS_CONTAINER_ID);
+            mSecondaryProgressView = root.findViewById(INTERNAL_SECONDARY_PROGRESS_ID);
             mListContainer = root.findViewById(INTERNAL_LIST_CONTAINER_ID);
             View rawListView = root.findViewById(android.R.id.list);
             if (!(rawListView instanceof AbsListView)) {

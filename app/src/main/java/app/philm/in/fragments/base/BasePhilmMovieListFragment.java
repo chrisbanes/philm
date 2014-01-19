@@ -178,12 +178,15 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView> extends 
     @Override
     public void showLoadingProgress(boolean visible) {
         if (visible) {
-            if (getListView().getCount() == 0) {
-                setListShown(false);
-            }
+            setListShown(false);
         } else {
             setListShown(true);
         }
+    }
+
+    @Override
+    public void showSecondaryLoadingProgress(boolean visible) {
+        setSecondaryProgressShown(visible);
     }
 
     @Override

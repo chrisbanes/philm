@@ -37,6 +37,11 @@ public abstract class BasePhilmMovieDialogFragment extends DialogFragment
     }
 
     @Override
+    public void showSecondaryLoadingProgress(boolean visible) {
+        // NO-OP
+    }
+
+    @Override
     public void showError(NetworkError error) {
         showCrouton(StringManager.getStringResId(error), Style.ALERT);
     }

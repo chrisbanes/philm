@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
+import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 
 abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> {
@@ -51,5 +52,14 @@ abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> 
 
     protected MoviesState.MoviePaginatedResult createPaginatedResult() {
         return new MoviesState.MoviePaginatedResult();
+    }
+
+    @Override
+    protected Object createLoadingProgressEvent(boolean show) {
+        if (mPage > 1) {
+            return new BaseState.ShowLoadingProgressEvent(getCallingId(), show, true);
+        } else {
+            return super.createLoadingProgressEvent(show);
+        }
     }
 }

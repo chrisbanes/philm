@@ -53,6 +53,11 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
     }
 
     @Override
+    public void showSecondaryLoadingProgress(boolean visible) {
+        // NO-OP
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         mCurrentItem = mViewPager.getCurrentItem();

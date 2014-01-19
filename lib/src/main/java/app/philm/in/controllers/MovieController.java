@@ -204,10 +204,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
-     public void onLoadingProgressVisibilityChanged(BaseState.ShowLoadingProgressEvent event) {
+    public void onLoadingProgressVisibilityChanged(BaseState.ShowLoadingProgressEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
-            ui.showLoadingProgress(event.show);
+            if (event.secondary) {
+                ui.showSecondaryLoadingProgress(event.show);
+            } else {
+                ui.showLoadingProgress(event.show);
+            }
         }
     }
 
@@ -683,7 +687,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchRecommended(final int callingId) {
         Preconditions.checkState(isLoggedIn(), "Must be logged in to trakt for recommendations");
-        mMoviesState.setRecommended(null);
         executeTask(new FetchTraktRecommendationsRunnable(callingId));
     }
 
@@ -1072,6 +1075,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showError(NetworkError error);
 
         void showLoadingProgress(boolean visible);
+
+        void showSecondaryLoadingProgress(boolean visible);
 
         MovieQueryType getMovieQueryType();
 

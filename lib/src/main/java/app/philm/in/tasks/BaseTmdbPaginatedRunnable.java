@@ -5,6 +5,7 @@ import com.uwetrottmann.tmdb.entities.ResultsPage;
 import java.util.ArrayList;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
 
 abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> {
@@ -33,6 +34,11 @@ abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> 
 
             updateState(paginatedResult);
         }
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TMDB;
     }
 
     protected int getPage() {

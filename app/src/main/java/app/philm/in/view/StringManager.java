@@ -86,8 +86,12 @@ public class StringManager {
                 return R.string.error_unauthorized;
             case NETWORK_ERROR:
                 return R.string.error_network;
-            default:
+            case NOT_FOUND_TRAKT:
+                return R.string.error_movie_not_found_trakt;
+            case NOT_FOUND_TMDB:
+                return R.string.error_movie_not_found_tmdb;
             case UNKNOWN:
+            default:
                 return R.string.error_unknown;
         }
     }

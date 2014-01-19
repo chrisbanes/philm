@@ -164,7 +164,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
      public void onMovieDetailChanged(MoviesState.MovieInformationUpdatedEvent event) {
-        // TODO: finding the UI is hacky. Could easily be wrong UI
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
@@ -809,11 +808,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void populateDetailUi(MovieDetailUi ui) {
         final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
 
-        final boolean isLoggedIn = isLoggedIn();
-        ui.setRateCircleEnabled(isLoggedIn);
-        ui.setCollectionButtonEnabled(isLoggedIn);
-        ui.setWatchlistButtonEnabled(isLoggedIn);
-        ui.setToggleWatchedButtonEnabled(isLoggedIn);
+        final boolean canUpdateTrack = isLoggedIn() && movie.isLoadedFromTrakt();
+        ui.setRateCircleEnabled(canUpdateTrack);
+        ui.setCollectionButtonEnabled(canUpdateTrack);
+        ui.setWatchlistButtonEnabled(canUpdateTrack);
+        ui.setToggleWatchedButtonEnabled(canUpdateTrack);
 
         ui.setMovie(movie);
     }

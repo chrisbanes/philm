@@ -7,6 +7,7 @@ import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.RateService;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
@@ -41,5 +42,10 @@ public class SubmitTraktMovieRatingRunnable extends BaseMovieRunnable<RatingResp
                 getEventBus().post(new MoviesState.MovieUserRatingChangedEvent(getCallingId(), movie));
             }
         }
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TRAKT;
     }
 }

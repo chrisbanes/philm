@@ -4,6 +4,7 @@ import com.jakewharton.trakt.entities.Movie;
 
 import java.util.List;
 
+import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
@@ -25,6 +26,11 @@ public class FetchTraktTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
         } else {
             mMoviesState.setTrending(null);
         }
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TRAKT;
     }
 
 }

@@ -5,6 +5,7 @@ import com.jakewharton.trakt.services.RecommendationsService;
 
 import java.util.List;
 
+import app.philm.in.network.NetworkError;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
@@ -31,5 +32,10 @@ public class FetchTraktRecommendationsRunnable extends BaseMovieRunnable<List<Mo
         } else {
             mMoviesState.setRecommended(null);
         }
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TRAKT;
     }
 }

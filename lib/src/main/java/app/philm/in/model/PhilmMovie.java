@@ -62,6 +62,7 @@ public class PhilmMovie {
 
     int userRating;
     int userRatingAdvanced;
+
     int ratingPercent;
     int ratingVotes;
 
@@ -74,6 +75,9 @@ public class PhilmMovie {
     long lastFetched;
 
     String localizedCountryCode;
+
+    boolean loadedFromTrakt;
+    boolean loadedFromTmdb;
 
     transient List<PhilmMovie> related;
 
@@ -91,6 +95,8 @@ public class PhilmMovie {
 
     public void setFromMovie(com.jakewharton.trakt.entities.Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
+
+        loadedFromTrakt = true;
 
         if (!TextUtils.isEmpty(movie.tmdbId)) {
             tmdbId = Integer.parseInt(movie.tmdbId);
@@ -160,6 +166,8 @@ public class PhilmMovie {
 
     public void setFromMovie(com.uwetrottmann.tmdb.entities.Movie movie) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
+
+        loadedFromTmdb = true;
 
         tmdbId = movie.id;
         if (!TextUtils.isEmpty(movie.imdb_id)) {
@@ -373,6 +381,22 @@ public class PhilmMovie {
 
     public String getMainLanguageTitle() {
         return mainLanguageTitle;
+    }
+
+    public void setLoadedFromTmdb(boolean loadedFromTmdb) {
+        this.loadedFromTmdb = loadedFromTmdb;
+    }
+
+    public void setLoadedFromTrakt(boolean loadedFromTrakt) {
+        this.loadedFromTrakt = loadedFromTrakt;
+    }
+
+    public boolean isLoadedFromTmdb() {
+        return loadedFromTmdb;
+    }
+
+    public boolean isLoadedFromTrakt() {
+        return loadedFromTrakt;
     }
 
     @Override

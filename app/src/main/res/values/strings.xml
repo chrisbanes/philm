@@ -55,6 +55,8 @@
 
     <string name="error_unauthorized">Unauthorized</string>
     <string name="error_network">Network error</string>
+    <string name="error_movie_not_found_trakt">Movie not found at trakt</string>
+    <string name="error_movie_not_found_tmdb">Movie not found at TMDb</string>
     <string name="error_unknown">Unknown error :(</string>
 
     <string name="movie_title_year">%1$s (%2$d)</string>

@@ -10,6 +10,7 @@ import com.jakewharton.trakt.services.MovieService;
 import java.util.ArrayList;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
@@ -51,6 +52,11 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
     }
 
     protected abstract void movieRequiresModifying(PhilmMovie movie);
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TRAKT;
+    }
 
     private void onActionCompleted(final boolean successful) {
         if (successful) {

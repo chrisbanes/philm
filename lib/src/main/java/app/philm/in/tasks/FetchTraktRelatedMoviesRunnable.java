@@ -7,6 +7,7 @@ import com.jakewharton.trakt.entities.Movie;
 import java.util.List;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
@@ -29,5 +30,10 @@ public class FetchTraktRelatedMoviesRunnable extends BaseMovieRunnable<List<Movi
         movie.setRelated(getTraktEntityMapper().map(result));
 
         getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(getCallingId(), movie));
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TRAKT;
     }
 }

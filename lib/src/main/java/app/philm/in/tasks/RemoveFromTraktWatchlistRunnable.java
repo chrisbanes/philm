@@ -5,6 +5,7 @@ import com.jakewharton.trakt.entities.Response;
 import com.jakewharton.trakt.services.MovieService;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.network.NetworkError;
 import retrofit.RetrofitError;
 
 public class RemoveFromTraktWatchlistRunnable extends BaseTraktActionRunnable {
@@ -21,5 +22,10 @@ public class RemoveFromTraktWatchlistRunnable extends BaseTraktActionRunnable {
     @Override
     protected void movieRequiresModifying(PhilmMovie movie) {
         movie.setInWatched(false);
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TRAKT;
     }
 }

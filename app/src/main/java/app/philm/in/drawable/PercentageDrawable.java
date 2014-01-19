@@ -260,7 +260,7 @@ public class PercentageDrawable extends Drawable {
     }
 
     public void showPrompt(String promptText) {
-        if (mMode == MODE_PROMPT) {
+        if (mMode == MODE_PROMPT && isRunning() == shouldAnimate()) {
             return;
         }
         mMode = MODE_PROMPT;

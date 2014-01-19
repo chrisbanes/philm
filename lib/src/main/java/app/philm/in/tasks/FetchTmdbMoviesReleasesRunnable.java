@@ -6,6 +6,7 @@ import com.uwetrottmann.tmdb.entities.ReleasesResult;
 import javax.inject.Inject;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
 import app.philm.in.util.CountryProvider;
 import app.philm.in.util.PhilmCollections;
@@ -24,6 +25,11 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
     @Override
     public ReleasesResult doBackgroundCall() throws RetrofitError {
         return getTmdbClient().moviesService().releases(mId);
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TMDB;
     }
 
     @Override

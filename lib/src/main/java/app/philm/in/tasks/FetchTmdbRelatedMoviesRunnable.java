@@ -3,6 +3,7 @@ package app.philm.in.tasks;
 import com.uwetrottmann.tmdb.entities.ResultsPage;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
@@ -27,6 +28,11 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
         movie.setRelated(getTmdbEntityMapper().map(result.results));
 
         getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(getCallingId(), movie));
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TMDB;
     }
 
     @Override

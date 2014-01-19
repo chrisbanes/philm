@@ -1016,7 +1016,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 case RELEASED:
                     return isInPast(movie.getReleasedTime());
                 case HIGHLY_RATED:
-                    return Math.max(movie.getRatingPercent(), movie.getUserRating() * 10)
+                    return Math.max(movie.getTraktRatingPercent(), movie.getUserRating() * 10)
                             >= Constants.FILTER_HIGHLY_RATED;
             }
             return false;

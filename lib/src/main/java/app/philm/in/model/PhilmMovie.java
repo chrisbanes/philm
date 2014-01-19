@@ -63,6 +63,10 @@ public class PhilmMovie {
     int userRating;
     int userRatingAdvanced;
 
+    // TMDb
+    int tmdbRatingPercent;
+    int tmdbRatingVotes;
+    // Trakt
     int ratingPercent;
     int ratingVotes;
 
@@ -202,8 +206,8 @@ public class PhilmMovie {
             year = CALENDAR.get(Calendar.YEAR);
         }
 
-        ratingPercent = unbox(ratingPercent, movie.vote_average);
-        ratingVotes = unbox(ratingVotes, movie.vote_count);
+        tmdbRatingPercent = unbox(tmdbRatingPercent, movie.vote_average);
+        tmdbRatingVotes = unbox(tmdbRatingVotes, movie.vote_count);
 
         if (!TextUtils.isEmpty(movie.backdrop_path)) {
             fanartUrl = movie.backdrop_path;
@@ -309,12 +313,32 @@ public class PhilmMovie {
         return year;
     }
 
-    public int getRatingPercent() {
+    public int getTraktRatingPercent() {
         return ratingPercent;
     }
 
-    public int getRatingVotes() {
+    public int getTraktRatingVotes() {
         return ratingVotes;
+    }
+
+    public int getTmdbRatingPercent() {
+        return tmdbRatingPercent;
+    }
+
+    public int getTmdbRatingVotes() {
+        return tmdbRatingVotes;
+    }
+
+    public int getAverageRatingPercent() {
+        if (ratingPercent > 0 && tmdbRatingPercent > 0) {
+            return weightAverage(ratingPercent, ratingVotes, tmdbRatingPercent, tmdbRatingVotes);
+        } else {
+            return Math.max(ratingPercent, tmdbRatingPercent);
+        }
+    }
+
+    public int getAverageRatingVotes() {
+        return tmdbRatingVotes + ratingVotes;
     }
 
     public int getUserRating() {
@@ -476,6 +500,23 @@ public class PhilmMovie {
             return sb.toString();
         }
         return null;
+    }
+
+    private static int weightAverage(int... values) {
+        Preconditions.checkArgument(values.length % 2 == 0, "values must have a multiples of 2");
+
+        int sum = 0;
+        int sumWeight = 0;
+
+        for (int i = 0; i < values.length; i += 2) {
+            int value = values[i];
+            int weight = values[i + 1];
+
+            sum += (value * weight);
+            sumWeight += weight;
+        }
+
+        return sum / sumWeight;
     }
 
 }

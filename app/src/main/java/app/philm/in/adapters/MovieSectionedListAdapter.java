@@ -85,7 +85,7 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
 
                 final TextView ratingTextView = (TextView) view.findViewById(R.id.textview_rating);
                 ratingTextView.setText(mActivity.getString(R.string.movie_rating_votes,
-                        movie.getRatingPercent(), movie.getRatingVotes()));
+                        movie.getAverageRatingPercent(), movie.getAverageRatingVotes()));
 
                 final TextView release = (TextView) view.findViewById(R.id.textview_release);
                 mDate.setTime(movie.getReleasedTime());

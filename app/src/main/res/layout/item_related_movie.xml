@@ -16,6 +16,6 @@
         android:id="@+id/textview_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/Widget.Philm.Movie.Grid.Title" />
+        style="@style/Widget.Philm.Movie.Related.Title" />
 
 </FrameLayout>

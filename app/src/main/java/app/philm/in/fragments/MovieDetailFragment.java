@@ -76,7 +76,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
     public static MovieDetailFragment create(String movieId) {
-        Preconditions.checkArgument(!TextUtils.isEmpty(movieId),"movieId cannot be empty");
+        Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_QUERY_MOVIE_ID, movieId);
@@ -243,8 +243,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         } else {
             mRatingBarLayout.showRatePrompt();
         }
-        mRatingBarLayout.setRatingGlobalPercentage(mMovie.getRatingPercent());
-        mRatingBarLayout.setRatingGlobalVotes(mMovie.getRatingVotes());
+        mRatingBarLayout.setRatingGlobalPercentage(mMovie.getAverageRatingPercent());
+        mRatingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
         mRatingBarLayout.setRatingCircleClickListener(this);
 
         final List<PhilmMovie> related = mMovie.getRelated();

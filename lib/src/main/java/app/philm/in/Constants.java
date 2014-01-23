@@ -2,7 +2,9 @@ package app.philm.in;
 
 public class Constants {
 
-    public static final String TRAKT_API_KEY = "6e9904413059e7d847bbd28f0d71da1ad36d1588﻿";
+    public static final String TRAKT_API_KEY = "8221f3109b8d71c2fed89dee7bad5850";
+    public static final String TRAKT_ACCOUNT_CREATE_API_KEY = "6e9904413059e7d847bbd28f0d71da1ad36d1588";
+
     public static final String TMDB_API_KEY = "f413bc4bacac8dff174a909f8ef535ae";
 
     public static final String TRAKT_ACCOUNT_TYPE = "app.philm.in.account";

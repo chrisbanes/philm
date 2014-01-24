@@ -241,6 +241,7 @@ public class PercentageDrawable extends Drawable {
         if (mMode == MODE_RATING && mUserRating == rating) {
             return;
         }
+        mAntiClockwiseMode = false;
         mUserRating = rating;
         mMode = MODE_RATING;
 

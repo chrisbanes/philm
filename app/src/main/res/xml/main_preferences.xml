@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="remove_watchlist_on_watched"
+        android:title="@string/pref_remove_watchlist_on_watched_title"
+        android:summary="@string/pref_remove_watchlist_on_watched_summary"
+        android:defaultValue="false" />
+
+</PreferenceScreen>

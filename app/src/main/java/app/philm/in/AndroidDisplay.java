@@ -161,6 +161,11 @@ public class AndroidDisplay implements Display {
         mActivity.finish();
     }
 
+    @Override
+    public void showSettings() {
+        mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
+    }
+
     private void showFragmentFromDrawer(Fragment fragment) {
         popEntireFragmentBackStack();
 

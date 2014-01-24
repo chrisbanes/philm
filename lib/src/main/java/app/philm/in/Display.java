@@ -43,4 +43,6 @@ public interface Display {
 
     public void finishActivity();
 
+    public void showSettings();
+
 }

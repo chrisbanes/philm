@@ -111,4 +111,9 @@
 
     <string name="movie_rate_mark_watched">Mark Watched</string>
 
+
+    <string name="pref_remove_watchlist_on_watched_title">Remove from watchlist</string>
+    <string name="pref_remove_watchlist_on_watched_summary">Remove from watchlist when watched</string>
+    <string name="settings_title">Settings</string>
+
 </resources>

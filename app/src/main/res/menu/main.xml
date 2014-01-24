@@ -3,9 +3,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/menu_settings"
+        android:title="@string/settings_title"
+        android:showAsAction="never"
+        android:orderInCategory="100" />
+
+    <item
         android:id="@+id/menu_about"
         android:title="@string/menu_about"
         android:showAsAction="never"
-        android:orderInCategory="100"/>
+        android:orderInCategory="101" />
 
 </menu>

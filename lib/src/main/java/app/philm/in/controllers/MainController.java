@@ -213,6 +213,14 @@ public class MainController extends BaseUiController<MainController.MainControll
         return true;
     }
 
+    public boolean onSettingsButtonPressed() {
+        Display display = getDisplay();
+        if (display != null) {
+            display.showSettings();
+        }
+        return true;
+    }
+
     public boolean onHomeButtonPressed() {
         Display display = getDisplay();
         if (display != null) {

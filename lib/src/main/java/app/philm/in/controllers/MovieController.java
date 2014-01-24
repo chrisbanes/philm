@@ -52,6 +52,7 @@ import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Injector;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.util.PhilmPreferences;
 import app.philm.in.util.TextUtils;
 
 import static app.philm.in.util.TimeUtils.isAfterThreshold;
@@ -70,6 +71,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private final BackgroundExecutor mExecutor;
     private final AsyncDatabaseHelper mDbHelper;
     private final Logger mLogger;
+    private final PhilmPreferences mPreferences;
     private final Injector mInjector;
 
     private boolean mPopulatedLibraryFromDb = false;
@@ -81,12 +83,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @GeneralPurpose BackgroundExecutor executor,
             AsyncDatabaseHelper dbHelper,
             Logger logger,
+            PhilmPreferences preferences,
             Injector injector) {
         super();
         mMoviesState = Preconditions.checkNotNull(movieState, "moviesState cannot be null");
         mExecutor = Preconditions.checkNotNull(executor, "executor cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
+        mPreferences = Preconditions.checkNotNull(preferences, "preferences cannot be null");
         mInjector = Preconditions.checkNotNull(injector, "injector cannot be null");
     }
 
@@ -802,6 +806,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void markMoviesSeen(final int callingId, String... ids) {
         executeTask(new MarkTraktMovieSeenRunnable(callingId, ids));
+
+        if (isLoggedIn() && mPreferences.shouldRemoveFromWatchlistOnWatched()) {
+            removeFromWatchlist(callingId, ids);
+        }
     }
 
     private void markMoviesUnseen(final int callingId, String... ids) {

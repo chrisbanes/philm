@@ -76,6 +76,11 @@ public abstract class BasePhilmActivity extends FragmentActivity
                     return true;
                 }
                 break;
+            case R.id.menu_settings:
+                if (mMainController.onSettingsButtonPressed()) {
+                    return true;
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -8,7 +8,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_minor"
             android:layout_marginBottom="@dimen/spacing_minor"
-            android:background="#FF333333">
+            android:background="@color/dark_gray">
 
         <LinearLayout
                 android:id="@+id/rating_left_bar"
@@ -62,9 +62,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             internal:backgroundCircleColor="@color/light_gray"
-            internal:foregroundCircleColor="@android:color/holo_green_dark"
-            internal:arcColor="@android:color/holo_green_light"
-            internal:textColor="@android:color/holo_green_light"
+            internal:foregroundCircleColor="@color/primary_accent_color"
+            internal:arcColor="@color/primary_accent_color_light"
+            internal:textColor="@color/primary_accent_color_light"
             internal:ratePrompt="@string/movie_detail_rate"
             internal:font="roboto_slab" />
 

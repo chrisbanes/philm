@@ -3,8 +3,10 @@
 
     <color name="side_menu_background">#FF202020</color>
 
+    <color name="dark_gray">#FF333333</color>
     <color name="light_gray">#FFDDDDDD</color>
 
+    <color name="primary_accent_color_light">#ff99cc00</color>
     <color name="primary_accent_color_translucent">#99669900</color>
     <color name="primary_accent_color">#FF669900</color>
     <color name="primary_accent_color_dark_10">#FF4D8000</color>

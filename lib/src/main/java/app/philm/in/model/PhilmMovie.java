@@ -84,6 +84,7 @@ public class PhilmMovie {
     boolean loadedFromTmdb;
 
     transient List<PhilmMovie> related;
+    transient List<PhilmCast> cast;
 
     public PhilmMovie() {}
 
@@ -421,6 +422,14 @@ public class PhilmMovie {
 
     public boolean isLoadedFromTrakt() {
         return loadedFromTrakt;
+    }
+
+    public List<PhilmCast> getCast() {
+        return cast;
+    }
+
+    public void setCast(List<PhilmCast> cast) {
+        this.cast = cast;
     }
 
     @Override

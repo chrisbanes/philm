@@ -31,6 +31,7 @@ import app.philm.in.tasks.AddToTraktWatchlistRunnable;
 import app.philm.in.tasks.BaseMovieRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
+import app.philm.in.tasks.FetchTmdbMovieCastRunnable;
 import app.philm.in.tasks.FetchTmdbMoviesReleasesRunnable;
 import app.philm.in.tasks.FetchTmdbNowPlayingRunnable;
 import app.philm.in.tasks.FetchTmdbPopularRunnable;
@@ -535,6 +536,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (TextUtils.isEmpty(movie.getReleaseCountryCode())) {
             fetchMovieReleases(callingId, movie.getTmdbId());
         }
+
+        if (PhilmCollections.isEmpty(movie.getCast())) {
+            fetchCast(callingId, movie);
+        }
     }
 
     private List<ListItem<PhilmMovie>> createListItemList(final List<PhilmMovie> items) {
@@ -705,6 +710,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             executeTask(new FetchTmdbRelatedMoviesRunnable(callingId, movie.getTmdbId()));
         } else if (!TextUtils.isEmpty(movie.getImdbId())) {
             executeTask(new FetchTraktRelatedMoviesRunnable(callingId, movie.getImdbId()));
+        }
+    }
+
+    private void fetchCast(final int callingId, PhilmMovie movie) {
+        if (movie.getTmdbId() != null) {
+            executeTask(new FetchTmdbMovieCastRunnable(callingId, movie.getTmdbId()));
         }
     }
 

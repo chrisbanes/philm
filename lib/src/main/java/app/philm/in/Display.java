@@ -45,4 +45,6 @@ public interface Display {
 
     public void showSettings();
 
+    public void showRelatedMovies(String movieId);
+
 }

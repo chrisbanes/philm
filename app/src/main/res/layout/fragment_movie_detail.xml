@@ -150,28 +150,22 @@
                     style="@style/Widget.Philm.Movie.List.SectionHeader"/>
 
             <ViewSwitcher
-                    android:id="@+id/viewswitcher_related"
+                android:id="@+id/viewswitcher_related"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/movie_detail_related_height">
+
+                <LinearLayout
+                    android:id="@+id/layout_related"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/movie_detail_related_height">
-
-                <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                    <LinearLayout
-                            android:id="@+id/layout_related"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:divider="?android:dividerHorizontal"
-                            android:showDividers="middle"/>
-
-                </HorizontalScrollView>
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:divider="?android:dividerHorizontal"
+                    android:showDividers="middle" />
 
                 <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
 
             </ViewSwitcher>
 

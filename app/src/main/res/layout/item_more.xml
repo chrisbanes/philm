@@ -7,15 +7,9 @@
     android:foreground="?android:attr/selectableItemBackground">
 
     <app.philm.in.view.PhilmImageView
-        android:id="@+id/imageview_poster"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
-
-    <app.philm.in.view.FontTextView
-        android:id="@+id/textview_title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/Widget.Philm.Movie.Related.Title" />
+        android:src="@drawable/ic_btn_arrow_right"
+        android:scaleType="centerInside" />
 
 </FrameLayout>

@@ -18,6 +18,7 @@ import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.fragments.RateMovieFragment;
+import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.SearchListFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
@@ -164,6 +165,17 @@ public class AndroidDisplay implements Display {
     @Override
     public void showSettings() {
         mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
+    }
+
+    @Override
+    public void showRelatedMovies(String movieId) {
+        RelatedMoviesFragment fragment = RelatedMoviesFragment.create(movieId);
+
+        mActivity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {

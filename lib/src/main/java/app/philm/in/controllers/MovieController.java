@@ -446,6 +446,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
 
+            @Override
+            public void showRelatedMovies(PhilmMovie movie) {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showRelatedMovies(String.valueOf(movie.getTmdbId()));
+                }
+            }
+
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -462,7 +470,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         Display display = getDisplay();
         if (display != null && !ui.isModal()) {
-            display.showUpNavigation(ui instanceof MovieDetailUi);
+            display.showUpNavigation(queryType != null && queryType.showUpNavigation());
         }
 
         final int callingId = getId(ui);
@@ -491,6 +499,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case RECOMMENDED:
                 fetchRecommendedIfNeeded(callingId);
+                break;
+            case RELATED:
+                fetchRelatedIfNeeded(callingId, ui.getRequestParameter());
                 break;
         }
     }
@@ -643,6 +654,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             fetchDetailMovie(callingId, id);
         } else {
             checkDetailMovieResult(callingId, cached);
+        }
+    }
+
+    private void fetchRelatedIfNeeded(final int callingId, String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null && PhilmCollections.isEmpty(movie.getRelated())) {
+            fetchRelatedMovies(callingId, movie);
         }
     }
 
@@ -900,6 +920,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case RECOMMENDED:
                 items = mMoviesState.getRecommended();
                 break;
+            case RELATED:
+                PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+                if (movie != null) {
+                    items = movie.getRelated();
+                }
+                break;
         }
 
         if (requireFiltering && !PhilmCollections.isEmpty(items)) {
@@ -1057,7 +1083,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, RECOMMENDED,
-        NONE;
+        RELATED, NONE;
 
         public boolean requireLogin() {
             switch (this) {
@@ -1074,6 +1100,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             switch (this) {
                 case LIBRARY:
                 case TRENDING:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public boolean showUpNavigation() {
+            switch (this) {
+                case DETAIL:
+                case RELATED:
                     return true;
                 default:
                     return false;
@@ -1181,6 +1217,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void submitRating(PhilmMovie movie, Rating rating);
 
         void onScrolledToBottom();
+
+        void showRelatedMovies(PhilmMovie movie);
     }
 
     private class LibraryDbLoadCallback

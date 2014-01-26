@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -63,7 +64,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private RatingBarLayout mRatingBarLayout;
 
-    private ViewRecycler mRelatedViewRecycler;
     private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
 
@@ -126,7 +126,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
         mRelatedSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_related);
         mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
-        mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
 
         mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
         mCertificationInfoLayout = (MovieDetailInfoLayout)
@@ -249,7 +248,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
         final List<PhilmMovie> related = mMovie.getRelated();
         if (related == null || related.size() != mRelatedLayout.getChildCount()) {
-            populateRelatedMovies(mRelatedViewRecycler);
+            populateRelatedMovies();
         }
 
         if (mMovie.getRuntime() > 0) {
@@ -292,12 +291,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 .into(infoLayout);
     }
 
-    private void populateRelatedMovies(final ViewRecycler viewRecycler) {
+    private void populateRelatedMovies() {
         if (Constants.DEBUG) {
             Log.d(LOG_TAG, "populateRelatedMovies");
         }
 
-        viewRecycler.recycleViews();
+        mRelatedLayout.removeAllViews();
 
         if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -311,17 +310,25 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 }
             };
 
-            for (PhilmMovie movie : mMovie.getRelated()) {
-                View view = viewRecycler.getRecycledView();
-                if (view == null) {
-                    view = inflater.inflate(R.layout.item_related_movie, mRelatedLayout, false);
-                }
+            final int relatedWidth = mRelatedLayout.getWidth();
+            final int itemWidth = getResources().getDimensionPixelSize(R.dimen.movie_detail_related_item_width);
+
+            final int maxNumItems = relatedWidth / itemWidth;
+            final int maxNumMovieItems = maxNumItems - 1;
+
+            final int numMovieItems = Math.min(maxNumMovieItems, mMovie.getRelated().size());
+
+            for (int i = 0; i < numMovieItems; i++) {
+                View view = inflater.inflate(R.layout.item_related_movie, mRelatedLayout, false);
+
+                final PhilmMovie movie = mMovie.getRelated().get(i);
 
                 final TextView title = (TextView) view.findViewById(R.id.textview_title);
                 title.setText(movie.getTitle());
 
                 final PhilmImageView imageView =
                         (PhilmImageView) view.findViewById(R.id.imageview_poster);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.loadPosterUrl(movie, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -339,9 +346,18 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
                 mRelatedLayout.addView(view);
             }
-        }
 
-        viewRecycler.clearRecycledViews();
+            View moreView = inflater.inflate(R.layout.item_more, mRelatedLayout, false);
+            moreView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        getCallbacks().showRelatedMovies(mMovie);
+                    }
+                }
+            });
+            mRelatedLayout.addView(moreView);
+        }
     }
 
     private void updateButtonState(CheckableImageButton button, final boolean checked,

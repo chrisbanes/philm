@@ -102,9 +102,4 @@
         <item name="android:indeterminateDrawable">@drawable/philmcolor_ratingbar_full_holo_dark</item>
     </style>
 
-    <style name="Widget.Philm.Movie.Detail.Card" parent="android:Widget">
-        <item name="android:background">@color/dark_gray</item>
-        <item name="android:padding">@dimen/spacing_minor</item>
-    </style>
-
 </resources>

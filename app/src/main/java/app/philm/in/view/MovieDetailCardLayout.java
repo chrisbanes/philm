@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ public class MovieDetailCardLayout extends LinearLayout {
 
     private final TextView mTitleTextView;
     private final TextView mSeeMoreTextView;
+    private LinearLayout mCardContent;
 
     public MovieDetailCardLayout(Context context) {
         this(context, null);
@@ -31,6 +34,7 @@ public class MovieDetailCardLayout extends LinearLayout {
 
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
         mSeeMoreTextView = (TextView) findViewById(R.id.textview_see_more);
+        mCardContent = (LinearLayout) findViewById(R.id.card_content);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MovieDetailCardLayout);
         final String title = a.getString(R.styleable.MovieDetailCardLayout_title);
@@ -48,4 +52,12 @@ public class MovieDetailCardLayout extends LinearLayout {
         mSeeMoreTextView.setOnClickListener(listener);
     }
 
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        if (mCardContent != null) {
+            mCardContent.addView(child, index, params);
+        } else {
+            super.addView(child, index, params);
+        }
+    }
 }

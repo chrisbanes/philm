@@ -3,4 +3,6 @@
 
     <integer name="default_summary_maxlines">5</integer>
 
+    <integer name="number_detail_items">4</integer>
+
 </resources>

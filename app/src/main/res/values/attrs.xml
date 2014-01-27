@@ -9,6 +9,8 @@
         <enum name="roboto_slab" value="5" />
     </attr>
 
+    <attr name="title" format="string|reference" />
+
     <declare-styleable name="ParallaxContentScrollView">
         <attr name="contentOverlay" format="dimension|reference" />
     </declare-styleable>
@@ -27,7 +29,11 @@
     </declare-styleable>
 
     <declare-styleable name="MovieDetailInfoLayout">
-        <attr name="title" format="string|reference" />
+        <attr name="title" />
+    </declare-styleable>
+
+    <declare-styleable name="MovieDetailCardLayout">
+        <attr name="title" />
     </declare-styleable>
 
 </resources>

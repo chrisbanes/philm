@@ -155,6 +155,7 @@
                 android:id="@+id/movie_detail_card_related"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_major"
                 internal:title="@string/related_movies">
 
                 <ViewSwitcher

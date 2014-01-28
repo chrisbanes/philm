@@ -6,16 +6,24 @@
     android:layout_weight="1"
     android:foreground="?android:attr/selectableItemBackground">
 
-    <app.philm.in.view.PhilmImageView
-        android:id="@+id/imageview_poster"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:orientation="vertical">
 
-    <app.philm.in.view.FontTextView
-        android:id="@+id/textview_title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/Widget.Philm.Movie.Related.Title" />
+        <app.philm.in.view.PhilmImageView
+            android:id="@+id/imageview_poster"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:scaleType="centerCrop" />
+
+        <app.philm.in.view.FontTextView
+            android:id="@+id/textview_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Philm.Movie.Related.Title" />
+
+    </LinearLayout>
 
 </FrameLayout>

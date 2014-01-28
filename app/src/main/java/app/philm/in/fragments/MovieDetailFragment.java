@@ -488,17 +488,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadPosterUrl(movie, new Callback() {
-                @Override
-                public void onSuccess() {
-                    title.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onError() {
-                    title.setVisibility(View.VISIBLE);
-                }
-            });
+            imageView.loadPosterUrl(movie);
 
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(movie);
@@ -550,17 +540,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadProfileUrl(cast, new Callback() {
-                @Override
-                public void onSuccess() {
-                    title.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onError() {
-                    title.setVisibility(View.VISIBLE);
-                }
-            });
+            imageView.loadProfileUrl(cast);
 
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(cast);

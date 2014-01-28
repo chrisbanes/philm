@@ -12,8 +12,13 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
-    <style name="Widget.Philm.Movie.Related.Title" parent="Widget.Philm.Movie.Grid.Title">
-        <item name="android:textSize">15dp</item>
+    <style name="Widget.Philm.Movie.Related.Title" parent="android:Widget">
+        <item name="font">roboto_condensed</item>
+        <item name="android:textSize">13dp</item>
+        <item name="android:padding">@dimen/spacing_micro</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
     <style name="Widget.Philm.Movie.List.Title" parent="android:Widget">

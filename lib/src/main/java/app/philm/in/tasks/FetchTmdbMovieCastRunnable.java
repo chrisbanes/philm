@@ -2,13 +2,13 @@ package app.philm.in.tasks;
 
 
 import com.uwetrottmann.tmdb.entities.Credits;
-import com.uwetrottmann.tmdb.entities.Movie;
 
 import java.util.ArrayList;
 
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
+import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
@@ -48,5 +48,10 @@ public class FetchTmdbMovieCastRunnable extends BaseMovieRunnable<Credits> {
     @Override
     protected int getSource() {
         return NetworkError.SOURCE_TMDB;
+    }
+
+    @Override
+    protected Object createLoadingProgressEvent(boolean show) {
+        return new BaseState.ShowCastLoadingProgressEvent(getCallingId(), show);
     }
 }

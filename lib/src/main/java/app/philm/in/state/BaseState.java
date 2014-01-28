@@ -76,6 +76,12 @@ public interface BaseState {
         }
     }
 
+    public static class ShowCastLoadingProgressEvent extends ShowLoadingProgressEvent {
+        public ShowCastLoadingProgressEvent(int callingId, boolean show) {
+            super(callingId, show);
+        }
+    }
+
     public static class ShowErrorEvent {
         public final int callingId;
         public final NetworkError error;

@@ -229,6 +229,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    @Subscribe
+    public void onMovieCastLoadingProgressVisibilityChanged(
+            BaseState.ShowCastLoadingProgressEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
+            ((MovieController.MovieDetailUi) ui).showMovieCastLoadingProgress(event.show);
+        }
+    }
+
     @Override
     protected void onInited() {
         super.onInited();
@@ -1083,7 +1092,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, RECOMMENDED,
-        RELATED, NONE;
+        RELATED, CAST, NONE;
 
         public boolean requireLogin() {
             switch (this) {

@@ -615,11 +615,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                         case YOUTUBE:
                             Intent intent = YouTubeStandalonePlayer.createVideoIntent(
                                     getActivity(),
-                                    AndroidConstants.YOUTUBE_API_KEY,
+                                    AndroidConstants.GOOGLE_CLIENT_KEY,
                                     trailer.getId(),
                                     0, // start time
                                     true, // autoplay
-                                    true // lightbox
+                                    false // lightbox
                             );
                             getActivity().startActivity(intent);
                             break;
@@ -665,7 +665,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                             view.findViewById(R.id.imageview_youtube_thumbnail);
 
                     youtubeView.initialize(
-                            AndroidConstants.YOUTUBE_API_KEY,
+                            AndroidConstants.GOOGLE_CLIENT_KEY,
                             new YouTubeThumbnailView.OnInitializedListener() {
                         @Override
                         public void onInitializationSuccess(

@@ -249,7 +249,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             BaseState.ShowTrailersLoadingProgressEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
-            //((MovieController.MovieDetailUi) ui).showMovieCastLoadingProgress(event.show);
+            ((MovieController.MovieDetailUi) ui).showTrailersLoadingProgress(event.show);
         } else {
             onLoadingProgressVisibilityChanged(event);
         }
@@ -1236,6 +1236,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showRelatedMoviesLoadingProgress(boolean visible);
 
         void showMovieCastLoadingProgress(boolean visible);
+
+        void showTrailersLoadingProgress(boolean visible);
 
         void setToggleWatchedButtonEnabled(boolean enabled);
 

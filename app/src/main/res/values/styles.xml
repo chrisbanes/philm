@@ -21,6 +21,16 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
+    <style name="Widget.Philm.Movie.Trailer.Title" parent="android:Widget">
+        <item name="font">roboto_condensed_bold</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:padding">@dimen/spacing_minor</item>
+        <item name="android:lines">2</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:background">@drawable/black_translucent_gradient</item>
+        <item name="android:gravity">bottom|left</item>
+    </style>
+
     <style name="Widget.Philm.Movie.List.Title" parent="android:Widget">
         <item name="font">roboto_condensed</item>
         <item name="android:textSize">20dp</item>

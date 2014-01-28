@@ -43,13 +43,14 @@ public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> 
                 }
             }
 
-            if (!PhilmCollections.isEmpty(result.quicktime)) {
-                for (Trailer trailer : result.quicktime) {
-                    final PhilmTrailer philmTrailer = new PhilmTrailer();
-                    philmTrailer.setFromTmdb(PhilmTrailer.Source.QUICKTIME, trailer);
-                    trailers.add(philmTrailer);
-                }
-            }
+            // TODO Add support for quicktime
+//            if (!PhilmCollections.isEmpty(result.quicktime)) {
+//                for (Trailer trailer : result.quicktime) {
+//                    final PhilmTrailer philmTrailer = new PhilmTrailer();
+//                    philmTrailer.setFromTmdb(PhilmTrailer.Source.QUICKTIME, trailer);
+//                    trailers.add(philmTrailer);
+//                }
+//            }
 
             movie.setTrailers(trailers);
             getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));

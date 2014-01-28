@@ -1,10 +1,15 @@
 package app.philm.in.fragments;
 
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,6 +30,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import app.philm.in.AndroidConstants;
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -32,6 +38,7 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmTrailer;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
@@ -66,6 +73,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private MovieDetailCardLayout mDetailsCardLayout;
     private MovieDetailCardLayout mRelatedCardLayout;
     private MovieDetailCardLayout mCastCardLayout;
+    private MovieDetailCardLayout mTrailersCardLayout;
 
     private MovieDetailInfoLayout mReleasedInfoLayout;
     private MovieDetailInfoLayout mRunTimeInfoLayout;
@@ -78,6 +86,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
+
+    private ViewSwitcher mTrailersSwitcher;
+    private LinearLayout mTrailersLayout;
 
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -136,6 +147,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         mCastSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_cast);
         mCastLayout = (LinearLayout) view.findViewById(R.id.layout_cast);
 
+        mTrailersSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_trailers);
+        mTrailersLayout = (LinearLayout) view.findViewById(R.id.layout_trailers);
+
         mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
         mCertificationInfoLayout = (MovieDetailInfoLayout)
                 view.findViewById(R.id.layout_info_certification);
@@ -149,6 +163,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 view.findViewById(R.id.movie_detail_card_related);
         mCastCardLayout = (MovieDetailCardLayout)
                 view.findViewById(R.id.movie_detail_card_cast);
+        mTrailersCardLayout = (MovieDetailCardLayout)
+                view.findViewById(R.id.movie_detail_card_trailers);
     }
 
     @Override
@@ -186,6 +202,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void showMovieCastLoadingProgress(final boolean visible) {
         mCastSwitcher.setDisplayedChild(visible ? 1 : 0);
+    }
+
+    @Override
+    public void showTrailersLoadingProgress(boolean visible) {
+        mTrailersSwitcher.setDisplayedChild(visible ? 1 : 0);
     }
 
     @Override
@@ -277,6 +298,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             populateMovieCast();
         }
 
+        final List<PhilmTrailer> trailers = mMovie.getTrailers();
+        if (trailers == null || trailers.size() != mTrailersLayout.getChildCount()) {
+            populateTrailers();
+        }
+
         if (mMovie.getRuntime() > 0) {
             mRunTimeInfoLayout.setContentText(
                     getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
@@ -351,7 +377,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         if (adapter.getCount() > 0) {
             final int numItems = getResources().getInteger(R.integer.number_detail_items);
 
-            for (int i = 0; i < numItems; i++) {
+            for (int i = 0; i < Math.min(numItems, adapter.getCount()); i++) {
                 View view = viewRecycler.getRecycledView();
                 view = adapter.getView(i, view, layout);
                 layout.addView(view);
@@ -387,6 +413,30 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         populateDetailGrid(
                 mCastLayout,
                 mCastCardLayout,
+                seeMoreClickListener,
+                adapter);
+
+    }
+
+    private void populateTrailers() {
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "populateTrailers");
+        }
+
+        final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if (hasCallbacks()) {
+//                    getCallbacks().showCastList(mMovie);
+//                }
+            }
+        };
+
+        MovieTrailersAdapter adapter = new MovieTrailersAdapter(getActivity().getLayoutInflater());
+
+        populateDetailGrid(
+                mTrailersLayout,
+                mTrailersCardLayout,
                 seeMoreClickListener,
                 adapter);
 
@@ -543,6 +593,97 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(cast);
+
+            return view;
+        }
+    }
+
+    private class MovieTrailersAdapter extends BaseAdapter {
+
+        private final View.OnClickListener mItemOnClickListener;
+        private final LayoutInflater mInflater;
+
+        MovieTrailersAdapter(LayoutInflater inflater) {
+            mInflater = inflater;
+
+            mItemOnClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final PhilmTrailer trailer = (PhilmTrailer) view.getTag();
+
+                    switch (trailer.getSource()) {
+                        case YOUTUBE:
+                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                                    getActivity(),
+                                    AndroidConstants.YOUTUBE_API_KEY,
+                                    trailer.getId(),
+                                    0, // start time
+                                    true, // autoplay
+                                    true // lightbox
+                            );
+                            getActivity().startActivity(intent);
+                            break;
+                    }
+                }
+            };
+        }
+
+        @Override
+        public int getCount() {
+            if (mMovie != null && !PhilmCollections.isEmpty(mMovie.getTrailers())) {
+                return mMovie.getTrailers().size();
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public PhilmTrailer getItem(int position) {
+            return mMovie.getTrailers().get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            final PhilmTrailer trailer = getItem(position);
+
+            switch (trailer.getSource()) {
+                case YOUTUBE:
+                    if (view == null) {
+                        view = mInflater.inflate(R.layout.item_movie_trailer_youtube,
+                                viewGroup, false);
+                    }
+
+                    final TextView title = (TextView) view.findViewById(R.id.textview_title);
+                    title.setText(trailer.getName());
+
+                    final YouTubeThumbnailView youtubeView = (YouTubeThumbnailView)
+                            view.findViewById(R.id.imageview_youtube_thumbnail);
+
+                    youtubeView.initialize(
+                            AndroidConstants.YOUTUBE_API_KEY,
+                            new YouTubeThumbnailView.OnInitializedListener() {
+                        @Override
+                        public void onInitializationSuccess(
+                                YouTubeThumbnailView youTubeThumbnailView,
+                                YouTubeThumbnailLoader youTubeThumbnailLoader) {
+                            youTubeThumbnailLoader.setVideo(trailer.getId());
+                        }
+
+                        @Override
+                        public void onInitializationFailure(
+                                YouTubeThumbnailView youTubeThumbnailView,
+                                YouTubeInitializationResult youTubeInitializationResult) {
+                        }
+                    });
+            }
+
+            view.setTag(trailer);
+            view.setOnClickListener(mItemOnClickListener);
 
             return view;
         }

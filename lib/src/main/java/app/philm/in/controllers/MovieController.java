@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
+import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkError;
@@ -463,6 +464,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
 
+            @Override
+            public void showCastList(PhilmMovie movie) {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showCastList(String.valueOf(movie.getTmdbId()));
+                }
+            }
+
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -512,6 +521,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case RELATED:
                 fetchRelatedIfNeeded(callingId, ui.getRequestParameter());
                 break;
+            case CAST:
+                fetchCastIfNeeded(callingId, ui.getRequestParameter());
+                break;
         }
     }
 
@@ -531,6 +543,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateSearchUi((SearchMovieUi) ui);
         } else if (ui instanceof MovieListUi) {
             populateListUi((MovieListUi) ui);
+        } else if (ui instanceof MovieCastListUi) {
+            populateCastListUi((MovieCastListUi) ui);
         } else if (ui instanceof MovieDetailUi) {
             populateDetailUi((MovieDetailUi) ui);
         } else if (ui instanceof MovieRateUi) {
@@ -562,14 +576,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private List<ListItem<PhilmMovie>> createListItemList(final List<PhilmMovie> items) {
+    private <T> List<ListItem<T>> createListItemList(final List<T> items) {
         Preconditions.checkNotNull(items, "items cannot be null");
 
-        ArrayList<ListItem<PhilmMovie>> movies = new ArrayList<ListItem<PhilmMovie>>(items.size());
-        for (PhilmMovie movie : items) {
-            movies.add(new ListItem<PhilmMovie>(movie));
+        ArrayList<ListItem<T>> listItems = new ArrayList<ListItem<T>>(items.size());
+        for (T item : items) {
+            listItems.add(new ListItem<T>(item));
         }
-        return movies;
+        return listItems;
     }
 
     private List<ListItem<PhilmMovie>> createSectionedListItemList(
@@ -672,6 +686,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         PhilmMovie movie = mMoviesState.getMovie(id);
         if (movie != null && PhilmCollections.isEmpty(movie.getRelated())) {
             fetchRelatedMovies(callingId, movie);
+        }
+    }
+
+    private void fetchCastIfNeeded(final int callingId, String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null && PhilmCollections.isEmpty(movie.getCast())) {
+            fetchCast(callingId, movie);
         }
     }
 
@@ -957,6 +980,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void populateCastListUi(MovieCastListUi ui) {
+        switch (ui.getMovieQueryType()) {
+            case CAST:
+                PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+                if (movie != null && !PhilmCollections.isEmpty(movie.getCast())) {
+                    ui.setItems(createListItemList(movie.getCast()));
+                }
+                break;
+        }
+    }
+
     private void populateMovieDiscoverUi(MovieDiscoverUi ui) {
         if (isLoggedIn()) {
             ui.setTabs(DiscoverTab.POPULAR, DiscoverTab.IN_THEATRES, DiscoverTab.UPCOMING,
@@ -1147,10 +1181,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         String getRequestParameter();
     }
 
-    public interface MovieListUi extends MovieUi {
+    public interface BaseMovieListUi<E> extends MovieUi {
+        void setItems(List<ListItem<E>> items);
+    }
 
-        void setItems(List<ListItem<PhilmMovie>> items);
-
+    public interface MovieListUi extends BaseMovieListUi<PhilmMovie> {
         void setFiltersVisibility(boolean visible);
 
         void showActiveFilters(Set<Filter> filters);
@@ -1158,6 +1193,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void allowedBatchOperations(MovieOperation... operations);
 
         void disableBatchOperations();
+    }
+
+    public interface MovieCastListUi extends BaseMovieListUi<PhilmCast> {
     }
 
     public interface SearchMovieUi extends MovieListUi {
@@ -1230,6 +1268,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void onScrolledToBottom();
 
         void showRelatedMovies(PhilmMovie movie);
+
+        void showCastList(PhilmMovie movie);
     }
 
     private class LibraryDbLoadCallback

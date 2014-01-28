@@ -47,4 +47,6 @@ public interface Display {
 
     public void showRelatedMovies(String movieId);
 
+    public void showCastList(String movieId);
+
 }

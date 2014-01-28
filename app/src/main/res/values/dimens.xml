@@ -33,6 +33,9 @@
     <dimen name="movie_list_image_width">80dp</dimen>
     <dimen name="movie_list_item_height">120dp</dimen>
 
+    <dimen name="movie_list_small_image_width">55dp</dimen>
+    <dimen name="movie_list_small_item_height">80dp</dimen>
+
     <dimen name="drawer_side_menu_width">240dp</dimen>
 
     <dimen name="movie_discover_tab_height">48dp</dimen>

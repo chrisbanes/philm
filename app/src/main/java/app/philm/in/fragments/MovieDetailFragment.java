@@ -373,13 +373,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             Log.d(LOG_TAG, "populateMovieCast");
         }
 
-        // TODO
         final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (hasCallbacks()) {
-//                    getCallbacks().showRelatedMovies(mMovie);
-//                }
+                if (hasCallbacks()) {
+                    getCallbacks().showCastList(mMovie);
+                }
             }
         };
 

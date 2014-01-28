@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.fragments.AboutFragment;
+import app.philm.in.fragments.CastMovieFragment;
 import app.philm.in.fragments.DiscoverTabFragment;
 import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
@@ -170,6 +171,17 @@ public class AndroidDisplay implements Display {
     @Override
     public void showRelatedMovies(String movieId) {
         RelatedMoviesFragment fragment = RelatedMoviesFragment.create(movieId);
+
+        mActivity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+    }
+
+    @Override
+    public void showCastList(String movieId) {
+        CastMovieFragment fragment = CastMovieFragment.create(movieId);
 
         mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)

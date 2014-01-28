@@ -18,13 +18,9 @@ import app.philm.in.trakt.TraktUtils;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
 
-public class PhilmMovie {
+public class PhilmMovie implements PhilmModel {
 
     public static final int NOT_SET = 0;
-
-    public static final int TYPE_TMDB = 1;
-    public static final int TYPE_IMDB = 2;
-    public static final int TYPE_TRAKT = 3;
 
     private static final Calendar CALENDAR = Calendar.getInstance();
 
@@ -288,6 +284,11 @@ public class PhilmMovie {
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public String getName() {
+        return getTitle();
     }
 
     public String getSortTitle() {

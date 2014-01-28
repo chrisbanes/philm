@@ -1162,6 +1162,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void showRelatedMoviesLoadingProgress(boolean visible);
 
+        void showMovieCastLoadingProgress(boolean visible);
+
         void setToggleWatchedButtonEnabled(boolean enabled);
 
         void setCollectionButtonEnabled(boolean enabled);

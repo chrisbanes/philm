@@ -2,6 +2,7 @@ package app.philm.in.util;
 
 import com.google.common.base.Preconditions;
 
+import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 
 public class ImageHelper {
@@ -12,6 +13,7 @@ public class ImageHelper {
     private String mTmdbBaseUrl;
     private int[] mTmdbPosterSizes;
     private int[] mTmdbBackdropSizes;
+    private int[] mTmdbProfileSizes;
 
     public void setTmdbBackdropSizes(int[] tmdbBackdropSizes) {
         mTmdbBackdropSizes = tmdbBackdropSizes;
@@ -23,6 +25,10 @@ public class ImageHelper {
 
     public void setTmdbBaseUrl(String baseUrl) {
         mTmdbBaseUrl = baseUrl;
+    }
+
+    public void setTmdbProfileSizes(int[] tmdbProfileSizes) {
+        mTmdbProfileSizes = tmdbProfileSizes;
     }
 
     public String getPosterUrl(final PhilmMovie movie, final int width) {
@@ -51,6 +57,19 @@ public class ImageHelper {
         }
     }
 
+    public String getProfileUrl(final PhilmCast cast, final int width) {
+        final String imageUrl = cast.getPictureUrl();
+        Preconditions.checkNotNull(imageUrl, "movie must have picture url");
+
+        switch (cast.getPictureType()) {
+            case PhilmMovie.TYPE_TMDB:
+                return buildTmdbBackdropUrl(imageUrl, width);
+            default:
+            case PhilmMovie.TYPE_TRAKT:
+                return buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES));
+        }
+    }
+
     public String getResizedUrl(String url, int width, int height, String format) {
         StringBuffer sb = new StringBuffer("http://api.imgble.com/");
         sb.append(url);
@@ -71,6 +90,14 @@ public class ImageHelper {
     private String buildTmdbBackdropUrl(String imageUrl, int width) {
         if (mTmdbBaseUrl != null && mTmdbBackdropSizes != null) {
             return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbBackdropSizes));
+        } else {
+            return null;
+        }
+    }
+
+    private String buildTmdbProfileUrl(String imageUrl, int width) {
+        if (mTmdbBaseUrl != null && mTmdbProfileSizes != null) {
+            return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbProfileSizes));
         } else {
             return null;
         }

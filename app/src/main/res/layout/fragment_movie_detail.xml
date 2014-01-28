@@ -179,6 +179,34 @@
 
             </app.philm.in.view.MovieDetailCardLayout>
 
+            <app.philm.in.view.MovieDetailCardLayout
+                android:id="@+id/movie_detail_card_cast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                internal:title="@string/cast_movies">
+
+                <ViewSwitcher
+                    android:id="@+id/viewswitcher_cast"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/movie_detail_related_height">
+
+                    <LinearLayout
+                        android:id="@+id/layout_cast"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:divider="?android:dividerHorizontal"
+                        android:showDividers="middle" />
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                </ViewSwitcher>
+
+            </app.philm.in.view.MovieDetailCardLayout>
+
         </LinearLayout>
 
     </LinearLayout>

@@ -15,6 +15,7 @@ public class TmdbConfiguration {
     String imagesBaseUrl;
     int[] imagesBackdropSizes;
     int[] imagesPosterSizes;
+    int[] imagesProfileSizes;
 
     public long getLastFetchTime() {
         return lastFetchTime;
@@ -32,10 +33,15 @@ public class TmdbConfiguration {
         return imagesPosterSizes;
     }
 
+    public int[] getImagesProfileSizes() {
+        return imagesProfileSizes;
+    }
+
     public boolean isValid() {
         return !TextUtils.isEmpty(imagesBaseUrl)
                 && imagesBackdropSizes != null
-                && imagesPosterSizes != null;
+                && imagesPosterSizes != null
+                && imagesProfileSizes != null;
     }
 
     public void setFromTmdb(Configuration configuration) {
@@ -45,6 +51,7 @@ public class TmdbConfiguration {
         imagesBaseUrl = configuration.images.base_url;
         imagesBackdropSizes = convertTmdbImageSizes(configuration.images.backdrop_sizes);
         imagesPosterSizes = convertTmdbImageSizes(configuration.images.poster_sizes);
+        imagesProfileSizes = convertTmdbImageSizes(configuration.images.profile_sizes);
     }
 
 

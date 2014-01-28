@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
+import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
@@ -25,6 +26,7 @@ public class PhilmImageView extends ImageView {
 
     private int mType;
     private PhilmMovie mMovieToLoad;
+    private PhilmCast mCastToLoad;
 
     private Callback mCallback;
 
@@ -71,13 +73,38 @@ public class PhilmImageView extends ImageView {
         }
     }
 
+    public void loadProfileUrl(PhilmCast cast) {
+        loadProfileUrl(cast, null);
+    }
+
+    public void loadProfileUrl(PhilmCast cast, Callback listener) {
+        if (!TextUtils.isEmpty(cast.getPictureUrl())) {
+            mCallback = listener;
+            if (canLoadImage()) {
+                loadUrlImmediate(cast);
+            } else {
+                mCastToLoad = cast;
+            }
+        } else {
+            mMovieToLoad = null;
+            mCallback = null;
+            mCastToLoad = null;
+            setImageDrawable(null);
+        }
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (changed && mMovieToLoad != null && canLoadImage()) {
-            loadUrlImmediate(mMovieToLoad, mType);
-            mMovieToLoad = null;
+        if (changed && canLoadImage()) {
+            if (mMovieToLoad != null) {
+                loadUrlImmediate(mMovieToLoad, mType);
+                mMovieToLoad = null;
+            } else if (mCastToLoad != null) {
+                loadUrlImmediate(mCastToLoad);
+                mCastToLoad = null;
+            }
         }
     }
 
@@ -99,6 +126,18 @@ public class PhilmImageView extends ImageView {
 
         if (url != null) {
             Picasso.with(getContext()).load(url).into(this, mCallback);
+            if (Constants.DEBUG) {
+                Log.d("PhilmImageView", "Loading " + url);
+            }
+        }
+    }
+
+    private void loadUrlImmediate(final PhilmCast cast) {
+        String url = mImageHelper.getProfileUrl(cast, getWidth());
+
+        if (url != null) {
+            Picasso.with(getContext()).load(url).into(this, mCallback);
+            mCallback = null;
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);
             }

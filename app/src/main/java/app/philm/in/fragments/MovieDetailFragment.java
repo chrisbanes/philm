@@ -29,6 +29,7 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
+import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
@@ -64,18 +65,21 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private RatingBarLayout mRatingBarLayout;
 
-    private ViewRecycler mRelatedViewRecycler;
-    private ViewSwitcher mRelatedSwitcher;
-    private LinearLayout mRelatedLayout;
-
     private MovieDetailCardLayout mDetailsCardLayout;
     private MovieDetailCardLayout mRelatedCardLayout;
+    private MovieDetailCardLayout mCastCardLayout;
 
     private MovieDetailInfoLayout mReleasedInfoLayout;
     private MovieDetailInfoLayout mRunTimeInfoLayout;
     private MovieDetailInfoLayout mCertificationInfoLayout;
     private MovieDetailInfoLayout mGenresInfoLayout;
     private MovieDetailInfoLayout mLanguageInfoLayout;
+
+    private ViewSwitcher mCastSwitcher;
+    private LinearLayout mCastLayout;
+
+    private ViewSwitcher mRelatedSwitcher;
+    private LinearLayout mRelatedLayout;
 
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
@@ -130,7 +134,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
         mRelatedSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_related);
         mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
-        mRelatedViewRecycler = new ViewRecycler(mRelatedLayout);
+
+        mCastSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_cast);
+        mCastLayout = (LinearLayout) view.findViewById(R.id.layout_cast);
 
         mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
         mCertificationInfoLayout = (MovieDetailInfoLayout)
@@ -143,6 +149,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 view.findViewById(R.id.movie_detail_card_details);
         mRelatedCardLayout = (MovieDetailCardLayout)
                 view.findViewById(R.id.movie_detail_card_related);
+        mCastCardLayout = (MovieDetailCardLayout)
+                view.findViewById(R.id.movie_detail_card_cast);
     }
 
     @Override
@@ -175,6 +183,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void showRelatedMoviesLoadingProgress(final boolean visible) {
         mRelatedSwitcher.setDisplayedChild(visible ? 1 : 0);
+    }
+
+    @Override
+    public void showMovieCastLoadingProgress(final boolean visible) {
+        mCastSwitcher.setDisplayedChild(visible ? 1 : 0);
     }
 
     @Override
@@ -258,7 +271,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
         final List<PhilmMovie> related = mMovie.getRelated();
         if (related == null || related.size() != mRelatedLayout.getChildCount()) {
-            populateRelatedMovies(mRelatedViewRecycler);
+            populateRelatedMovies();
+        }
+
+        final List<PhilmCast> cast = mMovie.getCast();
+        if (cast == null || cast.size() != mCastLayout.getChildCount()) {
+            populateMovieCast();
         }
 
         if (mMovie.getRuntime() > 0) {
@@ -301,11 +319,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 .into(infoLayout);
     }
 
-    private void populateRelatedMovies(final ViewRecycler viewRecycler) {
+    private void populateRelatedMovies() {
         if (Constants.DEBUG) {
             Log.d(LOG_TAG, "populateRelatedMovies");
         }
 
+        final ViewRecycler viewRecycler = new ViewRecycler(mRelatedLayout);
         viewRecycler.recycleViews();
 
         if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
@@ -323,7 +342,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             final int numMovieItems = getResources().getInteger(R.integer.number_detail_items);
 
             for (int i = 0; i < numMovieItems; i++) {
-                View view = inflater.inflate(R.layout.item_related_movie, mRelatedLayout, false);
+                View view = viewRecycler.getRecycledView();
+                if (view == null) {
+                    view = inflater.inflate(R.layout.item_related_movie, mRelatedLayout, false);
+                }
 
                 final PhilmMovie movie = mMovie.getRelated().get(i);
 
@@ -362,6 +384,77 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 });
             } else {
                 mRelatedCardLayout.setSeeMoreVisibility(false);
+            }
+        }
+
+        viewRecycler.clearRecycledViews();
+    }
+
+    private void populateMovieCast() {
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "populateMovieCast");
+        }
+
+        final ViewRecycler viewRecycler = new ViewRecycler(mCastLayout);
+        viewRecycler.recycleViews();
+
+        if (!PhilmCollections.isEmpty(mMovie.getCast())) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+            final View.OnClickListener clickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //if (hasCallbacks()) {
+                        //getCallbacks().showMovieDetail((PhilmMovie) view.getTag());
+                    //}
+                }
+            };
+
+            final int numItems = getResources().getInteger(R.integer.number_detail_items);
+
+            for (int i = 0; i < numItems; i++) {
+                View view = viewRecycler.getRecycledView();
+                if (view == null) {
+                    view = inflater.inflate(R.layout.item_related_movie, mCastLayout, false);
+                }
+
+                final PhilmCast castMember = mMovie.getCast().get(i);
+
+                final TextView title = (TextView) view.findViewById(R.id.textview_title);
+                title.setText(castMember.getName());
+
+                final PhilmImageView imageView =
+                        (PhilmImageView) view.findViewById(R.id.imageview_poster);
+                imageView.loadProfileUrl(castMember, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        title.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
+                        title.setVisibility(View.VISIBLE);
+                    }
+                });
+
+                view.setOnClickListener(clickListener);
+                view.setTag(castMember);
+
+                mCastLayout.addView(view);
+            }
+
+            if (numItems < mMovie.getCast().size()) {
+                mCastCardLayout.setSeeMoreVisibility(true);
+                mCastCardLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        if (hasCallbacks()) {
+//                            getCallbacks().showRelatedMovies(mMovie);
+//                        }
+                    }
+                });
+            } else {
+                mCastCardLayout.setSeeMoreVisibility(false);
             }
         }
 

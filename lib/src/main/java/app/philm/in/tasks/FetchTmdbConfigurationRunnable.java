@@ -67,6 +67,7 @@ public class FetchTmdbConfigurationRunnable extends NetworkCallRunnable<TmdbConf
             mImageHelper.setTmdbBaseUrl(result.getImagesBaseUrl());
             mImageHelper.setTmdbBackdropSizes(result.getImagesBackdropSizes());
             mImageHelper.setTmdbPosterSizes(result.getImagesPosterSizes());
+            mImageHelper.setTmdbProfileSizes(result.getImagesProfileSizes());
         }
 
         mMoviesState.setTmdbConfiguration(result);

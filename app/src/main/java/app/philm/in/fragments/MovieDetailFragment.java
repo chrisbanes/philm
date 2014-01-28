@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -51,13 +52,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
-
-    private PhilmMovie mMovie;
-
     @Inject ImageHelper mImageHelper;
     @Inject FlagUrlProvider mFlagUrlProvider;
     @Inject DateFormat mMediumDateFormatter;
-
+    private PhilmMovie mMovie;
     private TextView mTitleTextView;
     private TextView mSummaryTextView;
     private PhilmImageView mFanartImageView;
@@ -324,66 +322,46 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             Log.d(LOG_TAG, "populateRelatedMovies");
         }
 
-        final ViewRecycler viewRecycler = new ViewRecycler(mRelatedLayout);
+        final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (hasCallbacks()) {
+                    getCallbacks().showRelatedMovies(mMovie);
+                }
+            }
+        };
+
+        RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(getActivity().getLayoutInflater());
+
+        populateDetailGrid(
+                mRelatedLayout,
+                mRelatedCardLayout,
+                seeMoreClickListener,
+                adapter);
+    }
+
+    private void populateDetailGrid(final ViewGroup layout,
+                                    final MovieDetailCardLayout cardLayout,
+                                    final View.OnClickListener seeMoreClickListener,
+                                    final BaseAdapter adapter) {
+
+        final ViewRecycler viewRecycler = new ViewRecycler(layout);
         viewRecycler.recycleViews();
 
-        if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
+        if (adapter.getCount() > 0) {
+            final int numItems = getResources().getInteger(R.integer.number_detail_items);
 
-            final View.OnClickListener clickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (hasCallbacks()) {
-                        getCallbacks().showMovieDetail((PhilmMovie) view.getTag());
-                    }
-                }
-            };
-
-            final int numMovieItems = getResources().getInteger(R.integer.number_detail_items);
-
-            for (int i = 0; i < numMovieItems; i++) {
+            for (int i = 0; i < numItems; i++) {
                 View view = viewRecycler.getRecycledView();
-                if (view == null) {
-                    view = inflater.inflate(R.layout.item_related_movie, mRelatedLayout, false);
-                }
-
-                final PhilmMovie movie = mMovie.getRelated().get(i);
-
-                final TextView title = (TextView) view.findViewById(R.id.textview_title);
-                title.setText(movie.getTitle());
-
-                final PhilmImageView imageView =
-                        (PhilmImageView) view.findViewById(R.id.imageview_poster);
-                imageView.loadPosterUrl(movie, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        title.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onError() {
-                        title.setVisibility(View.VISIBLE);
-                    }
-                });
-
-                view.setOnClickListener(clickListener);
-                view.setTag(movie);
-
-                mRelatedLayout.addView(view);
+                view = adapter.getView(i, view, layout);
+                layout.addView(view);
             }
 
-            if (numMovieItems < mMovie.getRelated().size()) {
-                mRelatedCardLayout.setSeeMoreVisibility(true);
-                mRelatedCardLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (hasCallbacks()) {
-                            getCallbacks().showRelatedMovies(mMovie);
-                        }
-                    }
-                });
+            if (numItems < adapter.getCount()) {
+                cardLayout.setSeeMoreVisibility(true);
+                cardLayout.setOnClickListener(seeMoreClickListener);
             } else {
-                mRelatedCardLayout.setSeeMoreVisibility(false);
+                cardLayout.setSeeMoreVisibility(false);
             }
         }
 
@@ -395,70 +373,24 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             Log.d(LOG_TAG, "populateMovieCast");
         }
 
-        final ViewRecycler viewRecycler = new ViewRecycler(mCastLayout);
-        viewRecycler.recycleViews();
-
-        if (!PhilmCollections.isEmpty(mMovie.getCast())) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-
-            final View.OnClickListener clickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //if (hasCallbacks()) {
-                        //getCallbacks().showMovieDetail((PhilmMovie) view.getTag());
-                    //}
-                }
-            };
-
-            final int numItems = getResources().getInteger(R.integer.number_detail_items);
-
-            for (int i = 0; i < numItems; i++) {
-                View view = viewRecycler.getRecycledView();
-                if (view == null) {
-                    view = inflater.inflate(R.layout.item_related_movie, mCastLayout, false);
-                }
-
-                final PhilmCast castMember = mMovie.getCast().get(i);
-
-                final TextView title = (TextView) view.findViewById(R.id.textview_title);
-                title.setText(castMember.getName());
-
-                final PhilmImageView imageView =
-                        (PhilmImageView) view.findViewById(R.id.imageview_poster);
-                imageView.loadProfileUrl(castMember, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        title.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onError() {
-                        title.setVisibility(View.VISIBLE);
-                    }
-                });
-
-                view.setOnClickListener(clickListener);
-                view.setTag(castMember);
-
-                mCastLayout.addView(view);
+        // TODO
+        final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if (hasCallbacks()) {
+//                    getCallbacks().showRelatedMovies(mMovie);
+//                }
             }
+        };
 
-            if (numItems < mMovie.getCast().size()) {
-                mCastCardLayout.setSeeMoreVisibility(true);
-                mCastCardLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-//                        if (hasCallbacks()) {
-//                            getCallbacks().showRelatedMovies(mMovie);
-//                        }
-                    }
-                });
-            } else {
-                mCastCardLayout.setSeeMoreVisibility(false);
-            }
-        }
+        MovieCastAdapter adapter = new MovieCastAdapter(getActivity().getLayoutInflater());
 
-        viewRecycler.clearRecycledViews();
+        populateDetailGrid(
+                mCastLayout,
+                mCastCardLayout,
+                seeMoreClickListener,
+                adapter);
+
     }
 
     private void updateButtonState(CheckableImageButton button, final boolean checked,
@@ -503,6 +435,137 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     getCallbacks().showRateMovie(mMovie);
                 }
                 break;
+        }
+    }
+
+    private class RelatedMoviesAdapter extends BaseAdapter {
+
+        private final View.OnClickListener mItemOnClickListener;
+        private final LayoutInflater mInflater;
+
+        RelatedMoviesAdapter(LayoutInflater inflater) {
+            mInflater = inflater;
+
+            mItemOnClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        getCallbacks().showMovieDetail((PhilmMovie) view.getTag());
+                    }
+                }
+            };
+        }
+
+        @Override
+        public int getCount() {
+            if (mMovie != null && !PhilmCollections.isEmpty(mMovie.getRelated())) {
+                return mMovie.getRelated().size();
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public PhilmMovie getItem(int position) {
+            return mMovie.getRelated().get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            if (view == null) {
+                view = mInflater.inflate(R.layout.item_related_movie, viewGroup, false);
+            }
+
+            final PhilmMovie movie = getItem(position);
+
+            final TextView title = (TextView) view.findViewById(R.id.textview_title);
+            title.setText(movie.getTitle());
+
+            final PhilmImageView imageView =
+                    (PhilmImageView) view.findViewById(R.id.imageview_poster);
+            imageView.loadPosterUrl(movie, new Callback() {
+                @Override
+                public void onSuccess() {
+                    title.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError() {
+                    title.setVisibility(View.VISIBLE);
+                }
+            });
+
+            view.setOnClickListener(mItemOnClickListener);
+            view.setTag(movie);
+
+            return view;
+        }
+    }
+
+    private class MovieCastAdapter extends BaseAdapter {
+
+        private final View.OnClickListener mItemOnClickListener;
+        private final LayoutInflater mInflater;
+
+        MovieCastAdapter(LayoutInflater inflater) {
+            mInflater = inflater;
+            // TODO
+            mItemOnClickListener = null;
+        }
+
+        @Override
+        public int getCount() {
+            if (mMovie != null && !PhilmCollections.isEmpty(mMovie.getCast())) {
+                return mMovie.getCast().size();
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public PhilmCast getItem(int position) {
+            return mMovie.getCast().get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            if (view == null) {
+                view = mInflater.inflate(R.layout.item_related_movie, viewGroup, false);
+            }
+
+            final PhilmCast cast = getItem(position);
+
+            final TextView title = (TextView) view.findViewById(R.id.textview_title);
+            title.setText(cast.getName());
+
+            final PhilmImageView imageView =
+                    (PhilmImageView) view.findViewById(R.id.imageview_poster);
+            imageView.loadProfileUrl(cast, new Callback() {
+                @Override
+                public void onSuccess() {
+                    title.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError() {
+                    title.setVisibility(View.VISIBLE);
+                }
+            });
+
+            view.setOnClickListener(mItemOnClickListener);
+            view.setTag(cast);
+
+            return view;
         }
     }
 }

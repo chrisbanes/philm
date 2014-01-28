@@ -81,6 +81,7 @@ public class PhilmMovie implements PhilmModel {
 
     transient List<PhilmMovie> related;
     transient List<PhilmCast> cast;
+    transient List<PhilmTrailer> trailers;
 
     public PhilmMovie() {}
 
@@ -431,6 +432,14 @@ public class PhilmMovie implements PhilmModel {
 
     public void setCast(List<PhilmCast> cast) {
         this.cast = cast;
+    }
+
+    public List<PhilmTrailer> getTrailers() {
+        return trailers;
+    }
+
+    public void setTrailers(List<PhilmTrailer> trailers) {
+        this.trailers = trailers;
     }
 
     @Override

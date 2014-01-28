@@ -33,6 +33,7 @@ import app.philm.in.tasks.BaseMovieRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
 import app.philm.in.tasks.FetchTmdbMovieCastRunnable;
+import app.philm.in.tasks.FetchTmdbMovieTrailersRunnable;
 import app.philm.in.tasks.FetchTmdbMoviesReleasesRunnable;
 import app.philm.in.tasks.FetchTmdbNowPlayingRunnable;
 import app.philm.in.tasks.FetchTmdbPopularRunnable;
@@ -227,6 +228,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieUi ui = findUi(event.callingId);
         if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
             ((MovieController.MovieDetailUi) ui).showRelatedMoviesLoadingProgress(event.show);
+        } else {
+            onLoadingProgressVisibilityChanged(event);
         }
     }
 
@@ -236,6 +239,19 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieUi ui = findUi(event.callingId);
         if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
             ((MovieController.MovieDetailUi) ui).showMovieCastLoadingProgress(event.show);
+        } else {
+            onLoadingProgressVisibilityChanged(event);
+        }
+    }
+
+    @Subscribe
+    public void onMovieTrailersLoadingProgressVisibilityChanged(
+            BaseState.ShowTrailersLoadingProgressEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
+            //((MovieController.MovieDetailUi) ui).showMovieCastLoadingProgress(event.show);
+        } else {
+            onLoadingProgressVisibilityChanged(event);
         }
     }
 
@@ -574,6 +590,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (PhilmCollections.isEmpty(movie.getCast())) {
             fetchCast(callingId, movie);
         }
+
+        if (PhilmCollections.isEmpty(movie.getTrailers())) {
+            fetchTrailers(callingId, movie);
+        }
     }
 
     private <T> List<ListItem<T>> createListItemList(final List<T> items) {
@@ -762,6 +782,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             executeTask(new FetchTmdbRelatedMoviesRunnable(callingId, movie.getTmdbId()));
         } else if (!TextUtils.isEmpty(movie.getImdbId())) {
             executeTask(new FetchTraktRelatedMoviesRunnable(callingId, movie.getImdbId()));
+        }
+    }
+
+    private void fetchTrailers(final int callingId, PhilmMovie movie) {
+        if (movie.getTmdbId() != null) {
+            executeTask(new FetchTmdbMovieTrailersRunnable(callingId, movie.getTmdbId()));
         }
     }
 

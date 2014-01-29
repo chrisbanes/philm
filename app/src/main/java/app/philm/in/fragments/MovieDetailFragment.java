@@ -6,11 +6,11 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.common.base.Preconditions;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +27,7 @@ import android.widget.ViewSwitcher;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -59,6 +60,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
+    private final ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader> mYoutubeLoaders
+            = new ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader>();
     @Inject ImageHelper mImageHelper;
     @Inject FlagUrlProvider mFlagUrlProvider;
     @Inject DateFormat mMediumDateFormatter;
@@ -67,29 +70,22 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private TextView mSummaryTextView;
     private PhilmImageView mFanartImageView;
     private PhilmImageView mPosterImageView;
-
     private RatingBarLayout mRatingBarLayout;
-
     private MovieDetailCardLayout mDetailsCardLayout;
     private MovieDetailCardLayout mRelatedCardLayout;
     private MovieDetailCardLayout mCastCardLayout;
     private MovieDetailCardLayout mTrailersCardLayout;
-
     private MovieDetailInfoLayout mReleasedInfoLayout;
     private MovieDetailInfoLayout mRunTimeInfoLayout;
     private MovieDetailInfoLayout mCertificationInfoLayout;
     private MovieDetailInfoLayout mGenresInfoLayout;
     private MovieDetailInfoLayout mLanguageInfoLayout;
-
     private ViewSwitcher mCastSwitcher;
     private LinearLayout mCastLayout;
-
     private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
-
     private ViewSwitcher mTrailersSwitcher;
     private LinearLayout mTrailersLayout;
-
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
     public static MovieDetailFragment create(String movieId) {
@@ -487,6 +483,27 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
     }
 
+    private YouTubeThumbnailLoader getYoutubeThumbnailLoader(YouTubeThumbnailView view) {
+        return mYoutubeLoaders.get(view);
+    }
+
+    private void captureYoutubeThumbnailLoader(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {
+        mYoutubeLoaders.put(view, loader);
+    }
+
+    private void clearYoutubeLoaders() {
+        for (YouTubeThumbnailLoader loader : mYoutubeLoaders.values()) {
+            loader.release();
+        }
+        mYoutubeLoaders.clear();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        clearYoutubeLoaders();
+    }
+
     private class RelatedMoviesAdapter extends BaseAdapter {
 
         private final View.OnClickListener mItemOnClickListener;
@@ -664,22 +681,33 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     final YouTubeThumbnailView youtubeView = (YouTubeThumbnailView)
                             view.findViewById(R.id.imageview_youtube_thumbnail);
 
-                    youtubeView.initialize(
-                            AndroidConstants.GOOGLE_CLIENT_KEY,
-                            new YouTubeThumbnailView.OnInitializedListener() {
-                        @Override
-                        public void onInitializationSuccess(
-                                YouTubeThumbnailView youTubeThumbnailView,
-                                YouTubeThumbnailLoader youTubeThumbnailLoader) {
-                            youTubeThumbnailLoader.setVideo(trailer.getId());
-                        }
+                    YouTubeThumbnailLoader loader = getYoutubeThumbnailLoader(youtubeView);
 
-                        @Override
-                        public void onInitializationFailure(
-                                YouTubeThumbnailView youTubeThumbnailView,
-                                YouTubeInitializationResult youTubeInitializationResult) {
-                        }
-                    });
+                    if (loader == null) {
+                        youtubeView.initialize(
+                                AndroidConstants.GOOGLE_CLIENT_KEY,
+                                new YouTubeThumbnailView.OnInitializedListener() {
+                                    @Override
+                                    public void onInitializationSuccess(
+                                            YouTubeThumbnailView youTubeThumbnailView,
+                                            YouTubeThumbnailLoader youTubeThumbnailLoader) {
+
+                                        captureYoutubeThumbnailLoader(
+                                                youTubeThumbnailView,
+                                                youTubeThumbnailLoader);
+
+                                        youTubeThumbnailLoader.setVideo(trailer.getId());
+                                    }
+
+                                    @Override
+                                    public void onInitializationFailure(
+                                            YouTubeThumbnailView youTubeThumbnailView,
+                                            YouTubeInitializationResult youTubeInitializationResult) {
+                                    }
+                                });
+                    } else {
+                        loader.setVideo(trailer.getId());
+                    }
             }
 
             view.setTag(trailer);

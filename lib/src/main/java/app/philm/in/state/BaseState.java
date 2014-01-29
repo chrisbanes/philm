@@ -1,6 +1,7 @@
 package app.philm.in.state;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 import app.philm.in.controllers.MainController;
 import app.philm.in.model.PhilmAccount;
@@ -27,7 +28,7 @@ public interface BaseState {
         public final T item;
 
         public BaseArgumentEvent(T item) {
-            this.item = item;
+            this.item = Preconditions.checkNotNull(item, "item cannot be null");
         }
     }
 

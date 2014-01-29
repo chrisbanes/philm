@@ -191,6 +191,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
+
+            final boolean hasRelated = !PhilmCollections.isEmpty(event.item.getRelated());
+            ((MovieDetailUi) ui).setMovieRelatedVisibility(hasRelated);
         }
     }
 
@@ -207,6 +210,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
+
+            final boolean hasCast = !PhilmCollections.isEmpty(event.item.getCast());
+            ((MovieDetailUi) ui).setMovieCastVisibility(hasCast);
         }
     }
 
@@ -215,6 +221,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
+
+            final boolean hasTrailers = !PhilmCollections.isEmpty(event.item.getTrailers());
+            ((MovieDetailUi) ui).setMovieTrailersVisibility(hasTrailers);
         }
     }
 
@@ -1262,6 +1271,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void setWatchlistButtonEnabled(boolean enabled);
 
         void setRateCircleEnabled(boolean enabled);
+
+        void setMovieTrailersVisibility(boolean visible);
+
+        void setMovieCastVisibility(boolean visible);
+
+        void setMovieRelatedVisibility(boolean visible);
+
     }
 
     public interface MovieRateUi extends MovieUi {

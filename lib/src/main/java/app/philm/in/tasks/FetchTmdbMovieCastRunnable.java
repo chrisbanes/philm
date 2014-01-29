@@ -31,16 +31,29 @@ public class FetchTmdbMovieCastRunnable extends BaseMovieRunnable<Credits> {
     public void onSuccess(Credits result) {
         PhilmMovie movie = mMoviesState.getMovie(mId);
 
-        if (movie != null && !PhilmCollections.isEmpty(result.cast)) {
-            final ArrayList<PhilmCast> castList = new ArrayList<PhilmCast>();
+        if (movie != null) {
+            if (!PhilmCollections.isEmpty(result.cast)) {
+                final ArrayList<PhilmCast> castList = new ArrayList<PhilmCast>();
 
-            for (Credits.CastMember castMember : result.cast) {
-                final PhilmCast philmCastMember = new PhilmCast();
-                philmCastMember.setFromCast(castMember);
-                castList.add(philmCastMember);
+                for (Credits.CastMember castMember : result.cast) {
+                    final PhilmCast philmCastMember = new PhilmCast();
+                    philmCastMember.setFromCast(castMember);
+                    castList.add(philmCastMember);
+                }
+
+                movie.setCast(castList);
             }
 
-            movie.setCast(castList);
+            getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), movie));
+        }
+    }
+
+    @Override
+    public void onError(RetrofitError re) {
+        super.onError(re);
+
+        PhilmMovie movie = mMoviesState.getMovie(mId);
+        if (movie != null) {
             getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), movie));
         }
     }

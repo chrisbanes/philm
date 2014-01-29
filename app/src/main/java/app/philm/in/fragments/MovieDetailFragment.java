@@ -249,6 +249,21 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     }
 
     @Override
+    public void setMovieTrailersVisibility(boolean visible) {
+        mTrailersCardLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setMovieCastVisibility(boolean visible) {
+        mCastCardLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setMovieRelatedVisibility(boolean visible) {
+        mRelatedCardLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
     public void setCollectionButtonEnabled(boolean enabled) {
         mCollectionButton.setEnabled(enabled);
     }
@@ -272,6 +287,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     public String getRequestParameter() {
         return getArguments().getString(KEY_QUERY_MOVIE_ID);
     }
+
+
 
     @Override
     public String getUiTitle() {

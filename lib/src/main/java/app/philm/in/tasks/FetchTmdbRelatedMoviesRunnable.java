@@ -25,9 +25,24 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
     @Override
     public void onSuccess(ResultsPage result) {
         PhilmMovie movie = mMoviesState.getMovie(String.valueOf(mId));
-        movie.setRelated(getTmdbEntityMapper().map(result.results));
 
-        getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(getCallingId(), movie));
+        if (movie != null) {
+            movie.setRelated(getTmdbEntityMapper().map(result.results));
+            
+            getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(
+                    getCallingId(), movie));
+        }
+    }
+
+    @Override
+    public void onError(RetrofitError re) {
+        super.onError(re);
+
+        PhilmMovie movie = mMoviesState.getMovie(String.valueOf(mId));
+        if (movie != null) {
+            getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(
+                    getCallingId(), movie));
+        }
     }
 
     @Override

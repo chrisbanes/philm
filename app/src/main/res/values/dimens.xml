@@ -29,12 +29,15 @@
     <dimen name="movie_detail_flag_width">18dp</dimen>
     <dimen name="movie_detail_flag_height">12dp</dimen>
     <dimen name="movie_detail_related_height">160dp</dimen>
+    <dimen name="movie_detail_trailers_item_width">240dp</dimen>
 
     <dimen name="movie_list_image_width">80dp</dimen>
     <dimen name="movie_list_item_height">120dp</dimen>
 
     <dimen name="movie_list_small_image_width">55dp</dimen>
     <dimen name="movie_list_small_item_height">80dp</dimen>
+
+
 
     <dimen name="drawer_side_menu_width">240dp</dimen>
 

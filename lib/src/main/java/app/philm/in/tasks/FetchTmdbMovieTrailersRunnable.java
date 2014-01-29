@@ -1,17 +1,12 @@
 package app.philm.in.tasks;
 
 
-import com.uwetrottmann.tmdb.entities.Trailer;
 import com.uwetrottmann.tmdb.entities.Trailers;
 
-import java.util.ArrayList;
-
 import app.philm.in.model.PhilmMovie;
-import app.philm.in.model.PhilmTrailer;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
-import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
 public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> {
@@ -33,26 +28,7 @@ public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> 
         PhilmMovie movie = mMoviesState.getMovie(mId);
 
         if (movie != null) {
-            final ArrayList<PhilmTrailer> trailers = new ArrayList<PhilmTrailer>();
-
-            if (!PhilmCollections.isEmpty(result.youtube)) {
-                for (Trailer trailer : result.youtube) {
-                    final PhilmTrailer philmTrailer = new PhilmTrailer();
-                    philmTrailer.setFromTmdb(PhilmTrailer.Source.YOUTUBE, trailer);
-                    trailers.add(philmTrailer);
-                }
-            }
-
-            // TODO Add support for quicktime
-//            if (!PhilmCollections.isEmpty(result.quicktime)) {
-//                for (Trailer trailer : result.quicktime) {
-//                    final PhilmTrailer philmTrailer = new PhilmTrailer();
-//                    philmTrailer.setFromTmdb(PhilmTrailer.Source.QUICKTIME, trailer);
-//                    trailers.add(philmTrailer);
-//                }
-//            }
-
-            movie.setTrailers(trailers);
+            movie.updateWithTrailers(result);
 
             getEventBus().post(new MoviesState.MovieTrailersItemsUpdatedEvent(getCallingId(), movie));
         }

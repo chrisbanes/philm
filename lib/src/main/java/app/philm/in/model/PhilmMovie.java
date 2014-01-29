@@ -6,15 +6,21 @@ import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
+import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.Genre;
+import com.uwetrottmann.tmdb.entities.ReleasesResult;
 import com.uwetrottmann.tmdb.entities.SpokenLanguage;
+import com.uwetrottmann.tmdb.entities.Trailer;
+import com.uwetrottmann.tmdb.entities.Trailers;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import app.philm.in.trakt.TraktUtils;
+import app.philm.in.util.CountryProvider;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
 
@@ -82,6 +88,7 @@ public class PhilmMovie implements PhilmModel {
     transient List<PhilmMovie> related;
     transient List<PhilmCast> cast;
     transient List<PhilmTrailer> trailers;
+    transient List<CountryRelease> releases;
 
     public PhilmMovie() {}
 
@@ -229,20 +236,81 @@ public class PhilmMovie implements PhilmModel {
 
         runtime = unbox(runtime, movie.runtime);
 
+        if (movie.credits != null) {
+            updateWithCast(movie.credits);
+        }
+
+        if (movie.trailers != null) {
+            updateWithTrailers(movie.trailers);
+        }
+
         lastFetched = System.currentTimeMillis();
     }
 
-    public void updateFrom(CountryRelease countryRelease) {
-        Preconditions.checkNotNull(countryRelease, "countryRelease cannot be null");
+    public void updateWithCast(final Credits credits) {
+        Preconditions.checkNotNull(credits, "credits cannot be null");
 
-        if (!TextUtils.isEmpty(countryRelease.certification)) {
-            certification = countryRelease.certification;
+        if (!PhilmCollections.isEmpty(credits.cast)) {
+            final ArrayList<PhilmCast> castList = new ArrayList<PhilmCast>();
+
+            for (Credits.CastMember castMember : credits.cast) {
+                final PhilmCast philmCastMember = new PhilmCast();
+                philmCastMember.setFromCast(castMember);
+                castList.add(philmCastMember);
+            }
+
+            setCast(castList);
         }
-        if (countryRelease.release_date != null) {
-            releasedTime = countryRelease.release_date.getTime();
+    }
+
+    public void updateWithTrailers(final Trailers trailers) {
+        Preconditions.checkNotNull(trailers, "trailers cannot be null");
+
+        final ArrayList<PhilmTrailer> philmTrailers = new ArrayList<PhilmTrailer>();
+
+        if (!PhilmCollections.isEmpty(trailers.youtube)) {
+            for (Trailer trailer : trailers.youtube) {
+                final PhilmTrailer philmTrailer = new PhilmTrailer();
+                philmTrailer.setFromTmdb(PhilmTrailer.Source.YOUTUBE, trailer);
+                philmTrailers.add(philmTrailer);
+            }
         }
-        if (!TextUtils.isEmpty(countryRelease.iso_3166_1)) {
-            localizedCountryCode = countryRelease.iso_3166_1;
+
+        setTrailers(philmTrailers);
+    }
+
+    public void updateWithReleases(final ReleasesResult releasesResult, final String countryCode) {
+        Preconditions.checkNotNull(releasesResult, "releasesResult cannot be null");
+
+        if (!PhilmCollections.isEmpty(releasesResult.countries)) {
+            CountryRelease countryRelease = null;
+            CountryRelease usRelease = null;
+
+            for (CountryRelease release : releasesResult.countries) {
+                if (countryCode != null && countryCode.equalsIgnoreCase(release.iso_3166_1)) {
+                    countryRelease = release;
+                    break;
+                } else if (CountryProvider.US_TWO_LETTER_CODE
+                        .equalsIgnoreCase(release.iso_3166_1)) {
+                    usRelease = release;
+                }
+            }
+
+            if (countryRelease == null) {
+                countryRelease = usRelease;
+            }
+
+            if (countryRelease != null) {
+                if (!TextUtils.isEmpty(countryRelease.certification)) {
+                    certification = countryRelease.certification;
+                }
+                if (countryRelease.release_date != null) {
+                    releasedTime = countryRelease.release_date.getTime();
+                }
+                if (!TextUtils.isEmpty(countryRelease.iso_3166_1)) {
+                    localizedCountryCode = countryRelease.iso_3166_1;
+                }
+            }
         }
     }
 

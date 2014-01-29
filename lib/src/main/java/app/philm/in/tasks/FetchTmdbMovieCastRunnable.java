@@ -3,14 +3,10 @@ package app.philm.in.tasks;
 
 import com.uwetrottmann.tmdb.entities.Credits;
 
-import java.util.ArrayList;
-
-import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
-import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
 public class FetchTmdbMovieCastRunnable extends BaseMovieRunnable<Credits> {
@@ -32,17 +28,7 @@ public class FetchTmdbMovieCastRunnable extends BaseMovieRunnable<Credits> {
         PhilmMovie movie = mMoviesState.getMovie(mId);
 
         if (movie != null) {
-            if (!PhilmCollections.isEmpty(result.cast)) {
-                final ArrayList<PhilmCast> castList = new ArrayList<PhilmCast>();
-
-                for (Credits.CastMember castMember : result.cast) {
-                    final PhilmCast philmCastMember = new PhilmCast();
-                    philmCastMember.setFromCast(castMember);
-                    castList.add(philmCastMember);
-                }
-
-                movie.setCast(castList);
-            }
+            movie.updateWithCast(result);
 
             getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), movie));
         }

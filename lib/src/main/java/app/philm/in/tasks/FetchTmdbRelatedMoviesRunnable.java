@@ -28,7 +28,7 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
 
         if (movie != null) {
             movie.setRelated(getTmdbEntityMapper().map(result.results));
-            
+
             getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(
                     getCallingId(), movie));
         }

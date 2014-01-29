@@ -109,6 +109,18 @@ public interface MoviesState extends BaseState {
         }
     }
 
+    public static class MovieTrailersItemsUpdatedEvent extends UiCausedEvent<PhilmMovie> {
+        public MovieTrailersItemsUpdatedEvent(int callingId, PhilmMovie item) {
+            super(callingId, item);
+        }
+    }
+
+    public static class MovieCastItemsUpdatedEvent extends UiCausedEvent<PhilmMovie> {
+        public MovieCastItemsUpdatedEvent(int callingId, PhilmMovie item) {
+            super(callingId, item);
+        }
+    }
+
     public static class MovieUserRatingChangedEvent extends UiCausedEvent<PhilmMovie> {
         public MovieUserRatingChangedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);

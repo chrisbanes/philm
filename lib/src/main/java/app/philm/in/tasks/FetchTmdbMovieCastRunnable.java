@@ -41,7 +41,7 @@ public class FetchTmdbMovieCastRunnable extends BaseMovieRunnable<Credits> {
             }
 
             movie.setCast(castList);
-            getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));
+            getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), movie));
         }
     }
 

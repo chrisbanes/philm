@@ -203,6 +203,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
+    public void onMovieCastItemsChanged(MoviesState.MovieCastItemsUpdatedEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null) {
+            populateUi(ui);
+        }
+    }
+
+    @Subscribe
+    public void onMovieTrailersChanged(MoviesState.MovieTrailersItemsUpdatedEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null) {
+            populateUi(ui);
+        }
+    }
+
+    @Subscribe
     public void onNetworkError(BaseState.ShowErrorEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null && null != event.error) {

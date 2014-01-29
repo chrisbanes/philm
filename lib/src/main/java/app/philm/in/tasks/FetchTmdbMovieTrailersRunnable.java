@@ -53,7 +53,7 @@ public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> 
 //            }
 
             movie.setTrailers(trailers);
-            getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));
+            getEventBus().post(new MoviesState.MovieTrailersItemsUpdatedEvent(getCallingId(), movie));
         }
     }
 

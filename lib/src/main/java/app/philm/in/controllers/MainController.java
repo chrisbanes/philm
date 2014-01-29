@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Subscribe;
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
 import app.philm.in.Display;
@@ -124,7 +126,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     @Override
     protected void populateUi(MainControllerUi ui) {
-        ui.setSideMenuItems(SideMenuItem.values(), mState.getSelectedSideMenuItem());
+        ui.setSideMenuItems(getEnabledSideMenuItems(), mState.getSelectedSideMenuItem());
 
         PhilmUserProfile profile = mState.getUserProfile();
         if (profile != null) {
@@ -230,6 +232,14 @@ public class MainController extends BaseUiController<MainController.MainControll
             display.finishActivity();
         }
         return true;
+    }
+
+    private SideMenuItem[] getEnabledSideMenuItems() {
+        return new SideMenuItem[]{
+                SideMenuItem.DISCOVER,
+                SideMenuItem.LIBRARY,
+                SideMenuItem.WATCHLIST,
+                SideMenuItem.SEARCH};
     }
 
     public void setHostCallbacks(HostCallbacks hostCallbacks) {

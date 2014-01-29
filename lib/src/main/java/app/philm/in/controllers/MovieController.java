@@ -949,13 +949,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void populateDetailUi(MovieDetailUi ui) {
         final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
 
-        final boolean canUpdateTrack = isLoggedIn() && movie.isLoadedFromTrakt();
-        ui.setRateCircleEnabled(canUpdateTrack);
-        ui.setCollectionButtonEnabled(canUpdateTrack);
-        ui.setWatchlistButtonEnabled(canUpdateTrack);
-        ui.setToggleWatchedButtonEnabled(canUpdateTrack);
-
-        ui.setMovie(movie);
+        if (movie != null) {
+            final boolean canUpdateTrack = isLoggedIn() && movie.isLoadedFromTrakt();
+            ui.setRateCircleEnabled(canUpdateTrack);
+            ui.setCollectionButtonEnabled(canUpdateTrack);
+            ui.setWatchlistButtonEnabled(canUpdateTrack);
+            ui.setToggleWatchedButtonEnabled(canUpdateTrack);
+            
+            ui.setMovie(movie);
+        }
     }
 
     private void populateListUi(MovieListUi ui) {

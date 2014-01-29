@@ -361,6 +361,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void showMovieDetail(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 Display display = getDisplay();
                 if (display != null) {
                     if (!TextUtils.isEmpty(movie.getTraktId())) {
@@ -372,6 +374,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void toggleMovieSeen(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 if (movie.isWatched()) {
                     markMoviesUnseen(getId(ui), movie.getTraktId());
                 } else {
@@ -381,6 +385,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void toggleInWatchlist(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 if (movie.inWatchlist()) {
                     removeFromWatchlist(getId(ui), movie.getTraktId());
                 } else {
@@ -390,6 +396,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void toggleInCollection(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 if (movie.inCollection()) {
                     removeFromCollection(getId(ui), movie.getTraktId());
                 } else {
@@ -460,6 +468,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void showRateMovie(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 Display display = getDisplay();
                 if (display != null) {
                     display.showRateMovieFragment(movie.getTraktId());
@@ -468,6 +478,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void submitRating(PhilmMovie movie, Rating rating) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 markMovieRating(getId(ui), movie.getTraktId(), rating);
             }
 
@@ -499,6 +511,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void showRelatedMovies(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 Display display = getDisplay();
                 if (display != null) {
                     display.showRelatedMovies(String.valueOf(movie.getTmdbId()));
@@ -507,6 +521,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void showCastList(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
                 Display display = getDisplay();
                 if (display != null) {
                     display.showCastList(String.valueOf(movie.getTmdbId()));

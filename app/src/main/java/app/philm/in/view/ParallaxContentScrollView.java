@@ -106,4 +106,17 @@ public class ParallaxContentScrollView extends FrameLayout {
             }
         }
     }
+
+    public int getScrollViewScrollY() {
+        return mContentViewScrollView.getScrollY();
+    }
+
+    public void scrollScrollViewTo(final int y) {
+        mContentViewScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                mContentViewScrollView.scrollTo(0, y);
+            }
+        });
+    }
 }

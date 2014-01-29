@@ -27,7 +27,6 @@ import android.widget.ViewSwitcher;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -48,6 +47,7 @@ import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
+import app.philm.in.view.ParallaxContentScrollView;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
@@ -60,17 +60,26 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
+    private static final String KEY_SCROLLVIEW_POSITION = "scroll_position";
+
     private final ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader> mYoutubeLoaders
             = new ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader>();
+
     @Inject ImageHelper mImageHelper;
     @Inject FlagUrlProvider mFlagUrlProvider;
     @Inject DateFormat mMediumDateFormatter;
+
     private PhilmMovie mMovie;
+
+    private ParallaxContentScrollView mScrollView;
+
     private TextView mTitleTextView;
     private TextView mSummaryTextView;
     private PhilmImageView mFanartImageView;
     private PhilmImageView mPosterImageView;
+
     private RatingBarLayout mRatingBarLayout;
+
     private MovieDetailCardLayout mDetailsCardLayout;
     private MovieDetailCardLayout mRelatedCardLayout;
     private MovieDetailCardLayout mCastCardLayout;
@@ -80,13 +89,17 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private MovieDetailInfoLayout mCertificationInfoLayout;
     private MovieDetailInfoLayout mGenresInfoLayout;
     private MovieDetailInfoLayout mLanguageInfoLayout;
+
     private ViewSwitcher mCastSwitcher;
     private LinearLayout mCastLayout;
     private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
     private ViewSwitcher mTrailersSwitcher;
     private LinearLayout mTrailersLayout;
+
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
+
+    private int mScrollViewY;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -117,6 +130,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mScrollView = (ParallaxContentScrollView) view.findViewById(R.id.content_scrollview);
+
         mFanartImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
         mPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
         mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
@@ -161,6 +177,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 view.findViewById(R.id.movie_detail_card_cast);
         mTrailersCardLayout = (MovieDetailCardLayout)
                 view.findViewById(R.id.movie_detail_card_trailers);
+
+        if (savedInstanceState != null) {
+            mScrollViewY = savedInstanceState.getInt(KEY_SCROLLVIEW_POSITION);
+        }
     }
 
     @Override
@@ -178,6 +198,24 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mScrollView.scrollScrollViewTo(mScrollViewY);
+    }
+
+    @Override
+    public void onPause() {
+        mScrollViewY = mScrollView.getScrollViewScrollY();
+        super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(KEY_SCROLLVIEW_POSITION, mScrollViewY);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

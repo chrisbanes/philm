@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<app.philm.in.view.ParallaxContentScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<app.philm.in.view.ParallaxContentScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:internal="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_scrollview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     internal:contentOverlay="@dimen/movie_detail_content_overlay">

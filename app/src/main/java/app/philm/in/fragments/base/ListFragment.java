@@ -18,6 +18,7 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import app.philm.in.view.FontTextView;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public abstract class ListFragment<E extends AbsListView> extends Fragment {
@@ -96,9 +97,10 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
         FrameLayout lframe = new FrameLayout(context);
         lframe.setId(INTERNAL_LIST_CONTAINER_ID);
 
-        TextView tv = new TextView(getActivity());
+        FontTextView tv = new FontTextView(getActivity());
         tv.setId(INTERNAL_EMPTY_ID);
         tv.setGravity(Gravity.CENTER);
+        tv.setFont(FontTextView.FONT_ROBOTO_CONDENSED);
         lframe.addView(tv, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 

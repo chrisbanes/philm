@@ -34,7 +34,7 @@ public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
     @Override
     public void onError(RetrofitError re) {
-        if (re.getResponse().getStatus() == 404) {
+        if (re != null && re.getResponse().getStatus() == 404) {
             PhilmMovie movie = mMoviesState.getMovie(mId);
             if (movie != null) {
                 movie.setLoadedFromTrakt(false);

@@ -29,6 +29,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:background">@drawable/black_translucent_gradient</item>
         <item name="android:gravity">bottom|left</item>
+        <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
     </style>
 
     <style name="Widget.Philm.Movie.List.Title" parent="android:Widget">
@@ -62,6 +63,7 @@
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">bottom|left</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowDx">1.2</item>
         <item name="android:shadowDy">1.2</item>

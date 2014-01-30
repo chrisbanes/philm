@@ -3,12 +3,10 @@
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo.Light">
     </style>
 
     <style name="Theme.Philm" parent="Theme.Base.Philm">
-        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
-
         <item name="android:editTextBackground">@drawable/philmcolor_edit_text_holo_dark</item>
         <item name="android:textColorHighlight">@color/primary_accent_color_translucent</item>
         <item name="android:textSelectHandleLeft">

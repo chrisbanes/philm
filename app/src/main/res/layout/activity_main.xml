@@ -15,7 +15,7 @@
             android:layout_width="@dimen/drawer_side_menu_width"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:background="@color/side_menu_background">
+            android:background="?android:attr/colorBackground">
 
         <fragment
                 android:id="@+id/fragment_side_menu"

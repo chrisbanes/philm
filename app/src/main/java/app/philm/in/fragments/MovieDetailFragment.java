@@ -672,32 +672,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private class MovieTrailersAdapter extends BaseAdapter {
 
-        private final View.OnClickListener mItemOnClickListener;
+        private final YoutubeViewListener mYoutubeViewListener;
         private final LayoutInflater mInflater;
 
         MovieTrailersAdapter(LayoutInflater inflater) {
             mInflater = inflater;
-
-            mItemOnClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final PhilmTrailer trailer = (PhilmTrailer) view.getTag();
-
-                    switch (trailer.getSource()) {
-                        case YOUTUBE:
-                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                                    getActivity(),
-                                    AndroidConstants.GOOGLE_CLIENT_KEY,
-                                    trailer.getId(),
-                                    0, // start time
-                                    true, // autoplay
-                                    false // lightbox
-                            );
-                            getActivity().startActivity(intent);
-                            break;
-                    }
-                }
-            };
+            mYoutubeViewListener = new YoutubeViewListener();
         }
 
         @Override
@@ -725,50 +705,77 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
             switch (trailer.getSource()) {
                 case YOUTUBE:
+                    final boolean viewWasInflated = view == null;
                     if (view == null) {
                         view = mInflater.inflate(R.layout.item_movie_trailer_youtube,
                                 viewGroup, false);
                     }
 
-                    final TextView title = (TextView) view.findViewById(R.id.textview_title);
-                    title.setText(trailer.getName());
-
                     final YouTubeThumbnailView youtubeView = (YouTubeThumbnailView)
                             view.findViewById(R.id.imageview_youtube_thumbnail);
+                    youtubeView.setTag(trailer.getId());
 
-                    YouTubeThumbnailLoader loader = getYoutubeThumbnailLoader(youtubeView);
-
+                    final YouTubeThumbnailLoader loader = getYoutubeThumbnailLoader(youtubeView);
                     if (loader == null) {
-                        youtubeView.initialize(
-                                AndroidConstants.GOOGLE_CLIENT_KEY,
-                                new YouTubeThumbnailView.OnInitializedListener() {
-                                    @Override
-                                    public void onInitializationSuccess(
-                                            YouTubeThumbnailView youTubeThumbnailView,
-                                            YouTubeThumbnailLoader youTubeThumbnailLoader) {
-
-                                        captureYoutubeThumbnailLoader(
-                                                youTubeThumbnailView,
-                                                youTubeThumbnailLoader);
-
-                                        youTubeThumbnailLoader.setVideo(trailer.getId());
-                                    }
-
-                                    @Override
-                                    public void onInitializationFailure(
-                                            YouTubeThumbnailView youTubeThumbnailView,
-                                            YouTubeInitializationResult youTubeInitializationResult) {
-                                    }
-                                });
+                        if (viewWasInflated) {
+                            youtubeView.initialize(
+                                    AndroidConstants.GOOGLE_CLIENT_KEY,
+                                    mYoutubeViewListener);
+                        }
                     } else {
                         loader.setVideo(trailer.getId());
                     }
+
+                    final TextView title = (TextView) view.findViewById(R.id.textview_title);
+                    title.setText(trailer.getName());
             }
 
-            view.setTag(trailer);
-            view.setOnClickListener(mItemOnClickListener);
-
             return view;
+        }
+    }
+
+    private class YoutubeViewListener implements YouTubeThumbnailView.OnInitializedListener,
+            YouTubeThumbnailLoader.OnThumbnailLoadedListener, View.OnClickListener {
+
+        @Override
+        public void onInitializationSuccess(
+                YouTubeThumbnailView view,
+                YouTubeThumbnailLoader loader) {
+            loader.setOnThumbnailLoadedListener(this);
+            captureYoutubeThumbnailLoader(view, loader);
+            loader.setVideo((String) view.getTag());
+        }
+
+        @Override
+        public void onInitializationFailure(
+                YouTubeThumbnailView view,
+                YouTubeInitializationResult loader) {
+            view.setOnClickListener(null);
+        }
+
+        @Override
+        public void onThumbnailLoaded(YouTubeThumbnailView view, String id) {
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onThumbnailError(
+                YouTubeThumbnailView view,
+                YouTubeThumbnailLoader.ErrorReason errorReason) {
+            view.setOnClickListener(null);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                    getActivity(),
+                    AndroidConstants.GOOGLE_CLIENT_KEY,
+                    (String) view.getTag(),
+                    0, // start time
+                    true, // autoplay
+                    false // lightbox
+            );
+            startActivity(intent);
         }
     }
 }

@@ -24,6 +24,12 @@ public class StringManager {
                 return R.string.watchlist_title;
             case SEARCH:
                 return R.string.search_title;
+            case UPCOMING:
+                return R.string.upcoming_title;
+            case RECOMMENDED:
+                return R.string.recommended_title;
+            case NOW_PLAYING:
+                return R.string.in_theatres_title;
         }
         return R.string.app_name;
     }

@@ -167,15 +167,9 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     }
 
     private String getTitle() {
-        switch (getMovieQueryType()) {
-            case POPULAR:
-                return getString(R.string.popular_title);
-            case LIBRARY:
-                return getString(R.string.library_title);
-            case TRENDING:
-                return getString(R.string.trending_title);
-            case WATCHLIST:
-                return getString(R.string.watchlist_title);
+        MovieController.MovieQueryType queryType = getMovieQueryType();
+        if (queryType != null) {
+            return getString(StringManager.getStringResId(queryType));
         }
         return null;
     }

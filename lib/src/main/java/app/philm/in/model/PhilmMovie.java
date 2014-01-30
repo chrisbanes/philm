@@ -30,14 +30,46 @@ public class PhilmMovie implements PhilmModel {
 
     private static final Calendar CALENDAR = Calendar.getInstance();
 
-    public static final Comparator<PhilmMovie> COMPARATOR = new Comparator<PhilmMovie>() {
+    public static final Comparator<PhilmMovie> COMPARATOR_SORT_TITLE
+            = new Comparator<PhilmMovie>() {
         @Override
         public int compare(PhilmMovie movie, PhilmMovie movie2) {
             return movie.getSortTitle().compareTo(movie2.getSortTitle());
         }
     };
 
-    private static final String[] TITLE_PREFIXES = { "The ", "An " };
+    public static final Comparator<ListItem<PhilmMovie>> COMPARATOR_LIST_ITEM_DATE_ASC
+            = new ListItemReleaseDateComparator(true);
+
+    private static class ListItemReleaseDateComparator implements Comparator<ListItem<PhilmMovie>> {
+
+        private final boolean ascending;
+
+        ListItemReleaseDateComparator(boolean ascending) {
+            this.ascending = ascending;
+        }
+
+        @Override
+        public int compare(ListItem<PhilmMovie> item1, ListItem<PhilmMovie> item2) {
+            if (item1.getType() == ListItem.TYPE_SECTION) {
+                return -1;
+            } else if (item2.getType() == ListItem.TYPE_SECTION) {
+                return 1;
+            } else {
+                final long time1 = item1.getItem().getReleasedTime();
+                final long time2 = item2.getItem().getReleasedTime();
+                if (time1 < time2) {
+                    return ascending ? -1 : 1;
+                } else if (time1 > time2) {
+                    return ascending ? 1 : -1;
+                }
+            }
+
+            return 0;
+        }
+    }
+
+    private static final String[] TITLE_PREFIXES = {"The ", "An "};
 
     // tmdbId
     Long _id;
@@ -90,7 +122,8 @@ public class PhilmMovie implements PhilmModel {
     transient List<PhilmTrailer> trailers;
     transient List<CountryRelease> releases;
 
-    public PhilmMovie() {}
+    public PhilmMovie() {
+    }
 
     private static String getSortTitle(String title) {
         for (int i = 0, z = TITLE_PREFIXES.length; i < z; i++) {
@@ -564,7 +597,7 @@ public class PhilmMovie implements PhilmModel {
     private static String getTmdbGenreFormatStringList(List<Genre> list) {
         if (!PhilmCollections.isEmpty(list)) {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0, z = list.size() ; i < z ; i++) {
+            for (int i = 0, z = list.size(); i < z; i++) {
                 sb.append(list.get(i).name);
                 if (i < z - 1) {
                     sb.append(", ");
@@ -578,7 +611,7 @@ public class PhilmMovie implements PhilmModel {
     private static String getTraktGenreFormatStringList(List<String> list) {
         if (!PhilmCollections.isEmpty(list)) {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0, z = list.size() ; i < z ; i++) {
+            for (int i = 0, z = list.size(); i < z; i++) {
                 sb.append(list.get(i));
                 if (i < z - 1) {
                     sb.append(", ");

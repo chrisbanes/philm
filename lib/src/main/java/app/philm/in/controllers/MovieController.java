@@ -7,6 +7,7 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -686,6 +687,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (sectionsItemLists == null) {
                     sectionsItemLists = new HashMap<Filter, List<ListItem<PhilmMovie>>>();
                 }
+                filter.sortListItems(sectionItems);
                 sectionsItemLists.put(filter, sectionItems);
             }
         }
@@ -1190,6 +1192,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     return Arrays.asList(SEEN);
             }
             return null;
+        }
+
+        public void sortListItems(List<ListItem<PhilmMovie>> items) {
+            switch (this) {
+                default:
+                    Collections.sort(items, PhilmMovie.COMPARATOR_LIST_ITEM_DATE_ASC);
+                    break;
+            }
         }
     }
 

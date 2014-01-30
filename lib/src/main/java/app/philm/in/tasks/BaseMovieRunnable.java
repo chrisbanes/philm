@@ -64,7 +64,7 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
             if (shouldBeInLibrary != library.contains(movie)) {
                 if (shouldBeInLibrary) {
                     library.add(movie);
-                    Collections.sort(library, PhilmMovie.COMPARATOR);
+                    Collections.sort(library, PhilmMovie.COMPARATOR_SORT_TITLE);
                 } else {
                     library.remove(movie);
                 }
@@ -76,7 +76,7 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
             if (shouldBeInWatchlist != watchlist.contains(movie)) {
                 if (shouldBeInWatchlist) {
                     watchlist.add(movie);
-                    Collections.sort(watchlist, PhilmMovie.COMPARATOR);
+                    Collections.sort(watchlist, PhilmMovie.COMPARATOR_SORT_TITLE);
                 } else {
                     watchlist.remove(movie);
                 }

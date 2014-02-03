@@ -50,6 +50,7 @@
         <item name="android:padding">@dimen/spacing_micro</item>
         <item name="android:paddingLeft">@dimen/spacing_major</item>
         <item name="android:background">@color/primary_accent_color</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
     <style name="Widget.Philm.Movie.Login.Title" parent="android:Widget">

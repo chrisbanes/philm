@@ -72,7 +72,7 @@ dependencies {
     compile findProject(":lib").fileTree(dir: 'libs', include: '*.jar')
 
     compile 'com.android.support:support-v4:+'
-    compile 'com.squareup.picasso:picasso:2.1.+'
+    compile 'com.squareup.picasso:picasso:2.+'
     compile 'nl.qbusict:cupboard:1.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile ("de.keyboardsurfer.android.widget:crouton:1.8.+@aar") {

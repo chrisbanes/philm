@@ -15,8 +15,7 @@
     <app.philm.in.view.FontTextView
         android:id="@+id/textview_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_height="match_parent"
         style="@style/Widget.Philm.Movie.Trailer.Title" />
 
 </FrameLayout>

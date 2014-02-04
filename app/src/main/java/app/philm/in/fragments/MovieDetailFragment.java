@@ -434,12 +434,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 layout.addView(view);
             }
 
-            if (numItems < adapter.getCount()) {
-                cardLayout.setSeeMoreVisibility(true);
-                cardLayout.setOnClickListener(seeMoreClickListener);
-            } else {
-                cardLayout.setSeeMoreVisibility(false);
-            }
+            final boolean showSeeMore = numItems < adapter.getCount();
+            cardLayout.setSeeMoreVisibility(showSeeMore);
+            cardLayout.setSeeMoreOnClickListener(showSeeMore ? seeMoreClickListener : null);
         }
 
         viewRecycler.clearRecycledViews();

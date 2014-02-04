@@ -15,6 +15,7 @@ import com.uwetrottmann.tmdb.entities.Trailers;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -284,6 +285,13 @@ public class PhilmMovie implements PhilmModel {
         Preconditions.checkNotNull(credits, "credits cannot be null");
 
         if (!PhilmCollections.isEmpty(credits.cast)) {
+            Collections.sort(credits.cast, new Comparator<Credits.CastMember>() {
+                @Override
+                public int compare(Credits.CastMember castMember, Credits.CastMember castMember2) {
+                    return castMember.order - castMember2.order;
+                }
+            });
+
             final ArrayList<PhilmCast> castList = new ArrayList<PhilmCast>();
 
             for (Credits.CastMember castMember : credits.cast) {

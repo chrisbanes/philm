@@ -140,6 +140,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         // TODO: Clear Database Too
 
         populateUis();
+
+        // If we have a new account, pre-fetch library & watchlist
+        if (isLoggedIn()) {
+            prefetchLibraryIfNeeded();
+            prefetchWatchlistIfNeeded();
+        }
     }
 
     @Subscribe
@@ -1094,6 +1100,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void prefetchLibraryIfNeeded() {
+        MovieUi ui = getMovieUiAttached(MovieQueryType.LIBRARY);
+        fetchLibraryIfNeeded(ui != null ? getId(ui) : 0);
+    }
+
+    private void prefetchWatchlistIfNeeded() {
+        MovieUi ui = getMovieUiAttached(MovieQueryType.WATCHLIST);
+        fetchWatchlistIfNeeded(ui != null ? getId(ui) : 0);
+    }
+
     private void removeFromCollection(final int callingId, String... ids) {
         executeTask(new RemoveFromTraktCollectionRunnable(callingId, ids));
     }
@@ -1373,10 +1389,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
             mPopulatedLibraryFromDb = true;
 
-            final MovieUi ui = getMovieUiAttached(MovieQueryType.LIBRARY);
-            if (ui != null) {
-                fetchLibraryIfNeeded(getId(ui));
-            }
+            prefetchLibraryIfNeeded();
         }
     }
 
@@ -1393,10 +1406,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
             mPopulatedWatchlistFromDb = true;
 
-            final MovieUi ui = getMovieUiAttached(MovieQueryType.WATCHLIST);
-            if (ui != null) {
-                fetchWatchlistIfNeeded(getId(ui));
-            }
+            prefetchWatchlistIfNeeded();
         }
     }
 }

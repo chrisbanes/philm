@@ -2,8 +2,12 @@ package app.philm.in.view;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Transformation;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -14,6 +18,7 @@ import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.util.ColorUtils;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
 
@@ -29,6 +34,8 @@ public class PhilmImageView extends ImageView {
     private PhilmCast mCastToLoad;
 
     private Callback mCallback;
+
+    private boolean mFindDominant;
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -61,6 +68,7 @@ public class PhilmImageView extends ImageView {
     public void loadBackdropUrl(PhilmMovie movie, Callback listener) {
         if (!TextUtils.isEmpty(movie.getBackdropUrl())) {
             mCallback = listener;
+            mFindDominant = true;
             if (canLoadImage()) {
                 loadUrlImmediate(movie, TYPE_BACKDROP);
             } else {
@@ -125,7 +133,30 @@ public class PhilmImageView extends ImageView {
         }
 
         if (url != null) {
-            Picasso.with(getContext()).load(url).into(this, mCallback);
+            RequestCreator requestCreator = Picasso.with(getContext()).load(url);
+            if (mFindDominant) {
+                requestCreator = requestCreator.transform(new Transformation() {
+                    @Override
+                    public Bitmap transform(Bitmap bitmap) {
+                        Log.d("PhilmImageView", "transform");
+
+                        Bitmap smallBitmap = Bitmap.createScaledBitmap(bitmap, 64, 64, false);
+
+                        final int[] dominantColors = ColorUtils.findDominateColors(smallBitmap, 3);
+
+                        Log.d("PhilmImageView", "dominantColor: #" + Integer.toHexString(dominantColors[0]));
+
+                        return bitmap;
+                    }
+
+                    @Override
+                    public String key() {
+                        return null;
+                    }
+                });
+            }
+            requestCreator.into(this, mCallback);
+
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);
             }
@@ -143,5 +174,6 @@ public class PhilmImageView extends ImageView {
             }
         }
     }
+
 
 }

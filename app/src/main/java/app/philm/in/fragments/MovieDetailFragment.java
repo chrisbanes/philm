@@ -6,9 +6,12 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.common.base.Preconditions;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
@@ -39,6 +42,7 @@ import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmTrailer;
+import app.philm.in.util.ColorUtils;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;

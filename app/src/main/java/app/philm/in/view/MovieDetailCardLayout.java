@@ -60,4 +60,8 @@ public class MovieDetailCardLayout extends LinearLayout {
             super.addView(child, index, params);
         }
     }
+
+    public void setColorScheme(int color1) {
+        mCardContent.setBackgroundColor(color1);
+    }
 }

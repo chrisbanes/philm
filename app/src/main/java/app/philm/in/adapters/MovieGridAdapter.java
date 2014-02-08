@@ -74,7 +74,7 @@ public class MovieGridAdapter extends BaseAdapter {
             public void onError() {
                 title.setVisibility(View.VISIBLE);
             }
-        });
+        }, null);
 
         return view;
     }

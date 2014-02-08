@@ -5,6 +5,11 @@ import android.graphics.Color;
 import android.util.Log;
 import android.util.SparseIntArray;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
+import app.philm.in.Constants;
+
 public class ColorUtils {
 
     public static int darken(final int color, float fraction) {
@@ -19,75 +24,45 @@ public class ColorUtils {
         return Color.rgb(red, green, blue);
     }
 
-    public static int[] findDominateColors(Bitmap bitmap, int detectColors) {
-        Log.d("ColorUtils", "findDominateColors. Bitmap: " + bitmap.getWidth()
-                + "x" + bitmap.getHeight());
+    public static int[] findDominateColors(Bitmap bitmap, int numColors) {
+        final int width = bitmap.getWidth();
+        final int height = bitmap.getHeight();
 
-        final int pixelCount = bitmap.getWidth() * bitmap.getHeight();
+        final int[] rgbPixels = new int[width * height];
+        bitmap.getPixels(rgbPixels, 0, width, 0, 0, width, height);
 
-        final int[] rgbPixels = new int[pixelCount];
-        bitmap.getPixels(rgbPixels, 0, bitmap.getWidth(), 0, 0,
-                bitmap.getWidth(), bitmap.getHeight());
+        final MedianCutQuantizer mcq = new MedianCutQuantizer(rgbPixels, numColors);
 
-        Log.d("ColorUtils", "Unpacked RGB Pixels");
+        final MedianCutQuantizer.ColorNode[] colorNodes = mcq.getSortedQuantizedColors();
 
-        final byte[] originalBgrPixels = new byte[pixelCount * 3];
-        for (int i = 0; i < rgbPixels.length; i++) {
-            originalBgrPixels[i++] = (byte) Color.blue(rgbPixels[i]);
-            originalBgrPixels[i++] = (byte) Color.green(rgbPixels[i]);
-            originalBgrPixels[i++] = (byte) Color.red(rgbPixels[i]);
+        final int colors[] = new int[colorNodes.length];
+        for (int i = 0; i < colorNodes.length ; i++) {
+            colors[i] = colorNodes[i].getRgb();
         }
 
-        Log.d("ColorUtils", "Converted pixels to BGR");
-
-        final NeuQuant nq = new NeuQuant(originalBgrPixels, originalBgrPixels.length, 20);
-        final byte[] colorMap = nq.process();
-
-        Log.d("ColorUtils", "Quantized color map");
-
-        final SparseIntArray sparseIntArray = new SparseIntArray(pixelCount);
-
-        // map image rgbPixels to new palette
-        for (int i = 0; i < pixelCount; i++) {
-            final int index = nq.map(
-                    originalBgrPixels[i++] & 0xff,
-                    originalBgrPixels[i++] & 0xff,
-                    originalBgrPixels[i++] & 0xff
-            );
-
-            final int rgbColor = bgrToRgb(colorMap[index]);
-            sparseIntArray.put(rgbColor, sparseIntArray.get(rgbColor) + 1);
-        }
-
-        Log.d("ColorUtils", "Mapped quantized rgbPixels");
-
-        final int[] dominantColors = new int[detectColors];
-        for (int i = 0; i < detectColors ; i++) {
-            final int maxIndex = maxValueIndex(sparseIntArray);
-            dominantColors[i] = sparseIntArray.valueAt(maxIndex);
-
-            // Now remove the current max
-            sparseIntArray.removeAt(maxIndex);
-        }
-
-        return dominantColors;
+        return colors;
     }
 
-    private static int maxValueIndex(SparseIntArray array) {
-        int maxIndex = -1;
-        int max = -1;
+    public static final int calculateContrast(int color1, int color2) {
+        return Math.abs(calculateBrightness(color1) - calculateBrightness(color2));
+    }
 
-        for (int i = 0; i < array.size(); i++) {
-            if (array.valueAt(i) > max) {
-                maxIndex = i;
+    private static final int calculateBrightness(int color) {
+        return (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.green(color)) / 1000;
+    }
+
+    public static final int findNextVisibleColor(int[] colors, int color1) {
+
+        for (int i = 0; i < colors.length; i++) {
+            if (colors[i] != color1) {
+                if (calculateContrast(colors[i], color1) > 50) {
+                    return colors[i];
+                }
             }
         }
 
-        return maxIndex;
-    }
+        return calculateBrightness(color1) > 128 ? Color.BLACK : Color.WHITE;
 
-    private static int bgrToRgb(int color) {
-        return Color.rgb(Color.blue(color), Color.green(color), Color.red(color));
     }
 
 }

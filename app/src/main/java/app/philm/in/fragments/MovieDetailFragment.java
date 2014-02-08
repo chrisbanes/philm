@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -317,7 +318,28 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         if (mPosterImageView.getDrawable() == null) {
-            mPosterImageView.loadPosterUrl(mMovie);
+            mPosterImageView.loadPosterUrl(mMovie, null, new Transformation() {
+                @Override
+                public Bitmap transform(Bitmap bitmap) {
+
+                    final int[] dominantColors = ColorUtils.findDominateColors(bitmap, 10);
+
+                    getView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRatingBarLayout.setColorScheme(dominantColors[0],
+                                    ColorUtils.findNextVisibleColor(dominantColors, dominantColors[0]));
+                        }
+                    });
+
+                    return bitmap;
+                }
+
+                @Override
+                public String key() {
+                    return null;
+                }
+            });
         }
 
         mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),

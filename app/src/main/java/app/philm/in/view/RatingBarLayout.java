@@ -91,4 +91,12 @@ public class RatingBarLayout extends FrameLayout {
         }
 
     }
+
+    public void setColorScheme(int color1, int color2) {
+        mLeftRatingBarLayout.setBackgroundColor(color1);
+        mRightRatingBarLayout.setBackgroundColor(color1);
+
+        mRatingGlobalPercentageTextView.setTextColor(color2);
+        mRatingGlobalVotesTextView.setTextColor(color2);
+    }
 }

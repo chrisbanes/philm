@@ -9,8 +9,9 @@ import java.util.ArrayList;
 
 public class DominantColorCalculator {
 
-    private static final int NUM_COLORS = 12;
-    private static final float PRIMARY_MIN_SATURATION = 0.25f;
+    private static final int NUM_COLORS = 10;
+
+    private static final float PRIMARY_MIN_SATURATION = 0.35f;
     private static final float PRIMARY_MIN_VALUE = 0.07f;
     private static final int PRIMARY_MIN_CONTRAST_DIFF = 135;
 
@@ -19,13 +20,12 @@ public class DominantColorCalculator {
 
     private final MedianCutQuantizer.ColorNode[] mPalette;
 
-    private MedianCutQuantizer.ColorNode mPrimaryAccentColor;
-    private MedianCutQuantizer.ColorNode mSecondaryAccentColor;
-    private MedianCutQuantizer.ColorNode mTertiaryAccentColor;
+    private int mPrimaryAccentColor;
+    private int mSecondaryAccentColor;
+    private int mTertiaryAccentColor;
 
-    private MedianCutQuantizer.ColorNode mPrimaryTextColorNode;
-    private int mPrimaryTextColorInt;
-    private int mSecondaryTextColorInt;
+    private int mPrimaryTextColor;
+    private int mSecondaryTextColor;
 
     public DominantColorCalculator(Bitmap bitmap) {
         Preconditions.checkNotNull(bitmap, "bitmap cannot be null");
@@ -39,46 +39,59 @@ public class DominantColorCalculator {
         final MedianCutQuantizer mcq = new MedianCutQuantizer(rgbPixels, NUM_COLORS);
         mPalette = mcq.getSortedQuantizedColors();
 
-        findColors();
-    }
-
-    public int getPrimaryAccentColor() {
-        return mPrimaryAccentColor.getRgb();
-    }
-
-    public int getSecondaryAccentColor() {
-        return mSecondaryAccentColor.getRgb();
-    }
-
-    public int getTertiaryAccentColor() {
-        return mTertiaryAccentColor.getRgb();
-    }
-
-    public int getPrimaryTextColor() {
-        if (mPrimaryTextColorNode != null) {
-            return mPrimaryTextColorNode.getRgb();
-        } else {
-            return mPrimaryTextColorInt;
+        try {
+            findColors();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    public int getPrimaryAccentColor() {
+        return mPrimaryAccentColor;
+    }
+
+    public int getSecondaryAccentColor() {
+        return mSecondaryAccentColor;
+    }
+
+    public int getTertiaryAccentColor() {
+        return mTertiaryAccentColor;
+    }
+
+    public int getPrimaryTextColor() {
+        return mPrimaryTextColor;
+    }
+
     public int getSecondaryTextColor() {
-        return mSecondaryTextColorInt;
+        return mSecondaryTextColor;
     }
 
     private void findColors() {
-        mPrimaryAccentColor = findPrimaryAccentColor();
-        mSecondaryAccentColor = findSecondaryAccentColor();
-        mTertiaryAccentColor = findTertiaryAccentColor();
+        MedianCutQuantizer.ColorNode primaryNode = findPrimaryAccentColor();
+        mPrimaryAccentColor = primaryNode.getRgb();
 
-        mPrimaryTextColorNode = findPrimaryTextColor();
-        if (mPrimaryTextColorNode == null) {
-            mPrimaryTextColorInt = calculateYiqBrightness(mPrimaryAccentColor) >= 128
+        MedianCutQuantizer.ColorNode secondaryNode = findSecondaryAccentColor(primaryNode);
+        mSecondaryAccentColor = secondaryNode.getRgb();
+
+        MedianCutQuantizer.ColorNode tertiaryNode = findTertiaryAccentColor(primaryNode, secondaryNode);
+        if (tertiaryNode != null) {
+            mTertiaryAccentColor = tertiaryNode.getRgb();
+        } else {
+            mTertiaryAccentColor = ColorUtils.calculateYiqLuma(mSecondaryAccentColor) >= 128
+                    ? ColorUtils.darken(mSecondaryAccentColor, 0.3f)
+                    : ColorUtils.lighten(mSecondaryAccentColor, 0.3f);
+        }
+
+        MedianCutQuantizer.ColorNode primaryTextNode = findPrimaryTextColor(primaryNode);
+        if (primaryTextNode != null) {
+            mPrimaryTextColor = primaryTextNode.getRgb();
+        } else {
+            mPrimaryTextColor = ColorUtils.calculateYiqLuma(mPrimaryAccentColor) >= 128
                     ? Color.BLACK
                     : Color.WHITE;
         }
 
-        mSecondaryTextColorInt = calculateYiqBrightness(mPrimaryAccentColor) >= 128
+        mSecondaryTextColor = ColorUtils.calculateYiqLuma(mPrimaryAccentColor) >= 128
                 ? Color.BLACK
                 : Color.WHITE;
     }
@@ -87,41 +100,47 @@ public class DominantColorCalculator {
         return findAccentColor();
     }
 
-    private MedianCutQuantizer.ColorNode findSecondaryAccentColor() {
+    private MedianCutQuantizer.ColorNode findSecondaryAccentColor(
+            MedianCutQuantizer.ColorNode primary) {
         // We just return the most frequent color which isn't the primary accent
         for (int i = 0; i < mPalette.length; i++) {
-            if (mPalette[i] != mPrimaryAccentColor) {
+            if (mPalette[i] != primary) {
                 return mPalette[i];
             }
         }
         return null;
     }
 
-    private MedianCutQuantizer.ColorNode findTertiaryAccentColor() {
+    private MedianCutQuantizer.ColorNode findTertiaryAccentColor(
+            MedianCutQuantizer.ColorNode primary,
+            MedianCutQuantizer.ColorNode secondary) {
 
         ArrayList<MedianCutQuantizer.ColorNode> possibles = new ArrayList<MedianCutQuantizer.ColorNode>();
 
         for (int i = 0; i < mPalette.length; i++) {
-            if (calculateContrast(mPalette[i], mPrimaryAccentColor) >= TERTIARY_MIN_CONTRAST_PRIMARY &&
-                    calculateContrast(mPalette[i], mSecondaryAccentColor) >= TERTIARY_MIN_CONTRAST_SECONDARY) {
+            if (calculateContrast(mPalette[i], primary) >= TERTIARY_MIN_CONTRAST_PRIMARY &&
+                    calculateContrast(mPalette[i], secondary) >= TERTIARY_MIN_CONTRAST_SECONDARY) {
                 possibles.add(mPalette[i]);
             }
         }
 
         MedianCutQuantizer.ColorNode max = null;
 
-        for (MedianCutQuantizer.ColorNode node : possibles) {
-            if (max == null || node.getHsv()[1] > max.getHsv()[1]) {
-                max = node;
+        if (!PhilmCollections.isEmpty(possibles)) {
+            for (MedianCutQuantizer.ColorNode node : possibles) {
+                if (max == null || calculateColorfulness(node) > calculateColorfulness(max)) {
+                    max = node;
+                }
             }
         }
 
         return max;
     }
 
-    private final MedianCutQuantizer.ColorNode findPrimaryTextColor() {
+    private final MedianCutQuantizer.ColorNode findPrimaryTextColor(
+            MedianCutQuantizer.ColorNode primary) {
         for (int i = 0; i < mPalette.length; i++) {
-            if (calculateContrast(mPalette[i], mPrimaryAccentColor) >= PRIMARY_MIN_CONTRAST_DIFF) {
+            if (calculateContrast(mPalette[i], primary) >= PRIMARY_MIN_CONTRAST_DIFF) {
                 return mPalette[i];
             }
         }
@@ -151,15 +170,15 @@ public class DominantColorCalculator {
         return false;
     }
 
-    private static final float calculateContrast(
-            MedianCutQuantizer.ColorNode color1,
+    private static final int calculateContrast(MedianCutQuantizer.ColorNode color1,
             MedianCutQuantizer.ColorNode color2) {
-        return Math.abs(calculateYiqBrightness(color1) - calculateYiqBrightness(color2));
+        return Math.abs(ColorUtils.calculateYiqLuma(color1.getRgb())
+                - ColorUtils.calculateYiqLuma(color2.getRgb()));
     }
 
-    private static final int calculateYiqBrightness(MedianCutQuantizer.ColorNode colorNode) {
-        final int color = colorNode.getRgb();
-        return (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.green(color)) / 1000;
+    private static final float calculateColorfulness(MedianCutQuantizer.ColorNode node) {
+        float[] hsv = node.getHsv();
+        return hsv[1] * hsv[2];
     }
 
 }

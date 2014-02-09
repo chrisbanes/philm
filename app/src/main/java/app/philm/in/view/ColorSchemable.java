@@ -1,10 +1,9 @@
 package app.philm.in.view;
 
+import app.philm.in.model.ColorScheme;
+
 public interface ColorSchemable {
 
-    public void setColorScheme(
-            int primaryAccentColor, int primaryTextColor,
-            int secondaryAccentColor, int secondaryTextColor,
-            int tertiaryAccentColor);
+    public void setColorScheme(ColorScheme colorScheme);
 
 }

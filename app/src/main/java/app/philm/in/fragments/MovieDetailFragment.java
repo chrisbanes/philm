@@ -7,7 +7,6 @@ import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,6 +38,7 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
+import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmTrailer;
@@ -293,8 +293,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         return getArguments().getString(KEY_QUERY_MOVIE_ID);
     }
 
-
-
     @Override
     public String getUiTitle() {
         if (mMovie != null) {
@@ -318,36 +316,23 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         if (mPosterImageView.getDrawable() == null) {
-            mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
-                @Override
-                public void onSuccess(Bitmap bitmap) {
-                    new AsyncTask<Bitmap, Void, DominantColorCalculator>() {
+            PhilmImageView.Listener listener = null;
 
-                        @Override
-                        protected DominantColorCalculator doInBackground(Bitmap... params) {
-                            return new DominantColorCalculator(params[0]);
-                        }
+            if (mMovie.getColorScheme() == null) {
+                listener = new PhilmImageView.Listener() {
+                    @Override
+                    public void onSuccess(Bitmap bitmap) {
+                        new ColorCalculatorTask().executeOnExecutor(
+                                AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
+                    }
 
-                        @Override
-                        protected void onPostExecute(
-                                DominantColorCalculator colorCalculator) {
-                            super.onPostExecute(colorCalculator);
+                    @Override
+                    public void onError() {
+                    }
+                };
+            }
 
-                            setColorScheme(
-                                    colorCalculator.getPrimaryAccentColor(),
-                                    colorCalculator.getPrimaryTextColor(),
-                                    colorCalculator.getSecondaryAccentColor(),
-                                    colorCalculator.getSecondaryTextColor(),
-                                    colorCalculator.getTertiaryAccentColor()
-                            );
-                        }
-                    }.execute(bitmap);
-                }
-
-                @Override
-                public void onError() {
-                }
-            });
+            mPosterImageView.loadPosterUrl(mMovie, listener);
         }
 
         mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
@@ -415,6 +400,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {
             mLanguageInfoLayout.setContentText(mMovie.getMainLanguageTitle());
             mLanguageInfoLayout.setVisibility(View.VISIBLE);
+        }
+
+        if (mMovie.getColorScheme() != null) {
+            setColorScheme(mMovie.getColorScheme());
         }
     }
 
@@ -535,10 +524,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     }
 
     @Override
-    public void setColorScheme(int primaryAccentColor, int primaryTextColor,
-            int secondaryAccentColor, int secondaryTextColor, int tertiaryAccentColor) {
-        mRatingBarLayout.setColorScheme(primaryAccentColor, primaryTextColor,
-                secondaryAccentColor, secondaryTextColor, tertiaryAccentColor);
+    public void setColorScheme(ColorScheme colorScheme) {
+        Preconditions.checkNotNull(colorScheme, "colorScheme cannot be null");
+        mRatingBarLayout.setColorScheme(colorScheme);
+        mPosterImageView.setBackgroundColor(colorScheme.primaryAccent);
     }
 
     @Override
@@ -815,5 +804,34 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             );
             startActivity(intent);
         }
+    }
+
+    private class ColorCalculatorTask extends AsyncTask<Bitmap, Void, DominantColorCalculator> {
+
+        @Override
+        protected DominantColorCalculator doInBackground(Bitmap... params) {
+            final Bitmap bitmap = params[0];
+            if (bitmap != null && !bitmap.isRecycled()) {
+                return new DominantColorCalculator(bitmap);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(
+                DominantColorCalculator colorCalculator) {
+            super.onPostExecute(colorCalculator);
+
+            if (colorCalculator != null) {
+                final ColorScheme scheme = colorCalculator.getColorScheme();
+                if (scheme != null) {
+                    if (mMovie != null) {
+                        mMovie.setColorScheme(scheme);
+                    }
+                    setColorScheme(scheme);
+                }
+            }
+        }
+
     }
 }

@@ -123,6 +123,8 @@ public class PhilmMovie implements PhilmModel {
     transient List<PhilmTrailer> trailers;
     transient List<CountryRelease> releases;
 
+    transient ColorScheme colorScheme;
+
     public PhilmMovie() {
     }
 
@@ -549,6 +551,14 @@ public class PhilmMovie implements PhilmModel {
 
     public void setTrailers(List<PhilmTrailer> trailers) {
         this.trailers = trailers;
+    }
+
+    public ColorScheme getColorScheme() {
+        return colorScheme;
+    }
+
+    public void setColorScheme(ColorScheme colorScheme) {
+        this.colorScheme = colorScheme;
     }
 
     @Override

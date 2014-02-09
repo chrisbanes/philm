@@ -1,7 +1,6 @@
 package app.philm.in.view;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.drawable.PercentageDrawable;
+import app.philm.in.model.ColorScheme;
 import app.philm.in.util.TextUtils;
 
 public class RatingBarLayout extends FrameLayout implements ColorSchemable {
@@ -80,25 +80,24 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
     }
 
     @Override
-    public void setColorScheme(int primaryAccentColor, int primaryTextColor,
-            int secondaryAccentColor, int secondaryTextColor,
-            int tertiaryAccentColor) {
-        mLeftRatingBarLayout.setBackgroundColor(primaryAccentColor);
-        mRightRatingBarLayout.setBackgroundColor(primaryAccentColor);
+    public void setColorScheme(ColorScheme colorScheme) {
+        mLeftRatingBarLayout.setBackgroundColor(colorScheme.primaryAccent);
+        mRightRatingBarLayout.setBackgroundColor(colorScheme.primaryAccent);
 
-        mRatingGlobalPercentageTextView.setTextColor(primaryTextColor);
-        mRatingGlobalPercentageLabelTextView.setTextColor(secondaryTextColor);
+        mRatingGlobalPercentageTextView.setTextColor(colorScheme.primaryText);
+        mRatingGlobalPercentageLabelTextView.setTextColor(colorScheme.primaryText);
 
-        mRatingGlobalVotesTextView.setTextColor(primaryTextColor);
-        mRatingGlobalVotesLabelTextView.setTextColor(secondaryTextColor);
+        mRatingGlobalVotesTextView.setTextColor(colorScheme.primaryText);
+        mRatingGlobalVotesLabelTextView.setTextColor(colorScheme.primaryText);
 
         PercentageDrawable percentageDrawable = mRatingCircleView.getPercentageDrawable();
         if (percentageDrawable != null) {
-            percentageDrawable.setForegroundCircleColor(secondaryAccentColor);
+            percentageDrawable.setForegroundCircleColor(colorScheme.secondaryAccent);
 
-            percentageDrawable.setTextColor(tertiaryAccentColor);
-            percentageDrawable.setArcColor(tertiaryAccentColor);
+            percentageDrawable.setTextColor(colorScheme.tertiaryAccent);
+            percentageDrawable.setArcColor(colorScheme.tertiaryAccent);
         }
+        mRatingCircleView.invalidate();
     }
 
     @Override

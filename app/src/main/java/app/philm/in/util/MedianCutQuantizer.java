@@ -175,6 +175,8 @@ public class MedianCutQuantizer {
         private final int red, grn, blu;
         private final int cnt;
 
+        private float[] hsv;
+
         ColorNode(int rgb, int cnt) {
             this.red = Color.red(rgb);
             this.grn = Color.green(rgb);
@@ -191,6 +193,14 @@ public class MedianCutQuantizer {
 
         public int getRgb() {
             return Color.rgb(red, grn, blu);
+        }
+
+        public float[] getHsv() {
+            if (hsv == null) {
+                hsv = new float[3];
+                Color.RGBToHSV(red, grn, blu, hsv);
+            }
+            return hsv;
         }
 
         public int getCount() {

@@ -25,6 +25,7 @@
                     style="@style/Widget.Philm.Movie.Detail.Ratings.Votes"/>
 
             <app.philm.in.view.FontTextView
+                    android:id="@+id/textview_votes_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_detail_votes"
@@ -47,6 +48,7 @@
                     style="@style/Widget.Philm.Movie.Detail.Ratings.Votes"/>
 
             <app.philm.in.view.FontTextView
+                    android:id="@+id/textview_global_rating_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_detail_global"

@@ -6,13 +6,11 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.common.base.Preconditions;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
@@ -43,13 +41,14 @@ import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmTrailer;
-import app.philm.in.util.ColorUtils;
+import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.ViewUtils;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
+import app.philm.in.view.ColorSchemable;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.ParallaxContentScrollView;
@@ -58,7 +57,7 @@ import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
 public class MovieDetailFragment extends BasePhilmMovieFragment
-        implements MovieController.MovieDetailUi, View.OnClickListener {
+        implements MovieController.MovieDetailUi, View.OnClickListener, ColorSchemable {
 
     private static final Date DATE = new Date();
 
@@ -321,14 +320,19 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             mPosterImageView.loadPosterUrl(mMovie, null, new Transformation() {
                 @Override
                 public Bitmap transform(Bitmap bitmap) {
-
-                    final int[] dominantColors = ColorUtils.findDominateColors(bitmap, 10);
+                    final DominantColorCalculator colorCalculator =
+                            new DominantColorCalculator(bitmap);
 
                     getView().post(new Runnable() {
                         @Override
                         public void run() {
-                            mRatingBarLayout.setColorScheme(dominantColors[0],
-                                    ColorUtils.findNextVisibleColor(dominantColors, dominantColors[0]));
+                            setColorScheme(
+                                    colorCalculator.getPrimaryAccentColor(),
+                                    colorCalculator.getPrimaryTextColor(),
+                                    colorCalculator.getSecondaryAccentColor(),
+                                    colorCalculator.getSecondaryTextColor(),
+                                    colorCalculator.getTertiaryAccentColor()
+                            );
                         }
                     });
 
@@ -524,6 +528,13 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         } else {
             button.setContentDescription(getString(toCheckDesc));
         }
+    }
+
+    @Override
+    public void setColorScheme(int primaryAccentColor, int primaryTextColor,
+            int secondaryAccentColor, int secondaryTextColor, int tertiaryAccentColor) {
+        mRatingBarLayout.setColorScheme(primaryAccentColor, primaryTextColor,
+                secondaryAccentColor, secondaryTextColor, tertiaryAccentColor);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package app.philm.in.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import app.philm.in.R;
+import app.philm.in.drawable.PercentageDrawable;
 import app.philm.in.util.TextUtils;
 
-public class RatingBarLayout extends FrameLayout {
+public class RatingBarLayout extends FrameLayout implements ColorSchemable {
 
     private final View mLeftRatingBarLayout;
     private final View mRightRatingBarLayout;
@@ -18,7 +20,9 @@ public class RatingBarLayout extends FrameLayout {
     private final RatingCircleView mRatingCircleView;
 
     private final TextView mRatingGlobalPercentageTextView;
+    private final TextView mRatingGlobalPercentageLabelTextView;
     private final TextView mRatingGlobalVotesTextView;
+    private final TextView mRatingGlobalVotesLabelTextView;
 
     private int mRatingGlobalPercentage;
     private int mRatingGlobalVotes;
@@ -37,7 +41,10 @@ public class RatingBarLayout extends FrameLayout {
         mRightRatingBarLayout = findViewById(R.id.rating_right_bar);
 
         mRatingGlobalPercentageTextView = (TextView) findViewById(R.id.textview_global_rating);
+        mRatingGlobalPercentageLabelTextView = (TextView) findViewById(R.id.textview_global_rating_label);
         mRatingGlobalVotesTextView = (TextView) findViewById(R.id.textview_votes);
+        mRatingGlobalVotesLabelTextView = (TextView) findViewById(R.id.textview_votes_label);
+
     }
 
     public void setRatingCircleEnabled(boolean enabled) {
@@ -73,6 +80,28 @@ public class RatingBarLayout extends FrameLayout {
     }
 
     @Override
+    public void setColorScheme(int primaryAccentColor, int primaryTextColor,
+            int secondaryAccentColor, int secondaryTextColor,
+            int tertiaryAccentColor) {
+        mLeftRatingBarLayout.setBackgroundColor(primaryAccentColor);
+        mRightRatingBarLayout.setBackgroundColor(primaryAccentColor);
+
+        mRatingGlobalPercentageTextView.setTextColor(primaryTextColor);
+        mRatingGlobalPercentageLabelTextView.setTextColor(secondaryTextColor);
+
+        mRatingGlobalVotesTextView.setTextColor(primaryTextColor);
+        mRatingGlobalVotesLabelTextView.setTextColor(secondaryTextColor);
+
+        PercentageDrawable percentageDrawable = mRatingCircleView.getPercentageDrawable();
+        if (percentageDrawable != null) {
+            percentageDrawable.setForegroundCircleColor(secondaryAccentColor);
+
+            percentageDrawable.setTextColor(tertiaryAccentColor);
+            percentageDrawable.setArcColor(tertiaryAccentColor);
+        }
+    }
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
@@ -90,13 +119,5 @@ public class RatingBarLayout extends FrameLayout {
             }
         }
 
-    }
-
-    public void setColorScheme(int color1, int color2) {
-        mLeftRatingBarLayout.setBackgroundColor(color1);
-        mRightRatingBarLayout.setBackgroundColor(color1);
-
-        mRatingGlobalPercentageTextView.setTextColor(color2);
-        mRatingGlobalVotesTextView.setTextColor(color2);
     }
 }

@@ -84,6 +84,10 @@ public class RatingCircleView extends ImageView {
         }
     }
 
+    public PercentageDrawable getPercentageDrawable() {
+        return mDrawable;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         mDrawable.stop();

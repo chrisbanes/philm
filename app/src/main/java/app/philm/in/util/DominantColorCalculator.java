@@ -57,6 +57,10 @@ public class DominantColorCalculator {
         int secondaryAccentColor;
         if (secondaryNode != null) {
             secondaryAccentColor = secondaryNode.getRgb();
+        } else {
+            secondaryAccentColor = ColorUtils.calculateYiqLuma(primaryAccentColor) >= 128
+                    ? ColorUtils.darken(primaryAccentColor, 0.4f)
+                    : ColorUtils.lighten(primaryAccentColor, 0.4f);
         }
 
         MedianCutQuantizer.ColorNode tertiaryNode = findTertiaryAccentColor(primaryNode, secondaryNode);

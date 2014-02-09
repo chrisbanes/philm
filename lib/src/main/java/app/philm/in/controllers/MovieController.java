@@ -678,7 +678,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             for (Iterator<PhilmMovie> i = movies.iterator(); i.hasNext(); ) {
                 PhilmMovie movie = i.next();
-                if (filter.isMovieFiltered(movie)) {
+                if (movie != null && filter.isMovieFiltered(movie)) {
                     if (sectionItems == null) {
                         sectionItems = new ArrayList<ListItem<PhilmMovie>>();
                         // Now add Title
@@ -910,7 +910,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         for (PhilmMovie movie : movies) {
             boolean filtered = true;
             for (Filter filter : filters) {
-                if (!filter.isMovieFiltered(movie)) {
+                if (movie == null || !filter.isMovieFiltered(movie)) {
                     filtered = false;
                     break;
                 }
@@ -963,7 +963,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             ui.setCollectionButtonEnabled(canUpdateTrack);
             ui.setWatchlistButtonEnabled(canUpdateTrack);
             ui.setToggleWatchedButtonEnabled(canUpdateTrack);
-            
+
             ui.setMovie(movie);
         }
     }
@@ -1176,6 +1176,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         HIGHLY_RATED;
 
         public boolean isMovieFiltered(PhilmMovie movie) {
+            Preconditions.checkNotNull(movie, "movie cannot be null");
+
             switch (this) {
                 case COLLECTION:
                     return movie.inCollection();

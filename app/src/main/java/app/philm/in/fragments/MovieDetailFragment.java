@@ -11,6 +11,7 @@ import com.squareup.picasso.Transformation;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
@@ -317,15 +318,21 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         if (mPosterImageView.getDrawable() == null) {
-            mPosterImageView.loadPosterUrl(mMovie, null, new Transformation() {
+            mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
                 @Override
-                public Bitmap transform(Bitmap bitmap) {
-                    final DominantColorCalculator colorCalculator =
-                            new DominantColorCalculator(bitmap);
+                public void onSuccess(Bitmap bitmap) {
+                    new AsyncTask<Bitmap, Void, DominantColorCalculator>() {
 
-                    getView().post(new Runnable() {
                         @Override
-                        public void run() {
+                        protected DominantColorCalculator doInBackground(Bitmap... params) {
+                            return new DominantColorCalculator(params[0]);
+                        }
+
+                        @Override
+                        protected void onPostExecute(
+                                DominantColorCalculator colorCalculator) {
+                            super.onPostExecute(colorCalculator);
+
                             setColorScheme(
                                     colorCalculator.getPrimaryAccentColor(),
                                     colorCalculator.getPrimaryTextColor(),
@@ -334,14 +341,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                                     colorCalculator.getTertiaryAccentColor()
                             );
                         }
-                    });
-
-                    return bitmap;
+                    }.execute(bitmap);
                 }
 
                 @Override
-                public String key() {
-                    return null;
+                public void onError() {
                 }
             });
         }

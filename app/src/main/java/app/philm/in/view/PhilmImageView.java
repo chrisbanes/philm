@@ -3,12 +3,12 @@ package app.philm.in.view;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.squareup.picasso.Transformation;
+import com.squareup.picasso.Target;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -22,7 +22,15 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
 
-public class PhilmImageView extends ImageView implements Callback {
+public class PhilmImageView extends ImageView {
+
+    public interface Listener {
+
+        public void onSuccess(Bitmap bitmap);
+
+        public void onError();
+
+    }
 
     @Inject ImageHelper mImageHelper;
     private PicassoHandler mPicassoHandler;
@@ -33,12 +41,12 @@ public class PhilmImageView extends ImageView implements Callback {
     }
 
     public void loadPosterUrl(PhilmMovie movie) {
-        loadPosterUrl(movie, null, null);
+        loadPosterUrl(movie, null);
     }
 
-    public void loadPosterUrl(PhilmMovie movie, Callback listener, Transformation transformation) {
+    public void loadPosterUrl(PhilmMovie movie, Listener listener) {
         if (!TextUtils.isEmpty(movie.getPosterUrl())) {
-            setPicassoHandler(new MoviePosterHandler(movie, listener, transformation));
+            setPicassoHandler(new MoviePosterHandler(movie, listener));
         } else {
             reset();
         }
@@ -48,7 +56,7 @@ public class PhilmImageView extends ImageView implements Callback {
         loadBackdropUrl(movie, null);
     }
 
-    public void loadBackdropUrl(PhilmMovie movie, Callback listener) {
+    public void loadBackdropUrl(PhilmMovie movie, Listener listener) {
         if (!TextUtils.isEmpty(movie.getBackdropUrl())) {
             setPicassoHandler(new MovieBackdropHandler(movie, listener));
         } else {
@@ -60,28 +68,12 @@ public class PhilmImageView extends ImageView implements Callback {
         loadProfileUrl(cast, null);
     }
 
-    public void loadProfileUrl(PhilmCast cast, Callback listener) {
+    public void loadProfileUrl(PhilmCast cast, Listener listener) {
         if (!TextUtils.isEmpty(cast.getPictureUrl())) {
             setPicassoHandler(new CastProfileHandler(cast, listener));
         } else {
             reset();
         }
-    }
-
-    @Override
-    public void onSuccess() {
-        if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
-            mPicassoHandler.mCallback.onSuccess();
-        }
-        mPicassoHandler = null;
-    }
-
-    @Override
-    public void onError() {
-        if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
-            mPicassoHandler.mCallback.onError();
-        }
-        mPicassoHandler = null;
     }
 
     @Override
@@ -91,6 +83,13 @@ public class PhilmImageView extends ImageView implements Callback {
         if (changed && canLoadImage() && mPicassoHandler != null) {
             loadUrlImmediate();
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        Picasso.with(getContext()).cancelRequest(mPicassoTarget);
+
+        super.onDetachedFromWindow();
     }
 
     private boolean canLoadImage() {
@@ -103,11 +102,7 @@ public class PhilmImageView extends ImageView implements Callback {
         final String url = mPicassoHandler.getUrl(mImageHelper, this);
 
         if (url != null) {
-            RequestCreator request = Picasso.with(getContext()).load(url);
-            if (mPicassoHandler.mTransformation != null) {
-                request.transform(mPicassoHandler.mTransformation);
-            }
-            request.into(this, this);
+            Picasso.with(getContext()).load(url).into(mPicassoTarget);
 
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);
@@ -132,12 +127,10 @@ public class PhilmImageView extends ImageView implements Callback {
 
     private static abstract class PicassoHandler {
 
-        final Callback mCallback;
-        final Transformation mTransformation;
+        final Listener mCallback;
 
-        PicassoHandler(Callback callback, Transformation transformation) {
+        PicassoHandler(Listener callback) {
             mCallback = callback;
-            mTransformation = transformation;
         }
 
         public abstract String getUrl(ImageHelper helper, ImageView imageView);
@@ -148,8 +141,8 @@ public class PhilmImageView extends ImageView implements Callback {
 
         private final PhilmMovie mMovie;
 
-        MovieBackdropHandler(PhilmMovie movie, Callback callback) {
-            super(callback, null);
+        MovieBackdropHandler(PhilmMovie movie, Listener callback) {
+            super(callback);
             mMovie = Preconditions.checkNotNull(movie, "movie cannot be null");
         }
 
@@ -181,8 +174,8 @@ public class PhilmImageView extends ImageView implements Callback {
 
         private final PhilmMovie mMovie;
 
-        MoviePosterHandler(PhilmMovie movie, Callback callback, Transformation transformation) {
-            super(callback, transformation);
+        MoviePosterHandler(PhilmMovie movie, Listener callback) {
+            super(callback);
             mMovie = Preconditions.checkNotNull(movie, "movie cannot be null");
         }
 
@@ -209,8 +202,8 @@ public class PhilmImageView extends ImageView implements Callback {
 
         private final PhilmCast mCast;
 
-        CastProfileHandler(PhilmCast cast, Callback callback) {
-            super(callback, null);
+        CastProfileHandler(PhilmCast cast, Listener callback) {
+            super(callback);
             mCast = Preconditions.checkNotNull(cast, "cast cannot be null");
         }
 
@@ -232,6 +225,32 @@ public class PhilmImageView extends ImageView implements Callback {
             return Objects.equal(mCast, that.mCast);
         }
     }
+
+    private final Target mPicassoTarget = new Target() {
+
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+            setImageBitmap(bitmap);
+
+            if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
+                mPicassoHandler.mCallback.onSuccess(bitmap);
+            }
+            mPicassoHandler = null;
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable drawable) {
+            if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
+                mPicassoHandler.mCallback.onError();
+            }
+            mPicassoHandler = null;
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable drawable) {
+            setImageDrawable(null);
+        }
+    };
 
 
 }

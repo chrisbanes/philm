@@ -5,6 +5,7 @@ import com.google.common.base.Objects;
 import com.squareup.picasso.Callback;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -64,9 +65,9 @@ public class MovieGridAdapter extends BaseAdapter {
         title.setVisibility(View.VISIBLE);
 
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
-        imageView.loadPosterUrl(movie, new Callback() {
+        imageView.loadPosterUrl(movie, new PhilmImageView.Listener() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(Bitmap bitmap) {
                 title.setVisibility(View.GONE);
             }
 
@@ -74,7 +75,7 @@ public class MovieGridAdapter extends BaseAdapter {
             public void onError() {
                 title.setVisibility(View.VISIBLE);
             }
-        }, null);
+        });
 
         return view;
     }

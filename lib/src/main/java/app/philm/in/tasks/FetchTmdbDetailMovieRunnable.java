@@ -59,7 +59,7 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
     @Override
     public void onError(RetrofitError re) {
-        if (re.getResponse().getStatus() == 404) {
+        if (re.getResponse() != null && re.getResponse().getStatus() == 404) {
             PhilmMovie movie = mMoviesState.getMovie(mId);
             if (movie != null) {
                 movie.setLoadedFromTmdb(false);

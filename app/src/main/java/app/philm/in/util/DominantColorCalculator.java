@@ -7,25 +7,28 @@ import android.graphics.Color;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import app.philm.in.Constants;
 import app.philm.in.model.ColorScheme;
 
 public class DominantColorCalculator {
 
     private static final String LOG_TAG = DominantColorCalculator.class.getSimpleName();
 
-    private static final int NUM_COLORS = 8;
+    private static final int NUM_COLORS = 10;
 
     private static final float PRIMARY_MIN_COLORFULNESS = 0.20f;
     private static final int PRIMARY_TEXT_MIN_CONTRAST = 135;
 
     private static final int SECONDARY_MIN_CONTRAST_PRIMARY = 40;
 
-    private static final int TERTIARY_MIN_CONTRAST_PRIMARY = 35;
+    private static final int TERTIARY_MIN_CONTRAST_PRIMARY = 20;
     private static final int TERTIARY_MIN_CONTRAST_SECONDARY = 140;
 
-    private final MedianCutQuantizer.ColorNode[] mPalette;
+    private static final float COUNT_JITTER = 0.2f;
 
+    private final MedianCutQuantizer.ColorNode[] mPalette;
     private ColorScheme mColorScheme;
 
     public DominantColorCalculator(Bitmap bitmap) {
@@ -40,11 +43,7 @@ public class DominantColorCalculator {
         final MedianCutQuantizer mcq = new MedianCutQuantizer(rgbPixels, NUM_COLORS);
         mPalette = mcq.getSortedQuantizedColors();
 
-        try {
-            findColors();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        findColors();
     }
 
     public ColorScheme getColorScheme() {
@@ -67,23 +66,34 @@ public class DominantColorCalculator {
     }
 
     private int findPrimaryAccentColor() {
-        for (int i = 0; i < mPalette.length; i++) {
-            if (calculateColorfulness(mPalette[i]) >= PRIMARY_MIN_COLORFULNESS) {
-                return mPalette[i].getRgb();
+        for (MedianCutQuantizer.ColorNode color : mPalette) {
+            if (ColorUtils.calculateColorfulness(color) >= PRIMARY_MIN_COLORFULNESS) {
+                return color.getRgb();
             }
         }
         return mPalette[0].getRgb();
     }
 
     private int findSecondaryAccentColor(final int primary) {
+        MedianCutQuantizer.ColorNode node = null;
+
         // We just return the most frequent color which isn't the primary accent
-        for (int i = 0; i < mPalette.length; i++) {
-            if (calculateContrast(mPalette[i], primary) >= SECONDARY_MIN_CONTRAST_PRIMARY) {
-                return mPalette[i].getRgb();
+        for (MedianCutQuantizer.ColorNode color : mPalette) {
+            if (ColorUtils.calculateContrast(color, primary) >= SECONDARY_MIN_CONTRAST_PRIMARY) {
+                node = color;
             }
         }
 
-        Log.d(LOG_TAG, "Calculating secondary accent from: #" + Integer.toHexString(primary));
+        if (node != null) {
+            node = findMostColorful(findSimilarCounts(primary, node.getCount()));
+            if (node != null) {
+                return node.getRgb();
+            }
+        }
+
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "Calculating secondary accent from: #" + Integer.toHexString(primary));
+        }
 
         return ColorUtils.changeBrightness(primary, 0.4f);
     }
@@ -92,36 +102,29 @@ public class DominantColorCalculator {
         ArrayList<MedianCutQuantizer.ColorNode> possibles
                 = new ArrayList<MedianCutQuantizer.ColorNode>();
 
-        for (int i = 0; i < mPalette.length; i++) {
-            if (calculateContrast(mPalette[i], primary) >= TERTIARY_MIN_CONTRAST_PRIMARY &&
-                    calculateContrast(mPalette[i], secondary) >= TERTIARY_MIN_CONTRAST_SECONDARY) {
-                possibles.add(mPalette[i]);
+        for (MedianCutQuantizer.ColorNode color : mPalette) {
+            if (ColorUtils.calculateContrast(color, primary) >= TERTIARY_MIN_CONTRAST_PRIMARY
+                    && ColorUtils.calculateContrast(color, secondary) >= TERTIARY_MIN_CONTRAST_SECONDARY) {
+                possibles.add(color);
             }
         }
 
-        MedianCutQuantizer.ColorNode max = null;
-
-        if (!PhilmCollections.isEmpty(possibles)) {
-            for (MedianCutQuantizer.ColorNode node : possibles) {
-                if (max == null || calculateColorfulness(node) > calculateColorfulness(max)) {
-                    max = node;
-                }
-            }
+        final MedianCutQuantizer.ColorNode mostColorful = findMostColorful(possibles);
+        if (mostColorful != null) {
+            return mostColorful.getRgb();
         }
 
-        if (max != null) {
-            return max.getRgb();
+        if (Constants.DEBUG) {
+            Log.d(LOG_TAG, "Calculating tertiary accent from: #" + Integer.toHexString(secondary));
         }
-
-        Log.d(LOG_TAG, "Calculating tertiary accent from: #" + Integer.toHexString(secondary));
 
         return ColorUtils.changeBrightness(secondary, 0.5f);
     }
 
-    private final int findPrimaryTextColor(final int primary) {
-        for (int i = 0; i < mPalette.length; i++) {
-            if (calculateContrast(mPalette[i], primary) >= PRIMARY_TEXT_MIN_CONTRAST) {
-                return mPalette[i].getRgb();
+    private int findPrimaryTextColor(final int primary) {
+        for (MedianCutQuantizer.ColorNode color : mPalette) {
+            if (ColorUtils.calculateContrast(color, primary) >= PRIMARY_TEXT_MIN_CONTRAST) {
+                return color.getRgb();
             }
         }
         return ColorUtils.calculateYiqLuma(primary) >= 128
@@ -129,14 +132,35 @@ public class DominantColorCalculator {
                 : Color.WHITE;
     }
 
-    private static final int calculateContrast(MedianCutQuantizer.ColorNode color1, int color2) {
-        return Math.abs(ColorUtils.calculateYiqLuma(color1.getRgb())
-                - ColorUtils.calculateYiqLuma(color2));
+
+    private List<MedianCutQuantizer.ColorNode> findSimilarCounts(final int exclude,
+            final int count) {
+
+        final ArrayList<MedianCutQuantizer.ColorNode> nodes
+                = new ArrayList<MedianCutQuantizer.ColorNode>();
+        final int jitter = Math.round(count * COUNT_JITTER);
+
+        for (MedianCutQuantizer.ColorNode color : mPalette) {
+            if (Math.abs(color.getCount() - count) <= jitter && color.getRgb() != exclude) {
+                nodes.add(color);
+            }
+        }
+
+        return nodes;
     }
 
-    private static final float calculateColorfulness(MedianCutQuantizer.ColorNode node) {
-        float[] hsv = node.getHsv();
-        return hsv[1] * hsv[2];
+    private MedianCutQuantizer.ColorNode findMostColorful(
+            List<MedianCutQuantizer.ColorNode> nodes) {
+        MedianCutQuantizer.ColorNode max = null;
+
+        for (MedianCutQuantizer.ColorNode color : nodes) {
+            if (max == null || ColorUtils.calculateColorfulness(color)
+                    > ColorUtils.calculateColorfulness(max)) {
+                max = color;
+            }
+        }
+
+        return max;
     }
 
 }

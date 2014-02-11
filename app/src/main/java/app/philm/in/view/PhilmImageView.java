@@ -8,7 +8,11 @@ import com.squareup.picasso.Target;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -23,6 +27,8 @@ import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
 
 public class PhilmImageView extends ImageView {
+
+    private static final int TRANSITION_DURATION = 200;
 
     public interface Listener {
 
@@ -230,7 +236,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-            setImageBitmap(bitmap);
+            setImageBitmapFromNetwork(bitmap);
 
             if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
                 mPicassoHandler.mCallback.onSuccess(bitmap);
@@ -251,6 +257,19 @@ public class PhilmImageView extends ImageView {
             setImageDrawable(null);
         }
     };
+
+    void setImageBitmapFromNetwork(Bitmap bitmap) {
+        TransitionDrawable transitionDrawable = new TransitionDrawable(
+                new Drawable[] {
+                        new ColorDrawable(Color.TRANSPARENT),
+                        new BitmapDrawable(getResources(), bitmap)
+                });
+        transitionDrawable.setCrossFadeEnabled(true);
+
+        setImageDrawable(transitionDrawable);
+
+        transitionDrawable.startTransition(TRANSITION_DURATION);
+    }
 
 
 }

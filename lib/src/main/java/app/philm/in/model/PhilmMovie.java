@@ -187,11 +187,12 @@ public class PhilmMovie implements PhilmModel {
 
         Images images = movie.images;
         if (images != null) {
-            if (TextUtils.isEmpty(fanartUrl)) {
+            // Prefer images from tmdb over trakt
+            if (fanartType != TYPE_TMDB && !TextUtils.isEmpty(images.fanart)) {
                 fanartUrl = images.fanart;
                 fanartType = TYPE_TRAKT;
             }
-            if (TextUtils.isEmpty(posterUrl)) {
+            if (posterType != TYPE_TMDB && !TextUtils.isEmpty(images.poster)) {
                 posterUrl = images.poster;
                 posterType = TYPE_TRAKT;
             }

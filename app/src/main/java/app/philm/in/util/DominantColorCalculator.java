@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -11,16 +12,17 @@ import app.philm.in.model.ColorScheme;
 
 public class DominantColorCalculator {
 
-    private static final int NUM_COLORS = 10;
+    private static final String LOG_TAG = DominantColorCalculator.class.getSimpleName();
 
-    private static final float PRIMARY_MIN_SATURATION = 0.35f;
-    private static final float PRIMARY_MIN_VALUE = 0.07f;
+    private static final int NUM_COLORS = 8;
+
+    private static final float PRIMARY_MIN_COLORFULNESS = 0.20f;
     private static final int PRIMARY_TEXT_MIN_CONTRAST = 135;
 
     private static final int SECONDARY_MIN_CONTRAST_PRIMARY = 40;
 
-    private static final int TERTIARY_MIN_CONTRAST_PRIMARY = 25;
-    private static final int TERTIARY_MIN_CONTRAST_SECONDARY = 70;
+    private static final int TERTIARY_MIN_CONTRAST_PRIMARY = 35;
+    private static final int TERTIARY_MIN_CONTRAST_SECONDARY = 140;
 
     private final MedianCutQuantizer.ColorNode[] mPalette;
 
@@ -50,40 +52,13 @@ public class DominantColorCalculator {
     }
 
     private void findColors() {
-        MedianCutQuantizer.ColorNode primaryNode = findPrimaryAccentColor();
-        int primaryAccentColor = primaryNode.getRgb();
+        final int primaryAccentColor = findPrimaryAccentColor();
+        final int secondaryAccentColor = findSecondaryAccentColor(primaryAccentColor);
+        final int tertiaryAccentColor = findTertiaryAccentColor(
+                primaryAccentColor, secondaryAccentColor);
+        final int primaryTextColor = findPrimaryTextColor(primaryAccentColor);
 
-        MedianCutQuantizer.ColorNode secondaryNode = findSecondaryAccentColor(primaryNode);
-        int secondaryAccentColor;
-        if (secondaryNode != null) {
-            secondaryAccentColor = secondaryNode.getRgb();
-        } else {
-            secondaryAccentColor = ColorUtils.calculateYiqLuma(primaryAccentColor) >= 128
-                    ? ColorUtils.darken(primaryAccentColor, 0.4f)
-                    : ColorUtils.lighten(primaryAccentColor, 0.4f);
-        }
-
-        MedianCutQuantizer.ColorNode tertiaryNode = findTertiaryAccentColor(primaryNode, secondaryNode);
-        int tertiaryAccentColor;
-        if (tertiaryNode != null) {
-            tertiaryAccentColor = tertiaryNode.getRgb();
-        } else {
-            tertiaryAccentColor = ColorUtils.calculateYiqLuma(secondaryAccentColor) >= 128
-                    ? ColorUtils.darken(secondaryAccentColor, 0.3f)
-                    : ColorUtils.lighten(secondaryAccentColor, 0.3f);
-        }
-
-        MedianCutQuantizer.ColorNode primaryTextNode = findPrimaryTextColor(primaryNode);
-        int primaryTextColor;
-        if (primaryTextNode != null) {
-            primaryTextColor = primaryTextNode.getRgb();
-        } else {
-            primaryTextColor = ColorUtils.calculateYiqLuma(primaryAccentColor) >= 128
-                    ? Color.BLACK
-                    : Color.WHITE;
-        }
-
-        int secondaryTextColor = ColorUtils.calculateYiqLuma(primaryAccentColor) >= 128
+        final int secondaryTextColor = ColorUtils.calculateYiqLuma(primaryAccentColor) >= 128
                 ? Color.BLACK
                 : Color.WHITE;
 
@@ -91,33 +66,31 @@ public class DominantColorCalculator {
                 tertiaryAccentColor, primaryTextColor, secondaryTextColor);
     }
 
-    private MedianCutQuantizer.ColorNode findPrimaryAccentColor() {
+    private int findPrimaryAccentColor() {
         for (int i = 0; i < mPalette.length; i++) {
-            MedianCutQuantizer.ColorNode iNode = mPalette[i];
-                final float[] hsv = iNode.getHsv();
-                if (hsv[1] >= PRIMARY_MIN_SATURATION && hsv[2] >= PRIMARY_MIN_VALUE) {
-                    return iNode;
-                }
+            if (calculateColorfulness(mPalette[i]) >= PRIMARY_MIN_COLORFULNESS) {
+                return mPalette[i].getRgb();
+            }
         }
-        return mPalette[0];
+        return mPalette[0].getRgb();
     }
 
-    private MedianCutQuantizer.ColorNode findSecondaryAccentColor(
-            MedianCutQuantizer.ColorNode primary) {
+    private int findSecondaryAccentColor(final int primary) {
         // We just return the most frequent color which isn't the primary accent
         for (int i = 0; i < mPalette.length; i++) {
             if (calculateContrast(mPalette[i], primary) >= SECONDARY_MIN_CONTRAST_PRIMARY) {
-                return mPalette[i];
+                return mPalette[i].getRgb();
             }
         }
-        return null;
+
+        Log.d(LOG_TAG, "Calculating secondary accent from: #" + Integer.toHexString(primary));
+
+        return ColorUtils.changeBrightness(primary, 0.4f);
     }
 
-    private MedianCutQuantizer.ColorNode findTertiaryAccentColor(
-            MedianCutQuantizer.ColorNode primary,
-            MedianCutQuantizer.ColorNode secondary) {
-
-        ArrayList<MedianCutQuantizer.ColorNode> possibles = new ArrayList<MedianCutQuantizer.ColorNode>();
+    private int findTertiaryAccentColor(final int primary, final int secondary) {
+        ArrayList<MedianCutQuantizer.ColorNode> possibles
+                = new ArrayList<MedianCutQuantizer.ColorNode>();
 
         for (int i = 0; i < mPalette.length; i++) {
             if (calculateContrast(mPalette[i], primary) >= TERTIARY_MIN_CONTRAST_PRIMARY &&
@@ -136,23 +109,29 @@ public class DominantColorCalculator {
             }
         }
 
-        return max;
+        if (max != null) {
+            return max.getRgb();
+        }
+
+        Log.d(LOG_TAG, "Calculating tertiary accent from: #" + Integer.toHexString(secondary));
+
+        return ColorUtils.changeBrightness(secondary, 0.5f);
     }
 
-    private final MedianCutQuantizer.ColorNode findPrimaryTextColor(
-            MedianCutQuantizer.ColorNode primary) {
+    private final int findPrimaryTextColor(final int primary) {
         for (int i = 0; i < mPalette.length; i++) {
             if (calculateContrast(mPalette[i], primary) >= PRIMARY_TEXT_MIN_CONTRAST) {
-                return mPalette[i];
+                return mPalette[i].getRgb();
             }
         }
-        return null;
+        return ColorUtils.calculateYiqLuma(primary) >= 128
+                ? Color.BLACK
+                : Color.WHITE;
     }
 
-    private static final int calculateContrast(MedianCutQuantizer.ColorNode color1,
-            MedianCutQuantizer.ColorNode color2) {
+    private static final int calculateContrast(MedianCutQuantizer.ColorNode color1, int color2) {
         return Math.abs(ColorUtils.calculateYiqLuma(color1.getRgb())
-                - ColorUtils.calculateYiqLuma(color2.getRgb()));
+                - ColorUtils.calculateYiqLuma(color2));
     }
 
     private static final float calculateColorfulness(MedianCutQuantizer.ColorNode node) {

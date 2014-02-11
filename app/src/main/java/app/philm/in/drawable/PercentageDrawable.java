@@ -186,7 +186,7 @@ public class PercentageDrawable extends Drawable {
             mPressed = pressed;
             if (pressed) {
                 mForegroundCirclePaint.setColor(
-                        ColorUtils.darken(mForegroundCircleColor, PRESSED_DARKEN_RATIO));
+                        ColorUtils.changeBrightness(mForegroundCircleColor, PRESSED_DARKEN_RATIO));
             } else {
                 mForegroundCirclePaint.setColor(mForegroundCircleColor);
             }

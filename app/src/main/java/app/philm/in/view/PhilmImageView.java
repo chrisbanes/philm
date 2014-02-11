@@ -236,7 +236,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-            setImageBitmapFromNetwork(bitmap);
+            setImageBitmapFromNetwork(bitmap, loadedFrom != Picasso.LoadedFrom.MEMORY);
 
             if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
                 mPicassoHandler.mCallback.onSuccess(bitmap);
@@ -258,17 +258,21 @@ public class PhilmImageView extends ImageView {
         }
     };
 
-    void setImageBitmapFromNetwork(Bitmap bitmap) {
-        TransitionDrawable transitionDrawable = new TransitionDrawable(
-                new Drawable[] {
-                        new ColorDrawable(Color.TRANSPARENT),
-                        new BitmapDrawable(getResources(), bitmap)
-                });
-        transitionDrawable.setCrossFadeEnabled(true);
+    void setImageBitmapFromNetwork(final Bitmap bitmap, final boolean fade) {
+        if (fade) {
+            TransitionDrawable transitionDrawable = new TransitionDrawable(
+                    new Drawable[]{
+                            new ColorDrawable(Color.TRANSPARENT),
+                            new BitmapDrawable(getResources(), bitmap)
+                    });
+            transitionDrawable.setCrossFadeEnabled(true);
 
-        setImageDrawable(transitionDrawable);
+            setImageDrawable(transitionDrawable);
 
-        transitionDrawable.startTransition(TRANSITION_DURATION);
+            transitionDrawable.startTransition(TRANSITION_DURATION);
+        } else {
+            setImageBitmap(bitmap);
+        }
     }
 
 

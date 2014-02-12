@@ -19,12 +19,20 @@ public class InsetAwareFragment extends Fragment
     @Override
     public void onPause() {
         if (getActivity() instanceof PhilmActivity) {
-            ((PhilmActivity) getActivity()).removeInsetChangedCallback(this);
+            PhilmActivity activity = ((PhilmActivity) getActivity());
+            activity.setInsetAlpha(1.0f);
+            activity.removeInsetChangedCallback(this);
         }
         super.onPause();
     }
 
     @Override
     public void onInsetsChanged(Rect insets) {
+    }
+
+    public void setInsetAlpha(float alpha) {
+        if (getActivity() instanceof PhilmActivity) {
+            ((PhilmActivity) getActivity()).setInsetAlpha(alpha);
+        }
     }
 }

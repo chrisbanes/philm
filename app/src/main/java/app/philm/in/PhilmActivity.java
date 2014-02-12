@@ -4,12 +4,14 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.HashSet;
 
+import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.InsetFrameLayout;
 
@@ -23,6 +25,7 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
 
     private HashSet<OnActivityInsetsCallback> mInsetCallbacks;
     private Rect mInsets;
+    private InsetFrameLayout mInsetFrameLayout;
 
     private DrawerLayout mDrawerLayout;
 
@@ -32,8 +35,8 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
 
         setContentView(R.layout.activity_main);
 
-        InsetFrameLayout fl = (InsetFrameLayout) findViewById(R.id.inset_fl);
-        fl.setOnInsetsCallback(this);
+        mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.inset_fl);
+        mInsetFrameLayout.setOnInsetsCallback(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
@@ -107,5 +110,10 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
                 callback.onInsetsChanged(insets);
             }
         }
+    }
+
+    public void setInsetAlpha(float alpha) {
+        mInsetFrameLayout.getInsetBackground().setAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
+        ViewCompat.postInvalidateOnAnimation(mInsetFrameLayout);
     }
 }

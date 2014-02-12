@@ -78,7 +78,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private PhilmMovie mMovie;
 
-    private ParallaxContentScrollView mScrollView;
+    private ParallaxContentScrollView mParallaxScrollView;
     private View mScrollViewContent;
 
     private TextView mTitleTextView;
@@ -139,7 +139,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mScrollView = (ParallaxContentScrollView) view.findViewById(R.id.content_scrollview);
+        mParallaxScrollView = (ParallaxContentScrollView) view.findViewById(R.id.content_scrollview);
+
         mScrollViewContent = view.findViewById(R.id.content);
 
         mFanartImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
@@ -214,12 +215,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onResume() {
         super.onResume();
-        mScrollView.scrollScrollViewTo(mScrollViewY);
+        mParallaxScrollView.scrollScrollViewTo(mScrollViewY);
     }
 
     @Override
     public void onPause() {
-        mScrollViewY = mScrollView.getScrollViewScrollY();
+        mScrollViewY = mParallaxScrollView.getScrollViewScrollY();
         super.onPause();
     }
 

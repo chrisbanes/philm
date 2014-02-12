@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,8 +14,6 @@ import app.philm.in.R;
 public class ParallaxContentScrollView extends FrameLayout {
 
     private static final float PARALLAX_FRICTION = 0.5f;
-
-    private Rect mInsets;
 
     public interface OnContentViewScrollListener {
         void onContentViewScrolled(float percent);

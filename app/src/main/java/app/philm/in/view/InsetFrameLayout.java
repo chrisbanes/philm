@@ -109,6 +109,10 @@ public class InsetFrameLayout extends FrameLayout {
         }
     }
 
+    public Drawable getInsetBackground() {
+        return mInsetBackground;
+    }
+
     /**
      * Allows the calling container to specify a callback for custom processing when insets change
      * (i.e. when {@link #fitSystemWindows(Rect)} is called. This is useful for setting padding on

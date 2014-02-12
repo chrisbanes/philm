@@ -7,8 +7,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_minor"
-            android:layout_marginBottom="@dimen/spacing_minor"
-            android:background="@color/light_gray">
+            android:layout_marginBottom="@dimen/spacing_minor">
 
         <LinearLayout
                 android:id="@+id/rating_left_bar"
@@ -16,7 +15,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:background="@color/light_gray">
 
             <app.philm.in.view.FontTextView
                     android:id="@+id/textview_votes"
@@ -39,7 +39,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:background="@color/light_gray">
 
             <app.philm.in.view.FontTextView
                     android:id="@+id/textview_global_rating"

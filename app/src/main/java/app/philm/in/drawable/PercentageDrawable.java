@@ -97,6 +97,22 @@ public class PercentageDrawable extends Drawable {
         mTextPaint.setColor(color);
     }
 
+    public int getBackgroundCircleColor() {
+        return mBackgroundArcPaint.getColor();
+    }
+
+    public int getForegroundCircleColor() {
+        return mForegroundCirclePaint.getColor();
+    }
+
+    public int getTextColor() {
+        return mTextPaint.getColor();
+    }
+
+    public int getArcColor() {
+        return mArcPaint.getColor();
+    }
+
     @Override
     public void draw(Canvas canvas) {
         mBounds.set(getBounds());

@@ -1,6 +1,11 @@
 package app.philm.in.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,7 @@ import android.widget.TextView;
 import app.philm.in.R;
 import app.philm.in.drawable.PercentageDrawable;
 import app.philm.in.model.ColorScheme;
+import app.philm.in.util.ColorUtils;
 import app.philm.in.util.TextUtils;
 
 public class RatingBarLayout extends FrameLayout implements ColorSchemable {
@@ -80,7 +86,15 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
     }
 
     @Override
-    public void setColorScheme(ColorScheme colorScheme) {
+    public void setColorScheme(final ColorScheme colorScheme, boolean animate) {
+        if (animate) {
+            setColorSchemeAnimate(colorScheme);
+        } else {
+            setColorSchemeNoAnimate(colorScheme);
+        }
+    }
+
+    void setColorSchemeNoAnimate(ColorScheme colorScheme) {
         mLeftRatingBarLayout.setBackgroundColor(colorScheme.primaryAccent);
         mRightRatingBarLayout.setBackgroundColor(colorScheme.primaryAccent);
 
@@ -98,6 +112,67 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
             percentageDrawable.setArcColor(colorScheme.tertiaryAccent);
         }
         mRatingCircleView.invalidate();
+    }
+
+    void setColorSchemeAnimate(final ColorScheme scheme) {
+        final PercentageDrawable percentageDrawable = mRatingCircleView.getPercentageDrawable();
+
+        final int leftRatingBarBackground =
+                ((ColorDrawable) mLeftRatingBarLayout.getBackground()).getColor();
+        final int rightRatingBarBackground =
+                ((ColorDrawable) mRightRatingBarLayout.getBackground()).getColor();
+
+        final int ratingPercTextColor = mRatingGlobalPercentageTextView.getCurrentTextColor();
+        final int ratingPercLabelColor = mRatingGlobalPercentageLabelTextView.getCurrentTextColor();
+
+        final int ratingVotesTextColor = mRatingGlobalVotesTextView.getCurrentTextColor();
+        final int ratingVotesLabelColor = mRatingGlobalVotesLabelTextView.getCurrentTextColor();
+
+        final int circleForegroundColor = percentageDrawable.getForegroundCircleColor();
+        final int circleArcColor = percentageDrawable.getArcColor();
+        final int circleTextColor = percentageDrawable.getTextColor();
+
+        ValueAnimator animator = new ValueAnimator();
+        animator.setFloatValues(0f, 1f);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                final float currentValue = 1f - (Float) valueAnimator.getAnimatedValue();
+
+                mLeftRatingBarLayout.setBackgroundColor(ColorUtils.blendColors(
+                        leftRatingBarBackground, scheme.primaryAccent, currentValue));
+                mRightRatingBarLayout.setBackgroundColor(ColorUtils.blendColors(
+                        rightRatingBarBackground, scheme.primaryAccent, currentValue));
+
+                mRatingGlobalPercentageTextView.setTextColor(ColorUtils.blendColors(
+                        ratingPercTextColor, scheme.primaryText, currentValue));
+                mRatingGlobalPercentageLabelTextView.setTextColor(ColorUtils.blendColors(
+                        ratingPercLabelColor, scheme.primaryText, currentValue));
+
+                mRatingGlobalVotesTextView.setTextColor(ColorUtils.blendColors(
+                        ratingVotesTextColor, scheme.primaryText, currentValue));
+                mRatingGlobalVotesLabelTextView.setTextColor(ColorUtils.blendColors(
+                        ratingVotesLabelColor, scheme.primaryText, currentValue));
+
+                percentageDrawable.setForegroundCircleColor(ColorUtils
+                        .blendColors(circleForegroundColor, scheme.secondaryAccent,
+                                currentValue));
+
+                percentageDrawable.setArcColor(ColorUtils
+                        .blendColors(circleArcColor, scheme.tertiaryAccent, currentValue));
+
+                percentageDrawable.setTextColor(ColorUtils
+                        .blendColors(circleTextColor, scheme.tertiaryAccent, currentValue));
+
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setColorSchemeNoAnimate(scheme);
+            }
+        });
+        animator.start();
     }
 
     @Override

@@ -403,7 +403,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         if (mMovie.getColorScheme() != null) {
-            setColorScheme(mMovie.getColorScheme());
+            setColorScheme(mMovie.getColorScheme(), false);
         }
     }
 
@@ -524,9 +524,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     }
 
     @Override
-    public void setColorScheme(ColorScheme colorScheme) {
+    public void setColorScheme(ColorScheme colorScheme, boolean animate) {
         Preconditions.checkNotNull(colorScheme, "colorScheme cannot be null");
-        mRatingBarLayout.setColorScheme(colorScheme);
+        mRatingBarLayout.setColorScheme(colorScheme, animate);
         mPosterImageView.setBackgroundColor(colorScheme.primaryAccent);
     }
 
@@ -828,7 +828,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     if (mMovie != null) {
                         mMovie.setColorScheme(scheme);
                     }
-                    setColorScheme(scheme);
+                    setColorScheme(scheme, true);
                 }
             }
         }

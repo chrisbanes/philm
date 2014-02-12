@@ -4,6 +4,6 @@ import app.philm.in.model.ColorScheme;
 
 public interface ColorSchemable {
 
-    public void setColorScheme(ColorScheme colorScheme);
+    public void setColorScheme(ColorScheme colorScheme, boolean animate);
 
 }

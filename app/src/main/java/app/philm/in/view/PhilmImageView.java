@@ -122,9 +122,11 @@ public class PhilmImageView extends ImageView {
     }
 
     private void setPicassoHandler(PicassoHandler handler) {
-        if (!Objects.equal(handler, mPicassoHandler)) {
-            mPicassoHandler = handler;
+        if (!handlersEquals(handler, mPicassoHandler)) {
 
+            Picasso.with(getContext()).cancelRequest(mPicassoTarget);
+
+            mPicassoHandler = handler;
             if (mPicassoHandler != null && canLoadImage()) {
                 loadUrlImmediate();
             }
@@ -133,7 +135,8 @@ public class PhilmImageView extends ImageView {
 
     private static abstract class PicassoHandler {
 
-        final Listener mCallback;
+        private final Listener mCallback;
+        private boolean mIsFinished;
 
         PicassoHandler(Listener callback) {
             mCallback = callback;
@@ -141,6 +144,13 @@ public class PhilmImageView extends ImageView {
 
         public abstract String getUrl(ImageHelper helper, ImageView imageView);
 
+        void markAsFinished() {
+            mIsFinished = true;
+        }
+
+        boolean isFinished() {
+            return mIsFinished;
+        }
     }
 
     private class MovieBackdropHandler extends PicassoHandler {
@@ -238,18 +248,22 @@ public class PhilmImageView extends ImageView {
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
             setImageBitmapFromNetwork(bitmap, loadedFrom != Picasso.LoadedFrom.MEMORY);
 
-            if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
-                mPicassoHandler.mCallback.onSuccess(bitmap);
+            if (mPicassoHandler != null) {
+                if (mPicassoHandler.mCallback != null) {
+                    mPicassoHandler.mCallback.onSuccess(bitmap);
+                }
+                mPicassoHandler.markAsFinished();
             }
-            mPicassoHandler = null;
         }
 
         @Override
         public void onBitmapFailed(Drawable drawable) {
-            if (mPicassoHandler != null && mPicassoHandler.mCallback != null) {
-                mPicassoHandler.mCallback.onError();
+            if (mPicassoHandler != null) {
+                if (mPicassoHandler.mCallback != null) {
+                    mPicassoHandler.mCallback.onError();
+                }
+                mPicassoHandler.markAsFinished();
             }
-            mPicassoHandler = null;
         }
 
         @Override
@@ -273,6 +287,15 @@ public class PhilmImageView extends ImageView {
         } else {
             setImageBitmap(bitmap);
         }
+    }
+
+    private boolean handlersEquals(PicassoHandler handler1, PicassoHandler handler2) {
+        if (!Objects.equal(handler1, handler2)) {
+            String handler1Url = handler1 != null ? handler1.getUrl(mImageHelper, this) : null;
+            String handler2Url = handler2 != null ? handler2.getUrl(mImageHelper, this) : null;
+            return Objects.equal(handler1Url, handler2Url);
+        }
+        return true;
     }
 
 

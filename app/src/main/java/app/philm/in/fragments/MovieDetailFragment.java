@@ -311,29 +311,24 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             return;
         }
 
-        if (mFanartImageView.getDrawable() == null) {
-            mFanartImageView.loadBackdropUrl(mMovie);
-        }
+        mFanartImageView.loadBackdropUrl(mMovie);
 
-        if (mPosterImageView.getDrawable() == null) {
-            PhilmImageView.Listener listener = null;
+        mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
+            @Override
+            public void onSuccess(Bitmap bitmap) {
+                mPosterImageView.setVisibility(View.VISIBLE);
 
-            if (mMovie.getColorScheme() == null) {
-                listener = new PhilmImageView.Listener() {
-                    @Override
-                    public void onSuccess(Bitmap bitmap) {
-                        new ColorCalculatorTask().executeOnExecutor(
-                                AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
-                    }
-
-                    @Override
-                    public void onError() {
-                    }
-                };
+                if (mMovie.getColorScheme() == null) {
+                    new ColorCalculatorTask().executeOnExecutor(
+                            AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
+                }
             }
 
-            mPosterImageView.loadPosterUrl(mMovie, listener);
-        }
+            @Override
+            public void onError() {
+                mPosterImageView.setVisibility(View.GONE);
+            }
+        });
 
         mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
                 mMovie.getYear()));

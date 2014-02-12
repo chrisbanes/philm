@@ -187,10 +187,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null) {
-            populateUi(ui);
-        }
+        populateUis();
     }
 
     @Subscribe
@@ -601,6 +598,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (mMoviesState.getTmdbConfiguration() == null) {
             mLogger.i(LOG_TAG, "TMDB Configuration not downloaded yet.");
             return;
+        }
+
+        if (Constants.DEBUG) {
+            mLogger.d(LOG_TAG, "populateUi: " + ui.getClass().getSimpleName());
         }
 
         if (ui instanceof SearchMovieUi) {

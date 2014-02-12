@@ -257,13 +257,14 @@ public class PercentageDrawable extends Drawable {
         if (mMode == MODE_RATING && mUserRating == rating) {
             return;
         }
-        mAntiClockwiseMode = false;
-        mUserRating = rating;
-        mMode = MODE_RATING;
 
         if (isRunning()) {
             stop();
         }
+
+        mAntiClockwiseMode = false;
+        mUserRating = rating;
+        mMode = MODE_RATING;
 
         mText = String.valueOf(rating);
         updateTextSize();
@@ -280,12 +281,12 @@ public class PercentageDrawable extends Drawable {
         if (mMode == MODE_PROMPT && isRunning() == shouldAnimate()) {
             return;
         }
-        mMode = MODE_PROMPT;
 
         if (isRunning()) {
             stop();
         }
 
+        mMode = MODE_PROMPT;
         mText = promptText;
         updateTextSize();
         invalidateSelf();

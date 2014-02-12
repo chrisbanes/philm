@@ -570,6 +570,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     public void onDestroyView() {
         super.onDestroyView();
         clearYoutubeLoaders();
+        mUiState.reset();
     }
 
     private class RelatedMoviesAdapter extends BaseAdapter {
@@ -854,6 +855,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 mBackdropPath = mMovie.getBackdropUrl();
                 mFanartImageView.loadBackdropUrl(mMovie);
             }
+        }
+
+        void reset() {
+            mPosterPath = null;
+            mBackdropPath = null;
         }
 
     }

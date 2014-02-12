@@ -1061,8 +1061,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         switch (ui.getMovieQueryType()) {
             case CAST:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
-                if (movie != null && !PhilmCollections.isEmpty(movie.getCast())) {
-                    ui.setItems(createListItemList(movie.getCast()));
+                if (movie != null) {
+                    updateDisplayTitle(movie.getTitle());
+                    if (!PhilmCollections.isEmpty(movie.getCast())) {
+                        ui.setItems(createListItemList(movie.getCast()));
+                    }
                 }
                 break;
         }

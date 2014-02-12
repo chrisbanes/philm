@@ -4,6 +4,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
@@ -105,6 +106,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
 
     private int mScrollViewY;
+
+    private ImageUiState mUiState;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -311,24 +314,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             return;
         }
 
-        mFanartImageView.loadBackdropUrl(mMovie);
+        if (mUiState == null) {
+            mUiState = new ImageUiState();
+        }
 
-        mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
-            @Override
-            public void onSuccess(Bitmap bitmap) {
-                mPosterImageView.setVisibility(View.VISIBLE);
-
-                if (mMovie.getColorScheme() == null) {
-                    new ColorCalculatorTask().executeOnExecutor(
-                            AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
-                }
-            }
-
-            @Override
-            public void onError() {
-                mPosterImageView.setVisibility(View.GONE);
-            }
-        });
+        mUiState.loadPoster();
+        mUiState.loadBackdrop();
 
         mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
                 mMovie.getYear()));
@@ -825,6 +816,43 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     }
                     setColorScheme(scheme, true);
                 }
+            }
+        }
+
+    }
+
+    private class ImageUiState {
+
+        private String mPosterPath;
+        private String mBackdropPath;
+
+        public void loadPoster() {
+            if (!Objects.equal(mMovie.getPosterUrl(), mPosterPath)) {
+                mPosterPath = mMovie.getPosterUrl();
+
+                mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
+                    @Override
+                    public void onSuccess(Bitmap bitmap) {
+                        mPosterImageView.setVisibility(View.VISIBLE);
+
+                        if (mMovie.getColorScheme() == null) {
+                            new ColorCalculatorTask().executeOnExecutor(
+                                    AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        mPosterImageView.setVisibility(View.GONE);
+                    }
+                });
+            }
+        }
+
+        public void loadBackdrop() {
+            if (!Objects.equal(mMovie.getBackdropUrl(), mBackdropPath)) {
+                mBackdropPath = mMovie.getBackdropUrl();
+                mFanartImageView.loadBackdropUrl(mMovie);
             }
         }
 

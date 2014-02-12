@@ -122,12 +122,13 @@ public class PhilmImageView extends ImageView {
     }
 
     private void setPicassoHandler(PicassoHandler handler) {
-        if (!handlersEquals(handler, mPicassoHandler)) {
-
+        if (mPicassoHandler != null) {
             Picasso.with(getContext()).cancelRequest(mPicassoTarget);
+        }
 
+        if (handler != null) {
             mPicassoHandler = handler;
-            if (mPicassoHandler != null && canLoadImage()) {
+            if (canLoadImage()) {
                 loadUrlImmediate();
             }
         }

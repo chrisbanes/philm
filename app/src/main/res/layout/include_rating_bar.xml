@@ -8,7 +8,6 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_minor"
             android:layout_marginBottom="@dimen/spacing_minor">
-            android:background="@color/dark_gray">
 
         <LinearLayout
                 android:id="@+id/rating_left_bar"
@@ -17,7 +16,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@color/light_gray">
+                android:background="@color/dark_gray">
 
             <app.philm.in.view.FontTextView
                     android:id="@+id/textview_votes"
@@ -30,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_detail_votes"
-                    style="@style/Widget.Philm.Movie.Detail.Ratings.Title" />
+                    style="@style/Widget.Philm.Movie.Detail.Ratings.Title"/>
 
         </LinearLayout>
 
@@ -41,7 +40,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@color/light_gray">
+                android:background="@color/dark_gray">
 
             <app.philm.in.view.FontTextView
                     android:id="@+id/textview_global_rating"
@@ -54,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/movie_detail_global"
-                    style="@style/Widget.Philm.Movie.Detail.Ratings.Title" />
+                    style="@style/Widget.Philm.Movie.Detail.Ratings.Title"/>
 
         </LinearLayout>
 
@@ -65,11 +64,11 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            internal:backgroundCircleColor="@color/light_gray"
+            internal:backgroundCircleColor="@color/dark_gray"
             internal:foregroundCircleColor="@color/primary_accent_color"
             internal:arcColor="@color/primary_accent_color_light"
             internal:textColor="@color/primary_accent_color_light"
             internal:ratePrompt="@string/movie_detail_rate"
-            internal:font="roboto_slab" />
+            internal:font="roboto_slab"/>
 
 </merge>

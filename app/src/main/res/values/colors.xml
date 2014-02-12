@@ -14,4 +14,6 @@
     <color name="primary_accent_color_dark_30">#FF1A4D00</color>
     <color name="primary_accent_color_dark_40">#FF003300</color>
 
+    <color name="drawer_background">#FF222222</color>
+
 </resources>

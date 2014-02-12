@@ -7,7 +7,7 @@
               android:divider="?android:attr/dividerVertical"
               android:showDividers="middle"
               android:clickable="true"
-              android:background="?android:attr/colorBackground">
+              android:background="@color/drawer_background">
 
     <ListView
             android:id="@android:id/list"

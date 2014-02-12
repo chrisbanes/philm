@@ -3,7 +3,7 @@
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Base.Philm" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
 
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -14,8 +14,7 @@
 
     </style>
 
-    <style name="Widget.Philm.ActionBar"
-           parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+    <style name="Widget.Philm.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
         <item name="android:background">@null</item>
     </style>
 

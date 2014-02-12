@@ -60,7 +60,8 @@ import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
 public class MovieDetailFragment extends BasePhilmMovieFragment
-        implements MovieController.MovieDetailUi, View.OnClickListener, ColorSchemable {
+        implements MovieController.MovieDetailUi, View.OnClickListener, ColorSchemable,
+        ParallaxContentScrollView.OnContentViewScrollListener {
 
     private static final Date DATE = new Date();
 
@@ -140,6 +141,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mParallaxScrollView = (ParallaxContentScrollView) view.findViewById(R.id.content_scrollview);
+        mParallaxScrollView.setOnContentViewScrollListener(this);
 
         mScrollViewContent = view.findViewById(R.id.content);
 
@@ -580,6 +582,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         super.onDestroyView();
         clearYoutubeLoaders();
         mUiState.reset();
+    }
+
+    @Override
+    public void onContentViewScrolled(float percent) {
+        setInsetAlpha(percent);
     }
 
     private class RelatedMoviesAdapter extends BaseAdapter {

@@ -1,5 +1,7 @@
 package app.philm.in.fragments.base;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,6 +20,8 @@ import app.philm.in.R;
 import app.philm.in.view.SlidingTabLayout;
 
 public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
+
+    private static final int HIDE_DELAY = 2000;
 
     private static final String SAVE_SELECTED_TAB = "selected_tab";
 
@@ -47,6 +52,40 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
         mSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.primary_accent_color));
         mSlidingTabStrip.setDividerColors(getResources().getColor(R.color.primary_accent_color_dark_10));
+
+        mSlidingTabStrip.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+
+            private int mState = ViewPager.SCROLL_STATE_IDLE;
+
+            @Override
+            public void onPageScrollStateChanged(final int state) {
+                if (mState == ViewPager.SCROLL_STATE_SETTLING
+                        && state == ViewPager.SCROLL_STATE_IDLE) {
+                    scheduleHideTabs();
+                } else if (mState == ViewPager.SCROLL_STATE_IDLE
+                        && state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    showTabs();
+                }
+                mState = state;
+            }
+        });
+
+        mSlidingTabStrip.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent ev) {
+                switch (ev.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        removeScheduledHideTabs();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        scheduleHideTabs();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        scheduleHideTabs();
 
         if (savedInstanceState != null) {
             mCurrentItem = savedInstanceState.getInt(SAVE_SELECTED_TAB);
@@ -125,4 +164,41 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
             return getTabTitle(position);
         }
     }
+
+    private final Runnable mHideTabsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mSlidingTabStrip.getVisibility() == View.VISIBLE) {
+                mSlidingTabStrip.animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mSlidingTabStrip.setVisibility(View.GONE);
+                    }
+                }).start();
+            }
+        }
+    };
+
+    private void scheduleHideTabs() {
+        removeScheduledHideTabs();
+        getView().postDelayed(mHideTabsRunnable, HIDE_DELAY);
+    }
+
+    private void removeScheduledHideTabs() {
+        getView().removeCallbacks(mHideTabsRunnable);
+    }
+
+    private void showTabs() {
+        removeScheduledHideTabs();
+
+        if (mSlidingTabStrip.getVisibility() != View.VISIBLE) {
+            mSlidingTabStrip.animate().alpha(1f).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    mSlidingTabStrip.setVisibility(View.VISIBLE);
+                }
+            }).start();
+        }
+    }
+
 }

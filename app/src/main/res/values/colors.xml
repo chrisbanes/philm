@@ -15,5 +15,6 @@
     <color name="primary_accent_color_dark_40">#FF003300</color>
 
     <color name="drawer_background">#FF222222</color>
+    <color name="chrome_background">#BB000000</color>
 
 </resources>

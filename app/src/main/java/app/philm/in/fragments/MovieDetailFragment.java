@@ -586,7 +586,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void onContentViewScrolled(float percent) {
-        setInsetAlpha(percent);
+        setTopInsetAlpha(percent);
     }
 
     private class RelatedMoviesAdapter extends BaseAdapter {

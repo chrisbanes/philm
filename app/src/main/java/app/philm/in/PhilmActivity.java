@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -112,8 +111,11 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
         }
     }
 
-    public void setInsetAlpha(float alpha) {
-        mInsetFrameLayout.getInsetBackground().setAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
-        ViewCompat.postInvalidateOnAnimation(mInsetFrameLayout);
+    public void setInsetTopAlpha(float alpha) {
+        mInsetFrameLayout.setTopInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
+    }
+
+    public void setInsetBottomAlpha(float alpha) {
+        mInsetFrameLayout.setBottomInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
     }
 }

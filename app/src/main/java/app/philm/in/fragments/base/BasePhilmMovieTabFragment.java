@@ -1,5 +1,6 @@
 package app.philm.in.fragments.base;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -67,6 +68,12 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(SAVE_SELECTED_TAB, mCurrentItem);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onInsetsChanged(Rect insets) {
+        ((ViewGroup.MarginLayoutParams) mSlidingTabStrip.getLayoutParams()).topMargin = insets.top;
+        mSlidingTabStrip.requestLayout();
     }
 
     protected ViewPager getViewPager() {

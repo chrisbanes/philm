@@ -24,6 +24,9 @@ public class InsetFrameLayout extends FrameLayout {
     private Rect mTempRect = new Rect();
     private OnInsetsCallback mOnInsetsCallback;
 
+    private int mTopAlpha = 255;
+    private int mBottomAlpha = 255;
+
     public InsetFrameLayout(Context context) {
         super(context);
         init(context, null, 0);
@@ -74,12 +77,17 @@ public class InsetFrameLayout extends FrameLayout {
             // Top
             mTempRect.set(0, 0, width, mInsets.top);
             mInsetBackground.setBounds(mTempRect);
+            mInsetBackground.setAlpha(mTopAlpha);
             mInsetBackground.draw(canvas);
 
             // Bottom
             mTempRect.set(0, height - mInsets.bottom, width, height);
             mInsetBackground.setBounds(mTempRect);
+            mInsetBackground.setAlpha(mBottomAlpha);
             mInsetBackground.draw(canvas);
+
+            // Reset Alpha
+            mInsetBackground.setAlpha(255);
 
             // Left
             mTempRect.set(0, mInsets.top, mInsets.left, height - mInsets.bottom);
@@ -109,8 +117,14 @@ public class InsetFrameLayout extends FrameLayout {
         }
     }
 
-    public Drawable getInsetBackground() {
-        return mInsetBackground;
+    public void setTopInsetAlpha(int alpha) {
+        mTopAlpha = alpha;
+        ViewCompat.postInvalidateOnAnimation(this);
+    }
+
+    public void setBottomInsetAlpha(int alpha) {
+        mBottomAlpha = alpha;
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     /**

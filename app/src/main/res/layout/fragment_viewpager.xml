@@ -13,6 +13,7 @@
     <app.philm.in.view.SlidingTabLayout
           android:id="@+id/viewpager_tabs"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/movie_discover_tab_height" />
+          android:layout_height="@dimen/movie_discover_tab_height"
+          android:background="?android:attr/colorBackground"/>
 
 </FrameLayout>

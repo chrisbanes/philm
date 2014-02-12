@@ -1,15 +1,30 @@
 package app.philm.in;
 
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class PhilmActivity extends BasePhilmActivity {
+import java.util.HashSet;
+
+import app.philm.in.util.PhilmCollections;
+import app.philm.in.view.InsetFrameLayout;
+
+public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout.OnInsetsCallback {
+
+    public static interface OnActivityInsetsCallback {
+        public void onInsetsChanged(Rect insets);
+    }
 
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private HashSet<OnActivityInsetsCallback> mInsetCallbacks;
+    private Rect mInsets;
+
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,12 +32,15 @@ public class PhilmActivity extends BasePhilmActivity {
 
         setContentView(R.layout.activity_main);
 
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawerLayout != null) {
-            mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer,
+        InsetFrameLayout fl = (InsetFrameLayout) findViewById(R.id.inset_fl);
+        fl.setOnInsetsCallback(this);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (mDrawerLayout != null) {
+            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer,
                     R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
 
-            drawerLayout.setDrawerListener(mDrawerToggle);
+            mDrawerLayout.setDrawerListener(mDrawerToggle);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
         }
@@ -60,6 +78,34 @@ public class PhilmActivity extends BasePhilmActivity {
         super.onConfigurationChanged(newConfig);
         if (mDrawerToggle != null) {
             mDrawerToggle.onConfigurationChanged(newConfig);
+        }
+    }
+
+    public void addInsetChangedCallback(OnActivityInsetsCallback callback) {
+        if (mInsetCallbacks == null) {
+            mInsetCallbacks = new HashSet<OnActivityInsetsCallback>();
+        }
+        mInsetCallbacks.add(callback);
+
+        if (mInsets != null) {
+            callback.onInsetsChanged(mInsets);
+        }
+    }
+
+    public void removeInsetChangedCallback(OnActivityInsetsCallback callback) {
+        if (mInsetCallbacks != null) {
+            mInsetCallbacks.remove(callback);
+        }
+    }
+
+    @Override
+    public void onInsetsChanged(Rect insets) {
+        mInsets = insets;
+
+        if (!PhilmCollections.isEmpty(mInsetCallbacks)) {
+            for (OnActivityInsetsCallback callback : mInsetCallbacks) {
+                callback.onInsetsChanged(insets);
+            }
         }
     }
 }

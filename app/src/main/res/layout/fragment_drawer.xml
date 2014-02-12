@@ -6,7 +6,8 @@
               android:layout_height="match_parent"
               android:divider="?android:attr/dividerVertical"
               android:showDividers="middle"
-              android:clickable="true">
+              android:clickable="true"
+              android:background="?android:attr/colorBackground">
 
     <ListView
             android:id="@android:id/list"

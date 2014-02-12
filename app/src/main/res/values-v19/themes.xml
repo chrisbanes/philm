@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo.Light.DarkActionBar">
+
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowActionBarOverlay">true</item>
+
+        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
+
+    </style>
+
+    <style name="Widget.Philm.ActionBar"
+           parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@null</item>
+    </style>
+
+</resources>

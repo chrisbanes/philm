@@ -1,7 +1,7 @@
 package app.philm.in.fragments.base;
 
 
-import android.support.v4.app.Fragment;
+import android.graphics.Rect;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.controllers.MovieController;
@@ -11,7 +11,8 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
 
-public abstract class BasePhilmMovieFragment extends Fragment implements MovieController.MovieUi {
+public abstract class BasePhilmMovieFragment extends InsetAwareFragment
+        implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
 
@@ -74,4 +75,7 @@ public abstract class BasePhilmMovieFragment extends Fragment implements MovieCo
         return PhilmApplication.from(getActivity()).getMainController().getMovieController();
     }
 
+    @Override
+    public void onInsetsChanged(Rect insets) {
+    }
 }

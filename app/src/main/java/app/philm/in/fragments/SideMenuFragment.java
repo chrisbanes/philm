@@ -2,8 +2,8 @@ package app.philm.in.fragments;
 
 import com.squareup.picasso.Picasso;
 
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +20,12 @@ import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
+import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.view.StringManager;
 
-public class SideMenuFragment extends Fragment implements MainControllerUi, View.OnClickListener,
-        AdapterView.OnItemClickListener {
+public class SideMenuFragment extends InsetAwareFragment
+        implements MainControllerUi, View.OnClickListener, AdapterView.OnItemClickListener {
 
     private SideMenuItem[] mSideMenuItems;
 
@@ -32,7 +33,6 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
 
     private ListView mListView;
     private SideMenuItemAdapter mAdapter;
-
 
     private Button mAccountButton;
     private ImageView mAvatarImageView;
@@ -140,6 +140,11 @@ public class SideMenuFragment extends Fragment implements MainControllerUi, View
         if (mCallbacks != null) {
             mCallbacks.onSideMenuItemSelected((SideMenuItem) parent.getItemAtPosition(position));
         }
+    }
+
+    @Override
+    public void onInsetsChanged(Rect insets) {
+        getView().setPadding(0, insets.top, 0, insets.bottom);
     }
 
     private class SideMenuItemAdapter extends BaseAdapter {

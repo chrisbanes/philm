@@ -1,9 +1,9 @@
 package app.philm.in.fragments.base;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +21,7 @@ import android.widget.TextView;
 import app.philm.in.view.FontTextView;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
-public abstract class ListFragment<E extends AbsListView> extends Fragment {
+public abstract class ListFragment<E extends AbsListView> extends InsetAwareFragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
     static final int INTERNAL_PROGRESS_CONTAINER_ID = 0x00ff0002;
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
@@ -105,6 +105,7 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
         E lv = createListView(getActivity());
+        lv.setClipToPadding(false);
         lv.setId(android.R.id.list);
         lv.setDrawSelectorOnTop(false);
         lframe.addView(lv, new FrameLayout.LayoutParams(
@@ -325,6 +326,15 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
      */
     public ListAdapter getListAdapter() {
         return mAdapter;
+    }
+
+    @Override
+    public void onInsetsChanged(Rect insets) {
+        mSecondaryProgressView.setPadding(0, 0, 0, insets.bottom);
+
+        E view = getListView();
+        view.setClipToPadding(false);
+        view.setPadding(0, insets.top, 0, insets.bottom);
     }
 
     protected abstract E createListView(Context context);

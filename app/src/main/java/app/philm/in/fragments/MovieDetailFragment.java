@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
@@ -78,6 +79,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private PhilmMovie mMovie;
 
     private ParallaxContentScrollView mScrollView;
+    private View mScrollViewContent;
 
     private TextView mTitleTextView;
     private TextView mSummaryTextView;
@@ -137,9 +139,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
         mScrollView = (ParallaxContentScrollView) view.findViewById(R.id.content_scrollview);
+        mScrollViewContent = view.findViewById(R.id.content);
 
         mFanartImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
         mPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
@@ -189,6 +190,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         if (savedInstanceState != null) {
             mScrollViewY = savedInstanceState.getInt(KEY_SCROLLVIEW_POSITION);
         }
+
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -307,6 +310,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public boolean isModal() {
         return false;
+    }
+
+    @Override
+    public void onInsetsChanged(Rect insets) {
+        mScrollViewContent.setPadding(0, 0, 0, insets.bottom);
     }
 
     private void populateUi() {

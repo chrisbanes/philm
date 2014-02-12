@@ -8,6 +8,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_minor"
             android:layout_marginBottom="@dimen/spacing_minor">
+            android:background="@color/dark_gray">
 
         <LinearLayout
                 android:id="@+id/rating_left_bar"

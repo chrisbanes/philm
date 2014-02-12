@@ -37,7 +37,7 @@
                 android:layout_height="@dimen/movie_detail_poster_height"
                 android:scaleType="centerCrop"
                 android:layout_marginRight="@dimen/movie_detail_fanart_padding"
-                android:background="@color/primary_accent_color_dark_10"
+                android:background="?android:attr/colorForeground"
                 android:padding="1dp"
                 android:cropToPadding="true" />
 

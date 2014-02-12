@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="app.philm.in">
+          package="app.philm.in">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 
     <application
             android:allowBackup="true"
@@ -14,49 +14,58 @@
             android:theme="@style/Theme.Philm">
 
         <activity
-            android:name="app.philm.in.PhilmActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask">
+                android:name="app.philm.in.PhilmActivity"
+                android:label="@string/app_name"
+                android:launchMode="singleTask">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
         </activity>
 
-        <activity android:name=".AccountActivity">
+        <activity
+                android:name=".AccountActivity"
+                android:theme="@style/Theme.Philm.Framed">
 
             <intent-filter>
-                <action android:name="philm.intent.action.LOGIN" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="philm.intent.action.LOGIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 
         </activity>
 
-        <activity android:name=".AboutActivity"
-            android:exported="false">
+        <activity
+                android:name=".AboutActivity"
+                android:exported="false"
+                android:theme="@style/Theme.Philm.Framed">
 
             <intent-filter>
-                <action android:name="philm.intent.action.ABOUT" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="philm.intent.action.ABOUT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 
         </activity>
 
-        <activity android:name=".SettingsActivity"
-            android:label="@string/settings_title" />
+        <activity
+                android:name=".SettingsActivity"
+                android:theme="@style/Theme.Philm.Framed"
+                android:label="@string/settings_title"
+                android:exported="false" />
 
         <service android:name=".account.PhilmAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
             </intent-filter>
-            <meta-data android:name="android.accounts.AccountAuthenticator"
-                       android:resource="@xml/authenticator"/>
+            <meta-data
+                    android:name="android.accounts.AccountAuthenticator"
+                    android:resource="@xml/authenticator"/>
         </service>
 
-        <meta-data android:name="com.crashlytics.ApiKey"
-                   android:value="0c0bf3d0b7b5aeff1ce7c8ca71710cc3b836ff47"/>
+        <meta-data
+                android:name="com.crashlytics.ApiKey"
+                android:value="0c0bf3d0b7b5aeff1ce7c8ca71710cc3b836ff47"/>
 
     </application>
 

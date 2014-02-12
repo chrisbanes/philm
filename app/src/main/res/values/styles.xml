@@ -1,5 +1,9 @@
 <resources>
 
+    <style name="Widget.Philm.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@null</item>
+    </style>
+
     <style name="Widget.Philm.Movie.Grid.Title" parent="android:Widget">
         <item name="font">roboto_condensed</item>
         <item name="android:textSize">18dp</item>

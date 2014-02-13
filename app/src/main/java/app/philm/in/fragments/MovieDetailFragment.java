@@ -1,6 +1,7 @@
 package app.philm.in.fragments;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubeIntents;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
@@ -798,14 +799,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
         @Override
         public void onClick(View view) {
-            Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                    getActivity(),
-                    AndroidConstants.GOOGLE_CLIENT_KEY,
-                    (String) view.getTag(),
-                    0, // start time
-                    true, // autoplay
-                    false // lightbox
-            );
+            Intent intent = YouTubeIntents.createPlayVideoIntent(getActivity(),
+                    (String) view.getTag());
             startActivity(intent);
         }
     }

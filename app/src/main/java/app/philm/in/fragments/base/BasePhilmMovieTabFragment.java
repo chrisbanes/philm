@@ -21,7 +21,7 @@ import app.philm.in.view.SlidingTabLayout;
 
 public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
-    private static final int HIDE_DELAY = 2000;
+    private static final int HIDE_DELAY = 2500;
 
     private static final String SAVE_SELECTED_TAB = "selected_tab";
 
@@ -59,8 +59,7 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
             @Override
             public void onPageScrollStateChanged(final int state) {
-                if (mState == ViewPager.SCROLL_STATE_SETTLING
-                        && state == ViewPager.SCROLL_STATE_IDLE) {
+                if (state == ViewPager.SCROLL_STATE_IDLE) {
                     scheduleHideTabs();
                 } else if (mState == ViewPager.SCROLL_STATE_IDLE
                         && state == ViewPager.SCROLL_STATE_DRAGGING) {
@@ -84,6 +83,8 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
                 return false;
             }
         });
+
+        mSlidingTabStrip.getBackground().setAlpha(255);
 
         scheduleHideTabs();
 

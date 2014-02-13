@@ -125,6 +125,8 @@ public class ParallaxContentScrollView extends FrameLayout {
 
     void updateOffset(int y) {
         if (y <= mHeaderView.getHeight()) {
+            mHeaderView.setVisibility(View.VISIBLE);
+
             int newTop = Math.round(-y * PARALLAX_FRICTION);
             mHeaderView.offsetTopAndBottom(newTop - mHeaderView.getTop());
 
@@ -132,6 +134,8 @@ public class ParallaxContentScrollView extends FrameLayout {
                 mContentViewScrollListener
                         .onContentViewScrolled(y / (float) mHeaderView.getHeight());
             }
+        } else {
+            mHeaderView.setVisibility(View.INVISIBLE);
         }
     }
 

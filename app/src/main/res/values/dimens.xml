@@ -21,7 +21,7 @@
     <!-- Should be movie_detail_poster_height + movie_detail_fanart_padding -->
     <dimen name="movie_detail_content_overlay">113dp</dimen>
 
-    <dimen name="movie_detail_fanart_height">200dp</dimen>
+    <dimen name="movie_detail_fanart_height">160dp</dimen>
     <dimen name="movie_detail_fanart_padding">@dimen/spacing_minor</dimen>
 
     <dimen name="movie_detail_title_textsize">26dp</dimen>

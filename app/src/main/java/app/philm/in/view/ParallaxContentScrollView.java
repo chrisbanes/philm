@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
@@ -28,6 +29,9 @@ public class ParallaxContentScrollView extends FrameLayout {
     private OnContentViewScrollListener mContentViewScrollListener;
 
     private int mContentOverlaySize;
+
+    private int mOriginalHeaderViewHeight;
+    private int mHeaderViewHeightDiff;
 
     public ParallaxContentScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -77,12 +81,32 @@ public class ParallaxContentScrollView extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        updateContentViewPaddingTop();
-        updateOffset(mContentViewScrollView.getScrollY());
+
+        if (changed) {
+            if (mOriginalHeaderViewHeight != mHeaderView.getHeight()) {
+                mOriginalHeaderViewHeight = mHeaderView.getHeight();
+            }
+
+            final int targetHeaderHeight = mOriginalHeaderViewHeight + mHeaderViewHeightDiff;
+            if (mHeaderView.getLayoutParams().height != targetHeaderHeight) {
+                mHeaderView.getLayoutParams().height = targetHeaderHeight;
+
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mHeaderView.requestLayout();
+                    }
+                });
+            }
+
+            updateContentViewPaddingTop(targetHeaderHeight);
+
+            updateOffset(mContentViewScrollView.getScrollY());
+        }
     }
 
-    void updateContentViewPaddingTop() {
-        final int targetPaddingTop = mHeaderView.getHeight() - mContentOverlaySize;
+    void updateContentViewPaddingTop(int headerHeight) {
+        final int targetPaddingTop = headerHeight - mContentOverlaySize;
 
         if (mContentViewWrapper.getPaddingTop() != targetPaddingTop) {
             mContentViewWrapper.post(new Runnable() {
@@ -94,6 +118,10 @@ public class ParallaxContentScrollView extends FrameLayout {
         }
     }
 
+    public void increaseHeaderViewHeight(int diffPx) {
+        mHeaderViewHeightDiff = diffPx;
+        requestLayout();
+    }
 
     void updateOffset(int y) {
         if (y <= mHeaderView.getHeight()) {

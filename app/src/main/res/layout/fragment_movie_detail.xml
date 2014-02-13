@@ -104,7 +104,7 @@
             <app.philm.in.view.RatingBarLayout
                 android:id="@+id/rating_bar_layout"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="@dimen/movie_detail_ratingbar_height"
                 android:layout_marginBottom="@dimen/spacing_major" />
 
             <app.philm.in.view.MovieDetailCardLayout

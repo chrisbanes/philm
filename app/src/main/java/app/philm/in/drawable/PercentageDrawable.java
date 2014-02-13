@@ -24,10 +24,10 @@ public class PercentageDrawable extends Drawable {
     private static final Interpolator INTERPOLATOR = new AccelerateDecelerateInterpolator();
 
     private static final float BACKGROUND_CIRCLE_RADIUS_RATIO = 1f / 2f;
-    private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.8f / 2f;
+    private static final float FOREGROUND_CIRCLE_RADIUS_RATIO = 0.87f / 2f;
 
-    private static final float SMALL_TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.5f;
-    private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.7f;
+    private static final float SMALL_TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.55f;
+    private static final float TEXT_SIZE_BOUNDS_RATIO = FOREGROUND_CIRCLE_RADIUS_RATIO * 2f * 0.75f;
 
     private static final float PRESSED_DARKEN_RATIO = 0.15f;
 

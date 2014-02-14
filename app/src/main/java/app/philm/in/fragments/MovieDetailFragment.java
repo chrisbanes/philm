@@ -445,11 +445,29 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                                     final View.OnClickListener seeMoreClickListener,
                                     final BaseAdapter adapter) {
 
+        if (layout.getWidth() == 0) {
+            layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    layout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            populateDetailGrid(layout, cardLayout, seeMoreClickListener, adapter);
+                        }
+                    });
+                    layout.removeOnLayoutChangeListener(this);
+                }
+            });
+            return;
+        }
+
         final ViewRecycler viewRecycler = new ViewRecycler(layout);
         viewRecycler.recycleViews();
 
         if (adapter.getCount() > 0) {
-            final int numItems = getResources().getInteger(R.integer.number_detail_items);
+            final int numItems = layout.getWidth() /
+                    getResources().getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
 
             for (int i = 0; i < Math.min(numItems, adapter.getCount()); i++) {
                 View view = viewRecycler.getRecycledView();

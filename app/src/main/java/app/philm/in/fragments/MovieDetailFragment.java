@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -225,6 +226,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onPause() {
         mScrollViewY = mParallaxScrollView.getScrollViewScrollY();
+        setActionBarTitleEnabled(true);
         super.onPause();
     }
 
@@ -607,6 +609,14 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onContentViewScrolled(float percent) {
         setTopInsetAlpha(percent);
+        setActionBarTitleEnabled(percent >= 0.7f);
+    }
+
+    private void setActionBarTitleEnabled(boolean enabled) {
+        final ActionBar ab = ((getActivity())).getActionBar();
+        if (ab != null) {
+            ab.setDisplayShowTitleEnabled(enabled);
+        }
     }
 
     private class RelatedMoviesAdapter extends BaseAdapter {

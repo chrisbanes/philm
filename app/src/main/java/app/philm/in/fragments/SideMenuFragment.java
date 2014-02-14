@@ -144,7 +144,7 @@ public class SideMenuFragment extends InsetAwareFragment
 
     @Override
     public void onInsetsChanged(Rect insets) {
-        getView().setPadding(0, insets.top, 0, insets.bottom);
+        getView().setPadding(insets.left, insets.top, 0, insets.bottom);
     }
 
     private class SideMenuItemAdapter extends BaseAdapter {

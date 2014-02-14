@@ -334,7 +334,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
 
         E view = getListView();
         view.setClipToPadding(false);
-        view.setPadding(0, insets.top, 0, insets.bottom);
+        view.setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 
     protected abstract E createListView(Context context);

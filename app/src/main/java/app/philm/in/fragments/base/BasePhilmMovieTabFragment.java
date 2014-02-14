@@ -113,6 +113,7 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
     @Override
     public void onInsetsChanged(Rect insets) {
         ((ViewGroup.MarginLayoutParams) mSlidingTabStrip.getLayoutParams()).topMargin = insets.top;
+        mSlidingTabStrip.setPadding(insets.left, 0, insets.right, 0);
         mSlidingTabStrip.requestLayout();
     }
 

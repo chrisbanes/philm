@@ -4,8 +4,8 @@ import com.google.common.base.Preconditions;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
@@ -121,6 +121,11 @@ public class ParallaxContentScrollView extends FrameLayout {
     public void increaseHeaderViewHeight(int diffPx) {
         mHeaderViewHeightDiff = diffPx;
         requestLayout();
+    }
+
+    public void setInsets(Rect insets) {
+        mContentView.setPadding(insets.left, 0, insets.right, insets.bottom);
+        increaseHeaderViewHeight(insets.top);
     }
 
     void updateOffset(int y) {

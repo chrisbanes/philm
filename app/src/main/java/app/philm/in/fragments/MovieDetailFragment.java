@@ -319,8 +319,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void onInsetsChanged(Rect insets) {
-        mParallaxScrollView.increaseHeaderViewHeight(insets.top);
-        mScrollViewContent.setPadding(0, 0, 0, insets.bottom);
+        mParallaxScrollView.setInsets(insets);
     }
 
     private void populateUi() {

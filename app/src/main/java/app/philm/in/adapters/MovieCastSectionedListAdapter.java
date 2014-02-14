@@ -1,109 +1,35 @@
 package app.philm.in.adapters;
 
-import com.google.common.base.Objects;
-
 import android.app.Activity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
-
-import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.view.PhilmImageView;
-import app.philm.in.view.PinnedSectionListView;
-import app.philm.in.view.StringManager;
 
-public class MovieCastSectionedListAdapter extends BaseAdapter implements
-        PinnedSectionListView.PinnedSectionListAdapter {
+public class MovieCastSectionedListAdapter extends BasePhilmSectionedListAdapter<PhilmCast> {
 
     private static final String LOG_TAG = MovieCastSectionedListAdapter.class.getSimpleName();
 
-    private final Activity mActivity;
-
-    private List<ListItem<PhilmCast>> mItems;
-
     public MovieCastSectionedListAdapter(Activity activity) {
-        mActivity = activity;
-    }
-
-    public void setItems(List<ListItem<PhilmCast>> items) {
-        if (!Objects.equal(items, mItems)) {
-            mItems = items;
-            notifyDataSetChanged();
-        }
+        super(activity, R.layout.item_list_movie_cast, R.layout.item_list_movie_section_header);
     }
 
     @Override
-    public int getCount() {
-        return mItems != null ? mItems.size() : 0;
-    }
+    protected void bindView(int position, View view, ListItem<PhilmCast> item) {
+        PhilmCast castMember = item.getItem();
 
-    @Override
-    public ListItem<PhilmCast> getItem(int position) {
-        return mItems.get(position);
-    }
+        final TextView nameTextView = (TextView) view.findViewById(R.id.textview_name);
+        nameTextView.setText(castMember.getName());
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+        final TextView characterTextView =
+                (TextView) view.findViewById(R.id.textview_character);
+        characterTextView.setText(castMember.getCharacter());
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
-        final ListItem<PhilmCast> item = getItem(position);
-        View view = convertView;
-
-        if (view == null) {
-            final int layout = item.getType() == ListItem.TYPE_ITEM
-                    ? R.layout.item_list_movie_cast
-                    : R.layout.item_list_movie_section_header;
-            view = mActivity.getLayoutInflater().inflate(layout, viewGroup, false);
-        }
-
-        switch (item.getType()) {
-            case ListItem.TYPE_ITEM: {
-                PhilmCast castMember = item.getItem();
-
-                final TextView nameTextView = (TextView) view.findViewById(R.id.textview_name);
-                nameTextView.setText(castMember.getName());
-
-                final TextView characterTextView =
-                        (TextView) view.findViewById(R.id.textview_character);
-                characterTextView.setText(castMember.getCharacter());
-
-                final PhilmImageView imageView =
-                        (PhilmImageView) view.findViewById(R.id.imageview_profile);
-                imageView.loadProfileUrl(castMember);
-                break;
-            }
-            case ListItem.TYPE_SECTION:
-                if (item.getFilter() != null) {
-                    ((TextView) view).setText(StringManager.getStringResId(item.getFilter()));
-                } else if (item.getHeader() != null) {
-                    ((TextView) view).setText(StringManager.getStringResId(item.getHeader()));
-                }
-                break;
-        }
-
-        return view;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 2;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return getItem(position).getType();
-    }
-
-    @Override
-    public boolean isItemViewTypePinned(int type) {
-        return type == ListItem.TYPE_SECTION;
+        final PhilmImageView imageView =
+                (PhilmImageView) view.findViewById(R.id.imageview_profile);
+        imageView.loadProfileUrl(castMember);
     }
 }

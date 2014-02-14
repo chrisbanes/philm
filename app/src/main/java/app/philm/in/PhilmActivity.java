@@ -118,4 +118,9 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
     public void setInsetBottomAlpha(float alpha) {
         mInsetFrameLayout.setBottomInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
     }
+
+    public void resetAlpha() {
+        setInsetTopAlpha(255);
+        setInsetBottomAlpha(0);
+    }
 }

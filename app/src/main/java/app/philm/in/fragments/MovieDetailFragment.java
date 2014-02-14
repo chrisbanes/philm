@@ -2,7 +2,6 @@ package app.philm.in.fragments;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeIntents;
-import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.common.base.Objects;
@@ -65,6 +64,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         ParallaxContentScrollView.OnContentViewScrollListener {
 
     private static final Date DATE = new Date();
+    private static final float BOTTOM_INSET_ALPHA = 0.75f;
 
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
@@ -219,6 +219,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     public void onResume() {
         super.onResume();
         mParallaxScrollView.scrollScrollViewTo(mScrollViewY);
+        setBottomInsetAlpha(BOTTOM_INSET_ALPHA);
     }
 
     @Override

@@ -27,6 +27,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -132,19 +133,26 @@ public class PinnedSectionListView extends ListView {
                 return; // nothing to do
             }
 
-            final boolean isFirstVisibleItemSection =
-                    isItemViewTypePinned(adapter, adapter.getItemViewType(firstVisibleItem));
+            firstVisibleItem = getActualFirstVisibleItem(firstVisibleItem);
+
+            Log.d("PinnedSectionListView", "First visible item: " + firstVisibleItem);
+
+            final boolean isFirstVisibleItemSection = isItemViewTypePinned(adapter,
+                    adapter.getItemViewType(firstVisibleItem));
 
             if (isFirstVisibleItemSection) {
+                Log.d("PinnedSectionListView", "Visible item: " + firstVisibleItem);
+
                 View sectionView = getChildAt(0);
-                if (sectionView.getTop()
-                        == getPaddingTop()) { // view sticks to the top, no need for pinned shadow
+                if (sectionView.getTop() == getPaddingTop()) {
+                    // view sticks to the top, no need for pinned shadow
                     destroyPinnedShadow();
-                } else { // section doesn't stick to the top, make sure we have a pinned shadow
+                } else {
+                    // section doesn't stick to the top, make sure we have a pinned shadow
                     ensureShadowForPosition(firstVisibleItem, firstVisibleItem, visibleItemCount);
                 }
-
-            } else { // section is not at the first visible position
+            } else {
+                // section is not at the first visible position
                 int sectionPosition = findCurrentSectionPosition(firstVisibleItem);
                 if (sectionPosition > -1) { // we have section position
                     ensureShadowForPosition(sectionPosition, firstVisibleItem, visibleItemCount);
@@ -152,6 +160,17 @@ public class PinnedSectionListView extends ListView {
                     destroyPinnedShadow();
                 }
             }
+        }
+
+        private int getActualFirstVisibleItem(int firstVisibleItem) {
+            final int paddingTop = getPaddingTop();
+            for (int i = 0, z = getChildCount(); i < z; i++) {
+                View child = getChildAt(i);
+                if (child.getTop() <= paddingTop && child.getBottom() >= paddingTop) {
+                    return firstVisibleItem + i;
+                }
+            }
+            return firstVisibleItem;
         }
     };
 

@@ -645,10 +645,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private <T> List<ListItem<T>> createListItemList(final List<T> items) {
+    private <T> List<ListItem<T>> createListItemList(MovieQueryType header, final List<T> items) {
         Preconditions.checkNotNull(items, "items cannot be null");
 
         ArrayList<ListItem<T>> listItems = new ArrayList<ListItem<T>>(items.size());
+
+        if (header != null) {
+            listItems.add(new ListItem<T>(header));
+        }
+
         for (T item : items) {
             listItems.add(new ListItem<T>(item));
         }
@@ -986,6 +991,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         List<PhilmMovie> items = null;
+        boolean displayHeader = false;
+
         List<Filter> sections = null;
         List<Filter> sectionProcessingOrder = null;
 
@@ -1035,6 +1042,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (movie != null) {
                     items = movie.getRelated();
                 }
+                displayHeader = true;
                 break;
         }
 
@@ -1045,7 +1053,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (items == null) {
             ui.setItems(null);
         } else if (PhilmCollections.isEmpty(sections)) {
-            ui.setItems(createListItemList(items));
+            ui.setItems(createListItemList(displayHeader ? queryType : null, items));
 
             if (isLoggedIn()) {
                 ui.allowedBatchOperations(MovieOperation.MARK_SEEN,
@@ -1065,7 +1073,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (movie != null) {
                     updateDisplayTitle(movie.getTitle());
                     if (!PhilmCollections.isEmpty(movie.getCast())) {
-                        ui.setItems(createListItemList(movie.getCast()));
+                        ui.setItems(createListItemList(MovieQueryType.CAST, movie.getCast()));
                     }
                 }
                 break;

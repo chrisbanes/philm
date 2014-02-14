@@ -1,15 +1,13 @@
 package app.philm.in.adapters;
 
+import com.google.common.base.Objects;
+
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.google.common.base.Objects;
-
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import app.philm.in.R;
@@ -83,7 +81,11 @@ public class MovieCastSectionedListAdapter extends BaseAdapter implements
                 break;
             }
             case ListItem.TYPE_SECTION:
-                ((TextView) view).setText(StringManager.getStringResId(item.getFilter()));
+                if (item.getFilter() != null) {
+                    ((TextView) view).setText(StringManager.getStringResId(item.getFilter()));
+                } else if (item.getHeader() != null) {
+                    ((TextView) view).setText(StringManager.getStringResId(item.getHeader()));
+                }
                 break;
         }
 

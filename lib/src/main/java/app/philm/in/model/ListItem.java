@@ -8,19 +8,24 @@ public class ListItem<T> {
     public static final int TYPE_SECTION = 1;
 
     private final int type;
-    private final T item;
-    private final MovieController.Filter filter;
+
+    private T item;
+    private MovieController.MovieQueryType header;
+    private MovieController.Filter filter;
 
     public ListItem(T item) {
         type = TYPE_ITEM;
-        filter = null;
         this.item = item;
     }
 
     public ListItem(MovieController.Filter filter) {
         type = TYPE_SECTION;
         this.filter = filter;
-        item = null;
+    }
+
+    public ListItem(MovieController.MovieQueryType queryType) {
+        type = TYPE_SECTION;
+        header = queryType;
     }
 
     public int getType() {
@@ -33,6 +38,10 @@ public class ListItem<T> {
 
     public MovieController.Filter getFilter() {
         return filter;
+    }
+
+    public MovieController.MovieQueryType getHeader() {
+        return header;
     }
 
     @Override

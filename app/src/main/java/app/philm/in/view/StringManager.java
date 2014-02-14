@@ -30,6 +30,10 @@ public class StringManager {
                 return R.string.recommended_title;
             case NOW_PLAYING:
                 return R.string.in_theatres_title;
+            case RELATED:
+                return R.string.related_movies;
+            case CAST:
+                return R.string.cast_movies;
         }
         return R.string.app_name;
     }

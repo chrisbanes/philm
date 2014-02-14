@@ -98,7 +98,11 @@ public class MovieSectionedListAdapter extends BaseAdapter implements
                 break;
             }
             case ListItem.TYPE_SECTION:
-                ((TextView) view).setText(StringManager.getStringResId(item.getFilter()));
+                if (item.getFilter() != null) {
+                    ((TextView) view).setText(StringManager.getStringResId(item.getFilter()));
+                } else if (item.getHeader() != null) {
+                    ((TextView) view).setText(StringManager.getStringResId(item.getHeader()));
+                }
                 break;
         }
 

@@ -1,6 +1,6 @@
 package app.philm.in.tasks;
 
-import com.uwetrottmann.tmdb.entities.ReleasesResult;
+import com.uwetrottmann.tmdb.entities.Releases;
 
 import javax.inject.Inject;
 
@@ -10,7 +10,7 @@ import app.philm.in.state.MoviesState;
 import app.philm.in.util.CountryProvider;
 import retrofit.RetrofitError;
 
-public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesResult> {
+public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<Releases> {
 
     @Inject CountryProvider mCountryProvider;
     private final int mId;
@@ -21,7 +21,7 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
     }
 
     @Override
-    public ReleasesResult doBackgroundCall() throws RetrofitError {
+    public Releases doBackgroundCall() throws RetrofitError {
         return getTmdbClient().moviesService().releases(mId);
     }
 
@@ -31,7 +31,7 @@ public class FetchTmdbMoviesReleasesRunnable extends BaseMovieRunnable<ReleasesR
     }
 
     @Override
-    public void onSuccess(ReleasesResult result) {
+    public void onSuccess(Releases result) {
         final String countryCode = mCountryProvider.getTwoLetterCountryCode();
 
         PhilmMovie movie = mMoviesState.getMovie(mId);

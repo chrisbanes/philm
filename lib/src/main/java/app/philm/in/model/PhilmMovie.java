@@ -8,7 +8,7 @@ import com.jakewharton.trakt.enumerations.Rating;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.Genre;
-import com.uwetrottmann.tmdb.entities.ReleasesResult;
+import com.uwetrottmann.tmdb.entities.Releases;
 import com.uwetrottmann.tmdb.entities.SpokenLanguage;
 import com.uwetrottmann.tmdb.entities.Trailer;
 import com.uwetrottmann.tmdb.entities.Trailers;
@@ -323,14 +323,14 @@ public class PhilmMovie implements PhilmModel {
         setTrailers(philmTrailers);
     }
 
-    public void updateWithReleases(final ReleasesResult releasesResult, final String countryCode) {
-        Preconditions.checkNotNull(releasesResult, "releasesResult cannot be null");
+    public void updateWithReleases(final Releases releases, final String countryCode) {
+        Preconditions.checkNotNull(releases, "releases cannot be null");
 
-        if (!PhilmCollections.isEmpty(releasesResult.countries)) {
+        if (!PhilmCollections.isEmpty(releases.countries)) {
             CountryRelease countryRelease = null;
             CountryRelease usRelease = null;
 
-            for (CountryRelease release : releasesResult.countries) {
+            for (CountryRelease release : releases.countries) {
                 if (countryCode != null && countryCode.equalsIgnoreCase(release.iso_3166_1)) {
                     countryRelease = release;
                     break;

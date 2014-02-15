@@ -6,7 +6,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.+'
     }
@@ -31,7 +31,7 @@ def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
+    buildToolsVersion "19.0.1"
 
     defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild

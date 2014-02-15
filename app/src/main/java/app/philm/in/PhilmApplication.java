@@ -8,9 +8,9 @@ import javax.inject.Inject;
 
 import app.philm.in.controllers.MainController;
 import app.philm.in.modules.ApplicationModule;
-import app.philm.in.modules.library.ContextProvider;
 import app.philm.in.modules.TaskProvider;
 import app.philm.in.modules.ViewUtilProvider;
+import app.philm.in.modules.library.ContextProvider;
 import app.philm.in.modules.library.InjectorModule;
 import app.philm.in.util.Injector;
 import dagger.ObjectGraph;

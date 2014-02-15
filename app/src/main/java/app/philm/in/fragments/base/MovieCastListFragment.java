@@ -11,7 +11,6 @@ import app.philm.in.adapters.MovieCastSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmCast;
-import app.philm.in.model.PhilmMovie;
 import app.philm.in.view.PinnedSectionListView;
 
 

@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Subscribe;
 
-import java.util.Arrays;
-
 import javax.inject.Inject;
 
 import app.philm.in.Display;

@@ -2,8 +2,6 @@ package app.philm.in.adapters;
 
 import com.google.common.base.Objects;
 
-import com.squareup.picasso.Callback;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.view.View;

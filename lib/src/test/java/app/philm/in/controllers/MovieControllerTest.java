@@ -3,7 +3,6 @@ package app.philm.in.controllers;
 import com.squareup.otto.Bus;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -18,8 +17,6 @@ import app.philm.in.trakt.Trakt;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)

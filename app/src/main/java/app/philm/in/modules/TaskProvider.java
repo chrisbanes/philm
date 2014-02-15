@@ -21,6 +21,7 @@ import app.philm.in.tasks.FetchTraktLibraryRunnable;
 import app.philm.in.tasks.FetchTraktRecommendationsRunnable;
 import app.philm.in.tasks.FetchTraktRelatedMoviesRunnable;
 import app.philm.in.tasks.FetchTraktTrendingRunnable;
+import app.philm.in.tasks.FetchTraktWatchingRunnable;
 import app.philm.in.tasks.FetchTraktWatchlistRunnable;
 import app.philm.in.tasks.MarkTraktMovieSeenRunnable;
 import app.philm.in.tasks.MarkTraktMovieUnseenRunnable;
@@ -54,7 +55,8 @@ import dagger.Module;
                 RemoveFromTraktWatchlistRunnable.class,
                 SubmitTraktMovieRatingRunnable.class,
                 FetchTmdbMovieCastRunnable.class,
-                FetchTmdbMovieTrailersRunnable.class
+                FetchTmdbMovieTrailersRunnable.class,
+                FetchTraktWatchingRunnable.class
         },
         includes = {
                 PersistenceProvider.class,

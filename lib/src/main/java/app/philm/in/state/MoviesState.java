@@ -64,6 +64,10 @@ public interface MoviesState extends BaseState {
 
     public void setTmdbConfiguration(TmdbConfiguration configuration);
 
+    public void setWatchingMovie(PhilmMovie movie);
+
+    public PhilmMovie getWatchingMovie();
+
     public static class LibraryChangedEvent {}
 
     public static class PopularChangedEvent {}
@@ -81,6 +85,8 @@ public interface MoviesState extends BaseState {
     public static class RecommendedChangedEvent {}
 
     public static class TmdbConfigurationChangedEvent {}
+
+    public static class WatchingMovieUpdatedEvent {}
 
     public static class UiCausedEvent<T> extends BaseArgumentEvent<T> {
         public final int callingId;

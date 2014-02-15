@@ -38,6 +38,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private List<PhilmMovie> mWatchlist;
     private List<PhilmMovie> mRecommended;
 
+    private PhilmMovie mWatching;
+
     private Set<MovieController.Filter> mFilters;
 
     private PhilmAccount mAccount;
@@ -231,6 +233,17 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     public void setUpcoming(MoviePaginatedResult upcoming) {
         mUpcoming = upcoming;
         mEventBus.post(new UpcomingChangedEvent());
+    }
+
+    @Override
+    public PhilmMovie getWatchingMovie() {
+        return mWatching;
+    }
+
+    @Override
+    public void setWatchingMovie(PhilmMovie movie) {
+        mWatching = movie;
+        mEventBus.post(new WatchingMovieUpdatedEvent());
     }
 
     ///////////////////////////

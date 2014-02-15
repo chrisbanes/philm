@@ -41,6 +41,7 @@ import app.philm.in.tasks.FetchTmdbPopularRunnable;
 import app.philm.in.tasks.FetchTmdbRelatedMoviesRunnable;
 import app.philm.in.tasks.FetchTmdbSearchQueryRunnable;
 import app.philm.in.tasks.FetchTmdbUpcomingRunnable;
+import app.philm.in.tasks.FetchTraktWatchingRunnable;
 import app.philm.in.tasks.FetchTraktDetailMovieRunnable;
 import app.philm.in.tasks.FetchTraktLibraryRunnable;
 import app.philm.in.tasks.FetchTraktRecommendationsRunnable;
@@ -232,6 +233,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
+    public void onMovieWatchingChanged(MoviesState.WatchlistChangedEvent event) {
+        PhilmMovie movie = mMoviesState.getWatchingMovie();
+        if (movie != null) {
+            fetchDetailMovieIfNeeded(0, movie.getImdbId());
+        }
+    }
+
+    @Subscribe
     public void onNetworkError(BaseState.ShowErrorEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null && null != event.error) {
@@ -293,6 +302,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (mMoviesState.getTmdbConfiguration() == null) {
             fetchTmdbConfiguration();
         }
+
+        fetchWatchingMovieIfNeeded();
     }
 
     @Override
@@ -903,6 +914,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (mPopulatedWatchlistFromDb && PhilmCollections.isEmpty(mMoviesState.getWatchlist())) {
             fetchWatchlist(callingId);
         }
+    }
+
+    private void fetchWatchingMovieIfNeeded() {
+        // TODO Add some checks for time
+        fetchWatchingMovie();
+    }
+
+    private void fetchWatchingMovie() {
+        executeTask(new FetchTraktWatchingRunnable(0, mMoviesState.getUsername()));
     }
 
     private List<PhilmMovie> filterMovies(List<PhilmMovie> movies) {

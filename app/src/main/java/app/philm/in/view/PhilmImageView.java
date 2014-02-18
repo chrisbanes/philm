@@ -86,7 +86,7 @@ public class PhilmImageView extends ImageView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (changed && canLoadImage() && mPicassoHandler != null) {
+        if (changed && canLoadImage() && mPicassoHandler != null && !mPicassoHandler.isStarted()) {
             loadUrlImmediate();
         }
     }
@@ -108,6 +108,7 @@ public class PhilmImageView extends ImageView {
         final String url = mPicassoHandler.getUrl(mImageHelper, this);
 
         if (url != null) {
+            mPicassoHandler.markAsStarted();
             Picasso.with(getContext()).load(url).into(mPicassoTarget);
 
             if (Constants.DEBUG) {
@@ -137,7 +138,8 @@ public class PhilmImageView extends ImageView {
     private static abstract class PicassoHandler {
 
         private final Listener mCallback;
-        private boolean mIsFinished;
+
+        private boolean mIsStarted;
 
         PicassoHandler(Listener callback) {
             mCallback = callback;
@@ -145,12 +147,16 @@ public class PhilmImageView extends ImageView {
 
         public abstract String getUrl(ImageHelper helper, ImageView imageView);
 
-        void markAsFinished() {
-            mIsFinished = true;
+        void markAsStarted() {
+            mIsStarted = true;
         }
 
-        boolean isFinished() {
-            return mIsFinished;
+        void markAsFinished() {
+            mIsStarted = false;
+        }
+
+        boolean isStarted() {
+            return mIsStarted;
         }
     }
 

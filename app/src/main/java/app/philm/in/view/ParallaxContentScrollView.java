@@ -82,31 +82,19 @@ public class ParallaxContentScrollView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (changed) {
-            if (mOriginalHeaderViewHeight != mHeaderView.getHeight()) {
-                mOriginalHeaderViewHeight = mHeaderView.getHeight();
-            }
-
-            final int targetHeaderHeight = mOriginalHeaderViewHeight + mHeaderViewHeightDiff;
-            if (mHeaderView.getLayoutParams().height != targetHeaderHeight) {
-                mHeaderView.getLayoutParams().height = targetHeaderHeight;
-
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mHeaderView.requestLayout();
-                    }
-                });
-            }
-
-            updateContentViewPaddingTop(targetHeaderHeight);
-
-            updateOffset(mContentViewScrollView.getScrollY());
+        if (mOriginalHeaderViewHeight <= 0) {
+            mOriginalHeaderViewHeight = mHeaderView.getHeight();
         }
+
+        final int targetHeaderHeight = mOriginalHeaderViewHeight + mHeaderViewHeightDiff;
+        mHeaderView.layout(left, 0, right, targetHeaderHeight);
+
+        updateContentViewPaddingTop();
+        updateOffset(mContentViewScrollView.getScrollY());
     }
 
-    void updateContentViewPaddingTop(int headerHeight) {
-        final int targetPaddingTop = headerHeight - mContentOverlaySize;
+    void updateContentViewPaddingTop() {
+        final int targetPaddingTop = mHeaderView.getHeight() - mContentOverlaySize;
 
         if (mContentViewWrapper.getPaddingTop() != targetPaddingTop) {
             mContentViewWrapper.post(new Runnable() {
@@ -132,12 +120,12 @@ public class ParallaxContentScrollView extends FrameLayout {
         if (y <= mHeaderView.getHeight()) {
             mHeaderView.setVisibility(View.VISIBLE);
 
-            int newTop = Math.round(-y * PARALLAX_FRICTION);
+            final int newTop = Math.round(-y * PARALLAX_FRICTION);
             mHeaderView.offsetTopAndBottom(newTop - mHeaderView.getTop());
 
             if (mContentViewScrollListener != null) {
-                mContentViewScrollListener
-                        .onContentViewScrolled(y / (float) mHeaderView.getHeight());
+                mContentViewScrollListener.onContentViewScrolled(
+                        y / (float) mHeaderView.getHeight());
             }
         } else {
             mHeaderView.setVisibility(View.INVISIBLE);

@@ -174,6 +174,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             populateUi(ui);
+        } else {
+            populateUis();
         }
     }
 
@@ -188,7 +190,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
-        populateUis();
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null) {
+            populateUi(ui);
+        } else {
+            populateUis();
+        }
     }
 
     @Subscribe

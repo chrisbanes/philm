@@ -195,6 +195,11 @@ public interface MoviesState extends BaseState {
         @Override
         public PhilmMovie map(com.jakewharton.trakt.entities.Movie entity) {
             PhilmMovie movie = getMovie(entity.imdb_id);
+
+            if (movie == null && entity.tmdbId != null) {
+                movie = getMovie(entity.tmdbId);
+            }
+
             if (movie == null) {
                 // No movie, so create one
                 movie = new PhilmMovie();
@@ -218,6 +223,11 @@ public interface MoviesState extends BaseState {
         @Override
         public PhilmMovie map(com.uwetrottmann.tmdb.entities.Movie entity) {
             PhilmMovie movie = getMovie(String.valueOf(entity.id));
+
+            if (movie == null && entity.imdb_id != null) {
+                movie = getMovie(entity.imdb_id);
+            }
+
             if (movie == null) {
                 // No movie, so create one
                 movie = new PhilmMovie();

@@ -15,10 +15,9 @@ package app.philm.in.util;
 import android.graphics.Color;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
+import java.util.PriorityQueue;
 
 import app.philm.in.Constants;
 
@@ -40,6 +39,9 @@ import app.philm.in.Constants;
 public class MedianCutQuantizer {
 
     private static final String LOG_TAG = MedianCutQuantizer.class.getSimpleName();
+
+    private static final int MAX_ITERATIONS = 1000;
+    private static final float FRACTION_BY_POPULATION = 0.5f;
 
     private ColorNode[] imageColors = null;    // original (unique) image colors
     private ColorNode[] quantColors = null;    // quantized colors
@@ -92,24 +94,67 @@ public class MedianCutQuantizer {
             // image has fewer colors than Kmax
             rCols = imageColors;
         } else {
-            ColorBox initialBox = new ColorBox(0, K - 1, 0);
-            List<ColorBox> colorSet = new ArrayList<ColorBox>();
-            colorSet.add(initialBox);
-            int k = 1;
-            boolean done = false;
-            while (k < Kmax && !done) {
-                ColorBox nextBox = findBoxToSplit(colorSet);
-                if (nextBox != null) {
-                    ColorBox newBox = nextBox.splitBox();
-                    colorSet.add(newBox);
-                    k = k + 1;
-                } else {
-                    done = true;
-                }
+            final int populationMax = Math.round(Kmax * FRACTION_BY_POPULATION);
+
+            ColorBox initialBox = new ColorBox(0, K - 1);
+            PriorityQueue<ColorBox> pq1 = new PriorityQueue<ColorBox>(11,
+                    new Comparator<ColorBox>() {
+                        @Override
+                        public int compare(ColorBox lhs, ColorBox rhs) {
+                            return rhs.colorCount() - lhs.colorCount();
+                        }
+                    });
+
+            pq1.offer(initialBox);
+            iterateBoxs(pq1, populationMax);
+
+            PriorityQueue<ColorBox> pq2 = new PriorityQueue<ColorBox>(11,
+                    new Comparator<ColorBox>() {
+                        @Override
+                        public int compare(ColorBox lhs, ColorBox rhs) {
+                            return (rhs.colorCount() * rhs.volume()) - (lhs.colorCount() * lhs.volume());
+                        }
+                    });
+
+            while (pq1.peek() != null) {
+                pq2.offer(pq1.poll());
             }
-            rCols = averageColors(colorSet);
+            iterateBoxs(pq2, Kmax - pq2.size());
+
+            rCols = averageColors(pq2);
         }
         return rCols;
+    }
+
+    private void iterateBoxs(PriorityQueue<ColorBox> boxes, int targetColors) {
+        int nColors = 1;
+        int nIters = 0;
+
+        while (nIters < MAX_ITERATIONS) {
+            ColorBox box = boxes.poll();
+            if (box.colorCount() == 0) {
+                boxes.offer(box);
+                nIters++;
+                continue;
+            }
+
+            ColorBox box2 = box.splitBox();
+
+            // Lets re-offer the box
+            boxes.offer(box);
+
+            // If we have a second box, offer it too
+            if (box2 != null) {
+                boxes.offer(box2);
+                nColors++;
+            }
+
+            if (nColors >= targetColors) {
+                return;
+            }
+
+            nIters++;
+        }
     }
 
     public void quantizeImage(int[] pixels) {
@@ -141,29 +186,13 @@ public class MedianCutQuantizer {
         return minIdx;
     }
 
-    private ColorBox findBoxToSplit(List<ColorBox> colorBoxes) {
-        ColorBox boxToSplit = null;
-        // from the set of splitable color boxes
-        // select the one with the minimum level
-        int minLevel = Integer.MAX_VALUE;
-        for (ColorBox box : colorBoxes) {
-            if (box.colorCount() >= 2) {    // box can be split
-                if (box.level < minLevel) {
-                    boxToSplit = box;
-                    minLevel = box.level;
-                }
-            }
-        }
-        return boxToSplit;
-    }
-
-    private ColorNode[] averageColors(List<ColorBox> colorBoxes) {
+    private ColorNode[] averageColors(PriorityQueue<ColorBox> colorBoxes) {
         int n = colorBoxes.size();
         ColorNode[] avgColors = new ColorNode[n];
+
         int i = 0;
-        for (ColorBox box : colorBoxes) {
-            avgColors[i] = box.getAverageColor();
-            i = i + 1;
+        while (colorBoxes.peek() != null) {
+            avgColors[i++] = colorBoxes.poll().getAverageColor();
         }
         return avgColors;
     }
@@ -229,21 +258,25 @@ public class MedianCutQuantizer {
 
         int lower = 0;    // lower index into 'imageColors'
         int upper = -1; // upper index into 'imageColors'
-        int level;        // split level o this color box
         int count = 0;    // number of pixels represented by thos color box
+        int volume = 0;
+
         int rmin, rmax;    // range of contained colors in red dimension
         int gmin, gmax;    // range of contained colors in green dimension
         int bmin, bmax;    // range of contained colors in blue dimension
 
-        ColorBox(int lower, int upper, int level) {
+        ColorBox(int lower, int upper) {
             this.lower = lower;
             this.upper = upper;
-            this.level = level;
             this.trim();
         }
 
         int colorCount() {
             return upper - lower;
+        }
+
+        int volume() {
+            return ((rmax - rmin + 1) * (gmax - gmin + 1) * (bmax - bmin + 1));
         }
 
         void trim() {
@@ -280,6 +313,7 @@ public class MedianCutQuantizer {
                     bmin = b;
                 }
             }
+            volume = ((rmax - rmin + 1) * (gmax - gmin + 1) * (bmax - bmin + 1));
         }
 
         // Split this color box at the median point along its
@@ -297,10 +331,8 @@ public class MedianCutQuantizer {
 
                 // now split this box at the median return the resulting new
                 // box.
-                int nextLevel = level + 1;
-                ColorBox newBox = new ColorBox(med + 1, upper, nextLevel);
+                ColorBox newBox = new ColorBox(med + 1, upper);
                 this.upper = med;
-                this.level = nextLevel;
                 this.trim();
                 return newBox;
             }
@@ -360,7 +392,7 @@ public class MedianCutQuantizer {
         public String toString() {
             String s = this.getClass().getSimpleName();
             s = s + " lower=" + lower + " upper=" + upper;
-            s = s + " count=" + count + " level=" + level;
+            s = s + " count=" + count;
             s = s + " rmin=" + rmin + " rmax=" + rmax;
             s = s + " gmin=" + gmin + " gmax=" + gmax;
             s = s + " bmin=" + bmin + " bmax=" + bmax;

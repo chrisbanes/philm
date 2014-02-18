@@ -1,7 +1,5 @@
 package app.philm.in.drawable;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
@@ -50,8 +48,6 @@ public class PercentageDrawable extends Drawable {
 
     private String mText;
 
-    private boolean mAntiClockwiseMode;
-
     private boolean mEnabled;
     private boolean mPressed;
 
@@ -78,23 +74,28 @@ public class PercentageDrawable extends Drawable {
     public void setTypeface(Typeface typeface) {
         mTextPaint.setTypeface(typeface);
         updateTextSize();
+        invalidateSelf();
     }
 
     public void setBackgroundCircleColor(int color) {
         mBackgroundArcPaint.setColor(color);
+        invalidateSelf();
     }
 
     public void setForegroundCircleColor(int color) {
         mForegroundCircleColor = color;
         mForegroundCirclePaint.setColor(color);
+        invalidateSelf();
     }
 
     public void setArcColor(int color) {
         mArcPaint.setColor(color);
+        invalidateSelf();
     }
 
     public void setTextColor(int color) {
         mTextPaint.setColor(color);
+        invalidateSelf();
     }
 
     public int getBackgroundCircleColor() {
@@ -117,16 +118,16 @@ public class PercentageDrawable extends Drawable {
     public void draw(Canvas canvas) {
         mBounds.set(getBounds());
 
-        float arcAngle = mCurrentValue * 360f;
-        final float arcStart;
-        if (mAntiClockwiseMode) {
-            arcStart = arcAngle - 90f;
-            arcAngle = 360f - arcAngle;
-        } else {
-            arcStart = -90f;
+        if (mMode == MODE_RATING) {
+            float arcAngle = mCurrentValue * 360f;
+            final float arcStart = -90f;
+            canvas.drawArc(mBounds, arcStart + arcAngle, 360f - arcAngle, true,
+                    mBackgroundArcPaint);
+            canvas.drawArc(mBounds, arcStart, arcAngle, true, mArcPaint);
+        } else if (mMode == MODE_PROMPT) {
+            canvas.drawCircle(mBounds.centerX(), mBounds.centerY(),
+                    mBounds.height() * BACKGROUND_CIRCLE_RADIUS_RATIO, mBackgroundArcPaint);
         }
-        canvas.drawArc(mBounds, arcStart + arcAngle, 360f - arcAngle, true, mBackgroundArcPaint);
-        canvas.drawArc(mBounds, arcStart, arcAngle, true, mArcPaint);
 
         canvas.drawCircle(mBounds.centerX(),
                 mBounds.centerY(),
@@ -262,7 +263,6 @@ public class PercentageDrawable extends Drawable {
             stop();
         }
 
-        mAntiClockwiseMode = false;
         mUserRating = rating;
         mMode = MODE_RATING;
 
@@ -278,7 +278,7 @@ public class PercentageDrawable extends Drawable {
     }
 
     public void showPrompt(String promptText) {
-        if (mMode == MODE_PROMPT && isRunning() == shouldAnimate()) {
+        if (mMode == MODE_PROMPT) {
             return;
         }
 
@@ -290,23 +290,6 @@ public class PercentageDrawable extends Drawable {
         mText = promptText;
         updateTextSize();
         invalidateSelf();
-
-        if (shouldAnimate()) {
-            mAnimator = createAnimator(0f, 1f);
-            mAnimator.setRepeatCount(ValueAnimator.INFINITE);
-            mAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                    mAntiClockwiseMode = !mAntiClockwiseMode;
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mAntiClockwiseMode = false;
-                }
-            });
-            mAnimator.start();
-        }
     }
 
     public void stop() {
@@ -323,11 +306,11 @@ public class PercentageDrawable extends Drawable {
         return mAnimator != null ? mAnimator.isRunning() : false;
     }
 
-    private ValueAnimator createAnimator(float startValue, float endValue) {
+    private ValueAnimator createAnimator(float... values) {
         ValueAnimator animator = new ValueAnimator();
         animator.setDuration(1250);
         animator.setInterpolator(INTERPOLATOR);
-        animator.setFloatValues(startValue, endValue);
+        animator.setFloatValues(values);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {

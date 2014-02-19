@@ -1267,6 +1267,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             switch (this) {
                 case DETAIL:
                 case RELATED:
+                case CAST:
                     return true;
                 default:
                     return false;

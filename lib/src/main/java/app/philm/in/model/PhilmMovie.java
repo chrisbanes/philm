@@ -20,10 +20,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import app.philm.in.Constants;
 import app.philm.in.trakt.TraktUtils;
 import app.philm.in.util.CountryProvider;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
+
+import static app.philm.in.util.TimeUtils.*;
 
 public class PhilmMovie implements PhilmModel {
 
@@ -111,12 +114,15 @@ public class PhilmMovie implements PhilmModel {
 
     String mainLanguageTitle;
 
-    long lastFetched;
-
-    String localizedCountryCode;
+    transient long lastFullFetchFromTraktStarted;
+    transient long lastFullFetchFromTmdbStarted;
+    long lastFullFetchFromTraktCompleted;
+    long lastFullFetchFromTmdbCompleted;
 
     boolean loadedFromTrakt;
     boolean loadedFromTmdb;
+
+    String localizedCountryCode;
 
     transient List<PhilmMovie> related;
     transient List<PhilmCast> cast;
@@ -206,8 +212,6 @@ public class PhilmMovie implements PhilmModel {
         if (!TextUtils.isEmpty(movie.certification)) {
             certification = movie.certification;
         }
-
-        lastFetched = System.currentTimeMillis();
     }
 
     public void setFromMovie(com.uwetrottmann.tmdb.entities.Movie movie) {
@@ -280,8 +284,6 @@ public class PhilmMovie implements PhilmModel {
         if (movie.trailers != null) {
             updateWithTrailers(movie.trailers);
         }
-
-        lastFetched = System.currentTimeMillis();
     }
 
     public void updateWithCast(final Credits credits) {
@@ -472,10 +474,6 @@ public class PhilmMovie implements PhilmModel {
         return overview;
     }
 
-    public long getLastFetchedTime() {
-        return lastFetched;
-    }
-
     public List<PhilmMovie> getRelated() {
         return related;
     }
@@ -522,12 +520,40 @@ public class PhilmMovie implements PhilmModel {
         return mainLanguageTitle;
     }
 
-    public void setLoadedFromTmdb(boolean loadedFromTmdb) {
-        this.loadedFromTmdb = loadedFromTmdb;
+    public boolean needFullFetchFromTmdb() {
+        return isPastThreshold(lastFullFetchFromTmdbStarted,
+                        Constants.FULL_MOVIE_DETAIL_ATTEMPT_THRESHOLD)
+                && isPastThreshold(lastFullFetchFromTmdbCompleted,
+                        Constants.STALE_MOVIE_DETAIL_THRESHOLD);
     }
 
-    public void setLoadedFromTrakt(boolean loadedFromTrakt) {
-        this.loadedFromTrakt = loadedFromTrakt;
+    public boolean needFullFetchFromTrakt() {
+        return isPastThreshold(lastFullFetchFromTraktStarted,
+                Constants.FULL_MOVIE_DETAIL_ATTEMPT_THRESHOLD)
+                && isPastThreshold(lastFullFetchFromTraktCompleted,
+                Constants.STALE_MOVIE_DETAIL_THRESHOLD);
+    }
+
+    public void markFullFetchStarted(final int type) {
+        switch (type) {
+            case TYPE_TMDB:
+                lastFullFetchFromTmdbStarted = System.currentTimeMillis();
+                break;
+            case TYPE_TRAKT:
+                lastFullFetchFromTraktStarted = System.currentTimeMillis();
+                break;
+        }
+    }
+
+    public void markFullFetchCompleted(final int type) {
+        switch (type) {
+            case TYPE_TMDB:
+                lastFullFetchFromTmdbCompleted = System.currentTimeMillis();
+                break;
+            case TYPE_TRAKT:
+                lastFullFetchFromTraktCompleted = System.currentTimeMillis();
+                break;
+        }
     }
 
     public boolean isLoadedFromTmdb() {

@@ -14,6 +14,7 @@ public class Constants {
     public static final long FUTURE_SOON_THRESHOLD = 30 * DAY_IN_MILLIS;
 
     public static final long STALE_MOVIE_DETAIL_THRESHOLD = 2 * DAY_IN_MILLIS;
+    public static final long FULL_MOVIE_DETAIL_ATTEMPT_THRESHOLD = 60 * 60 * 1000; // 60 secs
 
     public static final int FILTER_HIGHLY_RATED = 70;
 

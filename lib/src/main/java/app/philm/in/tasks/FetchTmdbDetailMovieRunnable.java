@@ -7,6 +7,7 @@ import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
 
 import javax.inject.Inject;
 
+import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
@@ -39,6 +40,7 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
     @Override
      public void onSuccess(Movie result) {
         PhilmMovie movie = getTmdbEntityMapper().map(result);
+        movie.markFullFetchCompleted(PhilmModel.TYPE_TMDB);
 
         // Need to manually update releases here due to country code
         if (result.releases != null) {
@@ -62,7 +64,6 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
         if (re.getResponse() != null && re.getResponse().getStatus() == 404) {
             PhilmMovie movie = mMoviesState.getMovie(mId);
             if (movie != null) {
-                movie.setLoadedFromTmdb(false);
                 getDbHelper().put(movie);
                 getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));
             }

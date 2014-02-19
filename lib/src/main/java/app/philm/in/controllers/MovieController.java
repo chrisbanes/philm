@@ -21,6 +21,7 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmCast;
+import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkError;
@@ -41,12 +42,12 @@ import app.philm.in.tasks.FetchTmdbPopularRunnable;
 import app.philm.in.tasks.FetchTmdbRelatedMoviesRunnable;
 import app.philm.in.tasks.FetchTmdbSearchQueryRunnable;
 import app.philm.in.tasks.FetchTmdbUpcomingRunnable;
-import app.philm.in.tasks.FetchTraktWatchingRunnable;
 import app.philm.in.tasks.FetchTraktDetailMovieRunnable;
 import app.philm.in.tasks.FetchTraktLibraryRunnable;
 import app.philm.in.tasks.FetchTraktRecommendationsRunnable;
 import app.philm.in.tasks.FetchTraktRelatedMoviesRunnable;
 import app.philm.in.tasks.FetchTraktTrendingRunnable;
+import app.philm.in.tasks.FetchTraktWatchingRunnable;
 import app.philm.in.tasks.FetchTraktWatchlistRunnable;
 import app.philm.in.tasks.MarkTraktMovieSeenRunnable;
 import app.philm.in.tasks.MarkTraktMovieUnseenRunnable;
@@ -647,22 +648,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         executeTask(new AddToTraktWatchlistRunnable(callingId, ids));
     }
 
-    private void checkDetailMovieResult(final int callingId, PhilmMovie movie) {
-        if (PhilmCollections.isEmpty(movie.getRelated())) {
-            fetchRelatedMovies(callingId, movie);
-        }
-
-        if (TextUtils.isEmpty(movie.getReleaseCountryCode())) {
-            fetchMovieReleases(callingId, movie.getTmdbId());
-        }
-
-        if (PhilmCollections.isEmpty(movie.getCast())) {
-            fetchCast(callingId, movie);
-        }
-
-        if (PhilmCollections.isEmpty(movie.getTrailers())) {
-            fetchTrailers(callingId, movie);
-        }
+    private void checkDetailMovieResult(int callingId, PhilmMovie movie) {
+        Preconditions.checkNotNull(movie, "movie cannot be null");
+        fetchDetailMovieIfNeeded(callingId, movie, false);
     }
 
     private <T> List<ListItem<T>> createListItemList(MovieQueryType header, final List<T> items) {
@@ -743,24 +731,34 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void fetchDetailMovie(final int callingId, String id) {
         Preconditions.checkNotNull(id, "id cannot be null");
 
-        PhilmMovie movie = mMoviesState.getMovie(id);
-        if (movie != null && movie.getTmdbId() != null) {
-            fetchDetailMovieFromTmdb(callingId, movie.getTmdbId());
-
-            if (isLoggedIn()) {
-                fetchDetailMovieFromTrakt(callingId, id);
-            }
+        final PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null) {
+            fetchDetailMovieIfNeeded(callingId, movie, true);
         } else {
+            // TODO Try and parse id to guess type
             fetchDetailMovieFromTrakt(callingId, id);
         }
     }
 
     private void fetchDetailMovieFromTmdb(final int callingId, int id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null) {
+            movie.markFullFetchStarted(PhilmModel.TYPE_TMDB);
+        }
+
         executeTask(new FetchTmdbDetailMovieRunnable(callingId, id));
     }
 
     private void fetchDetailMovieFromTrakt(final int callingId, String id) {
         Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null) {
+            movie.markFullFetchStarted(PhilmModel.TYPE_TRAKT);
+        }
+
         executeTask(new FetchTraktDetailMovieRunnable(callingId, id));
     }
 
@@ -768,10 +766,28 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         Preconditions.checkNotNull(id, "id cannot be null");
 
         PhilmMovie cached = mMoviesState.getMovie(id);
-        if (cached == null || requireMovieDetailFetch(cached)) {
+        if (cached == null) {
             fetchDetailMovie(callingId, id);
         } else {
-            checkDetailMovieResult(callingId, cached);
+            fetchDetailMovieIfNeeded(callingId, cached, false);
+        }
+    }
+
+    private void fetchDetailMovieIfNeeded(int callingId, PhilmMovie movie, boolean force) {
+        Preconditions.checkNotNull(movie, "movie cannot be null");
+
+        if (isLoggedIn() && (force || movie.needFullFetchFromTrakt())) {
+            if (movie.getImdbId() != null) {
+                fetchDetailMovieFromTrakt(callingId, movie.getImdbId());
+            } else if (movie.getTmdbId() != null) {
+                fetchDetailMovieFromTrakt(callingId, String.valueOf(movie.getTmdbId()));
+            }
+        }
+
+        if (force || movie.needFullFetchFromTmdb()) {
+            if (movie.getTmdbId() != null) {
+                fetchDetailMovieFromTmdb(callingId, movie.getTmdbId());
+            }
         }
     }
 
@@ -993,11 +1009,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
 
         if (movie != null) {
-            final boolean canUpdateTrack = isLoggedIn() && movie.isLoadedFromTrakt();
-            ui.setRateCircleEnabled(canUpdateTrack);
-            ui.setCollectionButtonEnabled(canUpdateTrack);
-            ui.setWatchlistButtonEnabled(canUpdateTrack);
-            ui.setToggleWatchedButtonEnabled(canUpdateTrack);
+            final boolean canUpdateTrakt = isLoggedIn() && movie.isLoadedFromTrakt();
+            ui.setRateCircleEnabled(canUpdateTrakt);
+            ui.setCollectionButtonEnabled(canUpdateTrakt);
+            ui.setWatchlistButtonEnabled(canUpdateTrakt);
+            ui.setToggleWatchedButtonEnabled(canUpdateTrakt);
 
             ui.setMovie(movie);
         }
@@ -1166,13 +1182,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 mMoviesState.getFilters().remove(mutualFilter);
             }
         }
-    }
-
-    private boolean requireMovieDetailFetch(PhilmMovie movie) {
-        Preconditions.checkNotNull(movie, "movie cannot be null");
-        return isAfterThreshold(movie.getLastFetchedTime(),
-                Constants.STALE_MOVIE_DETAIL_THRESHOLD)
-                || TextUtils.isEmpty(movie.getOverview());
     }
 
     public static enum Filter {

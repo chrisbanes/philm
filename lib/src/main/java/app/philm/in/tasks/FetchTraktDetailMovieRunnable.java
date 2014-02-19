@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Movie;
 
+import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
@@ -26,6 +27,8 @@ public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
     @Override
     public void onSuccess(Movie result) {
         PhilmMovie movie = getTraktEntityMapper().map(result);
+        movie.markFullFetchCompleted(PhilmModel.TYPE_TRAKT);
+
         checkPhilmState(movie);
         getDbHelper().put(movie);
 
@@ -37,7 +40,6 @@ public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
         if (re.getResponse() != null && re.getResponse().getStatus() == 404) {
             PhilmMovie movie = mMoviesState.getMovie(mId);
             if (movie != null) {
-                movie.setLoadedFromTrakt(false);
                 getDbHelper().put(movie);
                 getEventBus().post(
                         new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));

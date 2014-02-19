@@ -10,6 +10,10 @@ public class TimeUtils {
         return isInPast(time - threshold);
     }
 
+    public static boolean isPastThreshold(final long time, final long threshold) {
+        return isInPast(time + threshold);
+    }
+
     public static boolean isInPast(final long time) {
         return time <= System.currentTimeMillis();
     }

@@ -28,11 +28,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -102,11 +100,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private MovieDetailInfoLayout mGenresInfoLayout;
     private MovieDetailInfoLayout mLanguageInfoLayout;
 
-    private ViewSwitcher mCastSwitcher;
     private LinearLayout mCastLayout;
-    private ViewSwitcher mRelatedSwitcher;
     private LinearLayout mRelatedLayout;
-    private ViewSwitcher mTrailersSwitcher;
     private LinearLayout mTrailersLayout;
 
     private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
@@ -168,13 +163,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         mCollectionButton.setOnClickListener(this);
         CheatSheet.setup(mCollectionButton);
 
-        mRelatedSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_related);
         mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
-
-        mCastSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_cast);
         mCastLayout = (LinearLayout) view.findViewById(R.id.layout_cast);
-
-        mTrailersSwitcher = (ViewSwitcher) view.findViewById(R.id.viewswitcher_trailers);
         mTrailersLayout = (LinearLayout) view.findViewById(R.id.layout_trailers);
 
         mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
@@ -245,21 +235,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         if (movie != null && hasCallbacks()) {
             getCallbacks().onTitleChanged(movie.getTitle());
         }
-    }
-
-    @Override
-    public void showRelatedMoviesLoadingProgress(final boolean visible) {
-        mRelatedSwitcher.setDisplayedChild(visible ? 1 : 0);
-    }
-
-    @Override
-    public void showMovieCastLoadingProgress(final boolean visible) {
-        mCastSwitcher.setDisplayedChild(visible ? 1 : 0);
-    }
-
-    @Override
-    public void showTrailersLoadingProgress(boolean visible) {
-        mTrailersSwitcher.setDisplayedChild(visible ? 1 : 0);
     }
 
     @Override
@@ -360,21 +335,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         mRatingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
         mRatingBarLayout.setRatingCircleClickListener(this);
 
-        final List<PhilmMovie> related = mMovie.getRelated();
-        if (related == null || related.size() != mRelatedLayout.getChildCount()) {
-            populateRelatedMovies();
-        }
-
-        final List<PhilmCast> cast = mMovie.getCast();
-        if (cast == null || cast.size() != mCastLayout.getChildCount()) {
-            populateMovieCast();
-        }
-
-        final List<PhilmTrailer> trailers = mMovie.getTrailers();
-        if (trailers == null || trailers.size() != mTrailersLayout.getChildCount()) {
-            populateTrailers();
-        }
-
         if (mMovie.getRuntime() > 0) {
             mRunTimeInfoLayout.setContentText(
                     getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
@@ -402,6 +362,27 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {
             mLanguageInfoLayout.setContentText(mMovie.getMainLanguageTitle());
             mLanguageInfoLayout.setVisibility(View.VISIBLE);
+        }
+
+        if (PhilmCollections.isEmpty(mMovie.getRelated())) {
+            mRelatedCardLayout.setVisibility(View.GONE);
+        } else {
+            mRelatedCardLayout.setVisibility(View.VISIBLE);
+            populateRelatedMovies();
+        }
+
+        if (PhilmCollections.isEmpty(mMovie.getCast())) {
+            mCastCardLayout.setVisibility(View.GONE);
+        } else {
+            mCastCardLayout.setVisibility(View.VISIBLE);
+            populateMovieCast();
+        }
+
+        if (PhilmCollections.isEmpty(mMovie.getTrailers())) {
+            mTrailersCardLayout.setVisibility(View.GONE);
+        } else {
+            mTrailersCardLayout.setVisibility(View.VISIBLE);
+            populateTrailers();
         }
 
         if (mMovie.getColorScheme() != null) {

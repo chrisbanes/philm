@@ -1,250 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <app.philm.in.view.ParallaxContentScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:internal="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/content_scrollview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    internal:contentOverlay="@dimen/movie_detail_fanart_height">
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:internal="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/content_scrollview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      internal:contentOverlay="@dimen/movie_detail_fanart_height">
 
     <app.philm.in.view.PhilmImageView
-        android:id="@+id/imageview_fanart"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/movie_detail_fanart_height"
-        android:scaleType="centerCrop" />
+          android:id="@+id/imageview_fanart"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/movie_detail_fanart_height"
+          android:scaleType="centerCrop" />
 
     <LinearLayout
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:animateLayoutChanges="true">
+          android:id="@+id/content"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:animateLayoutChanges="true">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/movie_detail_fanart_height"
-            android:background="@drawable/black_translucent_gradient"
-            android:baselineAligned="false"
-            android:gravity="bottom"
-            android:paddingLeft="@dimen/movie_detail_fanart_padding"
-            android:paddingBottom="@dimen/movie_detail_fanart_padding"
-            android:paddingRight="@dimen/movie_detail_fanart_padding">
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/movie_detail_fanart_height"
+              android:background="@drawable/black_translucent_gradient"
+              android:baselineAligned="false"
+              android:gravity="bottom"
+              android:paddingLeft="@dimen/movie_detail_fanart_padding"
+              android:paddingBottom="@dimen/movie_detail_fanart_padding"
+              android:paddingRight="@dimen/movie_detail_fanart_padding">
 
             <app.philm.in.view.PhilmImageView
-                android:id="@+id/imageview_poster"
-                android:layout_width="@dimen/movie_detail_poster_width"
-                android:layout_height="@dimen/movie_detail_poster_height"
-                android:scaleType="centerCrop"
-                android:layout_marginRight="@dimen/movie_detail_fanart_padding"
-                android:background="?android:attr/colorForeground"
-                android:padding="1dp"
-                android:cropToPadding="true" />
+                  android:id="@+id/imageview_poster"
+                  android:layout_width="@dimen/movie_detail_poster_width"
+                  android:layout_height="@dimen/movie_detail_poster_height"
+                  android:scaleType="centerCrop"
+                  android:layout_marginRight="@dimen/movie_detail_fanart_padding"
+                  android:background="?android:attr/colorForeground"
+                  android:padding="1dp"
+                  android:cropToPadding="true" />
 
             <app.philm.in.view.FontTextView
-                android:id="@+id/textview_title"
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                style="@style/Widget.Philm.Movie.Detail.Title" />
+                  android:id="@+id/textview_title"
+                  android:layout_width="0px"
+                  android:layout_weight="1"
+                  android:layout_height="match_parent"
+                  style="@style/Widget.Philm.Movie.Detail.Title" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="@dimen/spacing_major"
-            android:paddingBottom="@dimen/spacing_major"
-            android:background="?android:windowBackground">
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="@dimen/spacing_major"
+              android:paddingBottom="@dimen/spacing_major"
+              android:background="?android:windowBackground"
+              android:animateLayoutChanges="true">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_major"
-                android:layout_marginRight="@dimen/spacing_major"
-                android:layout_marginBottom="@dimen/spacing_minor"
-                style="?android:buttonBarStyle">
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/spacing_major"
+                  android:layout_marginRight="@dimen/spacing_major"
+                  android:layout_marginBottom="@dimen/spacing_minor"
+                  style="?android:buttonBarStyle">
 
                 <app.philm.in.view.CheckableImageButton
-                    android:id="@+id/btn_seen"
-                    android:layout_width="0px"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_btn_seen"
-                    style="?android:attr/borderlessButtonStyle" />
+                      android:id="@+id/btn_seen"
+                      android:layout_width="0px"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:src="@drawable/ic_btn_seen"
+                      style="?android:attr/borderlessButtonStyle" />
 
                 <app.philm.in.view.CheckableImageButton
-                    android:id="@+id/btn_collection"
-                    android:layout_width="0px"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_btn_collection"
-                    style="?android:attr/borderlessButtonStyle" />
+                      android:id="@+id/btn_collection"
+                      android:layout_width="0px"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:src="@drawable/ic_btn_collection"
+                      style="?android:attr/borderlessButtonStyle" />
 
                 <app.philm.in.view.CheckableImageButton
-                    android:id="@+id/btn_watchlist"
-                    android:layout_width="0px"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_btn_watchlist"
-                    style="?android:attr/borderlessButtonStyle" />
+                      android:id="@+id/btn_watchlist"
+                      android:layout_width="0px"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:src="@drawable/ic_btn_watchlist"
+                      style="?android:attr/borderlessButtonStyle" />
 
             </LinearLayout>
 
             <app.philm.in.view.FontTextView
-                android:id="@+id/textview_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_major"
-                android:layout_marginRight="@dimen/spacing_major"
-                android:layout_marginBottom="@dimen/spacing_minor"
-                style="@style/Widget.Philm.Movie.Detail.Summary" />
+                  android:id="@+id/textview_summary"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="@dimen/spacing_major"
+                  android:layout_marginRight="@dimen/spacing_major"
+                  android:layout_marginBottom="@dimen/spacing_minor"
+                  style="@style/Widget.Philm.Movie.Detail.Summary" />
 
             <app.philm.in.view.RatingBarLayout
-                android:id="@+id/rating_bar_layout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/movie_detail_ratingbar_height"
-                android:layout_marginBottom="@dimen/spacing_major" />
+                  android:id="@+id/rating_bar_layout"
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/movie_detail_ratingbar_height"
+                  android:layout_marginBottom="@dimen/spacing_major" />
 
             <app.philm.in.view.MovieDetailCardLayout
-                android:id="@+id/movie_detail_card_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_major"
-                internal:title="@string/details">
+                  android:id="@+id/movie_detail_card_details"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="@dimen/spacing_major"
+                  internal:title="@string/details">
 
                 <app.philm.in.view.MovieDetailInfoLayout
-                    android:id="@+id/layout_info_released"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_micro"
-                    android:visibility="gone"
-                    internal:title="@string/movie_details_released" />
+                      android:id="@+id/layout_info_released"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="@dimen/spacing_micro"
+                      android:visibility="gone"
+                      internal:title="@string/movie_details_released" />
 
                 <app.philm.in.view.MovieDetailInfoLayout
-                    android:id="@+id/layout_info_runtime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_micro"
-                    android:visibility="gone"
-                    internal:title="@string/movie_details_runtime" />
+                      android:id="@+id/layout_info_runtime"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="@dimen/spacing_micro"
+                      android:visibility="gone"
+                      internal:title="@string/movie_details_runtime" />
 
                 <app.philm.in.view.MovieDetailInfoLayout
-                    android:id="@+id/layout_info_certification"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_micro"
-                    android:visibility="gone"
-                    internal:title="@string/movie_details_certification" />
+                      android:id="@+id/layout_info_certification"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="@dimen/spacing_micro"
+                      android:visibility="gone"
+                      internal:title="@string/movie_details_certification" />
 
                 <app.philm.in.view.MovieDetailInfoLayout
-                    android:id="@+id/layout_info_genres"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_micro"
-                    android:visibility="gone"
-                    internal:title="@string/movie_details_genres" />
+                      android:id="@+id/layout_info_genres"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="@dimen/spacing_micro"
+                      android:visibility="gone"
+                      internal:title="@string/movie_details_genres" />
 
                 <app.philm.in.view.MovieDetailInfoLayout
-                    android:id="@+id/layout_info_language"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    internal:title="@string/movie_details_language" />
+                      android:id="@+id/layout_info_language"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:visibility="gone"
+                      internal:title="@string/movie_details_language" />
 
             </app.philm.in.view.MovieDetailCardLayout>
 
             <app.philm.in.view.MovieDetailCardLayout
-                android:id="@+id/movie_detail_card_trailers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_major"
-                internal:title="@string/trailers_movies">
+                  android:id="@+id/movie_detail_card_trailers"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="@dimen/spacing_major"
+                  internal:title="@string/trailers_movies"
+                  android:visibility="gone">
 
-                <ViewSwitcher
-                    android:id="@+id/viewswitcher_trailers"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/movie_detail_related_height">
-
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fillViewport="true">
-
-                        <LinearLayout
-                            android:id="@+id/layout_trailers"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:divider="?android:dividerHorizontal"
-                            android:showDividers="middle" />
-
-                    </HorizontalScrollView>
-
-                    <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-
-                </ViewSwitcher>
-
-            </app.philm.in.view.MovieDetailCardLayout>
-
-            <app.philm.in.view.MovieDetailCardLayout
-                android:id="@+id/movie_detail_card_related"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_major"
-                internal:title="@string/related_movies">
-
-                <ViewSwitcher
-                    android:id="@+id/viewswitcher_related"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/movie_detail_related_height">
+                <HorizontalScrollView
+                      android:layout_width="match_parent"
+                      android:layout_height="@dimen/movie_detail_related_height"
+                      android:fillViewport="true">
 
                     <LinearLayout
-                        android:id="@+id/layout_related"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:divider="?android:dividerHorizontal"
-                        android:showDividers="middle" />
+                          android:id="@+id/layout_trailers"
+                          android:layout_width="wrap_content"
+                          android:layout_height="match_parent"
+                          android:orientation="horizontal"
+                          android:divider="?android:dividerHorizontal"
+                          android:showDividers="middle" />
 
-                    <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-
-                </ViewSwitcher>
+                </HorizontalScrollView>
 
             </app.philm.in.view.MovieDetailCardLayout>
 
             <app.philm.in.view.MovieDetailCardLayout
-                android:id="@+id/movie_detail_card_cast"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                internal:title="@string/cast_movies">
+                  android:id="@+id/movie_detail_card_related"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="@dimen/spacing_major"
+                  internal:title="@string/related_movies"
+                  android:visibility="gone">
 
-                <ViewSwitcher
-                    android:id="@+id/viewswitcher_cast"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/movie_detail_related_height">
+                <LinearLayout
+                      android:id="@+id/layout_related"
+                      android:layout_width="match_parent"
+                      android:layout_height="@dimen/movie_detail_related_height"
+                      android:orientation="horizontal"
+                      android:divider="?android:dividerHorizontal"
+                      android:showDividers="middle" />
 
-                    <LinearLayout
-                        android:id="@+id/layout_cast"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:divider="?android:dividerHorizontal"
-                        android:showDividers="middle" />
+            </app.philm.in.view.MovieDetailCardLayout>
 
-                    <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+            <app.philm.in.view.MovieDetailCardLayout
+                  android:id="@+id/movie_detail_card_cast"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  internal:title="@string/cast_movies"
+                  android:visibility="gone">
 
-                </ViewSwitcher>
+                <LinearLayout
+                      android:id="@+id/layout_cast"
+                      android:layout_width="match_parent"
+                      android:layout_height="@dimen/movie_detail_related_height"
+                      android:orientation="horizontal"
+                      android:divider="?android:dividerHorizontal"
+                      android:showDividers="middle" />
 
             </app.philm.in.view.MovieDetailCardLayout>
 

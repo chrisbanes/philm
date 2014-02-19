@@ -268,39 +268,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    @Subscribe
-    public void onRelatedMoviesLoadingProgressVisibilityChanged(
-            BaseState.ShowRelatedLoadingProgressEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
-            ((MovieController.MovieDetailUi) ui).showRelatedMoviesLoadingProgress(event.show);
-        } else {
-            onLoadingProgressVisibilityChanged(event);
-        }
-    }
-
-    @Subscribe
-    public void onMovieCastLoadingProgressVisibilityChanged(
-            BaseState.ShowCastLoadingProgressEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
-            ((MovieController.MovieDetailUi) ui).showMovieCastLoadingProgress(event.show);
-        } else {
-            onLoadingProgressVisibilityChanged(event);
-        }
-    }
-
-    @Subscribe
-    public void onMovieTrailersLoadingProgressVisibilityChanged(
-            BaseState.ShowTrailersLoadingProgressEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null && ui.getMovieQueryType() == MovieQueryType.DETAIL) {
-            ((MovieController.MovieDetailUi) ui).showTrailersLoadingProgress(event.show);
-        } else {
-            onLoadingProgressVisibilityChanged(event);
-        }
-    }
-
     @Override
     protected void onInited() {
         super.onInited();
@@ -1353,12 +1320,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface MovieDetailUi extends MovieUi {
 
         void setMovie(PhilmMovie movie);
-
-        void showRelatedMoviesLoadingProgress(boolean visible);
-
-        void showMovieCastLoadingProgress(boolean visible);
-
-        void showTrailersLoadingProgress(boolean visible);
 
         void setToggleWatchedButtonEnabled(boolean enabled);
 

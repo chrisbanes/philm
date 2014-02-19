@@ -40,4 +40,10 @@
         <attr name="insetBackground" format="reference|color" />
     </declare-styleable>
 
+    <declare-styleable name="ForegroundLinearLayout">
+        <attr name="android:foreground" />
+        <attr name="android:foregroundInsidePadding" />
+        <attr name="android:foregroundGravity" />
+    </declare-styleable>
+
 </resources>

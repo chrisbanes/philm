@@ -109,7 +109,9 @@ public class PhilmImageView extends ImageView {
 
         if (url != null) {
             mPicassoHandler.markAsStarted();
-            Picasso.with(getContext()).load(url).into(mPicassoTarget);
+            Picasso.with(getContext()).load(url)
+                    .resize(getWidth(), getHeight()).centerCrop()
+                    .into(mPicassoTarget);
 
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);

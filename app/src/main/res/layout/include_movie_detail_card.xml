@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:internal="http://schemas.android.com/apk/res-auto">
+       xmlns:internal="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_minor"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="@dimen/spacing_minor"
+          android:orientation="horizontal"
+          android:gravity="center_vertical"
+          android:baselineAligned="false">
 
         <app.philm.in.view.FontTextView
-            android:id="@+id/textview_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/spacing_micro"
-            android:textSize="20sp"
-            internal:font="roboto_condensed_light" />
+              android:id="@+id/textview_title"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="@dimen/spacing_micro"
+              android:textSize="20sp"
+              internal:font="roboto_condensed_light" />
 
         <View
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="1" />
 
         <app.philm.in.view.FontTextView
-            android:id="@+id/textview_see_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/see_more"
-            android:background="?android:attr/selectableItemBackground"
-            android:visibility="gone"
-            internal:font="roboto_condensed"
-            android:padding="@dimen/spacing_micro"/>
+              android:id="@+id/textview_see_more"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/see_more"
+              android:background="?android:attr/selectableItemBackground"
+              android:visibility="gone"
+              internal:font="roboto_condensed"
+              android:padding="@dimen/spacing_micro" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/card_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/dark_gray"
-        android:padding="@dimen/spacing_minor" />
+          android:id="@+id/card_content"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:background="@color/dark_gray"
+          android:padding="@dimen/spacing_minor" />
 
 </merge>

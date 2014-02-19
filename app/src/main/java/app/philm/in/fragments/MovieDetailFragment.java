@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -613,9 +614,12 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     }
 
     private void setActionBarTitleEnabled(boolean enabled) {
-        final ActionBar ab = ((getActivity())).getActionBar();
-        if (ab != null) {
-            ab.setDisplayShowTitleEnabled(enabled);
+        Activity activity = getActivity();
+        if (activity != null) {
+            final ActionBar ab = activity.getActionBar();
+            if (ab != null) {
+                ab.setDisplayShowTitleEnabled(enabled);
+            }
         }
     }
 

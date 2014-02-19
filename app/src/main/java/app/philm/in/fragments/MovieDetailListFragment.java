@@ -4,7 +4,6 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeIntents;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
@@ -26,11 +25,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,25 +49,20 @@ import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.util.ViewUtils;
-import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.ColorSchemable;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
-import app.philm.in.view.ParallaxContentScrollView;
 import app.philm.in.view.PhilmImageView;
-import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
-public class MovieDetailFragment extends BasePhilmMovieFragment
-        implements MovieController.MovieDetailUi, View.OnClickListener, ColorSchemable,
-        ParallaxContentScrollView.OnContentViewScrollListener {
+public class MovieDetailListFragment extends BasePhilmMovieFragment
+        implements MovieController.MovieDetailUi, View.OnClickListener, ColorSchemable {
 
     private static final Date DATE = new Date();
     private static final float BOTTOM_INSET_ALPHA = 0.75f;
 
-    private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
+    private static final String LOG_TAG = MovieDetailListFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
     private static final String KEY_SCROLLVIEW_POSITION = "scroll_position";
@@ -80,43 +76,16 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private PhilmMovie mMovie;
 
-    private ParallaxContentScrollView mParallaxScrollView;
-    private View mScrollViewContent;
+    private ListView mListView;
+    private DetailAdapter mDetailAdapter;
 
-    private TextView mTitleTextView;
-    private TextView mSummaryTextView;
-    private PhilmImageView mFanartImageView;
-    private PhilmImageView mPosterImageView;
-
-    private RatingBarLayout mRatingBarLayout;
-
-    private MovieDetailCardLayout mDetailsCardLayout;
-    private MovieDetailCardLayout mRelatedCardLayout;
-    private MovieDetailCardLayout mCastCardLayout;
-    private MovieDetailCardLayout mTrailersCardLayout;
-    private MovieDetailInfoLayout mReleasedInfoLayout;
-    private MovieDetailInfoLayout mRunTimeInfoLayout;
-    private MovieDetailInfoLayout mCertificationInfoLayout;
-    private MovieDetailInfoLayout mGenresInfoLayout;
-    private MovieDetailInfoLayout mLanguageInfoLayout;
-
-    private LinearLayout mCastLayout;
-    private LinearLayout mRelatedLayout;
-    private LinearLayout mTrailersLayout;
-
-    private CheckableImageButton mSeenButton, mWatchlistButton, mCollectionButton;
-
-    private int mScrollViewY;
-
-    private ImageUiState mUiState;
-
-    public static MovieDetailFragment create(String movieId) {
+    public static MovieDetailListFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_QUERY_MOVIE_ID, movieId);
 
-        MovieDetailFragment fragment = new MovieDetailFragment();
+        MovieDetailListFragment fragment = new MovieDetailListFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -133,59 +102,14 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        return inflater.inflate(R.layout.fragment_movie_detail_list, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mParallaxScrollView = (ParallaxContentScrollView) view.findViewById(R.id.content_scrollview);
-        mParallaxScrollView.setOnContentViewScrollListener(this);
-
-        mScrollViewContent = view.findViewById(R.id.content);
-
-        mFanartImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
-        mPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
-        mTitleTextView = (TextView) view.findViewById(R.id.textview_title);
-        mRatingBarLayout = (RatingBarLayout) view.findViewById(R.id.rating_bar_layout);
-
-        mSummaryTextView = (TextView) view.findViewById(R.id.textview_summary);
-        mSummaryTextView.setOnClickListener(this);
-
-        mSeenButton = (CheckableImageButton) view.findViewById(R.id.btn_seen);
-        mSeenButton.setOnClickListener(this);
-        CheatSheet.setup(mSeenButton);
-
-        mWatchlistButton = (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
-        mWatchlistButton.setOnClickListener(this);
-        CheatSheet.setup(mWatchlistButton);
-
-        mCollectionButton = (CheckableImageButton) view.findViewById(R.id.btn_collection);
-        mCollectionButton.setOnClickListener(this);
-        CheatSheet.setup(mCollectionButton);
-
-        mRelatedLayout = (LinearLayout) view.findViewById(R.id.layout_related);
-        mCastLayout = (LinearLayout) view.findViewById(R.id.layout_cast);
-        mTrailersLayout = (LinearLayout) view.findViewById(R.id.layout_trailers);
-
-        mRunTimeInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_runtime);
-        mCertificationInfoLayout = (MovieDetailInfoLayout)
-                view.findViewById(R.id.layout_info_certification);
-        mGenresInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_genres);
-        mReleasedInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_released);
-        mLanguageInfoLayout = (MovieDetailInfoLayout) view.findViewById(R.id.layout_info_language);
-
-        mDetailsCardLayout = (MovieDetailCardLayout)
-                view.findViewById(R.id.movie_detail_card_details);
-        mRelatedCardLayout = (MovieDetailCardLayout)
-                view.findViewById(R.id.movie_detail_card_related);
-        mCastCardLayout = (MovieDetailCardLayout)
-                view.findViewById(R.id.movie_detail_card_cast);
-        mTrailersCardLayout = (MovieDetailCardLayout)
-                view.findViewById(R.id.movie_detail_card_trailers);
-
-        if (savedInstanceState != null) {
-            mScrollViewY = savedInstanceState.getInt(KEY_SCROLLVIEW_POSITION);
-        }
+        mListView = (ListView) view.findViewById(android.R.id.list);
+        mDetailAdapter = new DetailAdapter();
+        mListView.setAdapter(mDetailAdapter);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -210,20 +134,20 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onResume() {
         super.onResume();
-        mParallaxScrollView.scrollScrollViewTo(mScrollViewY);
+        //mParallaxScrollView.scrollScrollViewTo(mScrollViewY);
         setBottomInsetAlpha(BOTTOM_INSET_ALPHA);
     }
 
     @Override
     public void onPause() {
-        mScrollViewY = mParallaxScrollView.getScrollViewScrollY();
+        //mScrollViewY = mParallaxScrollView.getScrollViewScrollY();
         setActionBarTitleEnabled(true);
         super.onPause();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(KEY_SCROLLVIEW_POSITION, mScrollViewY);
+        //outState.putInt(KEY_SCROLLVIEW_POSITION, mScrollViewY);
         super.onSaveInstanceState(outState);
     }
 
@@ -239,22 +163,22 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void setRateCircleEnabled(boolean enabled) {
-        mRatingBarLayout.setRatingCircleEnabled(enabled);
+        //mRatingBarLayout.setRatingCircleEnabled(enabled);
     }
 
     @Override
     public void setCollectionButtonEnabled(boolean enabled) {
-        mCollectionButton.setEnabled(enabled);
+        //mCollectionButton.setEnabled(enabled);
     }
 
     @Override
     public void setWatchlistButtonEnabled(boolean enabled) {
-        mWatchlistButton.setEnabled(enabled);
+        //mWatchlistButton.setEnabled(enabled);
     }
 
     @Override
     public void setToggleWatchedButtonEnabled(boolean enabled) {
-        mSeenButton.setEnabled(enabled);
+        //mSeenButton.setEnabled(enabled);
     }
 
     @Override
@@ -282,7 +206,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void onInsetsChanged(Rect insets) {
-        mParallaxScrollView.setInsets(insets);
+        //mParallaxScrollView.setInsets(insets);
     }
 
     private void populateUi() {
@@ -290,89 +214,30 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             return;
         }
 
-        if (mUiState == null) {
-            mUiState = new ImageUiState();
+        final ArrayList<DetailItemType> items = new ArrayList<DetailItemType>();
+
+        items.add(DetailItemType.BUTTONS);
+
+        if (!TextUtils.isEmpty(mMovie.getOverview())) {
+            items.add(DetailItemType.SUMMARY);
         }
 
-        mUiState.loadPoster();
-        mUiState.loadBackdrop();
+        items.add(DetailItemType.RATING);
+        items.add(DetailItemType.DETAILS);
 
-        mTitleTextView.setText(getString(R.string.movie_title_year, mMovie.getTitle(),
-                mMovie.getYear()));
-
-        if (ViewUtils.isEmpty(mSummaryTextView)) {
-            mSummaryTextView.setText(mMovie.getOverview());
+        if (!PhilmCollections.isEmpty(mMovie.getTrailers())) {
+            items.add(DetailItemType.TRAILERS);
         }
 
-        updateButtonState(mSeenButton, mMovie.isWatched(), R.string.action_mark_seen,
-                R.string.action_mark_unseen);
-        updateButtonState(mWatchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
-                R.string.action_remove_watchlist);
-        updateButtonState(mCollectionButton, mMovie.inCollection(), R.string.action_add_collection,
-                R.string.action_remove_collection);
-
-        if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
-            mRatingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
-        } else {
-            mRatingBarLayout.showRatePrompt();
-        }
-        mRatingBarLayout.setRatingGlobalPercentage(mMovie.getAverageRatingPercent());
-        mRatingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
-        mRatingBarLayout.setRatingCircleClickListener(this);
-
-        if (mMovie.getRuntime() > 0) {
-            mRunTimeInfoLayout.setContentText(
-                    getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
-            mRunTimeInfoLayout.setVisibility(View.VISIBLE);
-        }
-        if (!TextUtils.isEmpty(mMovie.getCertification())) {
-            mCertificationInfoLayout.setContentText(mMovie.getCertification());
-            mCertificationInfoLayout.setVisibility(View.VISIBLE);
-        }
-        if (!TextUtils.isEmpty(mMovie.getGenres())) {
-            mGenresInfoLayout.setContentText(mMovie.getGenres());
-            mGenresInfoLayout.setVisibility(View.VISIBLE);
-        }
-        if (mMovie.getReleasedTime() > 0) {
-            DATE.setTime(mMovie.getReleasedTime());
-            mReleasedInfoLayout.setContentText(mMediumDateFormatter.format(DATE));
-            mReleasedInfoLayout.setVisibility(View.VISIBLE);
-
-            final String countryCode = mMovie.getReleaseCountryCode();
-            if (!TextUtils.isEmpty(countryCode)) {
-                loadFlagImage(countryCode, mReleasedInfoLayout);
-            }
+        if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
+            items.add(DetailItemType.RELATED);
         }
 
-        if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {
-            mLanguageInfoLayout.setContentText(mMovie.getMainLanguageTitle());
-            mLanguageInfoLayout.setVisibility(View.VISIBLE);
+        if (!PhilmCollections.isEmpty(mMovie.getCast())) {
+            items.add(DetailItemType.CAST);
         }
 
-        if (PhilmCollections.isEmpty(mMovie.getRelated())) {
-            mRelatedCardLayout.setVisibility(View.GONE);
-        } else {
-            mRelatedCardLayout.setVisibility(View.VISIBLE);
-            populateRelatedMovies();
-        }
-
-        if (PhilmCollections.isEmpty(mMovie.getCast())) {
-            mCastCardLayout.setVisibility(View.GONE);
-        } else {
-            mCastCardLayout.setVisibility(View.VISIBLE);
-            populateMovieCast();
-        }
-
-        if (PhilmCollections.isEmpty(mMovie.getTrailers())) {
-            mTrailersCardLayout.setVisibility(View.GONE);
-        } else {
-            mTrailersCardLayout.setVisibility(View.VISIBLE);
-            populateTrailers();
-        }
-
-        if (mMovie.getColorScheme() != null) {
-            setColorScheme(mMovie.getColorScheme(), false);
-        }
+        mDetailAdapter.setItems(items);
     }
 
     private void loadFlagImage(final String countryCode, final MovieDetailInfoLayout infoLayout) {
@@ -385,119 +250,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 .into(infoLayout);
     }
 
-    private void populateRelatedMovies() {
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "populateRelatedMovies");
-        }
 
-        final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (hasCallbacks()) {
-                    getCallbacks().showRelatedMovies(mMovie);
-                }
-            }
-        };
-
-        RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(getActivity().getLayoutInflater());
-
-        populateDetailGrid(
-                mRelatedLayout,
-                mRelatedCardLayout,
-                seeMoreClickListener,
-                adapter);
-    }
-
-    private void populateDetailGrid(final ViewGroup layout,
-                                    final MovieDetailCardLayout cardLayout,
-                                    final View.OnClickListener seeMoreClickListener,
-                                    final BaseAdapter adapter) {
-
-        if (layout.getWidth() == 0) {
-            layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    layout.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            populateDetailGrid(layout, cardLayout, seeMoreClickListener, adapter);
-                        }
-                    });
-                    layout.removeOnLayoutChangeListener(this);
-                }
-            });
-            return;
-        }
-
-        final ViewRecycler viewRecycler = new ViewRecycler(layout);
-        viewRecycler.recycleViews();
-
-        if (adapter.getCount() > 0) {
-            final int numItems = layout.getWidth() /
-                    getResources().getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
-
-            for (int i = 0; i < Math.min(numItems, adapter.getCount()); i++) {
-                View view = viewRecycler.getRecycledView();
-                view = adapter.getView(i, view, layout);
-                layout.addView(view);
-            }
-
-            final boolean showSeeMore = numItems < adapter.getCount();
-            cardLayout.setSeeMoreVisibility(showSeeMore);
-            cardLayout.setSeeMoreOnClickListener(showSeeMore ? seeMoreClickListener : null);
-        }
-
-        viewRecycler.clearRecycledViews();
-    }
-
-    private void populateMovieCast() {
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "populateMovieCast");
-        }
-
-        final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (hasCallbacks()) {
-                    getCallbacks().showCastList(mMovie);
-                }
-            }
-        };
-
-        MovieCastAdapter adapter = new MovieCastAdapter(getActivity().getLayoutInflater());
-
-        populateDetailGrid(
-                mCastLayout,
-                mCastCardLayout,
-                seeMoreClickListener,
-                adapter);
-
-    }
-
-    private void populateTrailers() {
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "populateTrailers");
-        }
-
-        final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                if (hasCallbacks()) {
-//                    getCallbacks().showCastList(mMovie);
-//                }
-            }
-        };
-
-        MovieTrailersAdapter adapter = new MovieTrailersAdapter(getActivity().getLayoutInflater());
-
-        populateDetailGrid(
-                mTrailersLayout,
-                mTrailersCardLayout,
-                seeMoreClickListener,
-                adapter);
-
-    }
 
     private void updateButtonState(CheckableImageButton button, final boolean checked,
             final int toCheckDesc, final int toUncheckDesc) {
@@ -512,8 +265,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void setColorScheme(ColorScheme colorScheme, boolean animate) {
         Preconditions.checkNotNull(colorScheme, "colorScheme cannot be null");
-        mRatingBarLayout.setColorScheme(colorScheme, animate);
-        mPosterImageView.setBackgroundColor(colorScheme.primaryAccent);
+        //mRatingBarLayout.setColorScheme(colorScheme, animate);
+        //mPosterImageView.setBackgroundColor(colorScheme.primaryAccent);
     }
 
     @Override
@@ -535,12 +288,13 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 }
                 break;
             case R.id.textview_summary:
+                final TextView summaryView = (TextView) view;
                 final int defaultMaxLines = getResources()
                         .getInteger(R.integer.default_summary_maxlines);
-                if (mSummaryTextView.getLineCount() == defaultMaxLines) {
-                    mSummaryTextView.setMaxLines(Integer.MAX_VALUE);
-                } else if (mSummaryTextView.getLineCount() > defaultMaxLines) {
-                    mSummaryTextView.setMaxLines(defaultMaxLines);
+                if (summaryView.getLineCount() == defaultMaxLines) {
+                    summaryView.setMaxLines(Integer.MAX_VALUE);
+                } else if (summaryView.getLineCount() > defaultMaxLines) {
+                    summaryView.setMaxLines(defaultMaxLines);
                 }
                 break;
             case R.id.rcv_rating:
@@ -570,14 +324,14 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     public void onDestroyView() {
         super.onDestroyView();
         clearYoutubeLoaders();
-        mUiState.reset();
+        //mUiState.reset();
     }
 
-    @Override
-    public void onContentViewScrolled(float percent) {
-        setTopInsetAlpha(percent);
-        setActionBarTitleEnabled(percent >= 0.7f);
-    }
+    //@Override
+    //public void onContentViewScrolled(float percent) {
+        //setTopInsetAlpha(percent);
+        //setActionBarTitleEnabled(percent >= 0.7f);
+    //}
 
     private void setActionBarTitleEnabled(boolean enabled) {
         Activity activity = getActivity();
@@ -829,47 +583,271 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 }
             }
         }
-
     }
 
-    private class ImageUiState {
+//    private class ImageUiState {
+//
+//        private String mPosterPath;
+//        private String mBackdropPath;
+//
+//        public void loadPoster() {
+//            if (!Objects.equal(mMovie.getPosterUrl(), mPosterPath)) {
+//                mPosterPath = mMovie.getPosterUrl();
+//
+//                mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
+//                    @Override
+//                    public void onSuccess(Bitmap bitmap) {
+//                        mPosterImageView.setVisibility(View.VISIBLE);
+//
+//                        if (mMovie.getColorScheme() == null) {
+//                            new ColorCalculatorTask().executeOnExecutor(
+//                                    AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                        mPosterImageView.setVisibility(View.GONE);
+//                    }
+//                });
+//            }
+//        }
+//
+//        public void loadBackdrop() {
+//            if (!Objects.equal(mMovie.getBackdropUrl(), mBackdropPath)) {
+//                mBackdropPath = mMovie.getBackdropUrl();
+//                mFanartImageView.loadBackdropUrl(mMovie);
+//            }
+//        }
+//
+//        void reset() {
+//            mPosterPath = null;
+//            mBackdropPath = null;
+//        }
+//
+//    }
 
-        private String mPosterPath;
-        private String mBackdropPath;
+    private enum DetailItemType {
+        BUTTONS(R.layout.item_movie_detail_buttons),
+        DETAILS(R.layout.item_movie_detail_details),
+        RATING(R.layout.item_movie_detail_rating),
+        SUMMARY(R.layout.item_movie_detail_summary),
+        TRAILERS(R.layout.item_movie_detail_trailers),
+        RELATED(R.layout.item_movie_detail_generic_card),
+        CAST(R.layout.item_movie_detail_generic_card);
 
-        public void loadPoster() {
-            if (!Objects.equal(mMovie.getPosterUrl(), mPosterPath)) {
-                mPosterPath = mMovie.getPosterUrl();
+        private final int mLayoutId;
 
-                mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
-                    @Override
-                    public void onSuccess(Bitmap bitmap) {
-                        mPosterImageView.setVisibility(View.VISIBLE);
+        private DetailItemType(int layoutId) {
+            mLayoutId = layoutId;
+        }
 
-                        if (mMovie.getColorScheme() == null) {
-                            new ColorCalculatorTask().executeOnExecutor(
-                                    AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
-                        }
+        int getLayoutId() {
+            return mLayoutId;
+        }
+    }
+
+    private class DetailAdapter extends BaseAdapter {
+
+        private List<DetailItemType> mItems;
+
+        public void setItems(List<DetailItemType> items) {
+            mItems = items;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mItems != null ? mItems.size() : 0;
+        }
+
+        @Override
+        public DetailItemType getItem(int position) {
+            return mItems.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem(position).ordinal();
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return Math.max(1, getCount());
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return false;
+        }
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            final DetailItemType item = getItem(position);
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "getView. Pos: " + position + ". Item: " + item.name());
+            }
+
+            if (view == null) {
+                final LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                view = inflater.inflate(item.getLayoutId(), viewGroup, false);
+            }
+
+            // Now bind to the view
+            bindView(item, view);
+
+            return view;
+        }
+
+        private void bindView(final DetailItemType item, final View view) {
+            switch (item) {
+                case SUMMARY:
+                    bindSummaryView(view);
+                    break;
+                case RELATED:
+                    bindRelated(view);
+                    break;
+                case TRAILERS:
+                    bindTrailers(view);
+                    break;
+                case CAST:
+                    bindCast(view);
+                    break;
+            }
+        }
+
+        private void bindSummaryView(final View view) {
+            TextView summary = (TextView) view;
+            summary.setText(mMovie.getOverview());
+            summary.setOnClickListener(MovieDetailListFragment.this);
+        }
+
+        private void bindRelated(View view) {
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "bindRelated");
+            }
+
+            final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        getCallbacks().showRelatedMovies(mMovie);
                     }
+                }
+            };
 
+            RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(getActivity().getLayoutInflater());
+
+            populateDetailGrid(
+                    (ViewGroup) view.findViewById(R.id.card_content),
+                    (MovieDetailCardLayout) view,
+                    seeMoreClickListener,
+                    adapter);
+        }
+
+        private void populateDetailGrid(
+                final ViewGroup layout,
+                final MovieDetailCardLayout cardLayout,
+                final View.OnClickListener seeMoreClickListener,
+                final BaseAdapter adapter) {
+
+            if (layout.getWidth() == 0) {
+                layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
                     @Override
-                    public void onError() {
-                        mPosterImageView.setVisibility(View.GONE);
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        layout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateDetailGrid(layout, cardLayout, seeMoreClickListener, adapter);
+                            }
+                        });
+                        layout.removeOnLayoutChangeListener(this);
                     }
                 });
+                return;
             }
+
+            final ViewRecycler viewRecycler = new ViewRecycler(layout);
+            viewRecycler.recycleViews();
+
+            if (adapter.getCount() > 0) {
+                final int numItems = layout.getWidth() /
+                        getResources().getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
+
+                for (int i = 0; i < Math.min(numItems, adapter.getCount()); i++) {
+                    View view = viewRecycler.getRecycledView();
+                    view = adapter.getView(i, view, layout);
+                    layout.addView(view);
+                }
+
+                final boolean showSeeMore = numItems < adapter.getCount();
+                cardLayout.setSeeMoreVisibility(showSeeMore);
+                cardLayout.setSeeMoreOnClickListener(showSeeMore ? seeMoreClickListener : null);
+            }
+
+            viewRecycler.clearRecycledViews();
         }
 
-        public void loadBackdrop() {
-            if (!Objects.equal(mMovie.getBackdropUrl(), mBackdropPath)) {
-                mBackdropPath = mMovie.getBackdropUrl();
-                mFanartImageView.loadBackdropUrl(mMovie);
+        private void bindCast(View view) {
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "bindCast");
             }
+
+            final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        getCallbacks().showCastList(mMovie);
+                    }
+                }
+            };
+
+            MovieCastAdapter adapter = new MovieCastAdapter(getActivity().getLayoutInflater());
+
+            populateDetailGrid(
+                    (ViewGroup) view.findViewById(R.id.card_content),
+                    (MovieDetailCardLayout) view,
+                    seeMoreClickListener,
+                    adapter);
         }
 
-        void reset() {
-            mPosterPath = null;
-            mBackdropPath = null;
+        private void bindTrailers(View view) {
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "bindTrailers");
+            }
+
+            final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                if (hasCallbacks()) {
+//                    getCallbacks().showCastList(mMovie);
+//                }
+                }
+            };
+
+            MovieTrailersAdapter adapter = new MovieTrailersAdapter(getActivity().getLayoutInflater());
+
+            populateDetailGrid(
+                    (ViewGroup) view.findViewById(R.id.card_content),
+                    (MovieDetailCardLayout) view,
+                    seeMoreClickListener,
+                    adapter);
         }
 
     }

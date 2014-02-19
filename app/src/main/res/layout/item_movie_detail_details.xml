@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<app.philm.in.view.MovieDetailCardLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:internal="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/movie_detail_card_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_major"
+        internal:title="@string/details">
+
+    <app.philm.in.view.MovieDetailInfoLayout
+            android:id="@+id/layout_info_released"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_micro"
+            android:visibility="gone"
+            internal:title="@string/movie_details_released"/>
+
+    <app.philm.in.view.MovieDetailInfoLayout
+            android:id="@+id/layout_info_runtime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_micro"
+            android:visibility="gone"
+            internal:title="@string/movie_details_runtime"/>
+
+    <app.philm.in.view.MovieDetailInfoLayout
+            android:id="@+id/layout_info_certification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_micro"
+            android:visibility="gone"
+            internal:title="@string/movie_details_certification"/>
+
+    <app.philm.in.view.MovieDetailInfoLayout
+            android:id="@+id/layout_info_genres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_micro"
+            android:visibility="gone"
+            internal:title="@string/movie_details_genres"/>
+
+    <app.philm.in.view.MovieDetailInfoLayout
+            android:id="@+id/layout_info_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            internal:title="@string/movie_details_language"/>
+
+</app.philm.in.view.MovieDetailCardLayout>

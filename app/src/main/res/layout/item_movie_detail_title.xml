@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/movie_detail_fanart_height"
+        android:background="@drawable/black_translucent_gradient"
+        android:baselineAligned="false"
+        android:gravity="bottom"
+        android:paddingLeft="@dimen/movie_detail_fanart_padding"
+        android:paddingBottom="@dimen/movie_detail_fanart_padding"
+        android:paddingRight="@dimen/movie_detail_fanart_padding">
+
+    <app.philm.in.view.PhilmImageView
+            android:id="@+id/imageview_poster"
+            android:layout_width="@dimen/movie_detail_poster_width"
+            android:layout_height="@dimen/movie_detail_poster_height"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="@dimen/movie_detail_fanart_padding"
+            android:background="?android:attr/colorForeground"
+            android:padding="1dp"
+            android:cropToPadding="true" />
+
+    <app.philm.in.view.FontTextView
+            android:id="@+id/textview_title"
+            android:layout_width="0px"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            style="@style/Widget.Philm.Movie.Detail.Title" />
+
+</LinearLayout>

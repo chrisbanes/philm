@@ -304,12 +304,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             mSummaryTextView.setText(mMovie.getOverview());
         }
 
-        updateButtonState(mSeenButton, mMovie.isWatched(), R.string.action_mark_seen,
-                R.string.action_mark_unseen);
-        updateButtonState(mWatchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
-                R.string.action_remove_watchlist);
-        updateButtonState(mCollectionButton, mMovie.inCollection(), R.string.action_add_collection,
-                R.string.action_remove_collection);
+
 
         if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
             mRatingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
@@ -843,7 +838,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
                 mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
                     @Override
-                    public void onSuccess(Bitmap bitmap) {
+                    public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {
                         mPosterImageView.setVisibility(View.VISIBLE);
 
                         if (mMovie.getColorScheme() == null) {
@@ -853,7 +848,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError(PhilmImageView imageView) {
                         mPosterImageView.setVisibility(View.GONE);
                     }
                 });

@@ -17,14 +17,13 @@ public class ViewRecycler {
         mRecycledViews = new ArrayList<View>();
     }
 
-
     public void recycleViews() {
         if (mViewGroup.getChildCount() > 0) {
             for (int i = 0, z = mViewGroup.getChildCount() ; i < z ; i++) {
                 mRecycledViews.add(mViewGroup.getChildAt(i));
             }
+            mViewGroup.removeAllViews();
         }
-        mViewGroup.removeAllViews();
     }
 
     public View getRecycledView() {

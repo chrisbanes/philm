@@ -65,12 +65,12 @@ public class MovieGridAdapter extends BaseAdapter {
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
         imageView.loadPosterUrl(movie, new PhilmImageView.Listener() {
             @Override
-            public void onSuccess(Bitmap bitmap) {
+            public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {
                 title.setVisibility(View.GONE);
             }
 
             @Override
-            public void onError() {
+            public void onError(PhilmImageView imageView) {
                 title.setVisibility(View.VISIBLE);
             }
         });

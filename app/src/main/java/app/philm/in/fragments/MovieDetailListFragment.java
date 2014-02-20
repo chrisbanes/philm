@@ -49,11 +49,13 @@ import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.ColorSchemable;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;
+import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
 public class MovieDetailListFragment extends BasePhilmMovieFragment
@@ -206,7 +208,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
     @Override
     public void onInsetsChanged(Rect insets) {
-        //mParallaxScrollView.setInsets(insets);
+        mListView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 
     private void populateUi() {
@@ -216,6 +218,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
         final ArrayList<DetailItemType> items = new ArrayList<DetailItemType>();
 
+        items.add(DetailItemType.TITLE);
         items.add(DetailItemType.BUTTONS);
 
         if (!TextUtils.isEmpty(mMovie.getOverview())) {
@@ -238,28 +241,6 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
         }
 
         mDetailAdapter.setItems(items);
-    }
-
-    private void loadFlagImage(final String countryCode, final MovieDetailInfoLayout infoLayout) {
-        final String flagUrl = mFlagUrlProvider.getCountryFlagUrl(countryCode);
-        final int width = getResources().getDimensionPixelSize(R.dimen.movie_detail_flag_width);
-        final int height = getResources().getDimensionPixelSize(R.dimen.movie_detail_flag_height);
-
-        Picasso.with(getActivity())
-                .load(mImageHelper.getResizedUrl(flagUrl, width, height, "gif"))
-                .into(infoLayout);
-    }
-
-
-
-    private void updateButtonState(CheckableImageButton button, final boolean checked,
-            final int toCheckDesc, final int toUncheckDesc) {
-        button.setChecked(checked);
-        if (checked) {
-            button.setContentDescription(getString(toUncheckDesc));
-        } else {
-            button.setContentDescription(getString(toCheckDesc));
-        }
     }
 
     @Override
@@ -585,49 +566,8 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
         }
     }
 
-//    private class ImageUiState {
-//
-//        private String mPosterPath;
-//        private String mBackdropPath;
-//
-//        public void loadPoster() {
-//            if (!Objects.equal(mMovie.getPosterUrl(), mPosterPath)) {
-//                mPosterPath = mMovie.getPosterUrl();
-//
-//                mPosterImageView.loadPosterUrl(mMovie, new PhilmImageView.Listener() {
-//                    @Override
-//                    public void onSuccess(Bitmap bitmap) {
-//                        mPosterImageView.setVisibility(View.VISIBLE);
-//
-//                        if (mMovie.getColorScheme() == null) {
-//                            new ColorCalculatorTask().executeOnExecutor(
-//                                    AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-//                        mPosterImageView.setVisibility(View.GONE);
-//                    }
-//                });
-//            }
-//        }
-//
-//        public void loadBackdrop() {
-//            if (!Objects.equal(mMovie.getBackdropUrl(), mBackdropPath)) {
-//                mBackdropPath = mMovie.getBackdropUrl();
-//                mFanartImageView.loadBackdropUrl(mMovie);
-//            }
-//        }
-//
-//        void reset() {
-//            mPosterPath = null;
-//            mBackdropPath = null;
-//        }
-//
-//    }
-
     private enum DetailItemType {
+        TITLE(R.layout.item_movie_detail_title),
         BUTTONS(R.layout.item_movie_detail_buttons),
         DETAILS(R.layout.item_movie_detail_details),
         RATING(R.layout.item_movie_detail_rating),
@@ -678,12 +618,12 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
         @Override
         public int getViewTypeCount() {
-            return Math.max(1, getCount());
+            return DetailItemType.values().length;
         }
 
         @Override
         public int getItemViewType(int position) {
-            return position;
+            return getItem(position).ordinal();
         }
 
         @Override
@@ -716,18 +656,64 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
         private void bindView(final DetailItemType item, final View view) {
             switch (item) {
+                case TITLE:
+                    bindTitle(view);
+                    break;
+                case BUTTONS:
+                    bindButtons(view);
+                    break;
                 case SUMMARY:
                     bindSummaryView(view);
                     break;
+                case DETAILS:
+                    bindDetails(view);
+                    break;
+                case RATING:
+                    bindRating(view);
+                    break;
                 case RELATED:
-                    bindRelated(view);
+                    //bindRelated(view);
                     break;
                 case TRAILERS:
-                    bindTrailers(view);
+                    //bindTrailers(view);
                     break;
                 case CAST:
-                    bindCast(view);
+                    //bindCast(view);
                     break;
+            }
+        }
+
+        private void bindButtons(final View view) {
+            CheckableImageButton seenButton =
+                    (CheckableImageButton) view.findViewById(R.id.btn_seen);
+            seenButton.setOnClickListener(MovieDetailListFragment.this);
+            CheatSheet.setup(seenButton);
+
+            CheckableImageButton watchlistButton =
+                    (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
+            watchlistButton.setOnClickListener(MovieDetailListFragment.this);
+            CheatSheet.setup(watchlistButton);
+
+            CheckableImageButton collectionButton =
+                    (CheckableImageButton) view.findViewById(R.id.btn_collection);
+            collectionButton.setOnClickListener(MovieDetailListFragment.this);
+            CheatSheet.setup(collectionButton);
+
+            updateButtonState(seenButton, mMovie.isWatched(), R.string.action_mark_seen,
+                    R.string.action_mark_unseen);
+            updateButtonState(watchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
+                    R.string.action_remove_watchlist);
+            updateButtonState(collectionButton, mMovie.inCollection(), R.string.action_add_collection,
+                    R.string.action_remove_collection);
+        }
+
+        private void updateButtonState(CheckableImageButton button, final boolean checked,
+                final int toCheckDesc, final int toUncheckDesc) {
+            button.setChecked(checked);
+            if (checked) {
+                button.setContentDescription(getString(toUncheckDesc));
+            } else {
+                button.setContentDescription(getString(toCheckDesc));
             }
         }
 
@@ -751,7 +737,8 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                 }
             };
 
-            RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(getActivity().getLayoutInflater());
+            RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(
+                    LayoutInflater.from(getActivity()));
 
             populateDetailGrid(
                     (ViewGroup) view.findViewById(R.id.card_content),
@@ -786,13 +773,12 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             final ViewRecycler viewRecycler = new ViewRecycler(layout);
             viewRecycler.recycleViews();
 
-            if (adapter.getCount() > 0) {
-                final int numItems = layout.getWidth() /
-                        getResources().getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
+            if (!adapter.isEmpty()) {
+                final int numItems = layout.getWidth() / getResources()
+                        .getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
 
                 for (int i = 0; i < Math.min(numItems, adapter.getCount()); i++) {
-                    View view = viewRecycler.getRecycledView();
-                    view = adapter.getView(i, view, layout);
+                    View view = adapter.getView(i, viewRecycler.getRecycledView(), layout);
                     layout.addView(view);
                 }
 
@@ -818,7 +804,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                 }
             };
 
-            MovieCastAdapter adapter = new MovieCastAdapter(getActivity().getLayoutInflater());
+            MovieCastAdapter adapter = new MovieCastAdapter(LayoutInflater.from(getActivity()));
 
             populateDetailGrid(
                     (ViewGroup) view.findViewById(R.id.card_content),
@@ -841,7 +827,8 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                 }
             };
 
-            MovieTrailersAdapter adapter = new MovieTrailersAdapter(getActivity().getLayoutInflater());
+            MovieTrailersAdapter adapter = new MovieTrailersAdapter(
+                    LayoutInflater.from(getActivity()));
 
             populateDetailGrid(
                     (ViewGroup) view.findViewById(R.id.card_content),
@@ -850,5 +837,111 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                     adapter);
         }
 
+        private void bindDetails(View view) {
+            MovieDetailInfoLayout runtimeLayout = (MovieDetailInfoLayout) view
+                    .findViewById(R.id.layout_info_runtime);
+            MovieDetailInfoLayout certificationLayout = (MovieDetailInfoLayout)
+                    view.findViewById(R.id.layout_info_certification);
+            MovieDetailInfoLayout genreLayout = (MovieDetailInfoLayout) view
+                    .findViewById(R.id.layout_info_genres);
+            MovieDetailInfoLayout releasedInfoLayout = (MovieDetailInfoLayout) view
+                    .findViewById(R.id.layout_info_released);
+            MovieDetailInfoLayout languageLayout = (MovieDetailInfoLayout) view
+                    .findViewById(R.id.layout_info_language);
+
+            if (mMovie.getRuntime() > 0) {
+                runtimeLayout.setContentText(
+                        getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
+                runtimeLayout.setVisibility(View.VISIBLE);
+            } else {
+                runtimeLayout.setVisibility(View.GONE);
+            }
+
+            if (!TextUtils.isEmpty(mMovie.getCertification())) {
+                certificationLayout.setContentText(mMovie.getCertification());
+                certificationLayout.setVisibility(View.VISIBLE);
+            } else {
+                certificationLayout.setVisibility(View.GONE);
+            }
+
+            if (!TextUtils.isEmpty(mMovie.getGenres())) {
+                genreLayout.setContentText(mMovie.getGenres());
+                genreLayout.setVisibility(View.VISIBLE);
+            } else {
+                genreLayout.setVisibility(View.GONE);
+            }
+
+            if (mMovie.getReleasedTime() > 0) {
+                DATE.setTime(mMovie.getReleasedTime());
+                releasedInfoLayout.setContentText(mMediumDateFormatter.format(DATE));
+                releasedInfoLayout.setVisibility(View.VISIBLE);
+
+                final String countryCode = mMovie.getReleaseCountryCode();
+                if (!TextUtils.isEmpty(countryCode)) {
+                    loadFlagImage(countryCode, releasedInfoLayout);
+                }
+            } else {
+                releasedInfoLayout.setVisibility(View.GONE);
+            }
+
+            if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {
+                languageLayout.setContentText(mMovie.getMainLanguageTitle());
+                languageLayout.setVisibility(View.VISIBLE);
+            } else {
+                languageLayout.setVisibility(View.GONE);
+            }
+        }
+
+        private void bindRating(View view) {
+            RatingBarLayout ratingBarLayout = (RatingBarLayout) view;
+
+            if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
+                ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
+            } else {
+                ratingBarLayout.showRatePrompt();
+            }
+            ratingBarLayout.setRatingGlobalPercentage(mMovie.getAverageRatingPercent());
+            ratingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
+            ratingBarLayout.setRatingCircleClickListener(MovieDetailListFragment.this);
+        }
+
+        private void bindTitle(View view) {
+            TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
+            titleTextView.setText(getString(R.string.movie_title_year,
+                    mMovie.getTitle(), mMovie.getYear()));
+
+            PhilmImageView posterImageView = (PhilmImageView)
+                    view.findViewById(R.id.imageview_poster);
+            posterImageView.loadPosterUrl(mMovie, mPosterListener);
+        }
+
+        private void loadFlagImage(final String countryCode,
+                final MovieDetailInfoLayout infoLayout) {
+            final String flagUrl = mFlagUrlProvider.getCountryFlagUrl(countryCode);
+            final int width = getResources()
+                    .getDimensionPixelSize(R.dimen.movie_detail_flag_width);
+            final int height = getResources()
+                    .getDimensionPixelSize(R.dimen.movie_detail_flag_height);
+
+            Picasso.with(getActivity())
+                    .load(mImageHelper.getResizedUrl(flagUrl, width, height, "gif"))
+                    .into(infoLayout);
+        }
     }
+
+    private final PhilmImageView.Listener mPosterListener = new PhilmImageView.Listener() {
+        @Override
+        public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {
+            imageView.setVisibility(View.VISIBLE);
+
+            if (mMovie.getColorScheme() == null) {
+                new ColorCalculatorTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
+            }
+        }
+
+        @Override
+        public void onError(PhilmImageView imageView) {
+            imageView.setVisibility(View.GONE);
+        }
+    };
 }

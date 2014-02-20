@@ -32,9 +32,9 @@ public class PhilmImageView extends ImageView {
 
     public interface Listener {
 
-        public void onSuccess(Bitmap bitmap);
+        public void onSuccess(PhilmImageView imageView, Bitmap bitmap);
 
-        public void onError();
+        public void onError(PhilmImageView imageView);
 
     }
 
@@ -259,7 +259,7 @@ public class PhilmImageView extends ImageView {
 
             if (mPicassoHandler != null) {
                 if (mPicassoHandler.mCallback != null) {
-                    mPicassoHandler.mCallback.onSuccess(bitmap);
+                    mPicassoHandler.mCallback.onSuccess(PhilmImageView.this, bitmap);
                 }
                 mPicassoHandler.markAsFinished();
             }
@@ -269,7 +269,7 @@ public class PhilmImageView extends ImageView {
         public void onBitmapFailed(Drawable drawable) {
             if (mPicassoHandler != null) {
                 if (mPicassoHandler.mCallback != null) {
-                    mPicassoHandler.mCallback.onError();
+                    mPicassoHandler.mCallback.onError(PhilmImageView.this);
                 }
                 mPicassoHandler.markAsFinished();
             }

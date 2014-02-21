@@ -218,6 +218,9 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     @Override
     public void onInsetsChanged(Rect insets) {
         mListView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+
+        mBackdropImageView.getLayoutParams().height += insets.top;
+        mBackdropImageView.requestLayout();
     }
 
     private void populateUi() {
@@ -345,9 +348,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                          int totalItemCount) {
         if (visibleItemCount > 0 && firstVisibleItem == 0) {
             final View firstView = absListView.getChildAt(0);
-
-            final int y = -firstView.getTop();
-
+            final int y = mListView.getPaddingTop() - firstView.getTop();
             final float percent = y / (float) firstView.getHeight();
 
             setTopInsetAlpha(percent);

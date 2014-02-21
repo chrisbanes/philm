@@ -319,14 +319,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     public void onDestroyView() {
         super.onDestroyView();
         clearYoutubeLoaders();
-        //mUiState.reset();
     }
-
-    //@Override
-    //public void onContentViewScrolled(float percent) {
-        //setTopInsetAlpha(percent);
-        //setActionBarTitleEnabled(percent >= 0.7f);
-    //}
 
     private void setActionBarTitleEnabled(boolean enabled) {
         Activity activity = getActivity();
@@ -360,7 +353,6 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
         } else {
             setTopInsetAlpha(1f);
-
             mBackdropImageView.setVisibility(View.INVISIBLE);
         }
     }

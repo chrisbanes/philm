@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ListView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <app.philm.in.view.PhilmImageView
+        android:id="@+id/imageview_fanart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/movie_detail_fanart_height"
+        android:scaleType="centerCrop" />
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@android:id/list"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:divider="@null"
+        android:dividerHeight="0px" />
+
+</FrameLayout>

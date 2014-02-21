@@ -64,7 +64,9 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
         AbsListView.OnScrollListener {
 
     private static final Date DATE = new Date();
+
     private static final float BOTTOM_INSET_ALPHA = 0.75f;
+    private static final float PARALLAX_FRICTION = 0.5f;
 
     private static final String LOG_TAG = MovieDetailListFragment.class.getSimpleName();
 
@@ -80,6 +82,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
     private PhilmMovie mMovie;
 
+    private PhilmImageView mBackdropImageView;
     private ListView mListView;
     private DetailAdapter mDetailAdapter;
 
@@ -111,9 +114,12 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        mBackdropImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
+
         mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setOnScrollListener(this);
         mDetailAdapter = new DetailAdapter();
+
+        mListView.setOnScrollListener(this);
         mListView.setAdapter(mDetailAdapter);
 
         super.onViewCreated(view, savedInstanceState);
@@ -243,6 +249,8 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             items.add(DetailItemType.CAST);
         }
 
+        mBackdropImageView.loadBackdropUrl(mMovie);
+
         mDetailAdapter.setItems(items);
     }
 
@@ -337,11 +345,22 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                          int totalItemCount) {
         if (visibleItemCount > 0 && firstVisibleItem == 0) {
             final View firstView = absListView.getChildAt(0);
-            final float percent = Math.abs(firstView.getTop()) / (float) firstView.getHeight();
+
+            final int y = -firstView.getTop();
+
+            final float percent = y / (float) firstView.getHeight();
+
             setTopInsetAlpha(percent);
             setActionBarTitleEnabled(percent >= 0.8f);
+
+            mBackdropImageView.setVisibility(View.VISIBLE);
+            final int newTop = Math.round(-y * PARALLAX_FRICTION);
+            mBackdropImageView.offsetTopAndBottom(newTop - mBackdropImageView.getTop());
+
         } else {
             setTopInsetAlpha(1f);
+
+            mBackdropImageView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -684,7 +703,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                     bindButtons(view);
                     break;
                 case SUMMARY:
-                    bindSummaryView(view);
+                    bindSummary(view);
                     break;
                 case DETAILS:
                     bindDetails(view);
@@ -738,8 +757,8 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             }
         }
 
-        private void bindSummaryView(final View view) {
-            TextView summary = (TextView) view;
+        private void bindSummary(final View view) {
+            TextView summary = (TextView) view.findViewById(R.id.textview_summary);
             summary.setText(mMovie.getOverview());
             summary.setOnClickListener(MovieDetailListFragment.this);
         }

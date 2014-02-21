@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,7 +60,8 @@ import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
 public class MovieDetailListFragment extends BasePhilmMovieFragment
-        implements MovieController.MovieDetailUi, View.OnClickListener, ColorSchemable {
+        implements MovieController.MovieDetailUi, View.OnClickListener, ColorSchemable,
+        AbsListView.OnScrollListener {
 
     private static final Date DATE = new Date();
     private static final float BOTTOM_INSET_ALPHA = 0.75f;
@@ -110,6 +112,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView.setOnScrollListener(this);
         mDetailAdapter = new DetailAdapter();
         mListView.setAdapter(mDetailAdapter);
 
@@ -321,6 +324,24 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             if (ab != null) {
                 ab.setDisplayShowTitleEnabled(enabled);
             }
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {
+        // NO-OP
+    }
+
+    @Override
+    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount,
+                         int totalItemCount) {
+        if (visibleItemCount > 0 && firstVisibleItem == 0) {
+            final View firstView = absListView.getChildAt(0);
+            final float percent = Math.abs(firstView.getTop()) / (float) firstView.getHeight();
+            setTopInsetAlpha(percent);
+            setActionBarTitleEnabled(percent >= 0.8f);
+        } else {
+            setTopInsetAlpha(1f);
         }
     }
 

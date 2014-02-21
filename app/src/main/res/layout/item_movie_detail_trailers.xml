@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <app.philm.in.view.MovieDetailCardLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:internal="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/movie_detail_card_trailers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_major"
-        internal:title="@string/trailers_movies"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:internal="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_major"
+    internal:title="@string/trailers_movies"
     android:background="?android:attr/colorBackground">
 
     <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/movie_detail_related_height"
-            android:fillViewport="true">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/movie_detail_related_height"
+        android:fillViewport="true">
 
         <LinearLayout
-                android:id="@+id/layout_trailers"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:divider="?android:dividerHorizontal"
-                android:showDividers="middle"/>
+            android:id="@+id/card_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:divider="?android:dividerHorizontal"
+            android:showDividers="middle" />
 
     </HorizontalScrollView>
 

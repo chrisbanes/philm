@@ -713,13 +713,13 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                     bindRating(view);
                     break;
                 case RELATED:
-                    //bindRelated(view);
+                    bindRelated(view);
                     break;
                 case TRAILERS:
-                    //bindTrailers(view);
+                    bindTrailers(view);
                     break;
                 case CAST:
-                    //bindCast(view);
+                    bindCast(view);
                     break;
             }
         }
@@ -781,9 +781,12 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(
                     LayoutInflater.from(getActivity()));
 
+            MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
+            cardLayout.setTitle(R.string.related_movies);
+
             populateDetailGrid(
                     (ViewGroup) view.findViewById(R.id.card_content),
-                    (MovieDetailCardLayout) view,
+                    cardLayout,
                     seeMoreClickListener,
                     adapter);
         }
@@ -847,9 +850,12 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
             MovieCastAdapter adapter = new MovieCastAdapter(LayoutInflater.from(getActivity()));
 
+            MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
+            cardLayout.setTitle(R.string.cast_movies);
+
             populateDetailGrid(
                     (ViewGroup) view.findViewById(R.id.card_content),
-                    (MovieDetailCardLayout) view,
+                    cardLayout,
                     seeMoreClickListener,
                     adapter);
         }

@@ -34,7 +34,7 @@ public class MovieDetailCardLayout extends LinearLayout {
 
         mTitleTextView = (TextView) findViewById(R.id.textview_title);
         mSeeMoreTextView = (TextView) findViewById(R.id.textview_see_more);
-        mCardContent = (LinearLayout) findViewById(R.id.card_content);
+        mCardContent = (LinearLayout) getChildAt(1);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MovieDetailCardLayout);
         final String title = a.getString(R.styleable.MovieDetailCardLayout_title);
@@ -52,6 +52,14 @@ public class MovieDetailCardLayout extends LinearLayout {
         mSeeMoreTextView.setOnClickListener(listener);
     }
 
+    public void setTitle(CharSequence title) {
+        mTitleTextView.setText(title);
+    }
+
+    public void setTitle(int titleResId) {
+        setTitle(getResources().getString(titleResId));
+    }
+
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         if (mCardContent != null) {
@@ -59,9 +67,5 @@ public class MovieDetailCardLayout extends LinearLayout {
         } else {
             super.addView(child, index, params);
         }
-    }
-
-    public void setColorScheme(int color1) {
-        mCardContent.setBackgroundColor(color1);
     }
 }

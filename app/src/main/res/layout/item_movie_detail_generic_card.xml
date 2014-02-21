@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <app.philm.in.view.MovieDetailCardLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_major"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_major"
     android:background="?android:attr/colorBackground">
 
     <LinearLayout
-            android:id="@+id/card_content"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/movie_detail_related_height"
-            android:orientation="horizontal"
-            android:divider="?android:dividerHorizontal"
-            android:showDividers="middle"/>
+        android:id="@+id/card_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/movie_detail_related_height"
+        android:orientation="horizontal"
+        android:divider="?android:dividerHorizontal"
+        android:showDividers="middle" />
 
 </app.philm.in.view.MovieDetailCardLayout>

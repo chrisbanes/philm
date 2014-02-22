@@ -71,7 +71,6 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     private static final String LOG_TAG = MovieDetailListFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
-    private static final String KEY_SCROLLVIEW_POSITION = "scroll_position";
 
     private final ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader> mYoutubeLoaders
             = new ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader>();
@@ -145,21 +144,13 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     @Override
     public void onResume() {
         super.onResume();
-        //mParallaxScrollView.scrollScrollViewTo(mScrollViewY);
         setBottomInsetAlpha(BOTTOM_INSET_ALPHA);
     }
 
     @Override
     public void onPause() {
-        //mScrollViewY = mParallaxScrollView.getScrollViewScrollY();
         setActionBarTitleEnabled(true);
         super.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //outState.putInt(KEY_SCROLLVIEW_POSITION, mScrollViewY);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -174,22 +165,22 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
     @Override
     public void setRateCircleEnabled(boolean enabled) {
-        //mRatingBarLayout.setRatingCircleEnabled(enabled);
+        mDetailAdapter.setRateCircleEnabled(enabled);
     }
 
     @Override
     public void setCollectionButtonEnabled(boolean enabled) {
-        //mCollectionButton.setEnabled(enabled);
+        mDetailAdapter.setCollectionButtonEnabled(enabled);
     }
 
     @Override
     public void setWatchlistButtonEnabled(boolean enabled) {
-        //mWatchlistButton.setEnabled(enabled);
+        mDetailAdapter.setWatchlistButtonEnabled(enabled);
     }
 
     @Override
     public void setToggleWatchedButtonEnabled(boolean enabled) {
-        //mSeenButton.setEnabled(enabled);
+        mDetailAdapter.setToggleWatchedButtonEnabled(enabled);
     }
 
     @Override
@@ -687,6 +678,31 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             return view;
         }
 
+        private boolean mRatingCircleEnabled;
+        private boolean mCollectionButtonEnabled;
+        private boolean mWatchlistButtonEnabled;
+        private boolean mWatchedButtonEnabled;
+
+        public void setRateCircleEnabled(boolean enabled) {
+            mRatingCircleEnabled = enabled;
+            rebindView(DetailItemType.RATING);
+        }
+
+        public void setCollectionButtonEnabled(boolean enabled) {
+            mCollectionButtonEnabled = enabled;
+            rebindView(DetailItemType.BUTTONS);
+        }
+
+        public void setWatchlistButtonEnabled(boolean enabled) {
+            mWatchlistButtonEnabled = enabled;
+            rebindView(DetailItemType.BUTTONS);
+        }
+
+        public void setToggleWatchedButtonEnabled(boolean enabled) {
+            mWatchedButtonEnabled = enabled;
+            rebindView(DetailItemType.BUTTONS);
+        }
+
         private void bindView(final DetailItemType item, final View view) {
             switch (item) {
                 case TITLE:
@@ -719,23 +735,25 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
         private void bindButtons(final View view) {
             CheckableImageButton seenButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_seen);
+            seenButton.setEnabled(mWatchedButtonEnabled);
             seenButton.setOnClickListener(MovieDetailListFragment.this);
             CheatSheet.setup(seenButton);
+            updateButtonState(seenButton, mMovie.isWatched(), R.string.action_mark_seen,
+                    R.string.action_mark_unseen);
 
             CheckableImageButton watchlistButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
+            watchlistButton.setEnabled(mWatchlistButtonEnabled);
             watchlistButton.setOnClickListener(MovieDetailListFragment.this);
             CheatSheet.setup(watchlistButton);
+            updateButtonState(watchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
+                    R.string.action_remove_watchlist);
 
             CheckableImageButton collectionButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_collection);
+            collectionButton.setEnabled(mCollectionButtonEnabled);
             collectionButton.setOnClickListener(MovieDetailListFragment.this);
             CheatSheet.setup(collectionButton);
-
-            updateButtonState(seenButton, mMovie.isWatched(), R.string.action_mark_seen,
-                    R.string.action_mark_unseen);
-            updateButtonState(watchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
-                    R.string.action_remove_watchlist);
             updateButtonState(collectionButton, mMovie.inCollection(), R.string.action_add_collection,
                     R.string.action_remove_collection);
         }
@@ -933,6 +951,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
 
         private void bindRating(View view) {
             RatingBarLayout ratingBarLayout = (RatingBarLayout) view;
+            ratingBarLayout.setRatingCircleEnabled(mRatingCircleEnabled);
 
             if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
                 ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
@@ -965,6 +984,26 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             Picasso.with(getActivity())
                     .load(mImageHelper.getResizedUrl(flagUrl, width, height, "gif"))
                     .into(infoLayout);
+        }
+
+        private View findViewForPosition(int position) {
+            if (mListView.getFirstVisiblePosition() >= position
+                    && position <= mListView.getLastVisiblePosition()) {
+                return mListView.getChildAt(position - mListView.getFirstVisiblePosition());
+            }
+            return null;
+        }
+
+        private void rebindView(DetailItemType type) {
+            if (mItems != null) {
+                final int position = mItems.indexOf(type);
+                if (position >= 0) {
+                    View view = findViewForPosition(position);
+                    if (view != null) {
+                        bindView(type, view);
+                    }
+                }
+            }
         }
     }
 

@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.common.base.Objects;
+
 import app.philm.in.R;
 import app.philm.in.drawable.PercentageDrawable;
 import app.philm.in.model.ColorScheme;
@@ -30,6 +32,7 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
     private int mRatingGlobalPercentage;
     private int mRatingGlobalVotes;
 
+    private ColorScheme mColorScheme;
     private ValueAnimator mColorSchemeAnimator;
 
     public RatingBarLayout(Context context) {
@@ -86,14 +89,18 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
 
     @Override
     public void setColorScheme(final ColorScheme colorScheme, final boolean animate) {
-        if (mColorSchemeAnimator != null && mColorSchemeAnimator.isRunning()) {
-            mColorSchemeAnimator.cancel();
-        }
+        if (!Objects.equal(mColorScheme, colorScheme)) {
+            mColorScheme = colorScheme;
 
-        if (animate) {
-            setColorSchemeAnimate(colorScheme);
-        } else {
-            setColorSchemeNoAnimate(colorScheme);
+            if (mColorSchemeAnimator != null && mColorSchemeAnimator.isRunning()) {
+                mColorSchemeAnimator.cancel();
+            }
+
+            if (animate) {
+                setColorSchemeAnimate(colorScheme);
+            } else {
+                setColorSchemeNoAnimate(colorScheme);
+            }
         }
     }
 

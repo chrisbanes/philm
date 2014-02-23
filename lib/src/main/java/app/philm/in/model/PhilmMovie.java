@@ -312,17 +312,17 @@ public class PhilmMovie implements PhilmModel {
     public void updateWithTrailers(final Trailers trailers) {
         Preconditions.checkNotNull(trailers, "trailers cannot be null");
 
-        final ArrayList<PhilmTrailer> philmTrailers = new ArrayList<PhilmTrailer>();
-
         if (!PhilmCollections.isEmpty(trailers.youtube)) {
+            final ArrayList<PhilmTrailer> philmTrailers = new ArrayList<PhilmTrailer>();
+
             for (Trailer trailer : trailers.youtube) {
                 final PhilmTrailer philmTrailer = new PhilmTrailer();
                 philmTrailer.setFromTmdb(PhilmTrailer.Source.YOUTUBE, trailer);
                 philmTrailers.add(philmTrailer);
             }
-        }
 
-        setTrailers(philmTrailers);
+            setTrailers(philmTrailers);
+        }
     }
 
     public void updateWithReleases(final Releases releases, final String countryCode) {
@@ -520,11 +520,17 @@ public class PhilmMovie implements PhilmModel {
         return mainLanguageTitle;
     }
 
+    private boolean needFullFetch() {
+        return PhilmCollections.isEmpty(trailers)
+                || PhilmCollections.isEmpty(cast)
+                || PhilmCollections.isEmpty(related);
+    }
+
     public boolean needFullFetchFromTmdb() {
-        return isPastThreshold(lastFullFetchFromTmdbStarted,
-                        Constants.FULL_MOVIE_DETAIL_ATTEMPT_THRESHOLD)
-                && isPastThreshold(lastFullFetchFromTmdbCompleted,
-                        Constants.STALE_MOVIE_DETAIL_THRESHOLD);
+        return (needFullFetch() || isPastThreshold(lastFullFetchFromTmdbCompleted,
+                    Constants.STALE_MOVIE_DETAIL_THRESHOLD)) &&
+                isPastThreshold(lastFullFetchFromTmdbStarted,
+                    Constants.FULL_MOVIE_DETAIL_ATTEMPT_THRESHOLD);
     }
 
     public boolean needFullFetchFromTrakt() {

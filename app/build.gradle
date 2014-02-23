@@ -65,7 +65,7 @@ android {
             proguardFile 'proguard-rules.txt'
         }
     }
-    
+
     lintOptions {
           // Or, if you prefer, you can continue to check for errors in release builds,
           // but continue the build even when errors are found:
@@ -81,9 +81,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.+'
     compile 'nl.qbusict:cupboard:1.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
-    compile ("de.keyboardsurfer.android.widget:crouton:1.8.+@aar") {
-        exclude group: 'com.google.android', module: 'support-v4'
-    }
+    compile 'com.github.johnpersano:supertoasts:1.3.+@aar'
     compile 'com.github.castorflex.smoothprogressbar:library:0.3.+'
 
     apt 'com.squareup.dagger:dagger-compiler:1.+'

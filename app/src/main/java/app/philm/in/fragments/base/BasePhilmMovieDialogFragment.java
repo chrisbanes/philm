@@ -1,6 +1,10 @@
 package app.philm.in.fragments.base;
 
 
+import com.github.johnpersano.supertoasts.SuperCardToast;
+import com.github.johnpersano.supertoasts.SuperToast;
+import com.github.johnpersano.supertoasts.util.Style;
+
 import android.support.v4.app.DialogFragment;
 
 import app.philm.in.PhilmApplication;
@@ -8,15 +12,13 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 public abstract class BasePhilmMovieDialogFragment extends DialogFragment
         implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
-    private Crouton mCurrentCrouton;
+    private SuperCardToast mToast;
 
     @Override
     public void onResume() {
@@ -26,7 +28,7 @@ public abstract class BasePhilmMovieDialogFragment extends DialogFragment
 
     @Override
     public void onPause() {
-        cancelCrouton();
+        cancelToast();
         getController().detachUi(this);
         super.onPause();
     }
@@ -43,19 +45,22 @@ public abstract class BasePhilmMovieDialogFragment extends DialogFragment
 
     @Override
     public void showError(NetworkError error) {
-        showCrouton(StringManager.getStringResId(error), Style.ALERT);
+        showToast(StringManager.getStringResId(error), Style.getStyle(Style.RED));
     }
 
-    protected final void cancelCrouton() {
-        if (mCurrentCrouton != null) {
-            mCurrentCrouton.cancel();
+    protected final void cancelToast() {
+        if (mToast != null) {
+            mToast.dismiss();
         }
     }
 
-    protected final void showCrouton(int text, Style style) {
-        cancelCrouton();
-        mCurrentCrouton = Crouton.makeText(getActivity(), text, style);
-        mCurrentCrouton.show();
+    protected final void showToast(int text, Style style) {
+        cancelToast();
+
+        mToast = SuperCardToast.create(
+                getActivity(), getText(text), SuperToast.Duration.MEDIUM, style);
+        mToast.setIcon(SuperToast.Icon.Dark.INFO, SuperToast.IconPosition.LEFT);
+        mToast.show();
     }
 
     protected final boolean hasCallbacks() {

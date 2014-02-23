@@ -1,6 +1,7 @@
 package app.philm.in;
 
 import com.crashlytics.android.Crashlytics;
+import com.github.johnpersano.supertoasts.SuperCardToast;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import app.philm.in.controllers.MainController;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 public abstract class BasePhilmActivity extends FragmentActivity
         implements MainController.HostCallbacks {
@@ -29,6 +29,9 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
         // Record launch intent
         mLaunchIntent = getIntent();
+
+        // Let SuperCardToast restore itself
+        SuperCardToast.onRestoreState(savedInstanceState, this);
     }
 
     @Override
@@ -53,6 +56,12 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     protected ActionBarDrawerToggle getDrawerToggle() {
         return null;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        SuperCardToast.onSaveState(outState);
     }
 
     @Override
@@ -91,9 +100,4 @@ public abstract class BasePhilmActivity extends FragmentActivity
         // NO-OP
     }
 
-    @Override
-    protected void onDestroy() {
-        Crouton.clearCroutonsForActivity(this);
-        super.onDestroy();
-    }
 }

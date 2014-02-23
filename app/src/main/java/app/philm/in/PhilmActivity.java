@@ -7,6 +7,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.HashSet;
 
@@ -26,6 +27,8 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
     private Rect mInsets;
     private InsetFrameLayout mInsetFrameLayout;
 
+    private View mCardContainer;
+
     private DrawerLayout mDrawerLayout;
 
     @Override
@@ -36,6 +39,8 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
 
         mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.inset_fl);
         mInsetFrameLayout.setOnInsetsCallback(this);
+
+        mCardContainer = findViewById(R.id.card_container);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
@@ -103,6 +108,8 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
     @Override
     public void onInsetsChanged(Rect insets) {
         mInsets = insets;
+
+        mCardContainer.setPadding(0, insets.top, 0, 0);
 
         if (!PhilmCollections.isEmpty(mInsetCallbacks)) {
             for (OnActivityInsetsCallback callback : mInsetCallbacks) {

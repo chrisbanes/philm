@@ -1,5 +1,7 @@
 package app.philm.in.view;
 
+import com.google.common.base.Objects;
+
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -8,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.google.common.base.Objects;
 
 import app.philm.in.R;
 import app.philm.in.drawable.PercentageDrawable;

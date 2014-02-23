@@ -4,7 +4,6 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeIntents;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
@@ -53,7 +52,6 @@ import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
-import app.philm.in.view.ColorSchemable;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;

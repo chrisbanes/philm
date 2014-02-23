@@ -1,5 +1,9 @@
 package app.philm.in.fragments.base;
 
+import com.github.johnpersano.supertoasts.SuperCardToast;
+import com.github.johnpersano.supertoasts.SuperToast;
+import com.github.johnpersano.supertoasts.util.Style;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,8 +16,6 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 
 public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
@@ -24,7 +26,7 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
 
     private MovieController.MovieUiCallbacks mCallbacks;
 
-    private Crouton mCurrentCrouton;
+    private SuperCardToast mToast;
 
     private int mFirstVisiblePosition;
     private int mFirstVisiblePositionTop;
@@ -52,7 +54,7 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     @Override
     public void onPause() {
         saveListViewPosition();
-        cancelCrouton();
+        cancelToast();
         getController().detachUi(this);
         super.onPause();
     }
@@ -137,16 +139,19 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
         return false;
     }
 
-    private void cancelCrouton() {
-        if (mCurrentCrouton != null) {
-            mCurrentCrouton.cancel();
+    protected final void cancelToast() {
+        if (mToast != null) {
+            mToast.dismiss();
         }
     }
 
-    protected void showCrouton(int text, Style style) {
-        cancelCrouton();
-        mCurrentCrouton = Crouton.makeText(getActivity(), text, style);
-        mCurrentCrouton.show();
+    protected final void showToast(int text, Style style) {
+        cancelToast();
+
+        mToast = SuperCardToast.create(
+                getActivity(), getText(text), SuperToast.Duration.MEDIUM, style);
+        mToast.setIcon(SuperToast.Icon.Dark.INFO, SuperToast.IconPosition.LEFT);
+        mToast.show();
     }
 
     protected final boolean hasCallbacks() {

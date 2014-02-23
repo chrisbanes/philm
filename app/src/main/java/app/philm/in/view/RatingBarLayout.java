@@ -88,7 +88,7 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
     }
 
     @Override
-    public void setColorScheme(final ColorScheme colorScheme, final boolean animate) {
+    public void setColorScheme(final ColorScheme colorScheme) {
         if (!Objects.equal(mColorScheme, colorScheme)) {
             mColorScheme = colorScheme;
 
@@ -96,7 +96,7 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
                 mColorSchemeAnimator.cancel();
             }
 
-            if (animate) {
+            if (getDrawingTime() > 0) {
                 setColorSchemeAnimate(colorScheme);
             } else {
                 setColorSchemeNoAnimate(colorScheme);

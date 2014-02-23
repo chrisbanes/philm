@@ -283,11 +283,13 @@ public class PhilmImageView extends ImageView {
 
     void setImageBitmapFromNetwork(final Bitmap bitmap, final boolean fade) {
         if (fade) {
+            Drawable currentDrawable = getDrawable();
+            if (currentDrawable == null) {
+                currentDrawable = new ColorDrawable(Color.TRANSPARENT);
+            }
+
             TransitionDrawable transitionDrawable = new TransitionDrawable(
-                    new Drawable[]{
-                            new ColorDrawable(Color.TRANSPARENT),
-                            new BitmapDrawable(getResources(), bitmap)
-                    });
+                    new Drawable[]{currentDrawable, new BitmapDrawable(getResources(), bitmap)});
             transitionDrawable.setCrossFadeEnabled(true);
 
             setImageDrawable(transitionDrawable);

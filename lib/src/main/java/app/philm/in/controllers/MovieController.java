@@ -245,9 +245,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             fetchTmdbConfiguration();
         }
 
-        if (isLoggedIn()) {
-            fetchWatchingMovieIfNeeded();
-        }
+        // TODO: Re-enable this
+//        if (isLoggedIn()) {
+//            fetchWatchingMovieIfNeeded();
+//        }
     }
 
     @Override

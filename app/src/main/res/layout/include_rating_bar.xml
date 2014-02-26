@@ -65,9 +65,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             internal:backgroundCircleColor="@color/dark_gray"
-            internal:foregroundCircleColor="@color/primary_accent_color"
-            internal:arcColor="@color/primary_accent_color_light"
-            internal:textColor="@color/primary_accent_color_light"
+            internal:foregroundCircleColor="@color/mid_gray"
+            internal:arcColor="@color/light_gray"
+            internal:textColor="@color/light_gray"
             internal:ratePrompt="@string/movie_detail_rate"
             internal:font="roboto_slab"/>
 

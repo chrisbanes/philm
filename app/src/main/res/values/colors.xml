@@ -5,6 +5,7 @@
 
     <color name="dark_gray">#FF333333</color>
     <color name="light_gray">#FFDDDDDD</color>
+    <color name="mid_gray">#FFAAAAAA</color>
 
     <color name="primary_accent_color_light">#ff99cc00</color>
     <color name="primary_accent_color_translucent">#99669900</color>

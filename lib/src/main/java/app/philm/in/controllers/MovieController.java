@@ -489,6 +489,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
 
+            @Override
+            public void checkin(PhilmMovie movie, String message) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
+
+            }
+
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -572,6 +579,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateRateUi((MovieRateUi) ui);
         } else if (ui instanceof MovieDiscoverUi) {
             populateMovieDiscoverUi((MovieDiscoverUi) ui);
+        } else if (ui instanceof MovieCheckinUi) {
+            populateCheckinUi((MovieCheckinUi) ui);
         }
     }
 
@@ -938,6 +947,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void markMoviesUnseen(final int callingId, String... ids) {
         executeTask(new MarkTraktMovieUnseenRunnable(callingId, ids));
+    }
+
+    private void populateCheckinUi(MovieCheckinUi ui) {
+        final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+
+        if (movie != null) {
+            ui.setMovie(movie);
+        }
     }
 
     private void populateDetailUi(MovieDetailUi ui) {
@@ -1311,6 +1328,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void setTabs(DiscoverTab... tabs);
     }
 
+    public interface MovieCheckinUi extends MovieUi {
+
+        void setMovie(PhilmMovie movie);
+    }
+
     public interface MovieUiCallbacks {
 
         void onTitleChanged(String newTitle);
@@ -1350,6 +1372,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showRelatedMovies(PhilmMovie movie);
 
         void showCastList(PhilmMovie movie);
+
+        void checkin(PhilmMovie movie, String message);
     }
 
     private class LibraryDbLoadCallback

@@ -96,6 +96,8 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     private ListView mListView;
     private DetailAdapter mDetailAdapter;
 
+    private boolean mCheckinEnabled;
+
     public static MovieDetailListFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
 
@@ -141,6 +143,16 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem checkinItem = menu.findItem(R.id.menu_checkin);
+        if (checkinItem != null && checkinItem.isVisible() != mCheckinEnabled) {
+            checkinItem.setVisible(mCheckinEnabled);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
@@ -148,6 +160,12 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                     getCallbacks().refresh();
                     return true;
                 }
+                break;
+            case R.id.menu_checkin:
+                if (hasCallbacks()) {
+                    getCallbacks().showCheckin(mMovie);
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -172,6 +190,12 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
         if (movie != null && hasCallbacks()) {
             getCallbacks().onTitleChanged(movie.getTitle());
         }
+    }
+
+    @Override
+    public void setCheckinEnabled(boolean enabled) {
+        mCheckinEnabled = enabled;
+        getActivity().supportInvalidateOptionsMenu();
     }
 
     @Override
@@ -608,7 +632,10 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                 final ColorScheme scheme = colorCalculator.getColorScheme();
                 if (scheme != null && mMovie != null) {
                     mMovie.setColorScheme(scheme);
-                    onColorSchemeChanged();
+
+                    if (getActivity() != null) {
+                        onColorSchemeChanged();
+                    }
                 }
             }
         }

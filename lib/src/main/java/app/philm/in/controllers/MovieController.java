@@ -32,6 +32,7 @@ import app.philm.in.state.UserState;
 import app.philm.in.tasks.AddToTraktCollectionRunnable;
 import app.philm.in.tasks.AddToTraktWatchlistRunnable;
 import app.philm.in.tasks.BaseMovieRunnable;
+import app.philm.in.tasks.CheckinTraktRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
 import app.philm.in.tasks.FetchTmdbMovieCastRunnable;
@@ -492,8 +493,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @Override
             public void checkin(PhilmMovie movie, String message) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
+                checkinMovie(getId(ui), movie, message);
+            }
 
+            @Override
+            public void showCheckin(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
 
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showCheckin(movie.getImdbId());
+                }
             }
 
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
@@ -590,6 +600,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void addToWatchlist(final int callingId, String... ids) {
         executeTask(new AddToTraktWatchlistRunnable(callingId, ids));
+    }
+
+    private void checkinMovie(int callingId, PhilmMovie movie, String message) {
+        Preconditions.checkNotNull(movie, "movie cannot be null");
+        executeTask(new CheckinTraktRunnable(callingId, movie.getImdbId(), message));
     }
 
     private void checkDetailMovieResult(int callingId, PhilmMovie movie) {
@@ -966,6 +981,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             ui.setCollectionButtonEnabled(canUpdateTrakt);
             ui.setWatchlistButtonEnabled(canUpdateTrakt);
             ui.setToggleWatchedButtonEnabled(canUpdateTrakt);
+            ui.setCheckinEnabled(canUpdateTrakt);
 
             ui.setMovie(movie);
         }
@@ -1315,6 +1331,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void setRateCircleEnabled(boolean enabled);
 
+        void setCheckinEnabled(boolean enabled);
+
     }
 
     public interface MovieRateUi extends MovieUi {
@@ -1374,6 +1392,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showCastList(PhilmMovie movie);
 
         void checkin(PhilmMovie movie, String message);
+
+        void showCheckin(PhilmMovie movie);
     }
 
     private class LibraryDbLoadCallback

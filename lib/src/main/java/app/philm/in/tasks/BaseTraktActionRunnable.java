@@ -47,7 +47,7 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
         if (result instanceof ActionResponse) {
             onActionCompleted(((ActionResponse) result).skipped < mIds.length);
         } else {
-            onActionCompleted("success".equals(result.status));
+            onActionCompleted(RESULT_TRAKT_SUCCESS.equals(result.status));
         }
     }
 

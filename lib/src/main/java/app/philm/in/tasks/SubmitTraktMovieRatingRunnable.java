@@ -29,7 +29,7 @@ public class SubmitTraktMovieRatingRunnable extends BaseMovieRunnable<RatingResp
 
     @Override
     public void onSuccess(RatingResponse result) {
-        if ("success".equals(result.status)) {
+        if (RESULT_TRAKT_SUCCESS.equals(result.status)) {
             PhilmMovie movie = mMoviesState.getMovie(mId);
             if (movie != null) {
                 if (result.rating != null) {

@@ -6,6 +6,7 @@ import app.philm.in.modules.library.StateProvider;
 import app.philm.in.modules.library.UtilProvider;
 import app.philm.in.tasks.AddToTraktCollectionRunnable;
 import app.philm.in.tasks.AddToTraktWatchlistRunnable;
+import app.philm.in.tasks.CheckinTraktRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
 import app.philm.in.tasks.FetchTmdbMovieCastRunnable;
@@ -56,7 +57,8 @@ import dagger.Module;
                 SubmitTraktMovieRatingRunnable.class,
                 FetchTmdbMovieCastRunnable.class,
                 FetchTmdbMovieTrailersRunnable.class,
-                FetchTraktWatchingRunnable.class
+                FetchTraktWatchingRunnable.class,
+                CheckinTraktRunnable.class
         },
         includes = {
                 PersistenceProvider.class,

@@ -21,6 +21,9 @@ import retrofit.RetrofitError;
 
 public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
+    static final String RESULT_TRAKT_SUCCESS = "success";
+    static final String RESULT_TRAKT_FAILURE = "failure";
+
     @Inject MoviesState mMoviesState;
 
     @Inject Lazy<Tmdb> mLazyTmdbClient;

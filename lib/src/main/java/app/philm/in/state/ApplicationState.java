@@ -17,6 +17,7 @@ import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.TmdbConfiguration;
+import app.philm.in.model.WatchingMovie;
 import app.philm.in.util.TextUtils;
 
 public final class ApplicationState implements BaseState, MoviesState, UserState {
@@ -38,7 +39,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     private List<PhilmMovie> mWatchlist;
     private List<PhilmMovie> mRecommended;
 
-    private PhilmMovie mWatching;
+    private WatchingMovie mWatching;
 
     private Set<MovieController.Filter> mFilters;
 
@@ -236,12 +237,12 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public PhilmMovie getWatchingMovie() {
+    public WatchingMovie getWatchingMovie() {
         return mWatching;
     }
 
     @Override
-    public void setWatchingMovie(PhilmMovie movie) {
+    public void setWatchingMovie(WatchingMovie movie) {
         mWatching = movie;
         mEventBus.post(new WatchingMovieUpdatedEvent());
     }

@@ -23,6 +23,7 @@ import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.WatchingMovie;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
@@ -210,9 +211,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieWatchingChanged(MoviesState.WatchlistChangedEvent event) {
-        PhilmMovie movie = mMoviesState.getWatchingMovie();
-        if (movie != null) {
-            fetchDetailMovieIfNeeded(0, movie.getImdbId());
+        WatchingMovie watching = mMoviesState.getWatchingMovie();
+        if (watching.movie != null) {
+            fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
         }
     }
 

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.TmdbConfiguration;
+import app.philm.in.model.WatchingMovie;
 import app.philm.in.util.TextUtils;
 
 public interface MoviesState extends BaseState {
@@ -64,9 +65,9 @@ public interface MoviesState extends BaseState {
 
     public void setTmdbConfiguration(TmdbConfiguration configuration);
 
-    public void setWatchingMovie(PhilmMovie movie);
+    public void setWatchingMovie(WatchingMovie movie);
 
-    public PhilmMovie getWatchingMovie();
+    public WatchingMovie getWatchingMovie();
 
     public static class LibraryChangedEvent {}
 

@@ -6,6 +6,7 @@ import com.jakewharton.trakt.entities.CheckinResponse;
 import com.jakewharton.trakt.services.MovieService;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.WatchingMovie;
 import app.philm.in.network.NetworkError;
 import retrofit.RetrofitError;
 
@@ -30,10 +31,19 @@ public class CheckinTraktRunnable extends BaseMovieRunnable<CheckinResponse> {
     public void onSuccess(CheckinResponse result) {
         if (RESULT_TRAKT_SUCCESS.equals(result.status)) {
             PhilmMovie movie = getTraktEntityMapper().map(result.movie);
+
             if (movie != null) {
-                mMoviesState.setWatchingMovie(movie);
+                long startTime = 0;
+                int duration = 0;
+
+                if (result.timestamps != null) {
+                    startTime = result.timestamps.start.getTime();
+                    duration = result.timestamps.active_for;
+                }
+
+                WatchingMovie watchingMovie = new WatchingMovie(movie, startTime, duration);
+                mMoviesState.setWatchingMovie(watchingMovie);
             }
-            // TODO: Record timestamps
         } else if (RESULT_TRAKT_FAILURE.equals(result.status)) {
             // TODO Check time out, etc
         }

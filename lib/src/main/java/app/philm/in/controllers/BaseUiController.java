@@ -37,7 +37,9 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         Preconditions.checkArgument(ui != null, "ui cannot be null");
         Preconditions.checkState(!mUis.contains(ui), "UI is already attached");
 
-        mUis.add(ui);
+        synchronized (mUis) {
+            mUis.add(ui);
+        }
         ui.setCallbacks(createUiCallbacks(ui));
 
         if (isInited()) {
@@ -65,7 +67,10 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         Preconditions.checkState(mUis.contains(ui), "ui is not attached");
         onUiDetached(ui);
         ui.setCallbacks(null);
-        mUis.remove(ui);
+
+        synchronized (mUis) {
+            mUis.remove(ui);
+        }
     }
 
     protected final Set<U> getUis() {
@@ -74,8 +79,10 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
     protected void onInited() {
         if (!mUis.isEmpty()) {
-            for (U ui : mUis) {
-                onUiAttached(ui);
+            synchronized (mUis) {
+                for (U ui : mUis) {
+                    onUiAttached(ui);
+                }
             }
             populateUis();
         }
@@ -89,8 +96,10 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         if (Constants.DEBUG) {
             mLogger.d(getClass().getSimpleName(), "populateUis");
         }
-        for (U ui : mUis) {
-            populateUi(ui);
+        synchronized (mUis) {
+            for (U ui : mUis) {
+                populateUi(ui);
+            }
         }
     }
 
@@ -104,9 +113,11 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     }
 
     protected U findUi(final int id) {
-        for (U ui : mUis) {
-            if (getId(ui) == id) {
-                return ui;
+        synchronized (mUis) {
+            for (U ui : mUis) {
+                if (getId(ui) == id) {
+                    return ui;
+                }
             }
         }
         return null;

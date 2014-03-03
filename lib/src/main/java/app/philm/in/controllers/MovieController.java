@@ -212,7 +212,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Subscribe
     public void onMovieWatchingChanged(MoviesState.WatchlistChangedEvent event) {
         WatchingMovie watching = mMoviesState.getWatchingMovie();
-        if (watching.movie != null) {
+        if (watching != null && watching.movie != null) {
             fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
         }
     }

@@ -103,6 +103,7 @@
     </string-array>
 
     <string name="movie_checkin">Checkin</string>
+    <string name="movie_checkin_header">Currently Watching</string>
     <string name="movie_checkin_message_hint">Message</string>
 
     <string name="about_build_version_title">Build Version</string>
@@ -115,7 +116,6 @@
     <string name="about_powered_trakt_content">This product uses the trakt.tv API but is not endorsed or certified by trakt.tv.</string>
 
     <string name="movie_rate_mark_watched">Mark Watched</string>
-
 
     <string name="pref_remove_watchlist_on_watched_title">Remove from watchlist</string>
     <string name="pref_remove_watchlist_on_watched_summary">Remove from watchlist when watched</string>

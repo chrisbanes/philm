@@ -8,8 +8,10 @@ import javax.inject.Inject;
 
 import app.philm.in.Display;
 import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.model.WatchingMovie;
 import app.philm.in.state.ApplicationState;
 import app.philm.in.state.AsyncDatabaseHelper;
+import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.util.Logger;
 
@@ -34,12 +36,18 @@ public class MainController extends BaseUiController<MainController.MainControll
         void showUserProfile(PhilmUserProfile profile);
 
         void showAddAccountButton();
+
+        void showMovieCheckin(WatchingMovie movie);
+
+        void hideMovieCheckin();
     }
 
     public interface MainControllerUiCallbacks {
         void onSideMenuItemSelected(SideMenuItem item);
 
         void addAccountRequested();
+
+        void showMovieCheckin();
     }
 
     private final UserController mUserController;
@@ -95,6 +103,11 @@ public class MainController extends BaseUiController<MainController.MainControll
         populateUis();
     }
 
+    @Subscribe
+    public void onMovieWatchingChanged(MoviesState.WatchingMovieUpdatedEvent event) {
+        populateUis();
+    }
+
     @Override
     public boolean handleIntent(String intentAction) {
         mLogger.d(LOG_TAG, "handleIntent: " + intentAction);
@@ -132,6 +145,13 @@ public class MainController extends BaseUiController<MainController.MainControll
         } else {
             ui.showAddAccountButton();
         }
+
+        WatchingMovie checkin = mState.getWatchingMovie();
+        if (checkin != null) {
+            ui.showMovieCheckin(checkin);
+        } else {
+            ui.hideMovieCheckin();
+        }
     }
 
     @Override
@@ -152,6 +172,17 @@ public class MainController extends BaseUiController<MainController.MainControll
                 if (display != null) {
                     display.startAddAccountActivity();
                     display.closeDrawerLayout();
+                }
+            }
+
+            @Override
+            public void showMovieCheckin() {
+                Display display = getDisplay();
+                WatchingMovie checkin = mState.getWatchingMovie();
+
+                if (display != null && checkin != null) {
+                    display.closeDrawerLayout();
+                    display.showMovieDetailFragment(checkin.movie.getImdbId());
                 }
             }
         };

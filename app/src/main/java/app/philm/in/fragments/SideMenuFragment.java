@@ -21,7 +21,10 @@ import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.fragments.base.InsetAwareFragment;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.model.WatchingMovie;
+import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.StringManager;
 
 public class SideMenuFragment extends InsetAwareFragment
@@ -37,7 +40,12 @@ public class SideMenuFragment extends InsetAwareFragment
     private Button mAccountButton;
     private ImageView mAvatarImageView;
 
+    private View mCheckinLayout;
+    private PhilmImageView mCheckinImageView;
+    private TextView mCheckinTitleTextView;
+
     private PhilmUserProfile mUserProfile;
+    private WatchingMovie mMovieCheckin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
@@ -69,6 +77,13 @@ public class SideMenuFragment extends InsetAwareFragment
         mAccountButton.setOnClickListener(this);
 
         mAvatarImageView = (ImageView) view.findViewById(R.id.imageview_account_avatar);
+
+        mCheckinLayout = view.findViewById(R.id.layout_checkin);
+        mCheckinLayout.setOnClickListener(this);
+
+        mCheckinImageView = (PhilmImageView) mCheckinLayout
+                .findViewById(R.id.imageview_checkin_movie);
+        mCheckinTitleTextView = (TextView) mCheckinLayout.findViewById(R.id.textview_title);
     }
 
     @Override
@@ -123,6 +138,21 @@ public class SideMenuFragment extends InsetAwareFragment
     }
 
     @Override
+    public void showMovieCheckin(WatchingMovie checkin) {
+        mCheckinLayout.setVisibility(View.VISIBLE);
+
+        final PhilmMovie movie = checkin.movie;
+
+        mCheckinImageView.loadPosterUrl(movie);
+        mCheckinTitleTextView.setText(movie.getTitle());
+    }
+
+    @Override
+    public void hideMovieCheckin() {
+        mCheckinLayout.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onClick(View view) {
         if (mCallbacks != null) {
             if (view == mAccountButton) {
@@ -131,6 +161,8 @@ public class SideMenuFragment extends InsetAwareFragment
                 } else {
                     mCallbacks.addAccountRequested();
                 }
+            } else if (view == mCheckinLayout) {
+                mCallbacks.showMovieCheckin();
             }
         }
     }

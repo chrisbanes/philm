@@ -40,7 +40,9 @@
     <dimen name="movie_list_small_image_width">55dp</dimen>
     <dimen name="movie_list_small_item_height">80dp</dimen>
 
-
+    <dimen name="drawer_movie_checkin_poster_width">56dp</dimen>
+    <!-- Should be movie_detail_poster_width * 1.6 -->
+    <dimen name="drawer_movie_checkin_poster_height">90dp</dimen>
 
     <dimen name="drawer_side_menu_width">240dp</dimen>
 

@@ -211,7 +211,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
-    public void onMovieWatchingChanged(MoviesState.WatchlistChangedEvent event) {
+    public void onMovieWatchingChanged(MoviesState.WatchingMovieUpdatedEvent event) {
         WatchingMovie watching = mMoviesState.getWatchingMovie();
         if (watching != null && watching.movie != null) {
             fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
@@ -248,10 +248,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             fetchTmdbConfiguration();
         }
 
-        // TODO: Re-enable this
-//        if (isLoggedIn()) {
-//            fetchWatchingMovieIfNeeded();
-//        }
+        if (isLoggedIn()) {
+            fetchWatchingMovieIfNeeded();
+        }
     }
 
     @Override

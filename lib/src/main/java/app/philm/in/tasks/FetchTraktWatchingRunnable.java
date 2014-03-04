@@ -31,6 +31,7 @@ public class FetchTraktWatchingRunnable extends BaseMovieRunnable<Watching> {
 
             PhilmMovie movie = getTraktEntityMapper().map(result.movie);
             if (movie != null) {
+                // TODO Fix timestamps
                 WatchingMovie watching = new WatchingMovie(movie, 0, 0);
                 mMoviesState.setWatchingMovie(watching);
             }

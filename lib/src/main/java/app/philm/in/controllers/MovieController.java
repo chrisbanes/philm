@@ -1,5 +1,6 @@
 package app.philm.in.controllers;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.enumerations.Rating;
@@ -986,10 +987,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             ui.setCollectionButtonEnabled(canUpdateTrakt);
             ui.setWatchlistButtonEnabled(canUpdateTrakt);
             ui.setToggleWatchedButtonEnabled(canUpdateTrakt);
-            ui.setCheckinEnabled(canUpdateTrakt);
-
+            ui.setCheckinVisible(canUpdateTrakt && canCheckin(movie));
+            ui.setCancelCheckinVisible(canUpdateTrakt && canCancelCheckin(movie));
             ui.setMovie(movie);
         }
+    }
+
+    private boolean canCancelCheckin(PhilmMovie movie) {
+        WatchingMovie checkin = mMoviesState.getWatchingMovie();
+        if (checkin != null) {
+            return Objects.equal(checkin.movie, movie);
+        }
+        return false;
+    }
+
+    private boolean canCheckin(PhilmMovie movie) {
+        return mMoviesState.getWatchingMovie() == null;
     }
 
     private void populateListUi(MovieListUi ui) {
@@ -1336,7 +1349,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void setRateCircleEnabled(boolean enabled);
 
-        void setCheckinEnabled(boolean enabled);
+        void setCheckinVisible(boolean visible);
+
+        void setCancelCheckinVisible(boolean visible);
 
     }
 

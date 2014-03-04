@@ -10,6 +10,26 @@
     android:background="?android:attr/colorBackground"
     style="?android:buttonBarStyle">
 
+    <ImageButton
+          android:id="@+id/btn_checkin"
+          android:layout_width="0px"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:src="@drawable/ic_btn_seen"
+          android:contentDescription="@string/movie_checkin"
+          android:visibility="gone"
+          style="?android:attr/borderlessButtonStyle" />
+
+    <ImageButton
+          android:id="@+id/btn_cancel_checkin"
+          android:layout_width="0px"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:src="@drawable/ic_btn_seen"
+          android:contentDescription="@string/movie_checkin_cancel"
+          android:visibility="gone"
+          style="?android:attr/borderlessButtonStyle" />
+
     <app.philm.in.view.CheckableImageButton
         android:id="@+id/btn_seen"
         android:layout_width="0px"

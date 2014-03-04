@@ -103,6 +103,7 @@
     </string-array>
 
     <string name="movie_checkin">Checkin</string>
+    <string name="movie_checkin_cancel">Cancel checkin</string>
     <string name="movie_checkin_header">Currently Watching</string>
     <string name="movie_checkin_message_hint">Message</string>
 

@@ -103,6 +103,7 @@
     </string-array>
 
     <string name="movie_checkin">Checkin</string>
+    <string name="movie_checkin_message_hint">Message</string>
 
     <string name="about_build_version_title">Build Version</string>
     <string name="about_build_time_title">Build Time</string>

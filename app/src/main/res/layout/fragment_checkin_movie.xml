@@ -12,6 +12,8 @@
           android:id="@+id/edit_message"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:minHeight="120dp" />
+          android:minHeight="120dp"
+          android:hint="@string/movie_checkin_message_hint"
+          android:gravity="top|left"/>
 
 </LinearLayout>

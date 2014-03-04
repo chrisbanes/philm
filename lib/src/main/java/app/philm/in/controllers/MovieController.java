@@ -33,6 +33,7 @@ import app.philm.in.state.UserState;
 import app.philm.in.tasks.AddToTraktCollectionRunnable;
 import app.philm.in.tasks.AddToTraktWatchlistRunnable;
 import app.philm.in.tasks.BaseMovieRunnable;
+import app.philm.in.tasks.CancelCheckinTraktRunnable;
 import app.philm.in.tasks.CheckinTraktRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
@@ -601,6 +602,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void addToWatchlist(final int callingId, String... ids) {
         executeTask(new AddToTraktWatchlistRunnable(callingId, ids));
+    }
+
+    private void cancelCheckin(int callingId) {
+        executeTask(new CancelCheckinTraktRunnable(callingId));
     }
 
     private void checkinMovie(int callingId, PhilmMovie movie, String message) {

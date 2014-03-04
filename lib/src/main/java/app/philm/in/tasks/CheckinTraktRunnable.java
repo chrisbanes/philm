@@ -38,7 +38,7 @@ public class CheckinTraktRunnable extends BaseMovieRunnable<CheckinResponse> {
 
                 if (result.timestamps != null) {
                     startTime = result.timestamps.start.getTime();
-                    duration = result.timestamps.active_for;
+                    duration = result.timestamps.active_for * 1000;
                 }
 
                 WatchingMovie watchingMovie = new WatchingMovie(movie, startTime, duration);

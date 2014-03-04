@@ -34,8 +34,6 @@ public class FetchTraktWatchingRunnable extends BaseMovieRunnable<Watching> {
                 WatchingMovie watching = new WatchingMovie(movie, 0, 0);
                 mMoviesState.setWatchingMovie(watching);
             }
-
-
         }
     }
 

@@ -4,12 +4,10 @@ import com.google.common.base.Preconditions;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import app.philm.in.Constants;
 import app.philm.in.model.ColorScheme;
 
 public class DominantColorCalculator {
@@ -66,18 +64,21 @@ public class DominantColorCalculator {
     }
 
     private int findPrimaryAccentColor() {
+        // Iterate through the palette and return the first colour which meets the threshold
         for (MedianCutQuantizer.ColorNode color : mPalette) {
             if (ColorUtils.calculateColorfulness(color) >= PRIMARY_MIN_COLORFULNESS) {
                 return color.getRgb();
             }
         }
+
+        // We have no colour, so just return the most populous colour
         return mPalette[0].getRgb();
     }
 
     private int findSecondaryAccentColor(final int primary) {
         MedianCutQuantizer.ColorNode node = null;
 
-        // We just return the most frequent color which isn't the primary accent
+        // Find the most frequent color which has sufficient contrast from the primary
         for (MedianCutQuantizer.ColorNode color : mPalette) {
             if (ColorUtils.calculateContrast(color, primary) >= SECONDARY_MIN_CONTRAST_PRIMARY) {
                 node = color;
@@ -85,58 +86,66 @@ public class DominantColorCalculator {
         }
 
         if (node != null) {
-            node = findMostColorful(findSimilarCounts(primary, node.getCount()));
-            if (node != null) {
-                return node.getRgb();
-            }
+            // Find colour with similar counts, but exclude the primary colour
+            List<MedianCutQuantizer.ColorNode> similarCounts =
+                    findSimilarCounts(node.getCount(), primary);
+
+            // Now find the most colourful from those with similar counts
+            node = findMostColorful(similarCounts);
         }
 
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "Calculating secondary accent from: #" + Integer.toHexString(primary));
+        if (node != null) {
+            // If we have a colour, return it
+            return node.getRgb();
+        } else {
+            // We couldn't find a colour. In that case use the primary colour, modifying
+            // it's brightness
+            return ColorUtils.changeBrightness(primary, 0.4f);
         }
-
-        return ColorUtils.changeBrightness(primary, 0.4f);
     }
 
     private int findTertiaryAccentColor(final int primary, final int secondary) {
-        ArrayList<MedianCutQuantizer.ColorNode> possibles
-                = new ArrayList<MedianCutQuantizer.ColorNode>();
+        List<MedianCutQuantizer.ColorNode> colours = new ArrayList<MedianCutQuantizer.ColorNode>();
 
+        // Find all colors which has sufficient contrast from both the primary & secondary
         for (MedianCutQuantizer.ColorNode color : mPalette) {
             if (ColorUtils.calculateContrast(color, primary) >= TERTIARY_MIN_CONTRAST_PRIMARY
                     && ColorUtils.calculateContrast(color, secondary) >= TERTIARY_MIN_CONTRAST_SECONDARY) {
-                possibles.add(color);
+                colours.add(color);
             }
         }
 
-        final MedianCutQuantizer.ColorNode mostColorful = findMostColorful(possibles);
+        // Now find the most colourful from those found above
+        final MedianCutQuantizer.ColorNode mostColorful = findMostColorful(colours);
+
         if (mostColorful != null) {
+            // If we have a colour, return it
             return mostColorful.getRgb();
+        } else {
+            // We couldn't find a colour. In that case use the primary colour, modifying
+            // it's brightness
+            return ColorUtils.changeBrightness(secondary, 0.5f);
         }
-
-        if (Constants.DEBUG) {
-            Log.d(LOG_TAG, "Calculating tertiary accent from: #" + Integer.toHexString(secondary));
-        }
-
-        return ColorUtils.changeBrightness(secondary, 0.5f);
     }
 
     private int findPrimaryTextColor(final int primary) {
+        // Try and find a colour with sufficient contrast from the primary colour
         for (MedianCutQuantizer.ColorNode color : mPalette) {
             if (ColorUtils.calculateContrast(color, primary) >= PRIMARY_TEXT_MIN_CONTRAST) {
                 return color.getRgb();
             }
         }
+
+        // We haven't found a colour, so return black/white depending on the primary colour's
+        // brightness
         return ColorUtils.calculateYiqLuma(primary) >= 128
                 ? Color.BLACK
                 : Color.WHITE;
     }
 
 
-    private List<MedianCutQuantizer.ColorNode> findSimilarCounts(final int exclude,
-            final int count) {
-
-        final ArrayList<MedianCutQuantizer.ColorNode> nodes
+    private List<MedianCutQuantizer.ColorNode> findSimilarCounts(final int count, final int exclude) {
+        final List<MedianCutQuantizer.ColorNode> nodes
                 = new ArrayList<MedianCutQuantizer.ColorNode>();
         final int jitter = Math.round(count * COUNT_JITTER);
 

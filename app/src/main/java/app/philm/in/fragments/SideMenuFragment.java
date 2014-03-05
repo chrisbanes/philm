@@ -2,6 +2,8 @@ package app.philm.in.fragments;
 
 import com.squareup.picasso.Picasso;
 
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +31,8 @@ import app.philm.in.view.StringManager;
 public class SideMenuFragment extends InsetAwareFragment
         implements MainControllerUi, View.OnClickListener, AdapterView.OnItemClickListener {
 
+    private static final float CHECKIN_BACKDROP_DARKEN = 0.6f;
+
     private SideMenuItem[] mSideMenuItems;
 
     private MainControllerUiCallbacks mCallbacks;
@@ -45,6 +49,8 @@ public class SideMenuFragment extends InsetAwareFragment
     private TextView mCheckinTitleTextView;
 
     private PhilmUserProfile mUserProfile;
+
+    private LightingColorFilter mColorFilter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
@@ -82,6 +88,9 @@ public class SideMenuFragment extends InsetAwareFragment
 
         mCheckinImageView = (PhilmImageView) view.findViewById(R.id.imageview_checkin_movie);
         mCheckinTitleTextView = (TextView) mCheckinLayout.findViewById(R.id.textview_title);
+
+        final int darkenByte = Math.round(255 * CHECKIN_BACKDROP_DARKEN);
+        mColorFilter = new LightingColorFilter(Color.rgb(darkenByte, darkenByte, darkenByte), 0);
     }
 
     @Override
@@ -143,7 +152,9 @@ public class SideMenuFragment extends InsetAwareFragment
         final PhilmMovie movie = checkin.movie;
 
         mCheckinTitleTextView.setText(movie.getTitle());
-        mCheckinImageView.loadPosterUrl(movie);
+
+        mCheckinImageView.loadBackdropUrl(movie);
+        mCheckinImageView.setColorFilter(mColorFilter);
     }
 
     @Override

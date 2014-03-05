@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,7 +45,6 @@ public class SideMenuFragment extends InsetAwareFragment
     private TextView mCheckinTitleTextView;
 
     private PhilmUserProfile mUserProfile;
-    private WatchingMovie mMovieCheckin;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
@@ -82,8 +80,7 @@ public class SideMenuFragment extends InsetAwareFragment
         mCheckinLayout = view.findViewById(R.id.layout_checkin);
         mCheckinLayout.setOnClickListener(this);
 
-        //mCheckinImageView = (PhilmImageView) mCheckinLayout
-        //        .findViewById(R.id.imageview_checkin_movie);
+        mCheckinImageView = (PhilmImageView) view.findViewById(R.id.imageview_checkin_movie);
         mCheckinTitleTextView = (TextView) mCheckinLayout.findViewById(R.id.textview_title);
     }
 
@@ -141,16 +138,18 @@ public class SideMenuFragment extends InsetAwareFragment
     @Override
     public void showMovieCheckin(WatchingMovie checkin) {
         mCheckinLayout.setVisibility(View.VISIBLE);
+        mCheckinImageView.setVisibility(View.VISIBLE);
 
         final PhilmMovie movie = checkin.movie;
 
-        //mCheckinImageView.loadPosterUrl(movie);
         mCheckinTitleTextView.setText(movie.getTitle());
+        mCheckinImageView.loadPosterUrl(movie);
     }
 
     @Override
     public void hideMovieCheckin() {
         mCheckinLayout.setVisibility(View.GONE);
+        mCheckinImageView.setVisibility(View.INVISIBLE);
     }
 
     @Override

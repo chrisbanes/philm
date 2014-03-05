@@ -1,10 +1,13 @@
 package app.philm.in.fragments;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
+import app.philm.in.drawable.RoundedAvatarDrawable;
 import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -31,7 +35,7 @@ import app.philm.in.view.StringManager;
 public class SideMenuFragment extends InsetAwareFragment
         implements MainControllerUi, View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private static final float CHECKIN_BACKDROP_DARKEN = 0.6f;
+    private static final float CHECKIN_BACKDROP_DARKEN = 0.65f;
 
     private SideMenuItem[] mSideMenuItems;
 
@@ -139,7 +143,7 @@ public class SideMenuFragment extends InsetAwareFragment
                 .resizeDimen(R.dimen.drawer_account_avatar_width,
                         R.dimen.drawer_account_avatar_height)
                 .centerCrop()
-                .into(mAvatarImageView);
+                .into(mAvatarTarget);
 
         mAccountButton.setText(profile.getUsername());
     }
@@ -231,5 +235,22 @@ public class SideMenuFragment extends InsetAwareFragment
     private MainController getController() {
         return PhilmApplication.from(getActivity()).getMainController();
     }
+
+    private final Target mAvatarTarget = new Target() {
+
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            mAvatarImageView.setImageDrawable(new RoundedAvatarDrawable(bitmap));
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            mAvatarImageView.setImageDrawable(null);
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+        }
+    };
 
 }

@@ -20,21 +20,23 @@
               android:id="@+id/layout_profile"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:gravity="center"
+              android:gravity="center_vertical"
               android:padding="@dimen/spacing_minor"
-              android:foreground="?android:attr/selectableItemBackground">
+              android:foreground="?android:attr/selectableItemBackground"
+              android:>
 
             <ImageView
                   android:id="@+id/imageview_account_avatar"
                   android:layout_width="@dimen/drawer_account_avatar_width"
                   android:layout_height="@dimen/drawer_account_avatar_height"
+                  android:layout_marginRight="@dimen/spacing_minor"
                   android:visibility="gone" />
 
             <app.philm.in.view.FontTextView
                   android:id="@+id/textview_account"
                   android:layout_width="wrap_content"
-                  android:layout_height="match_parent" />
+                  android:layout_height="wrap_content"
+                  style="@style/Widget.Philm.Account.Drawer.Username" />
 
         </app.philm.in.view.ForegroundLinearLayout>
 
@@ -44,7 +46,8 @@
               android:layout_height="wrap_content"
               android:orientation="vertical"
               android:padding="@dimen/spacing_minor"
-              android:foreground="?android:attr/selectableItemBackground">
+              android:foreground="?android:attr/selectableItemBackground"
+              android:background="@color/translucent_black_light">
 
             <app.philm.in.view.FontTextView
                   android:layout_height="wrap_content"

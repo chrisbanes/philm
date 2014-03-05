@@ -18,4 +18,7 @@
     <color name="drawer_background">#FF222222</color>
     <color name="chrome_background">#CC000000</color>
 
+    <color name="translucent_black_dark">#BB000000</color>
+    <color name="translucent_black_light">#70000000</color>
+
 </resources>

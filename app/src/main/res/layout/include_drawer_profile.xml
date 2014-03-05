@@ -1,22 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      style="?android:buttonBarStyle">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_minor">
 
-    <ImageView
-          android:id="@+id/imageview_account_avatar"
-          android:layout_width="@dimen/drawer_account_avatar_width"
-          android:layout_height="@dimen/drawer_account_avatar_height"
-          android:visibility="gone" />
+    <app.philm.in.view.ForegroundLinearLayout
+        android:id="@+id/layout_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:foreground="?android:attr/selectableItemBackground">
 
-    <Button
-          android:id="@+id/btn_account"
-          android:layout_width="0px"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          style="?android:buttonBarButtonStyle" />
+        <ImageView
+            android:id="@+id/imageview_account_avatar"
+            android:layout_width="@dimen/drawer_account_avatar_width"
+            android:layout_height="@dimen/drawer_account_avatar_height"
+            android:visibility="gone" />
+
+        <app.philm.in.view.FontTextView
+            android:id="@+id/textview_account"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+    </app.philm.in.view.ForegroundLinearLayout>
+
+    <app.philm.in.view.ForegroundLinearLayout
+        android:id="@+id/layout_checkin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:foreground="?android:attr/selectableItemBackground">
+
+        <app.philm.in.view.FontTextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/movie_checkin_header"
+            style="@style/Widget.Philm.Movie.Drawer.Header" />
+
+        <app.philm.in.view.FontTextView
+            android:id="@+id/textview_title"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            style="@style/Widget.Philm.Movie.Drawer.Title" />
+
+    </app.philm.in.view.ForegroundLinearLayout>
 
 </LinearLayout>

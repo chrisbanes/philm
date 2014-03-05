@@ -9,14 +9,12 @@
               android:clickable="true"
               android:background="@color/drawer_background">
 
+    <include layout="@layout/include_drawer_profile" />
+
     <ListView
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="1" />
-
-    <include layout="@layout/include_drawer_checkin" />
-
-    <include layout="@layout/include_drawer_profile" />
 
 </LinearLayout>

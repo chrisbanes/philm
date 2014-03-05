@@ -37,7 +37,8 @@ public class SideMenuFragment extends InsetAwareFragment
     private ListView mListView;
     private SideMenuItemAdapter mAdapter;
 
-    private Button mAccountButton;
+    private View mAccountLayout;
+    private TextView mAccountButton;
     private ImageView mAvatarImageView;
 
     private View mCheckinLayout;
@@ -73,16 +74,16 @@ public class SideMenuFragment extends InsetAwareFragment
         mAdapter = new SideMenuItemAdapter();
         mListView.setAdapter(mAdapter);
 
-        mAccountButton = (Button) view.findViewById(R.id.btn_account);
-        mAccountButton.setOnClickListener(this);
-
+        mAccountLayout = view.findViewById(R.id.layout_profile);
+        mAccountLayout.setOnClickListener(this);
+        mAccountButton = (TextView) view.findViewById(R.id.textview_account);
         mAvatarImageView = (ImageView) view.findViewById(R.id.imageview_account_avatar);
 
         mCheckinLayout = view.findViewById(R.id.layout_checkin);
         mCheckinLayout.setOnClickListener(this);
 
-        mCheckinImageView = (PhilmImageView) mCheckinLayout
-                .findViewById(R.id.imageview_checkin_movie);
+        //mCheckinImageView = (PhilmImageView) mCheckinLayout
+        //        .findViewById(R.id.imageview_checkin_movie);
         mCheckinTitleTextView = (TextView) mCheckinLayout.findViewById(R.id.textview_title);
     }
 
@@ -143,7 +144,7 @@ public class SideMenuFragment extends InsetAwareFragment
 
         final PhilmMovie movie = checkin.movie;
 
-        mCheckinImageView.loadPosterUrl(movie);
+        //mCheckinImageView.loadPosterUrl(movie);
         mCheckinTitleTextView.setText(movie.getTitle());
     }
 
@@ -155,14 +156,15 @@ public class SideMenuFragment extends InsetAwareFragment
     @Override
     public void onClick(View view) {
         if (mCallbacks != null) {
-            if (view == mAccountButton) {
-                if (mUserProfile != null) {
-                    // TODO: Show profile or something
-                } else {
-                    mCallbacks.addAccountRequested();
-                }
-            } else if (view == mCheckinLayout) {
-                mCallbacks.showMovieCheckin();
+            switch (view.getId()) {
+                case R.id.layout_profile:
+                    if (mUserProfile == null) {
+                        mCallbacks.addAccountRequested();
+                    }
+                    break;
+                case R.id.layout_checkin:
+                    mCallbacks.showMovieCheckin();
+                    break;
             }
         }
     }

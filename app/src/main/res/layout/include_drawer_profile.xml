@@ -22,8 +22,7 @@
               android:layout_height="wrap_content"
               android:gravity="center_vertical"
               android:padding="@dimen/spacing_minor"
-              android:foreground="?android:attr/selectableItemBackground"
-              android:>
+              android:foreground="?android:attr/selectableItemBackground">
 
             <ImageView
                   android:id="@+id/imageview_account_avatar"

@@ -29,6 +29,7 @@ import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.WatchingMovie;
+import app.philm.in.util.TextUtils;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.StringManager;
 
@@ -45,7 +46,8 @@ public class SideMenuFragment extends InsetAwareFragment
     private SideMenuItemAdapter mAdapter;
 
     private View mAccountLayout;
-    private TextView mAccountButton;
+    private TextView mFullnameTextView;
+    private TextView mUsernameTextView;
     private ImageView mAvatarImageView;
 
     private View mCheckinLayout;
@@ -84,7 +86,8 @@ public class SideMenuFragment extends InsetAwareFragment
 
         mAccountLayout = view.findViewById(R.id.layout_profile);
         mAccountLayout.setOnClickListener(this);
-        mAccountButton = (TextView) view.findViewById(R.id.textview_account);
+        mUsernameTextView = (TextView) view.findViewById(R.id.textview_username);
+        mFullnameTextView = (TextView) view.findViewById(R.id.textview_fullname);
         mAvatarImageView = (ImageView) view.findViewById(R.id.imageview_account_avatar);
 
         mCheckinLayout = view.findViewById(R.id.layout_checkin);
@@ -129,7 +132,8 @@ public class SideMenuFragment extends InsetAwareFragment
     public void showAddAccountButton() {
         mUserProfile = null;
         mAvatarImageView.setVisibility(View.GONE);
-        mAccountButton.setText(R.string.button_add_account);
+        mUsernameTextView.setText(R.string.button_add_account);
+        mFullnameTextView.setVisibility(View.GONE);
     }
 
     @Override
@@ -145,7 +149,14 @@ public class SideMenuFragment extends InsetAwareFragment
                 .centerCrop()
                 .into(mAvatarTarget);
 
-        mAccountButton.setText(profile.getUsername());
+        mUsernameTextView.setText(profile.getUsername());
+
+        if (!TextUtils.isEmpty(profile.getFullName())) {
+            mFullnameTextView.setText(profile.getFullName());
+            mFullnameTextView.setVisibility(View.VISIBLE);
+        } else {
+            mFullnameTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override

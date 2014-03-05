@@ -6,6 +6,7 @@ public class PhilmUserProfile {
 
     Long _id;
     String username;
+    String fullName;
     String avatarUrl;
 
     public PhilmUserProfile() {}
@@ -17,6 +18,7 @@ public class PhilmUserProfile {
     public void setFromTraktEntity(UserProfile user) {
         username = user.username;
         avatarUrl = user.avatar;
+        fullName = user.fullName;
     }
 
     public String getUsername() {
@@ -25,5 +27,9 @@ public class PhilmUserProfile {
 
     public String getAvatarUrl() {
         return avatarUrl;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 }

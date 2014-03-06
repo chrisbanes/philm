@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
 import app.philm.in.fragments.AboutFragment;
+import app.philm.in.fragments.CancelCheckinMovieFragment;
 import app.philm.in.fragments.CastMovieFragment;
 import app.philm.in.fragments.CheckinMovieFragment;
 import app.philm.in.fragments.DiscoverTabFragment;
@@ -194,6 +195,12 @@ public class AndroidDisplay implements Display {
     @Override
     public void showCheckin(String movieId) {
         CheckinMovieFragment fragment = CheckinMovieFragment.create(movieId);
+        fragment.show(mActivity.getSupportFragmentManager(), FRAGMENT_TAG_CHECKIN_MOVIE);
+    }
+
+    @Override
+    public void showCancelCheckin() {
+        CancelCheckinMovieFragment fragment = CancelCheckinMovieFragment.create();
         fragment.show(mActivity.getSupportFragmentManager(), FRAGMENT_TAG_CHECKIN_MOVIE);
     }
 

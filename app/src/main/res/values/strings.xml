@@ -103,9 +103,10 @@
     </string-array>
 
     <string name="movie_checkin">Checkin</string>
-    <string name="movie_checkin_cancel">Cancel checkin</string>
     <string name="movie_checkin_header">Currently Watching</string>
     <string name="movie_checkin_message_hint">Message</string>
+    <string name="movie_checkin_cancel">Cancel checkin</string>
+    <string name="movie_checkin_cancel_message">Are you sure you want to cancel your checkin to \"%1$s\"?</string>
 
     <string name="about_build_version_title">Build Version</string>
     <string name="about_build_time_title">Build Time</string>

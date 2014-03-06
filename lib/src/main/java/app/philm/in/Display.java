@@ -53,4 +53,6 @@ public interface Display {
 
     public void showCheckin(String movieId);
 
+    public void showCancelCheckin();
+
 }

@@ -506,7 +506,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showCheckin(PhilmMovie movie) {
+            public void cancelCurrentCheckin() {
+                cancelCheckin(getId(ui));
+            }
+
+            @Override
+            public void requestCheckin(PhilmMovie movie) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
 
                 Display display = getDisplay();
@@ -516,8 +521,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void cancelCurrentCheckin() {
-                cancelCheckin(getId(ui));
+            public void requestCancelCurrentCheckin() {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showCancelCheckin();
+                }
             }
 
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
@@ -605,6 +613,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateMovieDiscoverUi((MovieDiscoverUi) ui);
         } else if (ui instanceof MovieCheckinUi) {
             populateCheckinUi((MovieCheckinUi) ui);
+        } else if (ui instanceof CancelCheckinUi) {
+            populateCancelCheckinUi((CancelCheckinUi) ui);
         }
     }
 
@@ -989,6 +999,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         if (movie != null) {
             ui.setMovie(movie);
+        }
+    }
+
+    private void populateCancelCheckinUi(CancelCheckinUi ui) {
+        WatchingMovie checkin = mMoviesState.getWatchingMovie();
+
+        if (checkin != null && checkin.movie != null) {
+            ui.setMovie(checkin.movie);
         }
     }
 
@@ -1381,7 +1399,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieCheckinUi extends MovieUi {
+        void setMovie(PhilmMovie movie);
+    }
 
+    public interface CancelCheckinUi extends MovieUi {
         void setMovie(PhilmMovie movie);
     }
 
@@ -1429,7 +1450,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void cancelCurrentCheckin();
 
-        void showCheckin(PhilmMovie movie);
+        void requestCancelCurrentCheckin();
+
+        void requestCheckin(PhilmMovie movie);
     }
 
     private class LibraryDbLoadCallback

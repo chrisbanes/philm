@@ -1,15 +1,12 @@
 package app.philm.in.fragments;
 
-import com.google.common.base.Preconditions;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
@@ -17,25 +14,13 @@ import app.philm.in.fragments.base.BasePhilmMovieDialogFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 
-public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
-        implements DialogInterface.OnClickListener, MovieController.MovieCheckinUi {
+public class CancelCheckinMovieFragment extends BasePhilmMovieDialogFragment
+        implements DialogInterface.OnClickListener, MovieController.CancelCheckinUi {
 
-    private static final String KEY_QUERY_MOVIE_ID = "movie_id";
+    private TextView mMessageTextView;
 
-    private PhilmMovie mMovie;
-
-    private EditText mMessageEditText;
-
-
-    public static CheckinMovieFragment create(String movieId) {
-        Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
-
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_QUERY_MOVIE_ID, movieId);
-
-        CheckinMovieFragment fragment = new CheckinMovieFragment();
-        fragment.setArguments(bundle);
-
+    public static CancelCheckinMovieFragment create() {
+        CancelCheckinMovieFragment fragment = new CancelCheckinMovieFragment();
         return fragment;
     }
 
@@ -47,16 +32,16 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View layout = LayoutInflater.from(getActivity())
-                .inflate(R.layout.fragment_checkin_movie, null);
+                .inflate(R.layout.fragment_cancel_checkin_movie, null);
 
-        mMessageEditText = (EditText) layout.findViewById(R.id.edit_message);
+        mMessageTextView = (TextView) layout.findViewById(R.id.textview_message);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.movie_checkin);
-        builder.setIcon(R.drawable.ic_btn_checkin);
+        builder.setTitle(R.string.movie_checkin_cancel);
+        builder.setIcon(R.drawable.ic_btn_cancel_checkin);
         builder.setView(layout);
-        builder.setPositiveButton(R.string.movie_checkin, this);
-        builder.setNegativeButton(android.R.string.cancel, this);
+        builder.setPositiveButton(android.R.string.ok, this);
+        builder.setNegativeButton(android.R.string.no, this);
         return builder.create();
     }
 
@@ -65,7 +50,7 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
         switch (button) {
             case DialogInterface.BUTTON_POSITIVE:
                 if (hasCallbacks()) {
-                    getCallbacks().checkin(mMovie, String.valueOf(mMessageEditText.getText()));
+                    getCallbacks().cancelCurrentCheckin();
                 }
                 break;
         }
@@ -73,7 +58,7 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
 
     @Override
     public void setMovie(PhilmMovie movie) {
-        mMovie = movie;
+        mMessageTextView.setText(getString(R.string.movie_checkin_cancel_message, movie.getTitle()));
     }
 
     @Override
@@ -93,7 +78,7 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
 
     @Override
     public String getRequestParameter() {
-        return getArguments().getString(KEY_QUERY_MOVIE_ID);
+        return null;
     }
 
     @Override

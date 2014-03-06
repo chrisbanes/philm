@@ -223,6 +223,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (watching != null && watching.movie != null) {
             fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
         }
+        populateUis();
     }
 
     @Subscribe
@@ -514,6 +515,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
 
+            @Override
+            public void cancelCurrentCheckin() {
+                cancelCheckin(getId(ui));
+            }
+
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -611,7 +617,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void cancelCheckin(int callingId) {
-        executeTask(new CancelCheckinTraktRunnable(callingId));
+        if (mMoviesState.getWatchingMovie() != null) {
+            executeTask(new CancelCheckinTraktRunnable(callingId));
+        }
     }
 
     private void checkinMovie(int callingId, PhilmMovie movie, String message) {
@@ -1418,6 +1426,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showCastList(PhilmMovie movie);
 
         void checkin(PhilmMovie movie, String message);
+
+        void cancelCurrentCheckin();
 
         void showCheckin(PhilmMovie movie);
     }

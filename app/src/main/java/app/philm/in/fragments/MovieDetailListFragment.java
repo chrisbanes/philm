@@ -262,7 +262,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                 break;
             case R.id.btn_cancel_checkin:
                 if (hasCallbacks()) {
-                    // TODO:
+                    getCallbacks().cancelCurrentCheckin();
                 }
                 break;
             case R.id.textview_summary:

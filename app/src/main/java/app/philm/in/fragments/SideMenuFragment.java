@@ -94,6 +94,7 @@ public class SideMenuFragment extends InsetAwareFragment
         mCheckinLayout.setOnClickListener(this);
 
         mCheckinImageView = (PhilmImageView) view.findViewById(R.id.imageview_checkin_movie);
+        mCheckinImageView.setAutoFade(false);
         mCheckinTitleTextView = (TextView) mCheckinLayout.findViewById(R.id.textview_title);
 
         final int darkenByte = Math.round(255 * CHECKIN_BACKDROP_DARKEN);

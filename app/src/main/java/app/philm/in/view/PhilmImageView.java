@@ -41,6 +41,8 @@ public class PhilmImageView extends ImageView {
     @Inject ImageHelper mImageHelper;
     private PicassoHandler mPicassoHandler;
 
+    private boolean mAutoFade;
+
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         PhilmApplication.from(context).inject(this);
@@ -82,6 +84,10 @@ public class PhilmImageView extends ImageView {
         }
     }
 
+    public void setAutoFade(boolean autoFade) {
+        mAutoFade = autoFade;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -110,7 +116,6 @@ public class PhilmImageView extends ImageView {
         if (url != null) {
             mPicassoHandler.markAsStarted();
             Picasso.with(getContext()).load(url)
-                    .resize(getWidth(), getHeight()).centerCrop()
                     .into(mPicassoTarget);
 
             if (Constants.DEBUG) {
@@ -255,7 +260,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-            setImageBitmapFromNetwork(bitmap, loadedFrom != Picasso.LoadedFrom.MEMORY);
+            setImageBitmapFromNetwork(bitmap, mAutoFade && loadedFrom != Picasso.LoadedFrom.MEMORY);
 
             if (mPicassoHandler != null) {
                 if (mPicassoHandler.mCallback != null) {

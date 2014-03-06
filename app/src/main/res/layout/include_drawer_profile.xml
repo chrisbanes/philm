@@ -8,13 +8,14 @@
           android:id="@+id/imageview_checkin_movie"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:scaleType="centerCrop"
+          android:adjustViewBounds="true"
           android:visibility="invisible" />
 
     <LinearLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical">
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:gravity="bottom">
 
         <app.philm.in.view.ForegroundLinearLayout
               android:id="@+id/layout_profile"

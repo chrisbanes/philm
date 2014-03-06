@@ -36,9 +36,7 @@ public class ForegroundLinearLayout extends LinearLayout {
 
     private int mForegroundGravity = Gravity.FILL;
 
-    protected boolean mForegroundInPadding = true;
-
-    boolean mForegroundBoundsChanged = false;
+    private boolean mForegroundBoundsChanged = false;
 
     public ForegroundLinearLayout(Context context) {
         super(context);
@@ -61,9 +59,6 @@ public class ForegroundLinearLayout extends LinearLayout {
         if (d != null) {
             setForeground(d);
         }
-
-        mForegroundInPadding = a.getBoolean(
-                R.styleable.ForegroundLinearLayout_android_foregroundInsidePadding, true);
 
         a.recycle();
     }
@@ -198,13 +193,7 @@ public class ForegroundLinearLayout extends LinearLayout {
 
                 final int w = getRight() - getLeft();
                 final int h = getBottom() - getTop();
-
-                if (mForegroundInPadding) {
-                    selfBounds.set(0, 0, w, h);
-                } else {
-                    selfBounds.set(getPaddingLeft(), getPaddingTop(),
-                            w - getPaddingRight(), h - getPaddingBottom());
-                }
+                selfBounds.set(0, 0, w, h);
 
                 Gravity.apply(mForegroundGravity, foreground.getIntrinsicWidth(),
                         foreground.getIntrinsicHeight(), selfBounds, overlayBounds);

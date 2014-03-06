@@ -175,7 +175,7 @@ public class SideMenuFragment extends InsetAwareFragment
     @Override
     public void hideMovieCheckin() {
         mCheckinLayout.setVisibility(View.GONE);
-        mCheckinImageView.setVisibility(View.INVISIBLE);
+        mCheckinImageView.setVisibility(View.GONE);
     }
 
     @Override

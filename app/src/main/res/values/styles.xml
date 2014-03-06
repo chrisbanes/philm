@@ -105,6 +105,10 @@
         <item name="android:textSize">14dp</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:shadowColor">@android:color/black</item>
+        <item name="android:shadowDx">1.2</item>
+        <item name="android:shadowDy">1.2</item>
+        <item name="android:shadowRadius">1</item>
     </style>
 
     <style name="Widget.Philm.Account.Drawer.Username"

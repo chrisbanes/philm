@@ -5,10 +5,11 @@ import com.google.common.base.Preconditions;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import app.philm.in.model.ColorScheme;
+import app.philm.in.util.MedianCutQuantizer.ColorNode;
 
 public class DominantColorCalculator {
 
@@ -16,17 +17,15 @@ public class DominantColorCalculator {
 
     private static final int NUM_COLORS = 10;
 
-    private static final float PRIMARY_MIN_COLORFULNESS = 0.20f;
     private static final int PRIMARY_TEXT_MIN_CONTRAST = 135;
 
-    private static final int SECONDARY_MIN_CONTRAST_PRIMARY = 40;
+    private static final float SECONDARY_MIN_DIFF_HUE_PRIMARY = 120f;
 
     private static final int TERTIARY_MIN_CONTRAST_PRIMARY = 20;
-    private static final int TERTIARY_MIN_CONTRAST_SECONDARY = 140;
-
-    private static final float COUNT_JITTER = 0.2f;
+    private static final int TERTIARY_MIN_CONTRAST_SECONDARY = 90;
 
     private final MedianCutQuantizer.ColorNode[] mPalette;
+    private final MedianCutQuantizer.ColorNode[] mWeightedPalette;
     private ColorScheme mColorScheme;
 
     public DominantColorCalculator(Bitmap bitmap) {
@@ -39,7 +38,9 @@ public class DominantColorCalculator {
         bitmap.getPixels(rgbPixels, 0, width, 0, 0, width, height);
 
         final MedianCutQuantizer mcq = new MedianCutQuantizer(rgbPixels, NUM_COLORS);
-        mPalette = mcq.getSortedQuantizedColors();
+
+        mPalette = mcq.getQuantizedColors();
+        mWeightedPalette = weight(mPalette);
 
         findColors();
     }
@@ -49,88 +50,74 @@ public class DominantColorCalculator {
     }
 
     private void findColors() {
-        final int primaryAccentColor = findPrimaryAccentColor();
-        final int secondaryAccentColor = findSecondaryAccentColor(primaryAccentColor);
+        final ColorNode primaryAccentColor = findPrimaryAccentColor();
+        final ColorNode secondaryAccentColor = findSecondaryAccentColor(primaryAccentColor);
+
         final int tertiaryAccentColor = findTertiaryAccentColor(
                 primaryAccentColor, secondaryAccentColor);
+
         final int primaryTextColor = findPrimaryTextColor(primaryAccentColor);
+        final int secondaryTextColor = findSecondaryTextColor(primaryAccentColor);
 
-        final int secondaryTextColor = ColorUtils.calculateYiqLuma(primaryAccentColor) >= 128
-                ? Color.BLACK
-                : Color.WHITE;
-
-        mColorScheme = new ColorScheme(primaryAccentColor, secondaryAccentColor,
-                tertiaryAccentColor, primaryTextColor, secondaryTextColor);
+        mColorScheme = new ColorScheme(
+                primaryAccentColor.getRgb(),
+                secondaryAccentColor.getRgb(),
+                tertiaryAccentColor,
+                primaryTextColor,
+                secondaryTextColor);
     }
 
-    private int findPrimaryAccentColor() {
-        // Iterate through the palette and return the first colour which meets the threshold
-        for (MedianCutQuantizer.ColorNode color : mPalette) {
-            if (ColorUtils.calculateColorfulness(color) >= PRIMARY_MIN_COLORFULNESS) {
+    /**
+     * @return the first color from our weighted palette.
+     */
+    private ColorNode findPrimaryAccentColor() {
+        return mWeightedPalette[0];
+    }
+
+    /**
+     * @return the next color in the weighted palette which ideally has enough difference in hue.
+     */
+    private ColorNode findSecondaryAccentColor(final ColorNode primary) {
+        final float primaryHue = primary.getHsv()[0];
+
+        // Find the first color which has sufficient difference in hue from the primary
+        for (ColorNode candidate : mWeightedPalette) {
+            final float candidateHue = candidate.getHsv()[0];
+
+            // Calculate the difference in hue, if it's over the threshold return it
+            if (Math.abs(primaryHue - candidateHue) >= SECONDARY_MIN_DIFF_HUE_PRIMARY) {
+                return candidate;
+            }
+        }
+
+        // If we get here, just return the second weighted color
+        return mWeightedPalette[1];
+    }
+
+    /**
+     * @return the first color from our weighted palette which has sufficient contrast from the
+     *         primary and secondary colors.
+     */
+    private int findTertiaryAccentColor(final ColorNode primary, final ColorNode secondary) {
+        // Find the first color which has sufficient contrast from both the primary & secondary
+        for (ColorNode color : mWeightedPalette) {
+            if (ColorUtils.calculateContrast(color, primary) >= TERTIARY_MIN_CONTRAST_PRIMARY
+                    && ColorUtils.calculateContrast(color, secondary) >= TERTIARY_MIN_CONTRAST_SECONDARY) {
                 return color.getRgb();
             }
         }
 
-        // We have no colour, so just return the most populous colour
-        return mPalette[0].getRgb();
+        // We couldn't find a colour. In that case use the primary colour, modifying it's brightness
+        // by 45%
+        return ColorUtils.changeBrightness(secondary.getRgb(), 0.45f);
     }
 
-    private int findSecondaryAccentColor(final int primary) {
-        MedianCutQuantizer.ColorNode node = null;
-
-        // Find the most frequent color which has sufficient contrast from the primary
-        for (MedianCutQuantizer.ColorNode color : mPalette) {
-            if (ColorUtils.calculateContrast(color, primary) >= SECONDARY_MIN_CONTRAST_PRIMARY) {
-                node = color;
-            }
-        }
-
-        if (node != null) {
-            // Find colour with similar counts, but exclude the primary colour
-            List<MedianCutQuantizer.ColorNode> similarCounts =
-                    findSimilarCounts(node.getCount(), primary);
-
-            // Now find the most colourful from those with similar counts
-            node = findMostColorful(similarCounts);
-        }
-
-        if (node != null) {
-            // If we have a colour, return it
-            return node.getRgb();
-        } else {
-            // We couldn't find a colour. In that case use the primary colour, modifying
-            // it's brightness
-            return ColorUtils.changeBrightness(primary, 0.4f);
-        }
-    }
-
-    private int findTertiaryAccentColor(final int primary, final int secondary) {
-        List<MedianCutQuantizer.ColorNode> colours = new ArrayList<MedianCutQuantizer.ColorNode>();
-
-        // Find all colors which has sufficient contrast from both the primary & secondary
-        for (MedianCutQuantizer.ColorNode color : mPalette) {
-            if (ColorUtils.calculateContrast(color, primary) >= TERTIARY_MIN_CONTRAST_PRIMARY
-                    && ColorUtils.calculateContrast(color, secondary) >= TERTIARY_MIN_CONTRAST_SECONDARY) {
-                colours.add(color);
-            }
-        }
-
-        // Now find the most colourful from those found above
-        final MedianCutQuantizer.ColorNode mostColorful = findMostColorful(colours);
-
-        if (mostColorful != null) {
-            // If we have a colour, return it
-            return mostColorful.getRgb();
-        } else {
-            // We couldn't find a colour. In that case use the primary colour, modifying
-            // it's brightness
-            return ColorUtils.changeBrightness(secondary, 0.5f);
-        }
-    }
-
-    private int findPrimaryTextColor(final int primary) {
+    /**
+     * @return the first color which has sufficient contrast from the primary colors.
+     */
+    private int findPrimaryTextColor(final ColorNode primary) {
         // Try and find a colour with sufficient contrast from the primary colour
-        for (MedianCutQuantizer.ColorNode color : mPalette) {
+        for (ColorNode color : mPalette) {
             if (ColorUtils.calculateContrast(color, primary) >= PRIMARY_TEXT_MIN_CONTRAST) {
                 return color.getRgb();
             }
@@ -138,38 +125,43 @@ public class DominantColorCalculator {
 
         // We haven't found a colour, so return black/white depending on the primary colour's
         // brightness
-        return ColorUtils.calculateYiqLuma(primary) >= 128
-                ? Color.BLACK
-                : Color.WHITE;
+        return ColorUtils.calculateYiqLuma(primary.getRgb()) >= 128 ? Color.BLACK : Color.WHITE;
     }
 
-
-    private List<MedianCutQuantizer.ColorNode> findSimilarCounts(final int count, final int exclude) {
-        final List<MedianCutQuantizer.ColorNode> nodes
-                = new ArrayList<MedianCutQuantizer.ColorNode>();
-        final int jitter = Math.round(count * COUNT_JITTER);
-
-        for (MedianCutQuantizer.ColorNode color : mPalette) {
-            if (Math.abs(color.getCount() - count) <= jitter && color.getRgb() != exclude) {
-                nodes.add(color);
-            }
-        }
-
-        return nodes;
+    /**
+     * @return return black/white depending on the primary colour's brightness
+     */
+    private int findSecondaryTextColor(final ColorNode primary) {
+        return ColorUtils.calculateYiqLuma(primary.getRgb()) >= 128 ? Color.BLACK : Color.WHITE;
     }
 
-    private MedianCutQuantizer.ColorNode findMostColorful(
-            List<MedianCutQuantizer.ColorNode> nodes) {
-        MedianCutQuantizer.ColorNode max = null;
+    private static ColorNode[] weight(ColorNode[] palette) {
+        final MedianCutQuantizer.ColorNode[] copy = Arrays.copyOf(palette, palette.length);
+        final float maxCount = palette[0].getCount();
 
-        for (MedianCutQuantizer.ColorNode color : nodes) {
-            if (max == null || ColorUtils.calculateColorfulness(color)
-                    > ColorUtils.calculateColorfulness(max)) {
-                max = color;
+        Arrays.sort(copy, new Comparator<ColorNode>() {
+            @Override
+            public int compare(ColorNode lhs, ColorNode rhs) {
+                final float lhsWeight = calculateWeight(lhs, maxCount);
+                final float rhsWeight = calculateWeight(rhs, maxCount);
+
+                if (lhsWeight < rhsWeight) {
+                    return 1;
+                } else if (lhsWeight > rhsWeight) {
+                    return -1;
+                }
+                return 0;
             }
-        }
+        });
 
-        return max;
+        return copy;
+    }
+
+    private static float calculateWeight(ColorNode node, final float maxCount) {
+        return FloatUtils.weightedAverage(
+                ColorUtils.calculateColorfulness(node), 2f,
+                (node.getCount() / maxCount), 1f
+        );
     }
 
 }

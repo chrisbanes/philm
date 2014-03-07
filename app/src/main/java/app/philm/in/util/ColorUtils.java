@@ -39,9 +39,11 @@ public class ColorUtils {
                 : lighten(color, fraction);
     }
 
-    public static final int calculateContrast(MedianCutQuantizer.ColorNode color1, int color2) {
-        return Math.abs(ColorUtils.calculateYiqLuma(color1.getRgb())
-                - ColorUtils.calculateYiqLuma(color2));
+    public static final int calculateContrast(MedianCutQuantizer.ColorNode color1,
+            MedianCutQuantizer.ColorNode color2) {
+        return Math.abs(
+                ColorUtils.calculateYiqLuma(color1.getRgb())
+                        - ColorUtils.calculateYiqLuma(color2.getRgb()));
     }
 
     public static final float calculateColorfulness(MedianCutQuantizer.ColorNode node) {

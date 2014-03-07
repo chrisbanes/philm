@@ -2,21 +2,21 @@ package app.philm.in.util;
 
 import com.google.common.base.Preconditions;
 
-public class IntUtils {
+public class FloatUtils {
 
-    public static int anchor(int value, int min, int max) {
+    public static float anchor(float value, float min, float max) {
         return Math.max(Math.min(value, max), min);
     }
 
-    public static int weightedAverage(int... values) {
+    public static float weightedAverage(float... values) {
         Preconditions.checkArgument(values.length % 2 == 0, "values must have a multiples of 2");
 
-        int sum = 0;
-        int sumWeight = 0;
+        float sum = 0;
+        float sumWeight = 0;
 
         for (int i = 0; i < values.length; i += 2) {
-            int value = values[i];
-            int weight = values[i + 1];
+            float value = values[i];
+            float weight = values[i + 1];
 
             sum += (value * weight);
             sumWeight += weight;

@@ -23,10 +23,11 @@ import java.util.List;
 import app.philm.in.Constants;
 import app.philm.in.trakt.TraktUtils;
 import app.philm.in.util.CountryProvider;
+import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
 
-import static app.philm.in.util.TimeUtils.*;
+import static app.philm.in.util.TimeUtils.isPastThreshold;
 
 public class PhilmMovie implements PhilmModel {
 
@@ -448,7 +449,9 @@ public class PhilmMovie implements PhilmModel {
 
     public int getAverageRatingPercent() {
         if (ratingPercent > 0 && tmdbRatingPercent > 0) {
-            return weightAverage(ratingPercent, ratingVotes, tmdbRatingPercent, tmdbRatingVotes);
+            return IntUtils.weightedAverage(
+                    ratingPercent, ratingVotes,
+                    tmdbRatingPercent, tmdbRatingVotes);
         } else {
             return Math.max(ratingPercent, tmdbRatingPercent);
         }
@@ -673,21 +676,6 @@ public class PhilmMovie implements PhilmModel {
         return null;
     }
 
-    private static int weightAverage(int... values) {
-        Preconditions.checkArgument(values.length % 2 == 0, "values must have a multiples of 2");
 
-        int sum = 0;
-        int sumWeight = 0;
-
-        for (int i = 0; i < values.length; i += 2) {
-            int value = values[i];
-            int weight = values[i + 1];
-
-            sum += (value * weight);
-            sumWeight += weight;
-        }
-
-        return sum / sumWeight;
-    }
 
 }

@@ -60,22 +60,6 @@ public class MedianCutQuantizer {
         return quantColors;
     }
 
-    public ColorNode[] getSortedQuantizedColors() {
-        ColorNode[] sortedNodes = Arrays.copyOf(quantColors, quantColors.length);
-
-        Arrays.sort(sortedNodes, new Comparator<MedianCutQuantizer.ColorNode>() {
-            @Override
-            public int compare(MedianCutQuantizer.ColorNode colorNode,
-                    MedianCutQuantizer.ColorNode colorNode2) {
-                return colorNode2.getCount() - colorNode.getCount();
-            }
-        });
-
-        listColorNodes(sortedNodes);
-
-        return sortedNodes;
-    }
-
     ColorNode[] findRepresentativeColors(int[] pixels, int Kmax) {
         ColorHistogram colorHist = new ColorHistogram(pixels);
         int K = colorHist.getNumberOfColors();

@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.ToggleButton;
 
 import app.philm.in.R;
@@ -24,7 +25,7 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
     private PhilmMovie mMovie;
-    private ToggleButton mFacebookButton, mTwitterButton, mPathButton, mTumblrButton;
+    private Switch mFacebookButton, mTwitterButton, mPathButton, mTumblrButton;
 
     private EditText mMessageEditText;
 
@@ -52,10 +53,10 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
                 .inflate(R.layout.fragment_checkin_movie, null);
 
         mMessageEditText = (EditText) layout.findViewById(R.id.edit_message);
-        mFacebookButton = (ToggleButton) layout.findViewById(R.id.btn_facebook);
-        mTwitterButton = (ToggleButton) layout.findViewById(R.id.btn_twitter);
-        mPathButton = (ToggleButton) layout.findViewById(R.id.btn_path);
-        mTumblrButton = (ToggleButton) layout.findViewById(R.id.btn_tumblr);
+        mFacebookButton = (Switch) layout.findViewById(R.id.btn_facebook);
+        mTwitterButton = (Switch) layout.findViewById(R.id.btn_twitter);
+        mPathButton = (Switch) layout.findViewById(R.id.btn_path);
+        mTumblrButton = (Switch) layout.findViewById(R.id.btn_tumblr);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.movie_checkin);

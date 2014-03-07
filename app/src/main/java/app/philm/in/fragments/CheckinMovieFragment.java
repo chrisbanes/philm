@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ToggleButton;
 
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
@@ -23,6 +24,7 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
     private PhilmMovie mMovie;
+    private ToggleButton mFacebookButton, mTwitterButton, mPathButton, mTumblrButton;
 
     private EditText mMessageEditText;
 
@@ -50,6 +52,10 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
                 .inflate(R.layout.fragment_checkin_movie, null);
 
         mMessageEditText = (EditText) layout.findViewById(R.id.edit_message);
+        mFacebookButton = (ToggleButton) layout.findViewById(R.id.btn_facebook);
+        mTwitterButton = (ToggleButton) layout.findViewById(R.id.btn_twitter);
+        mPathButton = (ToggleButton) layout.findViewById(R.id.btn_path);
+        mTumblrButton = (ToggleButton) layout.findViewById(R.id.btn_tumblr);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.movie_checkin);
@@ -65,7 +71,14 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
         switch (button) {
             case DialogInterface.BUTTON_POSITIVE:
                 if (hasCallbacks()) {
-                    getCallbacks().checkin(mMovie, String.valueOf(mMessageEditText.getText()));
+                    getCallbacks().checkin(
+                            mMovie,
+                            String.valueOf(mMessageEditText.getText()),
+                            mFacebookButton.isShown() && mFacebookButton.isChecked(),
+                            mTwitterButton.isShown() && mTwitterButton.isChecked(),
+                            mPathButton.isShown() && mPathButton.isChecked(),
+                            mTumblrButton.isShown() && mTumblrButton.isChecked()
+                    );
                 }
                 break;
         }
@@ -74,6 +87,31 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
     @Override
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
+    }
+
+    @Override
+    public void setShareText(String shareText) {
+        mMessageEditText.setText(shareText);
+    }
+
+    @Override
+    public void showFacebookShare(boolean show) {
+        mFacebookButton.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showTwitterShare(boolean show) {
+        mTwitterButton.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showPathShare(boolean show) {
+        mPathButton.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showTumblrShare(boolean show) {
+        mTumblrButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override

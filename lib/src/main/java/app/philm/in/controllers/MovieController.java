@@ -24,6 +24,7 @@ import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.WatchingMovie;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkError;
@@ -500,9 +501,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void checkin(PhilmMovie movie, String message) {
+            public void checkin(PhilmMovie movie, String message, boolean shareFacebook,
+                    boolean shareTwitter, boolean sharePath, boolean shareTumblr) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
-                checkinMovie(getId(ui), movie, message);
+                checkinMovie(getId(ui), movie, message, shareFacebook, shareTwitter, sharePath,
+                        shareTumblr);
             }
 
             @Override
@@ -632,9 +635,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void checkinMovie(int callingId, PhilmMovie movie, String message) {
+    private void checkinMovie(int callingId, PhilmMovie movie, String message,
+            boolean shareFacebook, boolean shareTwitter, boolean sharePath, boolean shareTumblr) {
         Preconditions.checkNotNull(movie, "movie cannot be null");
-        executeTask(new CheckinTraktRunnable(callingId, movie.getImdbId(), message));
+        executeTask(new CheckinTraktRunnable(callingId, movie.getImdbId(), message, shareFacebook,
+                shareTwitter, sharePath, shareTumblr));
     }
 
     private void checkDetailMovieResult(int callingId, PhilmMovie movie) {
@@ -996,9 +1001,19 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void populateCheckinUi(MovieCheckinUi ui) {
         final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+        final PhilmUserProfile userProfile = mMoviesState.getUserProfile();
 
         if (movie != null) {
             ui.setMovie(movie);
+            ui.showFacebookShare(userProfile.isFacebookConnected());
+            ui.showTwitterShare(userProfile.isTwitterConnected());
+            ui.showTumblrShare(userProfile.isTumblrConnected());
+            ui.showPathShare(userProfile.isPathConnected());
+
+            if (userProfile.getDefaultShareMessage() != null) {
+                ui.setShareText(userProfile.getDefaultShareMessage()
+                        .replace(Constants.TRAKT_MESSAGE_ITEM_REPLACE, movie.getTitle()));
+            }
         }
     }
 
@@ -1400,6 +1415,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public interface MovieCheckinUi extends MovieUi {
         void setMovie(PhilmMovie movie);
+        void setShareText(String shareText);
+        void showFacebookShare(boolean show);
+        void showTwitterShare(boolean show);
+        void showPathShare(boolean show);
+        void showTumblrShare(boolean show);
     }
 
     public interface CancelCheckinUi extends MovieUi {
@@ -1446,7 +1466,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void showCastList(PhilmMovie movie);
 
-        void checkin(PhilmMovie movie, String message);
+        void checkin(PhilmMovie movie, String message, boolean shareFacebook, boolean shareTwitter,
+                boolean sharePath, boolean shareTumblr);
 
         void cancelCurrentCheckin();
 

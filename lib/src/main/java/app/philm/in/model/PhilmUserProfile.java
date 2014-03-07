@@ -14,6 +14,8 @@ public class PhilmUserProfile {
     boolean pathConnected;
     boolean tumblrConnected;
 
+    String defaultShareMessage;
+
     long lastFetched;
 
     public PhilmUserProfile() {}
@@ -33,6 +35,11 @@ public class PhilmUserProfile {
         facebookConnected = connections.facebook != null && connections.facebook.connected;
         pathConnected = connections.path != null && connections.path.connected;
         tumblrConnected = connections.tumblr != null && connections.tumblr.connected;
+
+        final AccountService.Settings.SharingText shareText = settings.sharing_text;
+        if (shareText != null) {
+            defaultShareMessage = shareText.watching;
+        }
 
         lastFetched = System.currentTimeMillis();
     }
@@ -67,5 +74,9 @@ public class PhilmUserProfile {
 
     public long getLastFetched() {
         return lastFetched;
+    }
+
+    public String getDefaultShareMessage() {
+        return defaultShareMessage;
     }
 }

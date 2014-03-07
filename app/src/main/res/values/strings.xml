@@ -123,5 +123,9 @@
     <string name="pref_remove_watchlist_on_watched_summary">Remove from watchlist when watched</string>
     <string name="settings_title">Settings</string>
     <string name="see_more">See more</string>
+    <string name="checkin_facebook">Facebook</string>
+    <string name="checkin_twitter">Twitter</string>
+    <string name="checkin_path">Path</string>
+    <string name="checkin_tumblr">Tumblr</string>
 
 </resources>

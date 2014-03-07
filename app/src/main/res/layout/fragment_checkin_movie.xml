@@ -12,8 +12,39 @@
           android:id="@+id/edit_message"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/spacing_minor"
           android:minHeight="120dp"
           android:hint="@string/movie_checkin_message_hint"
-          android:gravity="top|left"/>
+          android:gravity="top|left" />
+
+    <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+        <ToggleButton
+              android:id="@+id/btn_facebook"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/checkin_facebook"/>
+
+        <ToggleButton
+              android:id="@+id/btn_twitter"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/checkin_twitter"/>
+
+        <ToggleButton
+              android:id="@+id/btn_path"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/checkin_path"/>
+
+        <ToggleButton
+              android:id="@+id/btn_tumblr"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/checkin_tumblr"/>
+
+    </LinearLayout>
 
 </LinearLayout>

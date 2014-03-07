@@ -22,4 +22,6 @@ public class Constants {
     public static final boolean DEBUG = true;
     public static final boolean DEBUG_NETWORK = DEBUG;
 
+    public static final String TRAKT_MESSAGE_ITEM_REPLACE = "[item]";
+
 }

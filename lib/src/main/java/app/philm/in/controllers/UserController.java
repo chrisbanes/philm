@@ -4,7 +4,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.Trakt;
-import com.jakewharton.trakt.entities.UserProfile;
+import com.jakewharton.trakt.services.AccountService;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -25,6 +25,7 @@ import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.Sha1;
 import app.philm.in.util.TextUtils;
+import app.philm.in.util.TimeUtils;
 import retrofit.RetrofitError;
 
 public class UserController extends BaseUiController<UserController.UserUi,
@@ -191,7 +192,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         };
     }
 
-    private class FetchUserProfileRunnable extends NetworkCallRunnable<UserProfile> {
+    private class FetchUserProfileRunnable extends NetworkCallRunnable<AccountService.Settings> {
         private final String mUsername;
 
         FetchUserProfileRunnable(String username) {
@@ -199,12 +200,12 @@ public class UserController extends BaseUiController<UserController.UserUi,
         }
 
         @Override
-        public UserProfile doBackgroundCall() throws RetrofitError {
-            return mTraktClient.userService().profile(mUsername);
+        public AccountService.Settings doBackgroundCall() throws RetrofitError {
+            return mTraktClient.accountService().settings();
         }
 
         @Override
-        public void onSuccess(UserProfile result) {
+        public void onSuccess(AccountService.Settings result) {
             PhilmUserProfile newProfile = new PhilmUserProfile(result);
             mUserState.setUserProfile(newProfile);
             mDbHelper.put(newProfile);
@@ -283,7 +284,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
         @Override
         public void onFinished(PhilmUserProfile result) {
             mUserState.setUserProfile(result);
-            if (result == null) {
+            if (result == null || TimeUtils.isPastThreshold(result.getLastFetched(),
+                    Constants.STALE_USER_PROFILE_THRESHOLD)) {
                 fetchUserProfile(mUserState.getUsername());
             }
         }

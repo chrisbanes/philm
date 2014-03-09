@@ -2,7 +2,6 @@ package app.philm.in.util;
 
 import com.google.common.base.Preconditions;
 
-import java.net.URL;
 import java.net.URLEncoder;
 
 import app.philm.in.model.PhilmCast;
@@ -38,7 +37,7 @@ public class ImageHelper {
         final String imageUrl = movie.getPosterUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have poster url");
 
-        switch (movie.getPosterType()) {
+        switch (movie.getPosterSourceType()) {
             case PhilmMovie.TYPE_TMDB:
                 return buildTmdbPosterUrl(imageUrl, width);
             default:
@@ -51,7 +50,7 @@ public class ImageHelper {
         final String imageUrl = movie.getBackdropUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have backdrop url");
 
-        switch (movie.getFanartType()) {
+        switch (movie.getBackdropSourceType()) {
             case PhilmMovie.TYPE_TMDB:
                 return buildTmdbBackdropUrl(imageUrl, width);
             default:

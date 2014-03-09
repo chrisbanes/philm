@@ -87,9 +87,9 @@ public class PhilmMovie implements PhilmModel {
     String overview;
 
     String posterUrl;
-    int posterType;
-    String fanartUrl;
-    int fanartType;
+    int posterSourceType;
+    String backdropUrl;
+    int backdropSourceType;
 
     boolean inWatchlist;
     boolean inCollection;
@@ -105,16 +105,19 @@ public class PhilmMovie implements PhilmModel {
     int userRating;
     int userRatingAdvanced;
 
-    // TMDb
     int tmdbRatingPercent;
     int tmdbRatingVotes;
-    // Trakt
-    int ratingPercent;
-    int ratingVotes;
+    int traktRatingPercent;
+    int traktRatingVotes;
 
     int runtime;
+    int runtimeSourceType;
+
     String certification;
+    int certificationSourceType;
+
     String genres;
+    int genresSourceType;
 
     String mainLanguageTitle;
 
@@ -189,8 +192,8 @@ public class PhilmMovie implements PhilmModel {
 
         Ratings ratings = movie.ratings;
         if (ratings != null) {
-            ratingPercent = unbox(ratingPercent, ratings.percentage);
-            ratingVotes = unbox(ratingVotes, ratings.votes);
+            traktRatingPercent = unbox(traktRatingPercent, ratings.percentage);
+            traktRatingVotes = unbox(traktRatingVotes, ratings.votes);
         }
 
         userRating = unbox(userRating, movie.rating);
@@ -199,23 +202,29 @@ public class PhilmMovie implements PhilmModel {
         Images images = movie.images;
         if (images != null) {
             // Prefer images from tmdb over trakt
-            if (fanartType != TYPE_TMDB && !TextUtils.isEmpty(images.fanart)) {
-                fanartUrl = images.fanart;
-                fanartType = TYPE_TRAKT;
+            if (backdropSourceType != TYPE_TMDB && !TextUtils.isEmpty(images.fanart)) {
+                backdropUrl = images.fanart;
+                backdropSourceType = TYPE_TRAKT;
             }
-            if (posterType != TYPE_TMDB && !TextUtils.isEmpty(images.poster)) {
+            if (posterSourceType != TYPE_TMDB && !TextUtils.isEmpty(images.poster)) {
                 posterUrl = images.poster;
-                posterType = TYPE_TRAKT;
+                posterSourceType = TYPE_TRAKT;
             }
         }
 
-        if (movie.genres != null) {
+        if (genresSourceType != TYPE_TMDB && movie.genres != null) {
             genres = getTraktGenreFormatStringList(movie.genres);
+            genresSourceType = TYPE_TRAKT;
         }
 
-        runtime = unbox(runtime, movie.runtime);
-        if (!TextUtils.isEmpty(movie.certification)) {
+        if (runtimeSourceType != TYPE_TMDB) {
+            runtime = unbox(runtime, movie.runtime);
+            runtimeSourceType = TYPE_TRAKT;
+        }
+
+        if (certificationSourceType != TYPE_TMDB && !TextUtils.isEmpty(movie.certification)) {
             certification = movie.certification;
+            certificationSourceType = TYPE_TRAKT;
         }
     }
 
@@ -265,16 +274,17 @@ public class PhilmMovie implements PhilmModel {
         tmdbRatingVotes = unbox(tmdbRatingVotes, movie.vote_count);
 
         if (!TextUtils.isEmpty(movie.backdrop_path)) {
-            fanartUrl = movie.backdrop_path;
-            fanartType = TYPE_TMDB;
+            backdropUrl = movie.backdrop_path;
+            backdropSourceType = TYPE_TMDB;
         }
         if (!TextUtils.isEmpty(movie.poster_path)) {
             posterUrl = movie.poster_path;
-            posterType = TYPE_TMDB;
+            posterSourceType = TYPE_TMDB;
         }
 
         if (movie.genres != null) {
             genres = getTmdbGenreFormatStringList(movie.genres);
+            genresSourceType = TYPE_TMDB;
         }
 
         if (!PhilmCollections.isEmpty(movie.spoken_languages)) {
@@ -284,7 +294,10 @@ public class PhilmMovie implements PhilmModel {
             }
         }
 
-        runtime = unbox(runtime, movie.runtime);
+        if (movie.runtime != null) {
+            runtime = unbox(runtime, movie.runtime);
+            runtimeSourceType = TYPE_TMDB;
+        }
 
         if (movie.credits != null) {
             updateWithCast(movie.credits);
@@ -358,14 +371,13 @@ public class PhilmMovie implements PhilmModel {
             if (countryRelease != null) {
                 if (!TextUtils.isEmpty(countryRelease.certification)) {
                     certification = countryRelease.certification;
+                    certificationSourceType = TYPE_TMDB;
                 }
                 if (countryRelease.release_date != null) {
                     releasedTime = countryRelease.release_date.getTime();
-                }
-                if (!TextUtils.isEmpty(countryRelease.iso_3166_1)) {
                     releasedCountryCode = countryRelease.iso_3166_1;
+                    releasedSourceType = TYPE_TMDB;
                 }
-                releasedSourceType = TYPE_TMDB;
             }
         }
     }
@@ -425,7 +437,7 @@ public class PhilmMovie implements PhilmModel {
     }
 
     public String getBackdropUrl() {
-        return fanartUrl;
+        return backdropUrl;
     }
 
     public long getReleasedTime() {
@@ -441,11 +453,11 @@ public class PhilmMovie implements PhilmModel {
     }
 
     public int getTraktRatingPercent() {
-        return ratingPercent;
+        return traktRatingPercent;
     }
 
     public int getTraktRatingVotes() {
-        return ratingVotes;
+        return traktRatingVotes;
     }
 
     public int getTmdbRatingPercent() {
@@ -457,17 +469,17 @@ public class PhilmMovie implements PhilmModel {
     }
 
     public int getAverageRatingPercent() {
-        if (ratingPercent > 0 && tmdbRatingPercent > 0) {
+        if (traktRatingPercent > 0 && tmdbRatingPercent > 0) {
             return IntUtils.weightedAverage(
-                    ratingPercent, ratingVotes,
+                    traktRatingPercent, traktRatingVotes,
                     tmdbRatingPercent, tmdbRatingVotes);
         } else {
-            return Math.max(ratingPercent, tmdbRatingPercent);
+            return Math.max(traktRatingPercent, tmdbRatingPercent);
         }
     }
 
     public int getAverageRatingVotes() {
-        return tmdbRatingVotes + ratingVotes;
+        return tmdbRatingVotes + traktRatingVotes;
     }
 
     public int getUserRating() {
@@ -510,12 +522,12 @@ public class PhilmMovie implements PhilmModel {
         return releasedCountryCode;
     }
 
-    public int getFanartType() {
-        return fanartType;
+    public int getBackdropSourceType() {
+        return backdropSourceType;
     }
 
-    public int getPosterType() {
-        return posterType;
+    public int getPosterSourceType() {
+        return posterSourceType;
     }
 
     public String getTraktId() {

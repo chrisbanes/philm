@@ -207,6 +207,11 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     }
 
     @Override
+    public void showLoadingProgress(boolean visible) {
+        getActivity().setProgressBarIndeterminateVisibility(visible);
+    }
+
+    @Override
     public MovieController.MovieQueryType getMovieQueryType() {
         return MovieController.MovieQueryType.DETAIL;
     }

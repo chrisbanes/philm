@@ -97,7 +97,10 @@ public class PhilmMovie implements PhilmModel {
 
     int plays;
     int year;
+
     long releasedTime;
+    String releasedCountryCode;
+    int releasedSourceType;
 
     int userRating;
     int userRatingAdvanced;
@@ -122,8 +125,6 @@ public class PhilmMovie implements PhilmModel {
 
     boolean loadedFromTrakt;
     boolean loadedFromTmdb;
-
-    String localizedCountryCode;
 
     transient List<PhilmMovie> related;
     transient List<PhilmCast> cast;
@@ -181,7 +182,10 @@ public class PhilmMovie implements PhilmModel {
         inWatchlist = unbox(inWatchlist, movie.inWatchlist);
         watched = unbox(watched, movie.watched);
         plays = unbox(plays, movie.plays);
-        releasedTime = unbox(releasedTime, movie.released);
+
+        if (releasedSourceType != TYPE_TMDB) {
+            releasedTime = unbox(releasedTime, movie.released);
+        }
 
         Ratings ratings = movie.ratings;
         if (ratings != null) {
@@ -246,7 +250,11 @@ public class PhilmMovie implements PhilmModel {
             overview = movie.overview;
         }
 
-        releasedTime = unbox(releasedTime, movie.release_date);
+        // Only update from here if we do not have a country code
+        if (movie.release_date != null && releasedCountryCode == null) {
+            releasedTime = unbox(releasedTime, movie.release_date);
+            releasedSourceType = TYPE_TMDB;
+        }
 
         if (year == 0 && releasedTime > 0) {
             CALENDAR.setTimeInMillis(releasedTime);
@@ -355,8 +363,9 @@ public class PhilmMovie implements PhilmModel {
                     releasedTime = countryRelease.release_date.getTime();
                 }
                 if (!TextUtils.isEmpty(countryRelease.iso_3166_1)) {
-                    localizedCountryCode = countryRelease.iso_3166_1;
+                    releasedCountryCode = countryRelease.iso_3166_1;
                 }
+                releasedSourceType = TYPE_TMDB;
             }
         }
     }
@@ -497,8 +506,8 @@ public class PhilmMovie implements PhilmModel {
         return genres;
     }
 
-    public String getReleaseCountryCode() {
-        return localizedCountryCode;
+    public String getReleasedCountryCode() {
+        return releasedCountryCode;
     }
 
     public int getFanartType() {

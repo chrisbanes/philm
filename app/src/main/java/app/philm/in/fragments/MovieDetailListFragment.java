@@ -853,7 +853,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
                 releasedInfoLayout.setContentText(mMediumDateFormatter.format(DATE));
                 releasedInfoLayout.setVisibility(View.VISIBLE);
 
-                final String countryCode = mMovie.getReleaseCountryCode();
+                final String countryCode = mMovie.getReleasedCountryCode();
                 if (!TextUtils.isEmpty(countryCode)) {
                     loadFlagImage(countryCode, releasedInfoLayout);
                 }

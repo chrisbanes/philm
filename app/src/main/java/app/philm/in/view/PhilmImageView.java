@@ -30,6 +30,8 @@ public class PhilmImageView extends ImageView {
 
     private static final int TRANSITION_DURATION = 175;
 
+
+
     public interface Listener {
 
         public void onSuccess(PhilmImageView imageView, Bitmap bitmap);
@@ -41,11 +43,15 @@ public class PhilmImageView extends ImageView {
     @Inject ImageHelper mImageHelper;
     private PicassoHandler mPicassoHandler;
 
+    private final Drawable mTransparentDrawable;
+
     private boolean mAutoFade = true;
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         PhilmApplication.from(context).inject(this);
+
+        mTransparentDrawable = new ColorDrawable(Color.TRANSPARENT);
     }
 
     public void loadPosterUrl(PhilmMovie movie) {
@@ -290,13 +296,8 @@ public class PhilmImageView extends ImageView {
         final boolean fade = mAutoFade && loadedFrom != Picasso.LoadedFrom.MEMORY;
 
         if (fade) {
-            Drawable currentDrawable = getDrawable();
-            if (currentDrawable == null) {
-                currentDrawable = new ColorDrawable(Color.TRANSPARENT);
-            }
-
             TransitionDrawable transitionDrawable = new TransitionDrawable(
-                    new Drawable[]{currentDrawable, new BitmapDrawable(getResources(), bitmap)});
+                    new Drawable[]{mTransparentDrawable, new BitmapDrawable(getResources(), bitmap)});
             transitionDrawable.setCrossFadeEnabled(true);
 
             setImageDrawable(transitionDrawable);

@@ -988,17 +988,22 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             view.setTag(item);
         }
 
-        private void loadFlagImage(final String countryCode,
-                final MovieDetailInfoLayout infoLayout) {
+        private void loadFlagImage(final String countryCode, final MovieDetailInfoLayout layout) {
             final String flagUrl = mFlagUrlProvider.getCountryFlagUrl(countryCode);
             final int width = getResources()
                     .getDimensionPixelSize(R.dimen.movie_detail_flag_width);
             final int height = getResources()
                     .getDimensionPixelSize(R.dimen.movie_detail_flag_height);
 
+            final String url = mImageHelper.getResizedUrl(flagUrl, width, height, "gif");
+
+//            if (Constants.DEBUG) {
+//                Log.d(LOG_TAG, "Loading Flag URL: " + url);
+//            }
+
             Picasso.with(getActivity())
-                    .load(mImageHelper.getResizedUrl(flagUrl, width, height, "gif"))
-                    .into(infoLayout);
+                    .load(url)
+                    .into(layout);
         }
 
         private void populateDetailGrid(

@@ -2,6 +2,9 @@ package app.philm.in.util;
 
 import com.google.common.base.Preconditions;
 
+import java.net.URL;
+import java.net.URLEncoder;
+
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 
@@ -71,11 +74,12 @@ public class ImageHelper {
     }
 
     public String getResizedUrl(String url, int width, int height, String format) {
-        StringBuffer sb = new StringBuffer("http://api.imgble.com/");
-        sb.append(url);
-        sb.append('/').append(width);
-        sb.append('/').append(height);
-        sb.append("/").append(format);
+        StringBuffer sb = new StringBuffer("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy");
+        sb.append("?container=focus");
+        sb.append("&resize_w=").append(width);
+        sb.append("&resize_h=").append(height);
+        sb.append("&url=").append(URLEncoder.encode(url));
+        sb.append("&refresh=31536000");
         return sb.toString();
     }
 

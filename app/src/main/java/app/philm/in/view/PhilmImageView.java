@@ -28,7 +28,7 @@ import app.philm.in.util.TextUtils;
 
 public class PhilmImageView extends ImageView {
 
-    private static final int TRANSITION_DURATION = 200;
+    private static final int TRANSITION_DURATION = 175;
 
     public interface Listener {
 
@@ -41,7 +41,7 @@ public class PhilmImageView extends ImageView {
     @Inject ImageHelper mImageHelper;
     private PicassoHandler mPicassoHandler;
 
-    private boolean mAutoFade;
+    private boolean mAutoFade = true;
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -260,7 +260,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-            setImageBitmapFromNetwork(bitmap, mAutoFade && loadedFrom != Picasso.LoadedFrom.MEMORY);
+            setImageBitmapFromNetwork(bitmap, loadedFrom);
 
             if (mPicassoHandler != null) {
                 if (mPicassoHandler.mCallback != null) {
@@ -286,7 +286,9 @@ public class PhilmImageView extends ImageView {
         }
     };
 
-    void setImageBitmapFromNetwork(final Bitmap bitmap, final boolean fade) {
+    void setImageBitmapFromNetwork(final Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+        final boolean fade = mAutoFade && loadedFrom != Picasso.LoadedFrom.MEMORY;
+
         if (fade) {
             Drawable currentDrawable = getDrawable();
             if (currentDrawable == null) {
@@ -304,15 +306,5 @@ public class PhilmImageView extends ImageView {
             setImageBitmap(bitmap);
         }
     }
-
-    private boolean handlersEquals(PicassoHandler handler1, PicassoHandler handler2) {
-        if (!Objects.equal(handler1, handler2)) {
-            String handler1Url = handler1 != null ? handler1.getUrl(mImageHelper, this) : null;
-            String handler2Url = handler2 != null ? handler2.getUrl(mImageHelper, this) : null;
-            return Objects.equal(handler1Url, handler2Url);
-        }
-        return true;
-    }
-
 
 }

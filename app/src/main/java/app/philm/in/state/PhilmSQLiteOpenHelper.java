@@ -7,11 +7,13 @@ import com.crashlytics.android.Crashlytics;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import app.philm.in.Constants;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import nl.qbusict.cupboard.QueryResultIterable;
@@ -23,12 +25,16 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
     private static final String DATABASE_NAME = "philm.db";
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 23;
+    private static final int LAST_DATABASE_NUKE_VERSION = 23;
+
+    private static final Class[] ENTITIES = new Class[]{PhilmMovie.class, PhilmUserProfile.class};
 
     static {
         // register our models
-        cupboard().register(PhilmMovie.class);
-        cupboard().register(PhilmUserProfile.class);
+        for (Class clazz : ENTITIES) {
+            cupboard().register(clazz);
+        }
     }
 
     private boolean mIsClosed;
@@ -47,13 +53,17 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
 
     @Override
     public final void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion <= 16) {
-            deleteAllPhilmMovies(db);
+        if (oldVersion < LAST_DATABASE_NUKE_VERSION) {
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "Nuking Database. Old Version: " + oldVersion);
+            }
+            deleteAllTables(db);
+            onCreate(db);
+        } else {
+            // this will upgrade tables, adding columns and new tables.
+            // Note that existing columns will not be converted
+            cupboard().withDatabase(db).upgradeTables();
         }
-
-        // this will upgrade tables, adding columns and new tables.
-        // Note that existing columns will not be converted
-        cupboard().withDatabase(db).upgradeTables();
     }
 
     @Override
@@ -220,6 +230,15 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
             cupboard().withDatabase(db).delete(PhilmMovie.class, null);
         } catch (Exception e) {
             Crashlytics.logException(e);
+        }
+    }
+
+    private void deleteAllTables(SQLiteDatabase db) {
+        for (Class clazz : ENTITIES) {
+            final String tableName = cupboard().getTable(clazz);
+            if (tableName != null) {
+                db.execSQL("DROP TABLE IF EXISTS " + tableName);
+            }
         }
     }
 

@@ -149,7 +149,7 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
 
         mColorSchemeAnimator = new ValueAnimator();
         mColorSchemeAnimator.setFloatValues(0f, 1f);
-        mColorSchemeAnimator.setDuration(300);
+        mColorSchemeAnimator.setDuration(175);
         mColorSchemeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {

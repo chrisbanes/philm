@@ -1,52 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:internal="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:animateLayoutChanges="true"
         android:gravity="center"
+        android:orientation="vertical"
         android:padding="@dimen/spacing_minor">
 
-    <EditText
-          android:id="@+id/edit_message"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/spacing_minor"
-          android:minHeight="120dp"
-          android:hint="@string/movie_checkin_message_hint"
-          android:gravity="top|left" />
-
-    <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="vertical"
-          android:gravity="right">
+        <EditText
+            android:id="@+id/edit_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_minor"
+            android:gravity="top|left"
+            android:hint="@string/movie_checkin_message_hint"
+            android:minHeight="120dp" />
 
         <Switch
-              android:id="@+id/btn_facebook"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/checkin_facebook"/>
+            android:id="@+id/btn_facebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/checkin_facebook" />
 
         <Switch
-              android:id="@+id/btn_twitter"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/checkin_twitter"/>
+            android:id="@+id/btn_twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/checkin_twitter" />
 
         <Switch
-              android:id="@+id/btn_path"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/checkin_path"/>
+            android:id="@+id/btn_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/checkin_path" />
 
         <Switch
-              android:id="@+id/btn_tumblr"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/checkin_tumblr"/>
+            android:id="@+id/btn_tumblr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/checkin_tumblr" />
+
+        <app.philm.in.view.FontTextView
+            android:id="@+id/textview_social_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_minor"
+            android:text="@string/movie_checkin_social_help"
+            android:textColor="?android:attr/textColorSecondary"
+            internal:font="roboto_condensed_bold"
+            android:visibility="gone" />
 
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.ToggleButton;
@@ -20,13 +21,14 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 
 public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
-        implements DialogInterface.OnClickListener, MovieController.MovieCheckinUi {
+        implements DialogInterface.OnClickListener, MovieController.MovieCheckinUi, CompoundButton.OnCheckedChangeListener{
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
     private PhilmMovie mMovie;
     private Switch mFacebookButton, mTwitterButton, mPathButton, mTumblrButton;
 
+    private View mSocialHelperView;
     private EditText mMessageEditText;
 
 
@@ -53,10 +55,20 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
                 .inflate(R.layout.fragment_checkin_movie, null);
 
         mMessageEditText = (EditText) layout.findViewById(R.id.edit_message);
+
         mFacebookButton = (Switch) layout.findViewById(R.id.btn_facebook);
+        mFacebookButton.setOnCheckedChangeListener(this);
+
         mTwitterButton = (Switch) layout.findViewById(R.id.btn_twitter);
+        mTwitterButton.setOnCheckedChangeListener(this);
+
         mPathButton = (Switch) layout.findViewById(R.id.btn_path);
+        mPathButton.setOnCheckedChangeListener(this);
+
         mTumblrButton = (Switch) layout.findViewById(R.id.btn_tumblr);
+        mTumblrButton.setOnCheckedChangeListener(this);
+
+        mSocialHelperView = layout.findViewById(R.id.textview_social_help);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.movie_checkin);
@@ -138,5 +150,15 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
     @Override
     public boolean isModal() {
         return true;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (mFacebookButton.isChecked() || mTwitterButton.isChecked() ||
+                mTumblrButton.isChecked() || mPathButton.isChecked()) {
+            mSocialHelperView.setVisibility(View.VISIBLE);
+        } else {
+            mSocialHelperView.setVisibility(View.GONE);
+        }
     }
 }

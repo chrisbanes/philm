@@ -127,5 +127,6 @@
     <string name="checkin_twitter">Twitter</string>
     <string name="checkin_path">Path</string>
     <string name="checkin_tumblr">Tumblr</string>
+    <string name="movie_checkin_social_help">What is posted to your chosen social network depends on your trakt.tv settings</string>
 
 </resources>

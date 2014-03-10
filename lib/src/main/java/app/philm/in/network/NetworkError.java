@@ -10,7 +10,7 @@ public enum NetworkError {
     public static final int SOURCE_TMDB = 1;
 
     public static NetworkError from(RetrofitError error, int source) {
-        if (error == null || error.isNetworkError()) {
+        if (error == null || error.isNetworkError() || error.getResponse() == null) {
             return NETWORK_ERROR;
         } else if (error.getResponse().getStatus() == 404) {
             switch (source) {

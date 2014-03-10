@@ -46,8 +46,8 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
     @Override
     public void onError(RetrofitError re) {
-        getEventBus().post(
-                new BaseState.ShowErrorEvent(getCallingId(), NetworkError.from(re, getSource())));
+        getEventBus().post(new BaseState.ShowErrorEvent(getCallingId(),
+                NetworkError.from(re, getSource())));
     }
 
     protected abstract int getSource();

@@ -9,6 +9,8 @@
               android:clickable="true"
               android:background="@color/drawer_background">
 
+    <include layout="@layout/include_drawer_add_account" />
+
     <include layout="@layout/include_drawer_profile" />
 
     <ListView

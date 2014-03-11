@@ -45,7 +45,9 @@ public class SideMenuFragment extends InsetAwareFragment
     private ListView mListView;
     private SideMenuItemAdapter mAdapter;
 
-    private View mAccountLayout;
+    private View mAddAccountLayout;
+
+    private View mProfileInfoLayout;
     private TextView mFullnameTextView;
     private TextView mUsernameTextView;
     private ImageView mAvatarImageView;
@@ -84,8 +86,11 @@ public class SideMenuFragment extends InsetAwareFragment
         mAdapter = new SideMenuItemAdapter();
         mListView.setAdapter(mAdapter);
 
-        mAccountLayout = view.findViewById(R.id.layout_profile);
-        mAccountLayout.setOnClickListener(this);
+        mAddAccountLayout = view.findViewById(R.id.layout_add_account);
+        mAddAccountLayout.setOnClickListener(this);
+
+        mProfileInfoLayout = view.findViewById(R.id.layout_profile_inner);
+        mProfileInfoLayout.setOnClickListener(this);
         mUsernameTextView = (TextView) view.findViewById(R.id.textview_username);
         mFullnameTextView = (TextView) view.findViewById(R.id.textview_fullname);
         mAvatarImageView = (ImageView) view.findViewById(R.id.imageview_account_avatar);
@@ -132,16 +137,15 @@ public class SideMenuFragment extends InsetAwareFragment
     @Override
     public void showAddAccountButton() {
         mUserProfile = null;
-        mAvatarImageView.setVisibility(View.GONE);
-        mUsernameTextView.setText(R.string.button_add_account);
-        mFullnameTextView.setVisibility(View.GONE);
+        mAddAccountLayout.setVisibility(View.VISIBLE);
+        mProfileInfoLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void showUserProfile(PhilmUserProfile profile) {
         mUserProfile = profile;
-
-        mAvatarImageView.setVisibility(View.VISIBLE);
+        mAddAccountLayout.setVisibility(View.GONE);
+        mProfileInfoLayout.setVisibility(View.VISIBLE);
 
         Picasso.with(getActivity())
                 .load(profile.getAvatarUrl())
@@ -183,10 +187,8 @@ public class SideMenuFragment extends InsetAwareFragment
     public void onClick(View view) {
         if (mCallbacks != null) {
             switch (view.getId()) {
-                case R.id.layout_profile:
-                    if (mUserProfile == null) {
-                        mCallbacks.addAccountRequested();
-                    }
+                case R.id.layout_add_account:
+                    mCallbacks.addAccountRequested();
                     break;
                 case R.id.layout_checkin:
                     mCallbacks.showMovieCheckin();

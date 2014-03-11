@@ -31,7 +31,6 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     @Inject Logger mLogger;
 
     private final Set<U> mUis;
-
     private final Set<U> mUnmodifiableUis;
 
     private boolean mIsPopulatingUis;
@@ -41,7 +40,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         mUnmodifiableUis = Collections.unmodifiableSet(mUis);
     }
 
-    public final void attachUi(U ui) {
+    public synchronized final void attachUi(U ui) {
         Preconditions.checkArgument(ui != null, "ui cannot be null");
         Preconditions.checkState(!mUis.contains(ui), "UI is already attached");
 
@@ -69,14 +68,13 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         }
     }
 
-    public final void detachUi(U ui) {
+    public synchronized final void detachUi(U ui) {
         Preconditions.checkArgument(ui != null, "ui cannot be null");
         Preconditions.checkState(mUis.contains(ui), "ui is not attached");
         onUiDetached(ui);
         ui.setCallbacks(null);
 
         mUis.remove(ui);
-
     }
 
     protected final Set<U> getUis() {
@@ -98,7 +96,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     protected void onUiDetached(U ui) {
     }
 
-    protected void populateUis() {
+    protected synchronized void populateUis() {
         if (Constants.DEBUG) {
             mLogger.d(getClass().getSimpleName(), "populateUis");
         }
@@ -116,7 +114,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         return ui.hashCode();
     }
 
-    protected U findUi(final int id) {
+    protected synchronized U findUi(final int id) {
         for (U ui : mUis) {
             if (getId(ui) == id) {
                 return ui;

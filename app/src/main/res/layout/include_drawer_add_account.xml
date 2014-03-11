@@ -12,7 +12,7 @@
           android:layout_height="wrap_content"
           android:layout_width="wrap_content"
           android:text="@string/account_login"
-          android:drawableLeft="@drawable/ic_btn_checkin"
+          android:drawableLeft="@drawable/ic_btn_user"
           android:gravity="center_vertical"
           android:drawablePadding="@dimen/spacing_minor"
           style="@style/Widget.Philm.Movie.Drawer.AddAccount" />

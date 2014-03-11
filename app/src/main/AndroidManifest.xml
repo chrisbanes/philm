@@ -15,7 +15,7 @@
             android:theme="@style/Theme.Philm">
 
         <activity
-                android:name="app.philm.in.PhilmActivity"
+                android:name=".PhilmActivity"
                 android:label="@string/app_name"
                 android:launchMode="singleTask">
 
@@ -28,7 +28,8 @@
 
         <activity
                 android:name=".AccountActivity"
-                android:theme="@style/Theme.Philm.Framed">
+                android:theme="@style/Theme.Philm.Framed"
+                android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="philm.intent.action.LOGIN"/>
@@ -40,7 +41,8 @@
         <activity
                 android:name=".AboutActivity"
                 android:exported="false"
-                android:theme="@style/Theme.Philm.Framed">
+                android:theme="@style/Theme.Philm.Framed"
+                android:launchMode="singleTask">
 
             <intent-filter>
                 <action android:name="philm.intent.action.ABOUT"/>
@@ -53,7 +55,8 @@
                 android:name=".SettingsActivity"
                 android:theme="@style/Theme.Philm.Framed"
                 android:label="@string/settings_title"
-                android:exported="false" />
+                android:exported="false"
+                android:launchMode="singleTask"/>
 
         <service android:name=".account.PhilmAuthenticatorService">
             <intent-filter>

@@ -48,6 +48,12 @@ public class AndroidAccountManager implements PhilmAccountManager {
     }
 
     @Override
+    public void removeAccount(PhilmAccount philmAccount) {
+        Account account = new Account(philmAccount.getAccountName(), Constants.TRAKT_ACCOUNT_TYPE);
+        mAccountManager.removeAccount(account, null, null);
+    }
+
+    @Override
     public void updatePassword(PhilmAccount philmAccount) {
         final Account[] accounts = mAccountManager.getAccountsByType(Constants.TRAKT_ACCOUNT_TYPE);
         for (int i = 0; i < accounts.length ; i++) {

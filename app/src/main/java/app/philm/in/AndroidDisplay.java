@@ -15,6 +15,7 @@ import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
 import app.philm.in.fragments.CastMovieFragment;
 import app.philm.in.fragments.CheckinMovieFragment;
+import app.philm.in.fragments.CredentialsChangedFragment;
 import app.philm.in.fragments.DiscoverTabFragment;
 import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
@@ -202,6 +203,12 @@ public class AndroidDisplay implements Display {
     public void showCancelCheckin() {
         CancelCheckinMovieFragment fragment = CancelCheckinMovieFragment.create();
         fragment.show(mActivity.getSupportFragmentManager(), FRAGMENT_TAG_CHECKIN_MOVIE);
+    }
+
+    @Override
+    public void showCredentialsChanged() {
+        new CredentialsChangedFragment().show(mActivity.getSupportFragmentManager(),
+                FRAGMENT_TAG_TRAKT_CREDENTIALS_WRONG);
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {

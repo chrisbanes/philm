@@ -4,6 +4,7 @@ public interface Display {
 
     public static final String FRAGMENT_TAG_RATE_MOVIE = "rate_movie";
     public static final String FRAGMENT_TAG_CHECKIN_MOVIE = "checkin_movie";
+    public static final String FRAGMENT_TAG_TRAKT_CREDENTIALS_WRONG = "trakt_credentials_wrong";
 
     public static final String ACTION_ABOUT = "philm.intent.action.ABOUT";
     public static final String ACTION_LOGIN = "philm.intent.action.LOGIN";
@@ -54,5 +55,7 @@ public interface Display {
     public void showCheckin(String movieId);
 
     public void showCancelCheckin();
+
+    public void showCredentialsChanged();
 
 }

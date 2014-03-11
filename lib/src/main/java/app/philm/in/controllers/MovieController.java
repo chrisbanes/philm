@@ -152,8 +152,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         // TODO: Clear Database Too
 
-        populateUis();
-
         // If we have a new account, pre-fetch library & watchlist
         if (isLoggedIn()) {
             prefetchLibraryIfNeeded();
@@ -228,7 +226,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
-    public void onNetworkError(BaseState.ShowErrorEvent event) {
+    public void onNetworkError(BaseState.OnErrorEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null && null != event.error) {
             ui.showError(event.error);
@@ -589,7 +587,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     @Override
     protected void populateUi(final MovieUi ui) {
         if (!isLoggedIn() && ui.getMovieQueryType().requireLogin()) {
-            ui.showError(NetworkError.UNAUTHORIZED);
+            ui.showError(NetworkError.UNAUTHORIZED_TRAKT);
             return;
         }
 

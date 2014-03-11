@@ -89,11 +89,11 @@ public interface BaseState {
         }
     }
 
-    public static class ShowErrorEvent {
+    public static class OnErrorEvent {
         public final int callingId;
         public final NetworkError error;
 
-        public ShowErrorEvent(int callingId, NetworkError error) {
+        public OnErrorEvent(int callingId, NetworkError error) {
             this.callingId = callingId;
             this.error = error;
         }

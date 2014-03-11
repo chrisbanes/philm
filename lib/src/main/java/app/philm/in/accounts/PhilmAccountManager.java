@@ -10,6 +10,8 @@ public interface PhilmAccountManager {
 
     public void addAccount(PhilmAccount account);
 
+    public void removeAccount(PhilmAccount account);
+
     public void updatePassword(PhilmAccount account);
 
 }

@@ -129,4 +129,8 @@
     <string name="checkin_tumblr">Tumblr</string>
     <string name="movie_checkin_social_help">Your settings on trakt.tv determine what is posted to your selected social networks</string>
 
+    <string name="trakt_wrong_credentials_title">Password changed</string>
+    <string name="trakt_wrong_credentials_text">Your Trakt.tv password seems to have changed so you have been logged out. Please login again using your new password.</string>
+
+
 </resources>

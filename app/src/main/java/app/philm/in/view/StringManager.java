@@ -92,7 +92,7 @@ public class StringManager {
 
     public static int getStringResId(NetworkError error) {
         switch (error) {
-            case UNAUTHORIZED:
+            case UNAUTHORIZED_TRAKT:
                 return R.string.error_unauthorized;
             case NETWORK_ERROR:
                 return R.string.error_network;

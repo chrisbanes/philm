@@ -17,16 +17,24 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         extends BaseController {
 
     public interface Ui<UC> {
+
         String getUiTitle();
+
         void setCallbacks(UC callbacks);
+
         boolean isModal();
     }
 
-    public interface SubUi {}
+    public interface SubUi {
+    }
 
     @Inject Logger mLogger;
+
     private final Set<U> mUis;
+
     private final Set<U> mUnmodifiableUis;
+
+    private boolean mIsPopulatingUis;
 
     public BaseUiController() {
         mUis = new HashSet<U>();
@@ -37,9 +45,8 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         Preconditions.checkArgument(ui != null, "ui cannot be null");
         Preconditions.checkState(!mUis.contains(ui), "UI is already attached");
 
-        synchronized (mUis) {
-            mUis.add(ui);
-        }
+        mUis.add(ui);
+
         ui.setCallbacks(createUiCallbacks(ui));
 
         if (isInited()) {
@@ -68,9 +75,8 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         onUiDetached(ui);
         ui.setCallbacks(null);
 
-        synchronized (mUis) {
-            mUis.remove(ui);
-        }
+        mUis.remove(ui);
+
     }
 
     protected final Set<U> getUis() {
@@ -79,27 +85,25 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
     protected void onInited() {
         if (!mUis.isEmpty()) {
-            synchronized (mUis) {
-                for (U ui : mUis) {
-                    onUiAttached(ui);
-                }
+            for (U ui : mUis) {
+                onUiAttached(ui);
             }
             populateUis();
         }
     }
 
-    protected void onUiAttached(U ui) {}
+    protected void onUiAttached(U ui) {
+    }
 
-    protected void onUiDetached(U ui) {}
+    protected void onUiDetached(U ui) {
+    }
 
     protected void populateUis() {
         if (Constants.DEBUG) {
             mLogger.d(getClass().getSimpleName(), "populateUis");
         }
-        synchronized (mUis) {
-            for (U ui : mUis) {
-                populateUi(ui);
-            }
+        for (U ui : mUis) {
+            populateUi(ui);
         }
     }
 
@@ -113,11 +117,9 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     }
 
     protected U findUi(final int id) {
-        synchronized (mUis) {
-            for (U ui : mUis) {
-                if (getId(ui) == id) {
-                    return ui;
-                }
+        for (U ui : mUis) {
+            if (getId(ui) == id) {
+                return ui;
             }
         }
         return null;

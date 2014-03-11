@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.Trakt;
 import com.jakewharton.trakt.entities.Settings;
-import com.jakewharton.trakt.services.AccountService;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -19,7 +18,9 @@ import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
 import app.philm.in.network.NetworkCallRunnable;
+import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
+import app.philm.in.state.BaseState;
 import app.philm.in.state.UserState;
 import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
@@ -56,6 +57,8 @@ public class UserController extends BaseUiController<UserController.UserUi,
         boolean isPasswordValid(String password);
 
         void login(String username, String password);
+
+        void requestReLogin();
     }
 
     private final UserState mUserState;
@@ -137,6 +140,20 @@ public class UserController extends BaseUiController<UserController.UserUi,
         mLogger.d(LOG_TAG, "onAccountChanged: " + mUserState.getUsername());
     }
 
+    @Subscribe
+    public void onNetworkError(BaseState.OnErrorEvent event) {
+        if (event.error == NetworkError.UNAUTHORIZED_TRAKT
+                && mUserState.getCurrentAccount() != null) {
+            mPhilmAccountManager.removeAccount(mUserState.getCurrentAccount());
+            mUserState.setCurrentAccount(null);
+
+            Display display = getDisplay();
+            if (display != null) {
+                display.showCredentialsChanged();
+            }
+        }
+    }
+
     @Override
     public boolean handleIntent(String intentAction) {
         final Display display = getDisplay();
@@ -189,6 +206,14 @@ public class UserController extends BaseUiController<UserController.UserUi,
             @Override
             public void login(String username, String password) {
                 doLogin(username, password);
+            }
+
+            @Override
+            public void requestReLogin() {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.startAddAccountActivity();
+                }
             }
         };
     }

@@ -99,7 +99,7 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     public void showError(NetworkError error) {
         setListShown(true);
         switch (error) {
-            case UNAUTHORIZED:
+            case UNAUTHORIZED_TRAKT:
                 setEmptyText(getString(R.string.empty_missing_account, getTitle()));
                 break;
             case NETWORK_ERROR:

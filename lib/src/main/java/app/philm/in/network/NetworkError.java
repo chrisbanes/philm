@@ -4,12 +4,12 @@ import retrofit.RetrofitError;
 
 public enum NetworkError {
 
-    UNAUTHORIZED, NOT_FOUND_TRAKT, NOT_FOUND_TMDB, NETWORK_ERROR, UNKNOWN;
+    UNAUTHORIZED_TRAKT, NOT_FOUND_TRAKT, NOT_FOUND_TMDB, NETWORK_ERROR, UNKNOWN;
 
     public static final int SOURCE_TRAKT = 0;
     public static final int SOURCE_TMDB = 1;
 
-    public static NetworkError from(RetrofitError error, int source) {
+    public static NetworkError from(final RetrofitError error, final int source) {
         if (error == null || error.isNetworkError() || error.getResponse() == null) {
             return NETWORK_ERROR;
         } else if (error.getResponse().getStatus() == 404) {
@@ -20,7 +20,10 @@ public enum NetworkError {
                     return NOT_FOUND_TRAKT;
             }
         } else if (error.getResponse().getStatus() == 401) {
-            return UNAUTHORIZED;
+            switch (source) {
+                case SOURCE_TRAKT:
+                    return UNAUTHORIZED_TRAKT;
+            }
         }
         return UNKNOWN;
     }

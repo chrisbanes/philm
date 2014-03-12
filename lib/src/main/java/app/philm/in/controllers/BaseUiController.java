@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.inject.Inject;
 
@@ -33,10 +34,8 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     private final Set<U> mUis;
     private final Set<U> mUnmodifiableUis;
 
-    private boolean mIsPopulatingUis;
-
     public BaseUiController() {
-        mUis = new HashSet<U>();
+        mUis = new CopyOnWriteArraySet<U>();
         mUnmodifiableUis = Collections.unmodifiableSet(mUis);
     }
 

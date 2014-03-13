@@ -20,7 +20,7 @@ import app.philm.in.fragments.DiscoverTabFragment;
 import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
-import app.philm.in.fragments.MovieDetailListFragment;
+import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.SearchListFragment;
@@ -68,7 +68,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showMovieDetailFragment(String movieId) {
-        MovieDetailListFragment fragment = MovieDetailListFragment.create(movieId);
+        MovieDetailFragment fragment = MovieDetailFragment.create(movieId);
 
         mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)

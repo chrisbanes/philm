@@ -8,7 +8,7 @@ import java.text.DateFormat;
 import javax.inject.Singleton;
 
 import app.philm.in.adapters.MovieSectionedListAdapter;
-import app.philm.in.fragments.MovieDetailListFragment;
+import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.modules.library.ContextProvider;
 import app.philm.in.modules.library.UtilProvider;
 import app.philm.in.modules.qualifiers.ApplicationContext;
@@ -30,7 +30,7 @@ import dagger.Provides;
                 PhilmImageView.class,
                 RatingCircleView.class,
                 MovieSectionedListAdapter.class,
-                MovieDetailListFragment.class
+                MovieDetailFragment.class
         }
 )
 public class ViewUtilProvider {

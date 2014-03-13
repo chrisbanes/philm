@@ -59,7 +59,7 @@ import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 import app.philm.in.view.ViewRecycler;
 
-public class MovieDetailListFragment extends BasePhilmMovieFragment
+public class MovieDetailFragment extends BasePhilmMovieFragment
         implements MovieController.MovieDetailUi, View.OnClickListener,
         AbsListView.OnScrollListener {
 
@@ -68,7 +68,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     private static final float BOTTOM_INSET_ALPHA = 0.75f;
     private static final float PARALLAX_FRICTION = 0.5f;
 
-    private static final String LOG_TAG = MovieDetailListFragment.class.getSimpleName();
+    private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
@@ -97,13 +97,13 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
     private ListView mListView;
     private DetailAdapter mDetailAdapter;
 
-    public static MovieDetailListFragment create(String movieId) {
+    public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_QUERY_MOVIE_ID, movieId);
 
-        MovieDetailListFragment fragment = new MovieDetailListFragment();
+        MovieDetailFragment fragment = new MovieDetailFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -753,7 +753,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             CheckableImageButton seenButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_seen);
             seenButton.setEnabled(mWatchedButtonEnabled);
-            seenButton.setOnClickListener(MovieDetailListFragment.this);
+            seenButton.setOnClickListener(MovieDetailFragment.this);
             CheatSheet.setup(seenButton);
             updateButtonState(seenButton, mMovie.isWatched(), R.string.action_mark_seen,
                     R.string.action_mark_unseen);
@@ -761,7 +761,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             CheckableImageButton watchlistButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
             watchlistButton.setEnabled(mWatchlistButtonEnabled);
-            watchlistButton.setOnClickListener(MovieDetailListFragment.this);
+            watchlistButton.setOnClickListener(MovieDetailFragment.this);
             CheatSheet.setup(watchlistButton);
             updateButtonState(watchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
                     R.string.action_remove_watchlist);
@@ -769,20 +769,20 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             CheckableImageButton collectionButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_collection);
             collectionButton.setEnabled(mCollectionButtonEnabled);
-            collectionButton.setOnClickListener(MovieDetailListFragment.this);
+            collectionButton.setOnClickListener(MovieDetailFragment.this);
             CheatSheet.setup(collectionButton);
             updateButtonState(collectionButton, mMovie.inCollection(),
                     R.string.action_add_collection,
                     R.string.action_remove_collection);
 
             ImageButton checkinButton = (ImageButton) view.findViewById(R.id.btn_checkin);
-            checkinButton.setOnClickListener(MovieDetailListFragment.this);
+            checkinButton.setOnClickListener(MovieDetailFragment.this);
             checkinButton.setVisibility(mCheckinButtonVisible ? View.VISIBLE : View.GONE);
             CheatSheet.setup(checkinButton);
 
             ImageButton cancelCheckinButton = (ImageButton) view
                     .findViewById(R.id.btn_cancel_checkin);
-            cancelCheckinButton.setOnClickListener(MovieDetailListFragment.this);
+            cancelCheckinButton.setOnClickListener(MovieDetailFragment.this);
             cancelCheckinButton.setVisibility(mCancelCheckinButtonVisible
                     ? View.VISIBLE : View.GONE);
             CheatSheet.setup(cancelCheckinButton);
@@ -880,7 +880,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
             }
             ratingBarLayout.setRatingGlobalPercentage(mMovie.getAverageRatingPercent());
             ratingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
-            ratingBarLayout.setRatingCircleClickListener(MovieDetailListFragment.this);
+            ratingBarLayout.setRatingCircleClickListener(MovieDetailFragment.this);
 
             if (mMovie.getColorScheme() != null) {
                 ratingBarLayout.setColorScheme(mMovie.getColorScheme());
@@ -917,7 +917,7 @@ public class MovieDetailListFragment extends BasePhilmMovieFragment
         private void bindSummary(final View view) {
             TextView summary = (TextView) view.findViewById(R.id.textview_summary);
             summary.setText(mMovie.getOverview());
-            summary.setOnClickListener(MovieDetailListFragment.this);
+            summary.setOnClickListener(MovieDetailFragment.this);
         }
 
         private void bindTitle(View view) {

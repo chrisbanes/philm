@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import java.net.URLEncoder;
 
+import app.philm.in.model.BasePhilmCast;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
 
@@ -59,7 +60,7 @@ public class ImageHelper {
         }
     }
 
-    public String getProfileUrl(final PhilmCast cast, final int width) {
+    public String getProfileUrl(final BasePhilmCast cast, final int width) {
         final String imageUrl = cast.getPictureUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have picture url");
 

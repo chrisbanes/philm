@@ -8,4 +8,8 @@ public class PhilmCollections {
         return collection == null || collection.isEmpty();
     }
 
+    public static int size(Collection<?> collection) {
+        return collection != null ? collection.size() : 0;
+    }
+
 }

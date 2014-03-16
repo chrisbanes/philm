@@ -43,6 +43,7 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
+import app.philm.in.model.BasePhilmCast;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmCast;
 import app.philm.in.model.PhilmMovie;
@@ -368,6 +369,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             items.add(DetailItemType.CAST);
         }
 
+        if (!PhilmCollections.isEmpty(mMovie.getCrew())) {
+            items.add(DetailItemType.CREW);
+        }
+
         mBackdropImageView.loadBackdropUrl(mMovie);
 
         mDetailAdapter.setItems(items);
@@ -391,7 +396,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         SUMMARY(R.layout.item_movie_detail_summary),
         TRAILERS(R.layout.item_movie_detail_trailers),
         RELATED(R.layout.item_movie_detail_generic_card),
-        CAST(R.layout.item_movie_detail_generic_card);
+        CAST(R.layout.item_movie_detail_generic_card),
+        CREW(R.layout.item_movie_detail_generic_card);
 
         private final int mLayoutId;
 
@@ -463,30 +469,49 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
     }
 
-    private class MovieCastAdapter extends BaseAdapter {
-
-        private final View.OnClickListener mItemOnClickListener;
-        private final LayoutInflater mInflater;
-
+    private class MovieCastAdapter extends BaseMovieCastAdapter {
         MovieCastAdapter(LayoutInflater inflater) {
-            mInflater = inflater;
-            // TODO
-            mItemOnClickListener = null;
+            super(inflater, null /* TODO */);
         }
 
         @Override
         public int getCount() {
-            if (mMovie != null && !PhilmCollections.isEmpty(mMovie.getCast())) {
-                return mMovie.getCast().size();
-            } else {
-                return 0;
-            }
+            return mMovie != null ? PhilmCollections.size(mMovie.getCast()) : 0;
         }
 
         @Override
-        public PhilmCast getItem(int position) {
+        public BasePhilmCast getItem(int position) {
             return mMovie.getCast().get(position);
         }
+    }
+
+    private class MovieCrewAdapter extends BaseMovieCastAdapter {
+        MovieCrewAdapter(LayoutInflater inflater) {
+            super(inflater, null /* TODO */);
+        }
+
+        @Override
+        public int getCount() {
+            return mMovie != null ? PhilmCollections.size(mMovie.getCrew()) : 0;
+        }
+
+        @Override
+        public BasePhilmCast getItem(int position) {
+            return mMovie.getCrew().get(position);
+        }
+    }
+
+    private abstract class BaseMovieCastAdapter extends BaseAdapter {
+        private final View.OnClickListener mItemOnClickListener;
+        private final LayoutInflater mInflater;
+
+        BaseMovieCastAdapter(LayoutInflater inflater, View.OnClickListener itemOnClickListener) {
+            mInflater = inflater;
+            mItemOnClickListener = itemOnClickListener;
+        }
+
+        @Override
+        public abstract BasePhilmCast getItem(int position);
 
         @Override
         public long getItemId(int position) {
@@ -499,7 +524,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 view = mInflater.inflate(R.layout.item_related_movie, viewGroup, false);
             }
 
-            final PhilmCast cast = getItem(position);
+            final BasePhilmCast cast = getItem(position);
 
             final TextView title = (TextView) view.findViewById(R.id.textview_title);
             title.setText(cast.getName());
@@ -814,6 +839,32 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     adapter);
         }
 
+        private void bindCrew(View view) {
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "bindCrew");
+            }
+
+            final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        //getCallbacks().showCastList(mMovie);
+                    }
+                }
+            };
+
+            MovieCrewAdapter adapter = new MovieCrewAdapter(LayoutInflater.from(getActivity()));
+
+            MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
+            cardLayout.setTitle(R.string.crew_movies);
+
+            populateDetailGrid(
+                    (ViewGroup) view.findViewById(R.id.card_content),
+                    cardLayout,
+                    seeMoreClickListener,
+                    adapter);
+        }
+
         private void bindDetails(View view) {
             MovieDetailInfoLayout runtimeLayout = (MovieDetailInfoLayout) view
                     .findViewById(R.id.layout_info_runtime);
@@ -987,6 +1038,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     break;
                 case CAST:
                     bindCast(view);
+                    break;
+                case CREW:
+                    bindCrew(view);
                     break;
             }
 

@@ -131,6 +131,7 @@ public class PhilmMovie implements PhilmModel {
 
     transient List<PhilmMovie> related;
     transient List<PhilmCast> cast;
+    transient List<PhilmCrew> crew;
     transient List<PhilmTrailer> trailers;
     transient List<CountryRelease> releases;
 
@@ -323,11 +324,23 @@ public class PhilmMovie implements PhilmModel {
 
             for (Credits.CastMember castMember : credits.cast) {
                 final PhilmCast philmCastMember = new PhilmCast();
-                philmCastMember.setFromCast(castMember);
+                philmCastMember.setFromTmdb(castMember);
                 castList.add(philmCastMember);
             }
 
             setCast(castList);
+        }
+
+        if (!PhilmCollections.isEmpty(credits.crew)) {
+            final ArrayList<PhilmCrew> crewList = new ArrayList<PhilmCrew>();
+
+            for (Credits.CrewMember member : credits.crew) {
+                final PhilmCrew philmCrewMember = new PhilmCrew();
+                philmCrewMember.setFromTmdb(member);
+                crewList.add(philmCrewMember);
+            }
+
+            setCrew(crewList);
         }
     }
 
@@ -547,6 +560,7 @@ public class PhilmMovie implements PhilmModel {
     private boolean needFullFetch() {
         return PhilmCollections.isEmpty(trailers)
                 || PhilmCollections.isEmpty(cast)
+                || PhilmCollections.isEmpty(crew)
                 || PhilmCollections.isEmpty(related);
     }
 
@@ -600,6 +614,14 @@ public class PhilmMovie implements PhilmModel {
 
     public void setCast(List<PhilmCast> cast) {
         this.cast = cast;
+    }
+
+    public List<PhilmCrew> getCrew() {
+        return crew;
+    }
+
+    public void setCrew(List<PhilmCrew> crew) {
+        this.crew = crew;
     }
 
     public List<PhilmTrailer> getTrailers() {

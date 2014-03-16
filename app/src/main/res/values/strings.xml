@@ -26,6 +26,7 @@
 
     <string name="related_movies">Related</string>
     <string name="cast_movies">Cast</string>
+    <string name="crew_movies">Crew</string>
     <string name="trailers_movies">Trailers</string>
 
     <string name="button_add_account">Add Account</string>

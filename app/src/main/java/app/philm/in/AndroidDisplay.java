@@ -206,6 +206,11 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
+    public void showCastDetail(String personId) {
+        // TODO
+    }
+
+    @Override
     public void showCheckin(String movieId) {
         CheckinMovieFragment fragment = CheckinMovieFragment.create(movieId);
         fragment.show(mActivity.getSupportFragmentManager(), FRAGMENT_TAG_CHECKIN_MOVIE);

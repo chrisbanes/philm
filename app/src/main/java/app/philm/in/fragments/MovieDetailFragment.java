@@ -471,7 +471,17 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private class MovieCastAdapter extends BaseMovieCastAdapter {
         MovieCastAdapter(LayoutInflater inflater) {
-            super(inflater, null /* TODO */);
+            super(inflater, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        PhilmCast cast = (PhilmCast) view.getTag();
+                        if (cast != null && cast.getTmdbId() != null) {
+                            getCallbacks().showCastDetail(cast);
+                        }
+                    }
+                }
+            });
         }
 
         @Override

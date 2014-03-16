@@ -60,8 +60,10 @@ public class CastListFragment
         if (hasCallbacks()) {
             ListItem<PhilmCast> item = (ListItem<PhilmCast>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
-                // TODO
-                //getCallbacks().showMovieDetail(item.getItem());
+                PhilmCast cast = item.getItem();
+                if (cast.getTmdbId() != null) {
+                    getCallbacks().showCastDetail(cast);
+                }
             }
         }
     }

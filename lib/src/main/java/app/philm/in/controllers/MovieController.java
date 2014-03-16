@@ -510,6 +510,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
+            public void showCastDetail(PhilmCast cast) {
+                Preconditions.checkNotNull(cast, "cast cannot be null");
+                Preconditions.checkNotNull(cast.getTmdbId(), "cast id cannot be null");
+
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showCastDetail(String.valueOf(cast.getTmdbId()));
+                }
+            }
+
+            @Override
             public void checkin(PhilmMovie movie, String message, boolean shareFacebook,
                     boolean shareTwitter, boolean sharePath, boolean shareTumblr) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
@@ -1508,6 +1519,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showCastList(PhilmMovie movie);
 
         void showCrewList(PhilmMovie movie);
+
+        void showCastDetail(PhilmCast cast);
 
         void checkin(PhilmMovie movie, String message, boolean shareFacebook, boolean shareTwitter,
                 boolean sharePath, boolean shareTumblr);

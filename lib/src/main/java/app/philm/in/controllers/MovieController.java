@@ -22,6 +22,7 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmCast;
+import app.philm.in.model.PhilmCrew;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -39,7 +40,7 @@ import app.philm.in.tasks.CancelCheckinTraktRunnable;
 import app.philm.in.tasks.CheckinTraktRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
-import app.philm.in.tasks.FetchTmdbMovieCastRunnable;
+import app.philm.in.tasks.FetchTmdbMovieCreditsRunnable;
 import app.philm.in.tasks.FetchTmdbMovieTrailersRunnable;
 import app.philm.in.tasks.FetchTmdbMoviesReleasesRunnable;
 import app.philm.in.tasks.FetchTmdbNowPlayingRunnable;
@@ -499,6 +500,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
+            public void showCrewList(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showCrewList(String.valueOf(movie.getTmdbId()));
+                }
+            }
+
+            @Override
             public void checkin(PhilmMovie movie, String message, boolean shareFacebook,
                     boolean shareTwitter, boolean sharePath, boolean shareTumblr) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
@@ -581,6 +592,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case CAST:
                 fetchCastIfNeeded(callingId, ui.getRequestParameter());
                 break;
+            case CREW:
+                fetchCrewIfNeeded(callingId, ui.getRequestParameter());
+                break;
         }
     }
 
@@ -606,6 +620,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateListUi((MovieListUi) ui);
         } else if (ui instanceof MovieCastListUi) {
             populateCastListUi((MovieCastListUi) ui);
+        } else if (ui instanceof MovieCrewListUi) {
+            populateCrewListUi((MovieCrewListUi) ui);
         } else if (ui instanceof MovieDetailUi) {
             populateDetailUi((MovieDetailUi) ui);
         } else if (ui instanceof MovieRateUi) {
@@ -797,7 +813,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         PhilmMovie movie = mMoviesState.getMovie(id);
         if (movie != null && PhilmCollections.isEmpty(movie.getCast())) {
-            fetchCast(callingId, movie);
+            fetchCredits(callingId, movie);
+        }
+    }
+
+    private void fetchCrewIfNeeded(final int callingId, String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null && PhilmCollections.isEmpty(movie.getCrew())) {
+            fetchCredits(callingId, movie);
         }
     }
 
@@ -874,9 +899,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void fetchCast(final int callingId, PhilmMovie movie) {
+    private void fetchCredits(final int callingId, PhilmMovie movie) {
         if (movie.getTmdbId() != null) {
-            executeTask(new FetchTmdbMovieCastRunnable(callingId, movie.getTmdbId()));
+            executeTask(new FetchTmdbMovieCreditsRunnable(callingId, movie.getTmdbId()));
         }
     }
 
@@ -1156,6 +1181,20 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void populateCrewListUi(MovieCrewListUi ui) {
+        switch (ui.getMovieQueryType()) {
+            case CREW:
+                PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+                if (movie != null) {
+                    updateDisplayTitle(movie.getTitle());
+                    if (!PhilmCollections.isEmpty(movie.getCrew())) {
+                        ui.setItems(createListItemList(MovieQueryType.CREW, movie.getCrew()));
+                    }
+                }
+                break;
+        }
+    }
+
     private void populateMovieDiscoverUi(MovieDiscoverUi ui) {
         if (isLoggedIn()) {
             ui.setTabs(DiscoverTab.POPULAR, DiscoverTab.IN_THEATRES, DiscoverTab.UPCOMING,
@@ -1304,7 +1343,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, RECOMMENDED,
-        RELATED, CAST, NONE;
+        RELATED, CAST, CREW, NONE;
 
         public boolean requireLogin() {
             switch (this) {
@@ -1332,6 +1371,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 case DETAIL:
                 case RELATED:
                 case CAST:
+                case CREW:
                     return true;
                 default:
                     return false;
@@ -1375,6 +1415,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface MovieCastListUi extends BaseMovieListUi<PhilmCast> {
+    }
+
+    public interface MovieCrewListUi extends BaseMovieListUi<PhilmCrew> {
     }
 
     public interface SearchMovieUi extends MovieListUi {
@@ -1463,6 +1506,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showRelatedMovies(PhilmMovie movie);
 
         void showCastList(PhilmMovie movie);
+
+        void showCrewList(PhilmMovie movie);
 
         void checkin(PhilmMovie movie, String message, boolean shareFacebook, boolean shareTwitter,
                 boolean sharePath, boolean shareTumblr);

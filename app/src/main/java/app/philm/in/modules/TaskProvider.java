@@ -10,7 +10,7 @@ import app.philm.in.tasks.CancelCheckinTraktRunnable;
 import app.philm.in.tasks.CheckinTraktRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
-import app.philm.in.tasks.FetchTmdbMovieCastRunnable;
+import app.philm.in.tasks.FetchTmdbMovieCreditsRunnable;
 import app.philm.in.tasks.FetchTmdbMovieTrailersRunnable;
 import app.philm.in.tasks.FetchTmdbMoviesReleasesRunnable;
 import app.philm.in.tasks.FetchTmdbNowPlayingRunnable;
@@ -56,7 +56,7 @@ import dagger.Module;
                 RemoveFromTraktCollectionRunnable.class,
                 RemoveFromTraktWatchlistRunnable.class,
                 SubmitTraktMovieRatingRunnable.class,
-                FetchTmdbMovieCastRunnable.class,
+                FetchTmdbMovieCreditsRunnable.class,
                 FetchTmdbMovieTrailersRunnable.class,
                 FetchTraktWatchingRunnable.class,
                 CheckinTraktRunnable.class,

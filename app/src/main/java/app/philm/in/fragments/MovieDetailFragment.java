@@ -848,7 +848,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 @Override
                 public void onClick(View view) {
                     if (hasCallbacks()) {
-                        //getCallbacks().showCastList(mMovie);
+                        getCallbacks().showCrewList(mMovie);
                     }
                 }
             };

@@ -52,6 +52,8 @@ public interface Display {
 
     public void showCastList(String movieId);
 
+    public void showCrewList(String movieId);
+
     public void showCheckin(String movieId);
 
     public void showCancelCheckin();

@@ -9,11 +9,11 @@ import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
-public class FetchTmdbMovieCastRunnable extends BaseMovieRunnable<Credits> {
+public class FetchTmdbMovieCreditsRunnable extends BaseMovieRunnable<Credits> {
 
     private final int mId;
 
-    public FetchTmdbMovieCastRunnable(int callingId, int id) {
+    public FetchTmdbMovieCreditsRunnable(int callingId, int id) {
         super(callingId);
         mId = id;
     }

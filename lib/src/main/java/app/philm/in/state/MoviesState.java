@@ -2,6 +2,8 @@ package app.philm.in.state;
 
 import com.google.common.base.Preconditions;
 
+import com.uwetrottmann.tmdb.entities.Credits;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,8 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.PhilmCast;
+import app.philm.in.model.PhilmCrew;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.TmdbConfiguration;
 import app.philm.in.model.WatchingMovie;
@@ -68,6 +72,10 @@ public interface MoviesState extends BaseState {
     public void setWatchingMovie(WatchingMovie movie);
 
     public WatchingMovie getWatchingMovie();
+
+    public Map<String, PhilmCrew> getCrew();
+
+    public Map<String, PhilmCast> getCast();
 
     public static class LibraryChangedEvent {}
 
@@ -147,25 +155,36 @@ public interface MoviesState extends BaseState {
         public String query;
     }
 
-
-    static abstract class MovieEntityMapper<T> {
+    static abstract class BaseEntityMapper<T, R> {
         final MoviesState mMoviesState;
 
-        MovieEntityMapper(MoviesState state) {
+        BaseEntityMapper(MoviesState state) {
             mMoviesState = Preconditions.checkNotNull(state, "state cannot be null");
         }
 
-        public abstract PhilmMovie map(T entity);
+        public abstract R map(T entity);
 
-        public List<PhilmMovie> map(List<T> entities) {
-            final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(entities.size());
+        public List<R> map(List<T> entities) {
+            final ArrayList<R> movies = new ArrayList<R>(entities.size());
             for (T entity : entities) {
                 movies.add(map(entity));
             }
             return movies;
         }
 
-        PhilmMovie getMovie(String id) {
+        abstract R getEntity(String id);
+
+        abstract void putEntity(R entity);
+    }
+
+    static abstract class MovieEntityMapper<T> extends BaseEntityMapper<T, PhilmMovie> {
+
+        MovieEntityMapper(MoviesState state) {
+            super(state);
+        }
+
+        @Override
+        PhilmMovie getEntity(String id) {
             if (mMoviesState.getImdbIdMovies().containsKey(id)) {
                 return mMoviesState.getImdbIdMovies().get(id);
             } else if (mMoviesState.getTmdbIdMovies().containsKey(id)) {
@@ -174,7 +193,8 @@ public interface MoviesState extends BaseState {
             return null;
         }
 
-        void putMovie(PhilmMovie movie) {
+        @Override
+        void putEntity(PhilmMovie movie) {
             if (!TextUtils.isEmpty(movie.getImdbId())) {
                 mMoviesState.getImdbIdMovies().put(movie.getImdbId(), movie);
             }
@@ -195,10 +215,10 @@ public interface MoviesState extends BaseState {
 
         @Override
         public PhilmMovie map(com.jakewharton.trakt.entities.Movie entity) {
-            PhilmMovie movie = getMovie(entity.imdb_id);
+            PhilmMovie movie = getEntity(entity.imdb_id);
 
             if (movie == null && entity.tmdbId != null) {
-                movie = getMovie(entity.tmdbId);
+                movie = getEntity(entity.tmdbId);
             }
 
             if (movie == null) {
@@ -207,7 +227,7 @@ public interface MoviesState extends BaseState {
             }
             // We already have a movie, so just update it wrapped value
             movie.setFromMovie(entity);
-            putMovie(movie);
+            putEntity(movie);
 
             return movie;
         }
@@ -223,10 +243,10 @@ public interface MoviesState extends BaseState {
 
         @Override
         public PhilmMovie map(com.uwetrottmann.tmdb.entities.Movie entity) {
-            PhilmMovie movie = getMovie(String.valueOf(entity.id));
+            PhilmMovie movie = getEntity(String.valueOf(entity.id));
 
             if (movie == null && entity.imdb_id != null) {
-                movie = getMovie(entity.imdb_id);
+                movie = getEntity(entity.imdb_id);
             }
 
             if (movie == null) {
@@ -235,9 +255,79 @@ public interface MoviesState extends BaseState {
             }
             // We already have a movie, so just update it wrapped value
             movie.setFromMovie(entity);
-            putMovie(movie);
+            putEntity(movie);
 
             return movie;
+        }
+    }
+
+    public static class TmdbCastEntityMapper
+            extends BaseEntityMapper<Credits.CastMember, PhilmCast> {
+
+        @Inject
+        TmdbCastEntityMapper(MoviesState state) {
+            super(state);
+        }
+
+        @Override
+        public PhilmCast map(Credits.CastMember entity) {
+            PhilmCast item = getEntity(String.valueOf(entity.id));
+
+            if (item == null) {
+                // No item, so create one
+                item = new PhilmCast();
+            }
+
+            // We already have a movie, so just update it wrapped value
+            item.setFromTmdb(entity);
+            putEntity(item);
+
+            return item;
+        }
+
+        @Override
+        PhilmCast getEntity(String id) {
+            return mMoviesState.getCast().get(id);
+        }
+
+        @Override
+        void putEntity(PhilmCast entity) {
+            mMoviesState.getCast().put(String.valueOf(entity.getTmdbId()), entity);
+        }
+    }
+
+    public static class TmdbCrewEntityMapper
+            extends BaseEntityMapper<Credits.CrewMember, PhilmCrew> {
+
+        @Inject
+        TmdbCrewEntityMapper(MoviesState state) {
+            super(state);
+        }
+
+        @Override
+        public PhilmCrew map(Credits.CrewMember entity) {
+            PhilmCrew item = getEntity(String.valueOf(entity.id));
+
+            if (item == null) {
+                // No item, so create one
+                item = new PhilmCrew();
+            }
+
+            // We already have a movie, so just update it wrapped value
+            item.setFromTmdb(entity);
+            putEntity(item);
+
+            return item;
+        }
+
+        @Override
+        PhilmCrew getEntity(String id) {
+            return mMoviesState.getCrew().get(id);
+        }
+
+        @Override
+        void putEntity(PhilmCrew entity) {
+            mMoviesState.getCrew().put(String.valueOf(entity.getTmdbId()), entity);
         }
     }
 

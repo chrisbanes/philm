@@ -28,7 +28,7 @@ public class FetchTraktWatchlistRunnable extends BaseMovieRunnable<List<Movie>> 
     @Override
     public void onSuccess(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
-            List<PhilmMovie> movies = getTraktEntityMapper().map(result);
+            List<PhilmMovie> movies = getTraktMovieEntityMapper().map(result);
             mMoviesState.setWatchlist(movies);
             getDbHelper().mergeWatchlist(movies);
         } else {

@@ -26,7 +26,7 @@ abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> 
                 paginatedResult.items = new ArrayList<PhilmMovie>();
             }
 
-            paginatedResult.items.addAll(getTmdbEntityMapper().map(result.results));
+            paginatedResult.items.addAll(getTmdbMovieEntityMapper().map(result.results));
             paginatedResult.page = result.page;
 
             if (result.total_pages != null) {

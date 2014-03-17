@@ -3,10 +3,14 @@ package app.philm.in.tasks;
 
 import com.uwetrottmann.tmdb.entities.Credits;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
+import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
 public class FetchTmdbMovieCreditsRunnable extends BaseMovieRunnable<Credits> {
@@ -28,7 +32,20 @@ public class FetchTmdbMovieCreditsRunnable extends BaseMovieRunnable<Credits> {
         PhilmMovie movie = mMoviesState.getMovie(mId);
 
         if (movie != null) {
-            movie.updateWithCast(result);
+            if (!PhilmCollections.isEmpty(result.cast)) {
+                // Sort the Cast based on order first
+                Collections.sort(result.cast, new Comparator<Credits.CastMember>() {
+                    @Override
+                    public int compare(Credits.CastMember castMember, Credits.CastMember castMember2) {
+                        return castMember.order - castMember2.order;
+                    }
+                });
+                movie.setCast(getTmdbCastEntityMapper().map(result.cast));
+            }
+
+            if (!PhilmCollections.isEmpty(result.crew)) {
+                movie.setCrew(getTmdbCrewEntityMapper().map(result.crew));
+            }
 
             getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), movie));
         }

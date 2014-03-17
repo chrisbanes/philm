@@ -2,8 +2,12 @@ package app.philm.in.tasks;
 
 
 import com.uwetrottmann.tmdb.entities.AppendToResponse;
+import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.Movie;
 import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
+
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.inject.Inject;
 
@@ -12,6 +16,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.MoviesState;
 import app.philm.in.util.CountryProvider;
+import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
 public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
@@ -38,8 +43,8 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
     }
 
     @Override
-     public void onSuccess(Movie result) {
-        PhilmMovie movie = getTmdbEntityMapper().map(result);
+    public void onSuccess(Movie result) {
+        PhilmMovie movie = getTmdbMovieEntityMapper().map(result);
         movie.markFullFetchCompleted(PhilmModel.TYPE_TMDB);
 
         // Need to manually update releases here due to country code
@@ -49,7 +54,22 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
         // Need to manually update releases here due to entity mapper
         if (result.similar_movies != null) {
-            movie.setRelated(getTmdbEntityMapper().map(result.similar_movies.results));
+            movie.setRelated(getTmdbMovieEntityMapper().map(result.similar_movies.results));
+        }
+
+        if (result.credits != null && !PhilmCollections.isEmpty(result.credits.cast)) {
+            // Sort the Cast based on order first
+            Collections.sort(result.credits.cast, new Comparator<Credits.CastMember>() {
+                @Override
+                public int compare(Credits.CastMember castMember, Credits.CastMember castMember2) {
+                    return castMember.order - castMember2.order;
+                }
+            });
+            movie.setCast(getTmdbCastEntityMapper().map(result.credits.cast));
+        }
+
+        if (result.credits != null && !PhilmCollections.isEmpty(result.credits.crew)) {
+            movie.setCrew(getTmdbCrewEntityMapper().map(result.credits.crew));
         }
 
         checkPhilmState(movie);
@@ -65,7 +85,8 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
             PhilmMovie movie = mMoviesState.getMovie(mId);
             if (movie != null) {
                 getDbHelper().put(movie);
-                getEventBus().post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));
+                getEventBus()
+                        .post(new MoviesState.MovieInformationUpdatedEvent(getCallingId(), movie));
             }
         }
         super.onError(re);

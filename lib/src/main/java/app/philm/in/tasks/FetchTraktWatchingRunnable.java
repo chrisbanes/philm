@@ -2,7 +2,6 @@ package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
 
-import com.jakewharton.trakt.entities.Watching;
 import com.jakewharton.trakt.entities.WatchingBase;
 import com.jakewharton.trakt.enumerations.ActivityAction;
 import com.jakewharton.trakt.enumerations.ActivityType;
@@ -30,7 +29,7 @@ public class FetchTraktWatchingRunnable extends BaseMovieRunnable<WatchingBase> 
     public void onSuccess(WatchingBase result) {
         if (result.action == ActivityAction.Checkin && result.type == ActivityType.Movie) {
 
-            PhilmMovie movie = getTraktEntityMapper().map(result.movie);
+            PhilmMovie movie = getTraktMovieEntityMapper().map(result.movie);
             if (movie != null) {
                 // TODO Fix timestamps
                 WatchingMovie watching = new WatchingMovie(movie, 0, 0);

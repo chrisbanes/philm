@@ -300,47 +300,8 @@ public class PhilmMovie implements PhilmModel {
             runtimeSourceType = TYPE_TMDB;
         }
 
-        if (movie.credits != null) {
-            updateWithCast(movie.credits);
-        }
-
         if (movie.trailers != null) {
             updateWithTrailers(movie.trailers);
-        }
-    }
-
-    public void updateWithCast(final Credits credits) {
-        Preconditions.checkNotNull(credits, "credits cannot be null");
-
-        if (!PhilmCollections.isEmpty(credits.cast)) {
-            Collections.sort(credits.cast, new Comparator<Credits.CastMember>() {
-                @Override
-                public int compare(Credits.CastMember castMember, Credits.CastMember castMember2) {
-                    return castMember.order - castMember2.order;
-                }
-            });
-
-            final ArrayList<PhilmCast> castList = new ArrayList<PhilmCast>();
-
-            for (Credits.CastMember castMember : credits.cast) {
-                final PhilmCast philmCastMember = new PhilmCast();
-                philmCastMember.setFromTmdb(castMember);
-                castList.add(philmCastMember);
-            }
-
-            setCast(castList);
-        }
-
-        if (!PhilmCollections.isEmpty(credits.crew)) {
-            final ArrayList<PhilmCrew> crewList = new ArrayList<PhilmCrew>();
-
-            for (Credits.CrewMember member : credits.crew) {
-                final PhilmCrew philmCrewMember = new PhilmCrew();
-                philmCrewMember.setFromTmdb(member);
-                crewList.add(philmCrewMember);
-            }
-
-            setCrew(crewList);
         }
     }
 

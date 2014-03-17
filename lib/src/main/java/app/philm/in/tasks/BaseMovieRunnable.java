@@ -31,6 +31,8 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
     @Inject Lazy<AsyncDatabaseHelper> mDbHelper;
     @Inject Lazy<MoviesState.TraktMovieEntityMapper> mLazyTraktMovieEntityMapper;
     @Inject Lazy<MoviesState.TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
+    @Inject Lazy<MoviesState.TmdbCastEntityMapper> mLazyTmdbCastEntityMapper;
+    @Inject Lazy<MoviesState.TmdbCrewEntityMapper> mLazyTmdbCrewEntityMapper;
     @Inject Lazy<Bus> mEventBus;
 
     private final int mCallingId;
@@ -99,12 +101,20 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
         return mDbHelper.get();
     }
 
-    protected MoviesState.TraktMovieEntityMapper getTraktEntityMapper() {
+    protected MoviesState.TraktMovieEntityMapper getTraktMovieEntityMapper() {
         return mLazyTraktMovieEntityMapper.get();
     }
 
-    protected MoviesState.TmdbMovieEntityMapper getTmdbEntityMapper() {
+    protected MoviesState.TmdbMovieEntityMapper getTmdbMovieEntityMapper() {
         return mLazyTmdbMovieEntityMapper.get();
+    }
+
+    protected MoviesState.TmdbCastEntityMapper getTmdbCastEntityMapper() {
+        return mLazyTmdbCastEntityMapper.get();
+    }
+
+    protected MoviesState.TmdbCrewEntityMapper getTmdbCrewEntityMapper() {
+        return mLazyTmdbCrewEntityMapper.get();
     }
 
     protected Bus getEventBus() {

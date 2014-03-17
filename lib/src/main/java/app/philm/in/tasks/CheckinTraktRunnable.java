@@ -48,7 +48,7 @@ public class CheckinTraktRunnable extends BaseMovieRunnable<CheckinResponse> {
     @Override
     public void onSuccess(CheckinResponse result) {
         if (RESULT_TRAKT_SUCCESS.equals(result.status)) {
-            PhilmMovie movie = getTraktEntityMapper().map(result.movie);
+            PhilmMovie movie = getTraktMovieEntityMapper().map(result.movie);
 
             if (movie != null) {
                 long startTime = 0;

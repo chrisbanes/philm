@@ -26,7 +26,7 @@ public class FetchTraktDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
     @Override
     public void onSuccess(Movie result) {
-        PhilmMovie movie = getTraktEntityMapper().map(result);
+        PhilmMovie movie = getTraktMovieEntityMapper().map(result);
         movie.markFullFetchCompleted(PhilmModel.TYPE_TRAKT);
 
         checkPhilmState(movie);

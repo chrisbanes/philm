@@ -14,6 +14,8 @@ import java.util.Set;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.PhilmAccount;
+import app.philm.in.model.PhilmCast;
+import app.philm.in.model.PhilmCrew;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.TmdbConfiguration;
@@ -28,6 +30,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private Map<String, PhilmMovie> mTmdbIdMovies;
     private Map<String, PhilmMovie> mImdbIdMovies;
+    private Map<String, PhilmCrew> mCrew;
+    private Map<String, PhilmCast> mCast;
 
     private SearchPaginatedResult mSearchResult;
 
@@ -55,10 +59,12 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
         mTmdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
         mImdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
+        mCrew = new HashMap<String, PhilmCrew>();
+        mCast = new HashMap<String, PhilmCast>();
     }
 
     @Override
-     public void registerForEvents(Object receiver) {
+    public void registerForEvents(Object receiver) {
         mEventBus.register(receiver);
     }
 
@@ -245,6 +251,16 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     public void setWatchingMovie(WatchingMovie movie) {
         mWatching = movie;
         mEventBus.post(new WatchingMovieUpdatedEvent());
+    }
+
+    @Override
+    public Map<String, PhilmCast> getCast() {
+        return mCast;
+    }
+
+    @Override
+    public Map<String, PhilmCrew> getCrew() {
+        return mCrew;
     }
 
     ///////////////////////////

@@ -68,7 +68,7 @@ public class StringManager {
         return R.string.app_name;
     }
 
-    public static int getStringResId(MovieController.Filter filter) {
+    public static int getStringResId(MovieController.MovieFilter filter) {
         switch (filter) {
             case COLLECTION:
                 return R.string.filter_collection;

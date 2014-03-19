@@ -45,7 +45,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private WatchingMovie mWatching;
 
-    private Set<MovieController.Filter> mFilters;
+    private Set<MovieController.MovieFilter> mFilters;
 
     private PhilmAccount mAccount;
     private PhilmUserProfile mUserProfile;
@@ -174,9 +174,9 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public Set<MovieController.Filter> getFilters() {
+    public Set<MovieController.MovieFilter> getFilters() {
         if (mFilters == null) {
-            mFilters = new HashSet<MovieController.Filter>();
+            mFilters = new HashSet<MovieController.MovieFilter>();
         }
         return mFilters;
     }

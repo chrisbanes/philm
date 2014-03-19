@@ -27,7 +27,7 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
 
     private static final String LOG_TAG = BasePhilmMovieListFragment.class.getSimpleName();
 
-    private Set<MovieController.Filter> mFilters;
+    private Set<MovieController.MovieFilter> mFilters;
     private MovieController.MovieOperation[] mBatchOperations;
 
     private boolean mFiltersItemVisible;
@@ -36,7 +36,7 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mFilters = new HashSet<MovieController.Filter>();
+        mFilters = new HashSet<MovieController.MovieFilter>();
     }
 
     @Override
@@ -62,13 +62,13 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
                 }
 
                 updateItemCheckedState(menu, R.id.menu_filter_collection,
-                        MovieController.Filter.COLLECTION);
+                        MovieController.MovieFilter.COLLECTION);
                 updateItemCheckedState(menu, R.id.menu_filter_seen,
-                        MovieController.Filter.SEEN);
+                        MovieController.MovieFilter.SEEN);
                 updateItemCheckedState(menu, R.id.menu_filter_unseen,
-                        MovieController.Filter.UNSEEN);
+                        MovieController.MovieFilter.UNSEEN);
                 updateItemCheckedState(menu, R.id.menu_filter_highly_rated,
-                        MovieController.Filter.HIGHLY_RATED);
+                        MovieController.MovieFilter.HIGHLY_RATED);
 
                 // Update the clear button depending if there are active filters
                 MenuItem clearItem = menu.findItem(R.id.menu_filter_clear);
@@ -83,16 +83,16 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_filter_collection:
-                updateFilterState(MovieController.Filter.COLLECTION, !item.isChecked());
+                updateFilterState(MovieController.MovieFilter.COLLECTION, !item.isChecked());
                 return true;
             case R.id.menu_filter_seen:
-                updateFilterState(MovieController.Filter.SEEN, !item.isChecked());
+                updateFilterState(MovieController.MovieFilter.SEEN, !item.isChecked());
                 return true;
             case R.id.menu_filter_unseen:
-                updateFilterState(MovieController.Filter.UNSEEN, !item.isChecked());
+                updateFilterState(MovieController.MovieFilter.UNSEEN, !item.isChecked());
                 return true;
             case R.id.menu_filter_highly_rated:
-                updateFilterState(MovieController.Filter.HIGHLY_RATED, !item.isChecked());
+                updateFilterState(MovieController.MovieFilter.HIGHLY_RATED, !item.isChecked());
                 return true;
             case R.id.menu_filter_clear:
                 if (hasCallbacks()) {
@@ -117,12 +117,12 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
     }
 
     @Override
-    public void showActiveFilters(Set<MovieController.Filter> filters) {
+    public void showActiveFilters(Set<MovieController.MovieFilter> filters) {
         mFilters = filters;
         getActivity().invalidateOptionsMenu();
     }
 
-    private void updateFilterState(MovieController.Filter filter, boolean checked) {
+    private void updateFilterState(MovieController.MovieFilter filter, boolean checked) {
         if (hasCallbacks()) {
             if (checked) {
                 getCallbacks().addFilter(filter);
@@ -132,7 +132,7 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
         }
     }
 
-    private void updateItemCheckedState(Menu menu, int itemId, MovieController.Filter filter) {
+    private void updateItemCheckedState(Menu menu, int itemId, MovieController.MovieFilter filter) {
         if (!PhilmCollections.isEmpty(mFilters)) {
             MenuItem item = menu.findItem(itemId);
             if (item != null) {

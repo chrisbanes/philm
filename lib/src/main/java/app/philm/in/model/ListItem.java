@@ -11,14 +11,14 @@ public class ListItem<T> {
 
     private T item;
     private MovieController.MovieQueryType header;
-    private MovieController.Filter filter;
+    private MovieController.MovieFilter filter;
 
     public ListItem(T item) {
         type = TYPE_ITEM;
         this.item = item;
     }
 
-    public ListItem(MovieController.Filter filter) {
+    public ListItem(MovieController.MovieFilter filter) {
         type = TYPE_SECTION;
         this.filter = filter;
     }
@@ -36,7 +36,7 @@ public class ListItem<T> {
         return item;
     }
 
-    public MovieController.Filter getFilter() {
+    public MovieController.MovieFilter getFilter() {
         return filter;
     }
 

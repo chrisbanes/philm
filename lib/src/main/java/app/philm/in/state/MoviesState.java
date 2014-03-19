@@ -63,7 +63,7 @@ public interface MoviesState extends BaseState {
 
     public SearchPaginatedResult getSearchResult();
 
-    public Set<MovieController.Filter> getFilters();
+    public Set<MovieController.MovieFilter> getFilters();
 
     public TmdbConfiguration getTmdbConfiguration();
 

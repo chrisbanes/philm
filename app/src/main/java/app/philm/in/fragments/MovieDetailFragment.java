@@ -172,6 +172,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         mMovie = movie;
         populateUi();
 
+        if (mMovie != null && mMovie.getColorScheme() != null) {
+            onColorSchemeChanged();
+        }
+
         if (movie != null && hasCallbacks()) {
             getCallbacks().onTitleChanged(movie.getTitle());
         }

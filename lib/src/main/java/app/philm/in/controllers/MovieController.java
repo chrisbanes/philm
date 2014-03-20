@@ -1077,7 +1077,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private boolean canCancelCheckin(PhilmMovie movie) {
         WatchingMovie checkin = mMoviesState.getWatchingMovie();
         if (checkin != null) {
-            return Objects.equal(checkin.movie, movie);
+            // Allow cancel checkin if the last action is a checkin and movie matches
+            return checkin.type == WatchingMovie.Type.CHECKIN
+                    && Objects.equal(checkin.movie, movie);
         }
         return false;
     }

@@ -27,12 +27,13 @@ public class FetchTraktWatchingRunnable extends BaseMovieRunnable<WatchingBase> 
 
     @Override
     public void onSuccess(WatchingBase result) {
-        if (result.action == ActivityAction.Checkin && result.type == ActivityType.Movie) {
+        if (result.type == ActivityType.Movie && WatchingMovie.validAction(result.action)) {
 
             PhilmMovie movie = getTraktMovieEntityMapper().map(result.movie);
             if (movie != null) {
                 // TODO Fix timestamps
-                WatchingMovie watching = new WatchingMovie(movie, 0, 0);
+                WatchingMovie watching = new WatchingMovie(movie,
+                        WatchingMovie.from(result.action), 0, 0);
                 mMoviesState.setWatchingMovie(watching);
             }
         }

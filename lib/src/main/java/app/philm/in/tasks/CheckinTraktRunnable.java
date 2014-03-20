@@ -59,7 +59,8 @@ public class CheckinTraktRunnable extends BaseMovieRunnable<CheckinResponse> {
                     duration = result.timestamps.active_for * 1000;
                 }
 
-                WatchingMovie watchingMovie = new WatchingMovie(movie, startTime, duration);
+                WatchingMovie watchingMovie = new WatchingMovie(movie, WatchingMovie.Type.CHECKIN,
+                        startTime, duration);
                 mMoviesState.setWatchingMovie(watchingMovie);
             }
         } else if (RESULT_TRAKT_FAILURE.equals(result.status)) {

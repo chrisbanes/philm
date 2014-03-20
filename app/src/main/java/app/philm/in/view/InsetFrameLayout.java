@@ -4,7 +4,9 @@ package app.philm.in.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -18,6 +20,7 @@ import app.philm.in.R;
  */
 public class InsetFrameLayout extends FrameLayout {
 
+    private Drawable mDefaultInsetBackground;
     private Drawable mInsetBackground;
 
     private Rect mInsets;
@@ -48,7 +51,8 @@ public class InsetFrameLayout extends FrameLayout {
         if (a == null) {
             return;
         }
-        mInsetBackground = a.getDrawable(R.styleable.DrawInsetsFrameLayout_insetBackground);
+        mDefaultInsetBackground = mInsetBackground
+                = a.getDrawable(R.styleable.DrawInsetsFrameLayout_insetBackground);
         a.recycle();
 
         setWillNotDraw(true);
@@ -94,6 +98,27 @@ public class InsetFrameLayout extends FrameLayout {
         if (mInsetBackground != null) {
             mInsetBackground.setCallback(this);
         }
+    }
+
+    public void resetInsetBackground() {
+        setInsetBackground(mDefaultInsetBackground);
+    }
+
+    public void setInsetBackgroundColor(int color) {
+        setInsetBackground(new ColorDrawable(0xCCFFFFFF & color));
+    }
+
+    private void setInsetBackground(Drawable background) {
+        if (mInsetBackground != null) {
+            mInsetBackground.setCallback(null);
+        }
+
+        mInsetBackground = background;
+
+        if (mInsetBackground != null && getWindowToken() != null) {
+            mInsetBackground.setCallback(this);
+        }
+        invalidate();
     }
 
     @Override

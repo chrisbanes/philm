@@ -36,6 +36,7 @@
         <item name="android:ellipsize">end</item>
         <item name="android:background">@drawable/black_translucent_gradient</item>
         <item name="android:gravity">bottom|left</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="Widget.Philm.Movie.List.Title" parent="android:Widget">
@@ -56,6 +57,7 @@
         <item name="android:padding">@dimen/spacing_micro</item>
         <item name="android:paddingLeft">@dimen/spacing_major</item>
         <item name="android:background">@color/primary_accent_color</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="Widget.Philm.Movie.Login.Title" parent="android:Widget">
@@ -73,6 +75,7 @@
         <item name="android:shadowDx">1.2</item>
         <item name="android:shadowDy">1.2</item>
         <item name="android:shadowRadius">1</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.SectionHeader" parent="android:Widget">
@@ -115,6 +118,7 @@
         <item name="android:shadowDx">1.2</item>
         <item name="android:shadowDy">1.2</item>
         <item name="android:shadowRadius">1</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="Widget.Philm.Account.Drawer.Username"
@@ -128,7 +132,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
     </style>
 
     <style name="Widget.Philm.Movie.Drawer.AddAccount" parent="android:Widget">
@@ -144,6 +148,7 @@
         <item name="android:textSize">18dp</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
     <style name="Widget.Philm.Spinner" parent="android:Widget.Holo.Spinner">

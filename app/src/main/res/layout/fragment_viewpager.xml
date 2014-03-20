@@ -14,6 +14,6 @@
           android:id="@+id/viewpager_tabs"
           android:layout_width="match_parent"
           android:layout_height="@dimen/movie_discover_tab_height"
-          android:background="@color/chrome_background"/>
+          android:background="?attr/default_inset_color"/>
 
 </FrameLayout>

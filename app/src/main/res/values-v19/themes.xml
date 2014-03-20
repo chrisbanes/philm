@@ -3,7 +3,7 @@
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo.Light">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
     </style>

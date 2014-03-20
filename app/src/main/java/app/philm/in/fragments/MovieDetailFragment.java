@@ -323,6 +323,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     void onColorSchemeChanged() {
         mDetailAdapter.onColorSchemeChanged();
+        setInsetColor(mMovie.getColorScheme().primaryAccent);
     }
 
     private void captureYoutubeThumbnailLoader(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {

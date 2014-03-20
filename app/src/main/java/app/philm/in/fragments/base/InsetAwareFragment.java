@@ -20,7 +20,7 @@ public class InsetAwareFragment extends Fragment
     public void onPause() {
         if (getActivity() instanceof PhilmActivity) {
             PhilmActivity activity = ((PhilmActivity) getActivity());
-            activity.resetAlpha();
+            activity.resetInsets();
             activity.removeInsetChangedCallback(this);
         }
         super.onPause();
@@ -33,6 +33,12 @@ public class InsetAwareFragment extends Fragment
     public void setTopInsetAlpha(float alpha) {
         if (getActivity() instanceof PhilmActivity) {
             ((PhilmActivity) getActivity()).setInsetTopAlpha(alpha);
+        }
+    }
+
+    public void setInsetColor(int color) {
+        if (getActivity() instanceof PhilmActivity) {
+            ((PhilmActivity) getActivity()).setInsetColor(color);
         }
     }
 

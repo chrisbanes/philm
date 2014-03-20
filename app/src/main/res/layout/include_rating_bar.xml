@@ -16,7 +16,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@color/dark_gray">
+                android:background="?attr/grey_shade">
 
             <app.philm.in.view.FontTextView
                     android:id="@+id/textview_votes"
@@ -40,7 +40,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@color/dark_gray">
+                android:background="?attr/grey_shade">
 
             <app.philm.in.view.FontTextView
                     android:id="@+id/textview_global_rating"
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            internal:backgroundCircleColor="@color/dark_gray"
+            internal:backgroundCircleColor="?attr/grey_shade"
             internal:foregroundCircleColor="@color/mid_gray"
             internal:arcColor="@color/light_gray"
             internal:textColor="@color/light_gray"

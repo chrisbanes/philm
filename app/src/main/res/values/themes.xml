@@ -3,7 +3,7 @@
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Base.Philm" parent="android:Theme.Holo">
+    <style name="Theme.Base.Philm" parent="android:Theme.Holo.Light">
     </style>
 
     <style name="Theme.Philm" parent="Theme.Base.Philm">
@@ -43,6 +43,8 @@
 
         <item name="android:ratingBarStyle">@style/Widget.Philm.RatingBar</item>
 
+        <item name="grey_shade">@color/light_gray</item>
+        <item name="default_inset_color">@color/chrome_background</item>
     </style>
 
     <style name="Theme.Philm.Framed" parent="Theme.Philm">

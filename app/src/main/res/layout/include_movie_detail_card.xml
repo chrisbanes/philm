@@ -40,7 +40,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:background="@color/dark_gray"
+          android:background="?attr/grey_shade"
           android:padding="@dimen/spacing_minor" />
 
 </merge>

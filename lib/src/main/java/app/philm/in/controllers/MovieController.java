@@ -539,7 +539,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showCheckin(movie.getImdbId());
+                    display.showCheckin(movie.getTraktId());
                 }
             }
 

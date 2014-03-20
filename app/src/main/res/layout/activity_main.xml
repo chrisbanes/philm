@@ -7,7 +7,7 @@
         android:id="@+id/inset_fl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:insetBackground="@color/chrome_background">
+        app:insetBackground="?attr/default_inset_color">
 
     <android.support.v4.widget.DrawerLayout
             android:id="@+id/drawer_layout"

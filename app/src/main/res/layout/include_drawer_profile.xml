@@ -3,7 +3,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:id="@+id/layout_profile"
              android:layout_width="match_parent"
-             android:layout_height="wrap_content">
+             android:layout_height="wrap_content"
+             android:background="@color/primary_accent_color_dark_20">
 
     <app.philm.in.view.PhilmImageView
           android:id="@+id/imageview_checkin_movie"

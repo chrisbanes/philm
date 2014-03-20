@@ -5,7 +5,9 @@ import com.uwetrottmann.tmdb.entities.Credits;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
+import app.philm.in.model.PhilmCrew;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
@@ -44,7 +46,9 @@ public class FetchTmdbMovieCreditsRunnable extends BaseMovieRunnable<Credits> {
             }
 
             if (!PhilmCollections.isEmpty(result.crew)) {
-                movie.setCrew(getTmdbCrewEntityMapper().map(result.crew));
+                List<PhilmCrew> crew = getTmdbCrewEntityMapper().map(result.crew);
+                Collections.sort(crew, PhilmCrew.COMPARATOR);
+                movie.setCrew(crew);
             }
 
             getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), movie));

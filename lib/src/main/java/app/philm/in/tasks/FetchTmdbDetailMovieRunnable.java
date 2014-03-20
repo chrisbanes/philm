@@ -8,9 +8,11 @@ import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import app.philm.in.model.PhilmCrew;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
@@ -69,7 +71,9 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
         }
 
         if (result.credits != null && !PhilmCollections.isEmpty(result.credits.crew)) {
-            movie.setCrew(getTmdbCrewEntityMapper().map(result.credits.crew));
+            List<PhilmCrew> crew = getTmdbCrewEntityMapper().map(result.credits.crew);
+            Collections.sort(crew, PhilmCrew.COMPARATOR);
+            movie.setCrew(crew);
         }
 
         checkPhilmState(movie);

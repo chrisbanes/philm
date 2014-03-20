@@ -34,6 +34,8 @@ public class StringManager {
                 return R.string.related_movies;
             case CAST:
                 return R.string.cast_movies;
+            case CREW:
+                return R.string.crew_movies;
         }
         return R.string.app_name;
     }

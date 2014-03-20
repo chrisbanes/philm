@@ -7,7 +7,7 @@ import com.jakewharton.trakt.enumerations.ActivityAction;
 public class WatchingMovie {
 
     public enum Type {
-        CHECKIN, SCROBBLE
+        CHECKIN, SCROBBLE, WATCHING
     }
 
     public final PhilmMovie movie;
@@ -34,6 +34,8 @@ public class WatchingMovie {
                 return Type.CHECKIN;
             case Scrobble:
                 return Type.SCROBBLE;
+            case Watching:
+                return Type.WATCHING;
         }
         return null;
     }

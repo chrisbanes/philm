@@ -1,11 +1,11 @@
 <resources>
 
-    <style name="Widget.Philm.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+    <style name="Widget.Philm.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@null</item>
         <item name="android:indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
     </style>
 
-    <style name="Widget.Philm.ActionBar.Progress" parent="@android:style/Widget.Holo.ProgressBar">
+    <style name="Widget.Philm.ActionBar.Progress" parent="@android:style/Widget.Holo.Light.ProgressBar">
         <item name="android:minHeight">36dip</item>
         <item name="android:maxHeight">36dip</item>
     </style>
@@ -151,22 +151,22 @@
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
-    <style name="Widget.Philm.Spinner" parent="android:Widget.Holo.Spinner">
-        <item name="android:background">@drawable/philmcolor_spinner_background_holo_dark</item>
+    <style name="Widget.Philm.Spinner" parent="android:Widget.Holo.Light.Spinner">
+        <item name="android:background">@drawable/philmstyled_spinner_background_holo_light</item>
         <item name="android:dropDownSelector">
-            @drawable/philmcolor_list_selector_holo_dark
+            @drawable/philmstyled_list_selector_holo_light
         </item>
     </style>
 
-    <style name="Widget.Philm.ProgressBar" parent="android:Widget.Holo.ProgressBar.Horizontal">
+    <style name="Widget.Philm.ProgressBar" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
         <item name="spb_color">@color/primary_accent_color</item>
         <item name="android:minHeight">4dp</item>
         <item name="android:maxHeight">4dp</item>
     </style>
 
-    <style name="Widget.Philm.RatingBar" parent="android:Widget.Holo.RatingBar">
-        <item name="android:progressDrawable">@drawable/philmcolor_ratingbar_full_holo_dark</item>
-        <item name="android:indeterminateDrawable">@drawable/philmcolor_ratingbar_full_holo_dark</item>
+    <style name="Widget.Philm.RatingBar" parent="android:Widget.Holo.Light.RatingBar">
+        <item name="android:progressDrawable">@drawable/philmstyled_ratingbar_full_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/philmstyled_ratingbar_full_holo_light</item>
     </style>
 
 </resources>

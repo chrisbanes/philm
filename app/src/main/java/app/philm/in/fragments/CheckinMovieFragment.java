@@ -72,7 +72,7 @@ public class CheckinMovieFragment extends BasePhilmMovieDialogFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.movie_checkin);
-        builder.setIcon(R.drawable.ic_btn_checkin);
+        builder.setIcon(R.drawable.ic_btn_checkin_normal);
         builder.setView(layout);
         builder.setPositiveButton(R.string.movie_checkin, this);
         builder.setNegativeButton(android.R.string.cancel, this);

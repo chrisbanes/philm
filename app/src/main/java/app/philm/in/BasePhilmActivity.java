@@ -41,8 +41,8 @@ public abstract class BasePhilmActivity extends FragmentActivity
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
+    protected void onResume() {
+        super.onResume();
 
         mMainController.setDisplay(new AndroidDisplay(this, getDrawerToggle()));
         mMainController.setHostCallbacks(this);

@@ -30,22 +30,25 @@ public class DominantColorCalculator {
     private final MedianCutQuantizer.ColorNode[] mWeightedPalette;
     private ColorScheme mColorScheme;
 
-    public DominantColorCalculator(Bitmap bitmap) {
+    public DominantColorCalculator(final Bitmap bitmap) {
         Preconditions.checkNotNull(bitmap, "bitmap cannot be null");
 
         final float scaleRatio = CALCULATE_BITMAP_MIN_DIMENSION
                 / (float) Math.min(bitmap.getWidth(), bitmap.getHeight());
 
-        bitmap = Bitmap.createScaledBitmap(bitmap,
+        final Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,
                 Math.round(bitmap.getWidth() * scaleRatio),
                 Math.round(bitmap.getHeight() * scaleRatio),
                 false);
 
-        final int width = bitmap.getWidth();
-        final int height = bitmap.getHeight();
+        final int width = scaledBitmap.getWidth();
+        final int height = scaledBitmap.getHeight();
 
         final int[] rgbPixels = new int[width * height];
-        bitmap.getPixels(rgbPixels, 0, width, 0, 0, width, height);
+        scaledBitmap.getPixels(rgbPixels, 0, width, 0, 0, width, height);
+
+        // Recycle bitmap as it's no longer used
+        scaledBitmap.recycle();
 
         final MedianCutQuantizer mcq = new MedianCutQuantizer(rgbPixels, NUM_COLORS);
 

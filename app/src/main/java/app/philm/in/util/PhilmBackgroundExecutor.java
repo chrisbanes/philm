@@ -27,12 +27,12 @@ public class PhilmBackgroundExecutor implements BackgroundExecutor {
 
     @Override
     public <R> void execute(NetworkCallRunnable<R> runnable) {
-        mExecutorService.execute(new TraktNetworkRunner<R>(runnable));
+        mExecutorService.execute(new TraktNetworkRunner<>(runnable));
     }
 
     @Override
     public <R> void execute(BackgroundCallRunnable<R> runnable) {
-        mExecutorService.execute(new BackgroundCallRunner<R>(runnable));
+        mExecutorService.execute(new BackgroundCallRunner<>(runnable));
     }
 
     private class BackgroundCallRunner<R> implements Runnable {

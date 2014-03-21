@@ -19,7 +19,7 @@ public class TypefaceManager {
 
     public TypefaceManager(AssetManager assetManager) {
         mAssetManager = Preconditions.checkNotNull(assetManager, "assetManager cannot be null");
-        mCache = new LruCache<String, Typeface>(5);
+        mCache = new LruCache<>(5);
     }
 
     public Typeface getRobotoLight() {

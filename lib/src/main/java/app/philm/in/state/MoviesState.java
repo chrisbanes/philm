@@ -165,7 +165,7 @@ public interface MoviesState extends BaseState {
         public abstract R map(T entity);
 
         public List<R> map(List<T> entities) {
-            final ArrayList<R> movies = new ArrayList<R>(entities.size());
+            final ArrayList<R> movies = new ArrayList<>(entities.size());
             for (T entity : entities) {
                 movies.add(map(entity));
             }

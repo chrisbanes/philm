@@ -79,7 +79,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
                     .orderBy("sortTitle")
                     .query();
 
-            movies = new ArrayList<PhilmMovie>();
+            movies = new ArrayList<>();
 
             for (PhilmMovie movie : itr) {
                 movies.add(movie);
@@ -105,7 +105,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
                     .orderBy("releasedTime")
                     .query();
 
-            movies = new ArrayList<PhilmMovie>();
+            movies = new ArrayList<>();
 
             for (PhilmMovie movie : itr) {
                 movies.add(movie);

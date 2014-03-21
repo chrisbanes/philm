@@ -74,7 +74,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
     private final ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader> mYoutubeLoaders
-            = new ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader>();
+            = new ArrayMap<>();
     private final PhilmImageView.Listener mPosterListener = new PhilmImageView.Listener() {
         @Override
         public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {
@@ -350,7 +350,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             return;
         }
 
-        final ArrayList<DetailItemType> items = new ArrayList<DetailItemType>();
+        final ArrayList<DetailItemType> items = new ArrayList<>();
 
         items.add(DetailItemType.TITLE);
         items.add(DetailItemType.BUTTONS);

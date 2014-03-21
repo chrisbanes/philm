@@ -191,7 +191,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
-     public void onMovieDetailChanged(MoviesState.MovieInformationUpdatedEvent event) {
+    public void onMovieDetailChanged(MoviesState.MovieInformationUpdatedEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
@@ -377,7 +377,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void setMoviesInCollection(List<PhilmMovie> movies, boolean inCollection) {
-                final ArrayList<String> ids = new ArrayList<String>(movies.size());
+                final ArrayList<String> ids = new ArrayList<>(movies.size());
                 for (PhilmMovie movie : movies) {
                     if (inCollection != movie.inCollection()) {
                         ids.add(movie.getTraktId());
@@ -394,7 +394,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void setMoviesInWatchlist(List<PhilmMovie> movies, boolean inWatchlist) {
-                final ArrayList<String> ids = new ArrayList<String>(movies.size());
+                final ArrayList<String> ids = new ArrayList<>(movies.size());
                 for (PhilmMovie movie : movies) {
                     if (inWatchlist != movie.inWatchlist()) {
                         ids.add(movie.getTraktId());
@@ -411,7 +411,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void setMoviesSeen(List<PhilmMovie> movies, boolean seen) {
-                final ArrayList<String> ids = new ArrayList<String>(movies.size());
+                final ArrayList<String> ids = new ArrayList<>(movies.size());
                 for (PhilmMovie movie : movies) {
                     if (seen != movie.isWatched()) {
                         ids.add(movie.getTraktId());
@@ -465,9 +465,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                         }
                         break;
                     case SEARCH:
-                        MoviesState.SearchPaginatedResult searchResult = mMoviesState.getSearchResult();
+                        MoviesState.SearchPaginatedResult searchResult = mMoviesState
+                                .getSearchResult();
                         if (canFetchNextPage(searchResult)) {
-                            fetchSearchResults(getId(ui), searchResult.query, searchResult.page + 1);
+                            fetchSearchResults(getId(ui),
+                                    searchResult.query,
+                                    searchResult.page + 1);
                         }
                         break;
                     case UPCOMING:
@@ -675,22 +678,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private <T> List<ListItem<T>> createListItemList(MovieQueryType header, final List<T> items) {
         Preconditions.checkNotNull(items, "items cannot be null");
 
-        ArrayList<ListItem<T>> listItems = new ArrayList<ListItem<T>>(items.size());
+        ArrayList<ListItem<T>> listItems = new ArrayList<>(items.size());
 
         if (header != null) {
             listItems.add(new ListItem<T>(header));
         }
 
         for (T item : items) {
-            listItems.add(new ListItem<T>(item));
+            listItems.add(new ListItem<>(item));
         }
         return listItems;
     }
 
     private List<ListItem<PhilmMovie>> createSectionedListItemList(
-        final List<PhilmMovie> items,
-        final List<MovieFilter> sections,
-        List<MovieFilter> sectionProcessingOrder) {
+            final List<PhilmMovie> items,
+            final List<MovieFilter> sections,
+            List<MovieFilter> sectionProcessingOrder) {
         Preconditions.checkNotNull(items, "items cannot be null");
         Preconditions.checkNotNull(sections, "sections cannot be null");
 
@@ -701,8 +704,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             sectionProcessingOrder = sections;
         }
 
-        final List<ListItem<PhilmMovie>> result = new ArrayList<ListItem<PhilmMovie>>(items.size());
-        final HashSet<PhilmMovie> movies = new HashSet<PhilmMovie>(items);
+        final List<ListItem<PhilmMovie>> result = new ArrayList<>(items.size());
+        final HashSet<PhilmMovie> movies = new HashSet<>(items);
 
         Map<MovieFilter, List<ListItem<PhilmMovie>>> sectionsItemLists = null;
 
@@ -713,18 +716,18 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 PhilmMovie movie = i.next();
                 if (movie != null && filter.isFiltered(movie)) {
                     if (sectionItems == null) {
-                        sectionItems = new ArrayList<ListItem<PhilmMovie>>();
+                        sectionItems = new ArrayList<>();
                         // Now add Title
                         sectionItems.add(new ListItem<PhilmMovie>(filter));
                     }
-                    sectionItems.add(new ListItem<PhilmMovie>(movie));
+                    sectionItems.add(new ListItem<>(movie));
                     i.remove();
                 }
             }
 
             if (!PhilmCollections.isEmpty(sectionItems)) {
                 if (sectionsItemLists == null) {
-                    sectionsItemLists = new HashMap<MovieFilter, List<ListItem<PhilmMovie>>>();
+                    sectionsItemLists = new HashMap<>();
                 }
                 filter.sortListItems(sectionItems);
                 sectionsItemLists.put(filter, sectionItems);
@@ -985,7 +988,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         Preconditions.checkNotNull(filters, "filters cannot be null");
         Preconditions.checkState(!filters.isEmpty(), "filters cannot be empty");
 
-        ArrayList<PhilmMovie> filteredMovies = new ArrayList<PhilmMovie>();
+        ArrayList<PhilmMovie> filteredMovies = new ArrayList<>();
         for (PhilmMovie movie : movies) {
             boolean filtered = true;
             for (MovieFilter filter : filters) {
@@ -1125,10 +1128,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case WATCHLIST:
                 items = mMoviesState.getWatchlist();
-                sections = Arrays.asList(MovieFilter.UPCOMING, MovieFilter.SOON, MovieFilter.RELEASED,
-                        MovieFilter.SEEN);
-                sectionProcessingOrder = Arrays.asList(MovieFilter.UPCOMING, MovieFilter.SOON, MovieFilter.SEEN,
-                        MovieFilter.RELEASED);
+                sections = Arrays.asList(MovieFilter.UPCOMING, MovieFilter.SOON,
+                        MovieFilter.RELEASED, MovieFilter.SEEN);
+                sectionProcessingOrder = Arrays.asList(MovieFilter.UPCOMING, MovieFilter.SOON,
+                        MovieFilter.SEEN, MovieFilter.RELEASED);
                 break;
             case SEARCH:
                 MoviesState.MoviePaginatedResult searchResult = mMoviesState.getSearchResult();

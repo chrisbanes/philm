@@ -77,7 +77,7 @@ public class MedianCutQuantizer {
             rCols = imageColors;
         } else {
             ColorBox initialBox = new ColorBox(0, K - 1, 0);
-            List<ColorBox> colorSet = new ArrayList<ColorBox>();
+            List<ColorBox> colorSet = new ArrayList<>();
             colorSet.add(initialBox);
             int k = 1;
             boolean done = false;

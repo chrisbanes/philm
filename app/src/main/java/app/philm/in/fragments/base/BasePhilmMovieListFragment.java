@@ -36,7 +36,7 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mFilters = new HashSet<MovieController.MovieFilter>();
+        mFilters = new HashSet<>();
     }
 
     @Override
@@ -199,7 +199,7 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
                 final E listView = getListView();
                 final SparseBooleanArray checkedItems = listView.getCheckedItemPositions();
 
-                final ArrayList<PhilmMovie> movies = new ArrayList<PhilmMovie>(checkedItems.size());
+                final ArrayList<PhilmMovie> movies = new ArrayList<>(checkedItems.size());
                 for (int i = 0, z = checkedItems.size(); i < z; i++) {
                     if (checkedItems.valueAt(i)) {
                         final int index = checkedItems.keyAt(i);

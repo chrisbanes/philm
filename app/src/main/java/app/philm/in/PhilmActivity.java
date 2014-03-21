@@ -90,7 +90,7 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
 
     public void addInsetChangedCallback(OnActivityInsetsCallback callback) {
         if (mInsetCallbacks == null) {
-            mInsetCallbacks = new HashSet<OnActivityInsetsCallback>();
+            mInsetCallbacks = new HashSet<>();
         }
         mInsetCallbacks.add(callback);
 

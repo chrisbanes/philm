@@ -4,7 +4,6 @@ import com.uwetrottmann.tmdb.entities.ResultsPage;
 
 import java.util.ArrayList;
 
-import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
@@ -23,7 +22,7 @@ abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> 
             MoviesState.MoviePaginatedResult paginatedResult = getResultFromState();
             if (paginatedResult == null) {
                 paginatedResult = createPaginatedResult();
-                paginatedResult.items = new ArrayList<PhilmMovie>();
+                paginatedResult.items = new ArrayList<>();
             }
 
             paginatedResult.items.addAll(getTmdbMovieEntityMapper().map(result.results));

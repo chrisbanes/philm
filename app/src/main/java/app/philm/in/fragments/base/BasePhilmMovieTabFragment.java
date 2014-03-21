@@ -142,7 +142,7 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
         private TabPagerAdapter(FragmentManager fm) {
             super(fm);
-            mFragments = new ArrayList<Fragment>();
+            mFragments = new ArrayList<>();
         }
 
         void setFragments(List<Fragment> fragments) {

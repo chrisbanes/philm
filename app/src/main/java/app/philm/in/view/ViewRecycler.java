@@ -14,7 +14,7 @@ public class ViewRecycler {
 
     public ViewRecycler(ViewGroup viewGroup) {
         mViewGroup = Preconditions.checkNotNull(viewGroup, "viewGroup cannot be null");
-        mRecycledViews = new ArrayList<View>();
+        mRecycledViews = new ArrayList<>();
     }
 
     public void recycleViews() {

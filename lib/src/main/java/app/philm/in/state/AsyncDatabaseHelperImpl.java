@@ -116,7 +116,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
             public Void doDatabaseCall() {
-                HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
+                HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<>();
                 for (PhilmMovie movie : mDbHelper.getLibrary()) {
                     dbItemsMap.put(movie.getDbId(), movie);
                 }
@@ -144,7 +144,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
             public Void doDatabaseCall() {
-                HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<Long, PhilmMovie>();
+                HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<>();
                 for (PhilmMovie movie : mDbHelper.getWatchlist()) {
                     dbItemsMap.put(movie.getDbId(), movie);
                 }

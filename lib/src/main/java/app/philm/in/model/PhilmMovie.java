@@ -6,7 +6,6 @@ import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
-import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.Genre;
 import com.uwetrottmann.tmdb.entities.Releases;
 import com.uwetrottmann.tmdb.entities.SpokenLanguage;
@@ -15,7 +14,6 @@ import com.uwetrottmann.tmdb.entities.Trailers;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -309,7 +307,7 @@ public class PhilmMovie implements PhilmModel {
         Preconditions.checkNotNull(trailers, "trailers cannot be null");
 
         if (!PhilmCollections.isEmpty(trailers.youtube)) {
-            final ArrayList<PhilmTrailer> philmTrailers = new ArrayList<PhilmTrailer>();
+            final ArrayList<PhilmTrailer> philmTrailers = new ArrayList<>();
 
             for (Trailer trailer : trailers.youtube) {
                 final PhilmTrailer philmTrailer = new PhilmTrailer();

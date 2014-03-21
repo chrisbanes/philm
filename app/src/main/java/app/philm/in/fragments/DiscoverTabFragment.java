@@ -42,7 +42,7 @@ public class DiscoverTabFragment extends BasePhilmMovieTabFragment
         mTabs = tabs;
 
         if (getAdapter().getCount() != tabs.length) {
-            ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+            ArrayList<Fragment> fragments = new ArrayList<>();
             for (int i = 0; i < tabs.length; i++) {
                 fragments.add(createFragmentForTab(tabs[i]));
             }

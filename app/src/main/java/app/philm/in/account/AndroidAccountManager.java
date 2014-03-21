@@ -25,7 +25,7 @@ public class AndroidAccountManager implements PhilmAccountManager {
     @Override
     public List<PhilmAccount> getAccounts() {
         final Account[] accounts = mAccountManager.getAccountsByType(Constants.TRAKT_ACCOUNT_TYPE);
-        ArrayList<PhilmAccount> philmAccounts = new ArrayList<PhilmAccount>(accounts.length);
+        ArrayList<PhilmAccount> philmAccounts = new ArrayList<>(accounts.length);
 
         for (int i = 0; i < accounts.length ; i++) {
             final Account account = accounts[i];

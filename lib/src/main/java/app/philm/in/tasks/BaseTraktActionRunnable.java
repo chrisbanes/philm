@@ -29,8 +29,7 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
         if (mIds.length == 1) {
             body = new MovieService.Movies(new MovieService.SeenMovie(mIds[0]));
         } else {
-            final ArrayList<MovieService.SeenMovie> seenMovies
-                    = new ArrayList<MovieService.SeenMovie>(mIds.length);
+            final ArrayList<MovieService.SeenMovie> seenMovies = new ArrayList<>(mIds.length);
             for (int i = 0 ; i < mIds.length ; i++) {
                 seenMovies.add(new MovieService.SeenMovie(mIds[i]));
             }
@@ -60,7 +59,7 @@ abstract class BaseTraktActionRunnable extends BaseMovieRunnable<Response> {
 
     private void onActionCompleted(final boolean successful) {
         if (successful) {
-            ArrayList<PhilmMovie> result = new ArrayList<PhilmMovie>(mIds.length);
+            ArrayList<PhilmMovie> result = new ArrayList<>(mIds.length);
             for (int i = 0; i < mIds.length; i++) {
                 PhilmMovie movie = onSuccessfulAction(mIds[i]);
                 if (movie != null) {

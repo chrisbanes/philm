@@ -3,7 +3,6 @@ package app.philm.in.controllers;
 import com.google.common.base.Preconditions;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -35,7 +34,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     private final Set<U> mUnmodifiableUis;
 
     public BaseUiController() {
-        mUis = new CopyOnWriteArraySet<U>();
+        mUis = new CopyOnWriteArraySet<>();
         mUnmodifiableUis = Collections.unmodifiableSet(mUis);
     }
 

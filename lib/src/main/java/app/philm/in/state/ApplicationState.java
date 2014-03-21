@@ -57,10 +57,10 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     public ApplicationState(Bus eventBus) {
         mEventBus = Preconditions.checkNotNull(eventBus, "eventBus cannot null");
 
-        mTmdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
-        mImdbIdMovies = new HashMap<String, PhilmMovie>(INITIAL_MOVIE_MAP_CAPACITY);
-        mCrew = new HashMap<String, PhilmCrew>();
-        mCast = new HashMap<String, PhilmCast>();
+        mTmdbIdMovies = new HashMap<>(INITIAL_MOVIE_MAP_CAPACITY);
+        mImdbIdMovies = new HashMap<>(INITIAL_MOVIE_MAP_CAPACITY);
+        mCrew = new HashMap<>();
+        mCast = new HashMap<>();
     }
 
     @Override
@@ -176,7 +176,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     @Override
     public Set<MovieController.MovieFilter> getFilters() {
         if (mFilters == null) {
-            mFilters = new HashSet<MovieController.MovieFilter>();
+            mFilters = new HashSet<>();
         }
         return mFilters;
     }

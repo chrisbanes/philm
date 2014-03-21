@@ -11,30 +11,35 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
 
-        <item name="android:editTextBackground">@drawable/philmstyled_edit_text_holo_light</item>
+        <item name="android:editTextBackground">@drawable/philmcolor_edit_text_holo_light</item>
+        
+        <item name="android:autoCompleteTextViewStyle">
+            @style/Widget.Philm.AutoCompleteTextView
+        </item>
+
         <item name="android:textColorHighlight">@color/primary_accent_color_translucent</item>
         <item name="android:textSelectHandleLeft">
-            @drawable/philmstyled_text_select_handle_left
+            @drawable/philmcolor_text_select_handle_left
         </item>
         <item name="android:textSelectHandleRight">
-            @drawable/philmstyled_text_select_handle_right
+            @drawable/philmcolor_text_select_handle_right
         </item>
-        <item name="android:textSelectHandle">@drawable/philmstyled_text_select_handle_middle</item>
+        <item name="android:textSelectHandle">@drawable/philmcolor_text_select_handle_middle</item>
 
         <item name="android:listChoiceIndicatorMultiple">
-            @drawable/philmstyled_btn_check_holo_light
+            @drawable/philmcolor_btn_check_holo_light
         </item>
         <item name="android:listChoiceIndicatorSingle">
-            @drawable/philmstyled_btn_radio_holo_light
+            @drawable/philmcolor_btn_radio_holo_light
         </item>
         <item name="android:listChoiceBackgroundIndicator">
-            @drawable/philmstyled_list_selector_holo_light
+            @drawable/philmcolor_list_selector_holo_light
         </item>
         <item name="android:activatedBackgroundIndicator">
-            @drawable/philmstyled_activated_background_holo_light
+            @drawable/philmcolor_activated_background_holo_light
         </item>
         <item name="android:fastScrollThumbDrawable">
-            @drawable/philmstyled_fastscroll_thumb_holo
+            @drawable/philmcolor_fastscroll_thumb_holo
         </item>
 
         <item name="android:dropDownSpinnerStyle">@style/Widget.Philm.Spinner</item>

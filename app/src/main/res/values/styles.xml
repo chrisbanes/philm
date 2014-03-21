@@ -152,9 +152,9 @@
     </style>
 
     <style name="Widget.Philm.Spinner" parent="android:Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/philmstyled_spinner_background_holo_light</item>
+        <item name="android:background">@drawable/philmcolor_spinner_background_holo_light</item>
         <item name="android:dropDownSelector">
-            @drawable/philmstyled_list_selector_holo_light
+            @drawable/philmcolor_list_selector_holo_light
         </item>
     </style>
 
@@ -165,8 +165,14 @@
     </style>
 
     <style name="Widget.Philm.RatingBar" parent="android:Widget.Holo.Light.RatingBar">
-        <item name="android:progressDrawable">@drawable/philmstyled_ratingbar_full_holo_light</item>
-        <item name="android:indeterminateDrawable">@drawable/philmstyled_ratingbar_full_holo_light</item>
+        <item name="android:progressDrawable">@drawable/philmcolor_ratingbar_full_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/philmcolor_ratingbar_full_holo_light</item>
+    </style>
+
+    <style name="Widget.Philm.AutoCompleteTextView"
+           parent="android:Widget.Holo.Light.AutoCompleteTextView">
+        <item name="android:dropDownSelector">@drawable/philmcolor_list_selector_holo_light</item>
+        <item name="android:background">@drawable/philmcolor_edit_text_holo_light</item>
     </style>
 
 </resources>

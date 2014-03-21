@@ -7,13 +7,13 @@
     <color name="light_gray">#FFDDDDDD</color>
     <color name="mid_gray">#FFAAAAAA</color>
 
-    <color name="primary_accent_color_light">#ff99cc00</color>
+    <color name="primary_accent_color_light_10">#ff53CF64</color>
     <color name="primary_accent_color_translucent">#9939b54a</color>
     <color name="primary_accent_color">#FF39b54a</color>
-    <color name="primary_accent_color_dark_10">#FF4D8000</color>
-    <color name="primary_accent_color_dark_20">#FF336600</color>
-    <color name="primary_accent_color_dark_30">#FF1A4D00</color>
-    <color name="primary_accent_color_dark_40">#FF003300</color>
+    <color name="primary_accent_color_dark_10">#FF209C31</color>
+    <color name="primary_accent_color_dark_20">#FF068217</color>
+    <color name="primary_accent_color_dark_30">#FF006900</color>
+    <color name="primary_accent_color_dark_40">#FF004F00</color>
 
     <color name="drawer_background">#FFDDDDDD</color>
     <color name="chrome_background">#CCDDDDDD</color>

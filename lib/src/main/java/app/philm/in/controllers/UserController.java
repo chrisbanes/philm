@@ -4,10 +4,13 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.Trakt;
+import com.jakewharton.trakt.entities.NewAccount;
+import com.jakewharton.trakt.entities.Response;
 import com.jakewharton.trakt.entities.Settings;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -35,8 +38,12 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
     private static final String LOG_TAG = UserController.class.getSimpleName();
 
+    public static final Pattern EMAIL_ADDRESS = Pattern.compile(
+            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                    "(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+");
+
     public static enum Error {
-        BAD_AUTH
+        BAD_AUTH, BAD_CREATE
     }
 
     interface ControllerCallbacks {
@@ -56,7 +63,11 @@ public class UserController extends BaseUiController<UserController.UserUi,
 
         boolean isPasswordValid(String password);
 
+        boolean isEmailValid(String email);
+
         void login(String username, String password);
+
+        void createUser(String username, String password, String email);
 
         void requestReLogin();
     }
@@ -181,6 +192,14 @@ public class UserController extends BaseUiController<UserController.UserUi,
         mExecutor.execute(new CheckUserCredentialsRunnable(username, Sha1.encode(password)));
     }
 
+    private void doCreateUser(String username, String password, String email) {
+        for (UserUi ui : getUis()) {
+            ui.showLoadingProgress(true);
+        }
+        mExecutor.execute(new CreateUserCredentialsRunnable(
+                username, Sha1.encode(password), email));
+    }
+
     private void fetchUserProfile(String username) {
         mExecutor.execute(new FetchUserProfileRunnable(username));
     }
@@ -204,8 +223,18 @@ public class UserController extends BaseUiController<UserController.UserUi,
             }
 
             @Override
+            public boolean isEmailValid(String email) {
+                return !TextUtils.isEmpty(email) && EMAIL_ADDRESS.matcher(email).matches();
+            }
+
+            @Override
             public void login(String username, String password) {
                 doLogin(username, password);
+            }
+
+            @Override
+            public void createUser(String username, String password, String email) {
+                doCreateUser(username, password, email);
             }
 
             @Override
@@ -243,26 +272,18 @@ public class UserController extends BaseUiController<UserController.UserUi,
         }
     }
 
-    private class CheckUserCredentialsRunnable extends NetworkCallRunnable<String> {
-        private final String mUsername, mPassword;
+    private abstract class BaseCredentialsRunnable<R> extends NetworkCallRunnable<Response> {
+        final String mUsername, mPassword;
 
-        CheckUserCredentialsRunnable(String username, String password) {
+        BaseCredentialsRunnable(String username, String password) {
             mUsername = Preconditions.checkNotNull(username, "username cannot be null");
             mPassword = Preconditions.checkNotNull(password, "password cannot be null");
         }
 
         @Override
-        public String doBackgroundCall() {
-            mTraktClient.setAuthentication(mUsername, mPassword);
-            return mTraktClient.accountService().test().status;
-        }
-
-        @Override
-        public void onSuccess(String result) {
-            if (!"success".equals(result)) {
-                for (UserUi ui : getUis()) {
-                    ui.showError(Error.BAD_AUTH);
-                }
+        public void onSuccess(Response result) {
+            if (!Objects.equal(result.status, "success")) {
+                onError(null);
                 return;
             }
 
@@ -302,6 +323,40 @@ public class UserController extends BaseUiController<UserController.UserUi,
         public void onFinished() {
             for (UserUi ui : getUis()) {
                 ui.showLoadingProgress(false);
+            }
+        }
+    }
+
+    private class CheckUserCredentialsRunnable extends BaseCredentialsRunnable {
+        CheckUserCredentialsRunnable(String username, String password) {
+            super(username, password);
+        }
+
+        @Override
+        public String doBackgroundCall() {
+            mTraktClient.setAuthentication(mUsername, mPassword);
+            return mTraktClient.accountService().test().status;
+        }
+    }
+
+    private class CreateUserCredentialsRunnable extends BaseCredentialsRunnable {
+        final String mEmail;
+
+        CreateUserCredentialsRunnable(String username, String password, String email) {
+            super(username, password);
+            mEmail = Preconditions.checkNotNull(email, "email cannot be null");
+        }
+
+        @Override
+        public Response doBackgroundCall() {
+            NewAccount newAccount = new NewAccount(mUsername, mPassword, mEmail);
+            return mTraktClient.accountService().create(newAccount);
+        }
+
+        @Override
+        public void onError(RetrofitError re) {
+            for (UserUi ui : getUis()) {
+                ui.showError(Error.BAD_CREATE);
             }
         }
     }

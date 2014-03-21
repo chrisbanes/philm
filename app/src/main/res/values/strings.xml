@@ -38,7 +38,9 @@
 
     <string name="account_username_hint">Username</string>
     <string name="account_password_hint">Password</string>
+    <string name="account_email_hint">Email address</string>
     <string name="account_login">Login</string>
+    <string name="account_register">Register</string>
 
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>
@@ -53,8 +55,10 @@
 
     <string name="login_username_empty">Username is empty.</string>
     <string name="login_password_empty">Password is empty.</string>
+    <string name="login_email_invalid">Email address is not valid.</string>
 
     <string name="login_authorization_error">The username or password were incorrect. Please try again.</string>
+    <string name="create_user_authorization_error">The username or email are currently been used on Trakt. Please try again.</string>
 
     <string name="error_unauthorized">Unauthorized</string>
     <string name="error_network">Network error</string>

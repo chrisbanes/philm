@@ -5,45 +5,83 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
           android:layout_width="match_parent"
           android:layout_height="0px"
-          android:layout_weight="1"
-          android:orientation="vertical"
-          android:gravity="center_horizontal"
-          android:padding="@dimen/spacing_major">
+          android:layout_weight="1">
 
-        <app.philm.in.view.FontTextView
-              android:id="@+id/textview_login_title"
-              android:layout_width="wrap_content"
+        <LinearLayout
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="@string/login_prompt"
+              android:orientation="vertical"
+              android:gravity="center_horizontal"
               android:padding="@dimen/spacing_major"
-              style="@style/Widget.Philm.Movie.Login.Title" />
+              android:animateLayoutChanges="true">
 
-        <EditText
-              android:id="@+id/edit_login"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:hint="@string/account_username_hint"
-              android:maxLines="1"
-              android:layout_marginTop="@dimen/spacing_major"
-              android:singleLine="true"
-              android:inputType="textNoSuggestions"
-              android:imeOptions="actionNext"
-              android:nextFocusDown="@+id/edit_password" />
+            <app.philm.in.view.FontTextView
+                  android:id="@+id/textview_login_title"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/login_prompt"
+                  android:padding="@dimen/spacing_major"
+                  style="@style/Widget.Philm.Movie.Login.Title" />
 
-        <EditText
-              android:id="@+id/edit_password"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:hint="@string/account_password_hint"
-              android:inputType="textPassword"
-              android:singleLine="true"
-              android:imeOptions="actionDone"
-              android:layout_marginTop="@dimen/spacing_major" />
+            <EditText
+                  android:id="@+id/edit_login"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/account_username_hint"
+                  android:maxLines="1"
+                  android:layout_marginTop="@dimen/spacing_major"
+                  android:singleLine="true"
+                  android:inputType="textNoSuggestions"
+                  android:imeOptions="actionNext"
+                  android:nextFocusDown="@+id/edit_password" />
 
-    </LinearLayout>
+            <EditText
+                  android:id="@+id/edit_password"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/account_password_hint"
+                  android:inputType="textPassword"
+                  android:singleLine="true"
+                  android:imeOptions="actionDone"
+                  android:layout_marginTop="@dimen/spacing_major" />
+
+            <AutoCompleteTextView
+                  android:id="@+id/actv_email"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/spacing_major"
+                  android:hint="@string/account_email_hint"
+                  android:inputType="textEmailAddress"
+                  android:selectAllOnFocus="true" />
+
+            <RadioGroup
+                  android:id="@+id/rg_type"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:orientation="horizontal"
+                  android:layout_marginTop="@dimen/spacing_major">
+
+                <RadioButton
+                      android:id="@+id/rb_login"
+                      android:text="@string/account_login"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" />
+
+                <RadioButton
+                      android:id="@+id/rb_create"
+                      android:text="@string/account_register"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <View
           android:layout_width="match_parent"

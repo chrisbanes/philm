@@ -333,9 +333,9 @@ public class UserController extends BaseUiController<UserController.UserUi,
         }
 
         @Override
-        public String doBackgroundCall() {
+        public Response doBackgroundCall() {
             mTraktClient.setAuthentication(mUsername, mPassword);
-            return mTraktClient.accountService().test().status;
+            return mTraktClient.accountService().test();
         }
     }
 

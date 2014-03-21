@@ -24,12 +24,22 @@ public class DominantColorCalculator {
     private static final int TERTIARY_MIN_CONTRAST_PRIMARY = 20;
     private static final int TERTIARY_MIN_CONTRAST_SECONDARY = 90;
 
+    private static final int CALCULATE_BITMAP_MIN_DIMENSION = 80;
+
     private final MedianCutQuantizer.ColorNode[] mPalette;
     private final MedianCutQuantizer.ColorNode[] mWeightedPalette;
     private ColorScheme mColorScheme;
 
     public DominantColorCalculator(Bitmap bitmap) {
         Preconditions.checkNotNull(bitmap, "bitmap cannot be null");
+
+        final float scaleRatio = CALCULATE_BITMAP_MIN_DIMENSION
+                / (float) Math.min(bitmap.getWidth(), bitmap.getHeight());
+
+        bitmap = Bitmap.createScaledBitmap(bitmap,
+                Math.round(bitmap.getWidth() * scaleRatio),
+                Math.round(bitmap.getHeight() * scaleRatio),
+                false);
 
         final int width = bitmap.getWidth();
         final int height = bitmap.getHeight();

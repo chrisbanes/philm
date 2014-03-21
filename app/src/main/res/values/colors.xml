@@ -8,8 +8,8 @@
     <color name="mid_gray">#FFAAAAAA</color>
 
     <color name="primary_accent_color_light">#ff99cc00</color>
-    <color name="primary_accent_color_translucent">#99669900</color>
-    <color name="primary_accent_color">#FF669900</color>
+    <color name="primary_accent_color_translucent">#9939b54a</color>
+    <color name="primary_accent_color">#FF39b54a</color>
     <color name="primary_accent_color_dark_10">#FF4D8000</color>
     <color name="primary_accent_color_dark_20">#FF336600</color>
     <color name="primary_accent_color_dark_30">#FF1A4D00</color>

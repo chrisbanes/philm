@@ -3,7 +3,6 @@ package app.philm.in.tasks;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.WatchingBase;
-import com.jakewharton.trakt.enumerations.ActivityAction;
 import com.jakewharton.trakt.enumerations.ActivityType;
 
 import app.philm.in.model.PhilmMovie;

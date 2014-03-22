@@ -43,9 +43,10 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
-import app.philm.in.model.BasePhilmCast;
 import app.philm.in.model.ColorScheme;
-import app.philm.in.model.PhilmCast;
+import app.philm.in.model.PhilmCastCredit;
+import app.philm.in.model.PhilmCredit;
+import app.philm.in.model.PhilmCrewCredit;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmTrailer;
 import app.philm.in.util.DominantColorCalculator;
@@ -480,9 +481,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 @Override
                 public void onClick(View view) {
                     if (hasCallbacks()) {
-                        PhilmCast cast = (PhilmCast) view.getTag();
-                        if (cast != null && cast.getTmdbId() != null) {
-                            getCallbacks().showCastDetail(cast);
+                        PhilmCastCredit cast = (PhilmCastCredit) view.getTag();
+                        if (cast != null && cast.getPerson() != null) {
+                            getCallbacks().showCastDetail(cast.getPerson());
                         }
                     }
                 }
@@ -495,7 +496,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         @Override
-        public BasePhilmCast getItem(int position) {
+        public PhilmCastCredit getItem(int position) {
             return mMovie.getCast().get(position);
         }
     }
@@ -511,7 +512,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         @Override
-        public BasePhilmCast getItem(int position) {
+        public PhilmCrewCredit getItem(int position) {
             return mMovie.getCrew().get(position);
         }
     }
@@ -526,7 +527,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         @Override
-        public abstract BasePhilmCast getItem(int position);
+        public abstract PhilmCredit getItem(int position);
 
         @Override
         public long getItemId(int position) {
@@ -539,17 +540,17 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 view = mInflater.inflate(R.layout.item_related_movie, viewGroup, false);
             }
 
-            final BasePhilmCast cast = getItem(position);
+            final PhilmCredit credit = getItem(position);
 
             final TextView title = (TextView) view.findViewById(R.id.textview_title);
-            title.setText(cast.getName());
+            title.setText(credit.getPerson().getName());
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadProfileUrl(cast);
+            imageView.loadProfileUrl(credit.getPerson());
 
             view.setOnClickListener(mItemOnClickListener);
-            view.setTag(cast);
+            view.setTag(credit);
 
             return view;
         }

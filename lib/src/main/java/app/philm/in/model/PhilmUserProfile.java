@@ -1,7 +1,6 @@
 package app.philm.in.model;
 
 import com.jakewharton.trakt.entities.Settings;
-import com.jakewharton.trakt.services.AccountService;
 
 public class PhilmUserProfile {
 

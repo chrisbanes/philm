@@ -4,8 +4,7 @@ import com.google.common.base.Preconditions;
 
 import java.net.URLEncoder;
 
-import app.philm.in.model.BasePhilmCast;
-import app.philm.in.model.PhilmCast;
+import app.philm.in.model.Person;
 import app.philm.in.model.PhilmMovie;
 
 public class ImageHelper {
@@ -60,11 +59,11 @@ public class ImageHelper {
         }
     }
 
-    public String getProfileUrl(final BasePhilmCast cast, final int width) {
-        final String imageUrl = cast.getPictureUrl();
+    public String getProfileUrl(final Person person, final int width) {
+        final String imageUrl = person.getPictureUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have picture url");
 
-        switch (cast.getPictureType()) {
+        switch (person.getPictureType()) {
             case PhilmMovie.TYPE_TMDB:
                 return buildTmdbBackdropUrl(imageUrl, width);
             default:

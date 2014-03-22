@@ -13,14 +13,12 @@ import java.util.List;
 import app.philm.in.adapters.MovieCastSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BaseMovieControllerListFragment;
-import app.philm.in.model.BasePhilmCast;
 import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmCast;
+import app.philm.in.model.PhilmCastCredit;
 import app.philm.in.view.PinnedSectionListView;
 
 
-public class CastListFragment
-        extends BaseMovieControllerListFragment<ListView, PhilmCast>
+public class CastListFragment extends BaseMovieControllerListFragment<ListView, PhilmCastCredit>
         implements MovieController.MovieCastListUi {
 
     private MovieCastSectionedListAdapter mMovieListAdapter;
@@ -58,18 +56,18 @@ public class CastListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (hasCallbacks()) {
-            ListItem<PhilmCast> item = (ListItem<PhilmCast>) l.getItemAtPosition(position);
+            ListItem<PhilmCastCredit> item = (ListItem<PhilmCastCredit>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
-                PhilmCast cast = item.getItem();
-                if (cast.getTmdbId() != null) {
-                    getCallbacks().showCastDetail(cast);
+                PhilmCastCredit cast = item.getItem();
+                if (cast != null && cast.getPerson() != null) {
+                    getCallbacks().showCastDetail(cast.getPerson());
                 }
             }
         }
     }
 
     @Override
-    public void setItems(List<ListItem<PhilmCast>> items) {
+    public void setItems(List<ListItem<PhilmCastCredit>> items) {
         mMovieListAdapter.setItems(items);
     }
 

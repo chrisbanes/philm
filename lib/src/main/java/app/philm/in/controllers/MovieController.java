@@ -21,8 +21,9 @@ import javax.inject.Inject;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmCast;
-import app.philm.in.model.PhilmCrew;
+import app.philm.in.model.Person;
+import app.philm.in.model.PhilmCastCredit;
+import app.philm.in.model.PhilmCrewCredit;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -509,13 +510,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showCastDetail(PhilmCast cast) {
-                Preconditions.checkNotNull(cast, "cast cannot be null");
-                Preconditions.checkNotNull(cast.getTmdbId(), "cast id cannot be null");
+            public void showCastDetail(Person person) {
+                Preconditions.checkNotNull(person, "person cannot be null");
+                Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
 
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showCastDetail(String.valueOf(cast.getTmdbId()));
+                    display.showCastDetail(String.valueOf(person.getTmdbId()));
                 }
             }
 
@@ -1433,10 +1434,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void disableBatchOperations();
     }
 
-    public interface MovieCastListUi extends BaseMovieListUi<PhilmCast> {
+    public interface MovieCastListUi extends BaseMovieListUi<PhilmCastCredit> {
     }
 
-    public interface MovieCrewListUi extends BaseMovieListUi<PhilmCrew> {
+    public interface MovieCrewListUi extends BaseMovieListUi<PhilmCrewCredit> {
     }
 
     public interface SearchMovieUi extends MovieListUi {
@@ -1528,7 +1529,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void showCrewList(PhilmMovie movie);
 
-        void showCastDetail(PhilmCast cast);
+        void showCastDetail(Person person);
 
         void checkin(PhilmMovie movie, String message, boolean shareFacebook, boolean shareTwitter,
                 boolean sharePath, boolean shareTumblr);

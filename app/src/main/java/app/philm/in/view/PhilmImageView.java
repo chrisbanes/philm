@@ -21,8 +21,7 @@ import javax.inject.Inject;
 
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
-import app.philm.in.model.BasePhilmCast;
-import app.philm.in.model.PhilmCast;
+import app.philm.in.model.Person;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
@@ -30,8 +29,6 @@ import app.philm.in.util.TextUtils;
 public class PhilmImageView extends ImageView {
 
     private static final int TRANSITION_DURATION = 175;
-
-
 
     public interface Listener {
 
@@ -79,11 +76,11 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    public void loadProfileUrl(BasePhilmCast cast) {
-        loadProfileUrl(cast, null);
+    public void loadProfileUrl(Person person) {
+        loadProfileUrl(person, null);
     }
 
-    public void loadProfileUrl(BasePhilmCast cast, Listener listener) {
+    public void loadProfileUrl(Person cast, Listener listener) {
         if (!TextUtils.isEmpty(cast.getPictureUrl())) {
             setPicassoHandler(new CastProfileHandler(cast, listener));
         } else {
@@ -237,16 +234,16 @@ public class PhilmImageView extends ImageView {
 
     private class CastProfileHandler extends PicassoHandler {
 
-        private final BasePhilmCast mCast;
+        private final Person mPerson;
 
-        CastProfileHandler(BasePhilmCast cast, Listener callback) {
+        CastProfileHandler(Person cast, Listener callback) {
             super(callback);
-            mCast = Preconditions.checkNotNull(cast, "cast cannot be null");
+            mPerson = Preconditions.checkNotNull(cast, "cast cannot be null");
         }
 
         @Override
         public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getProfileUrl(mCast, imageView.getWidth());
+            return helper.getProfileUrl(mPerson, imageView.getWidth());
         }
 
         @Override
@@ -259,7 +256,7 @@ public class PhilmImageView extends ImageView {
             }
 
             CastProfileHandler that = (CastProfileHandler) o;
-            return Objects.equal(mCast, that.mCast);
+            return Objects.equal(mPerson, that.mPerson);
         }
     }
 

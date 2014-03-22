@@ -13,9 +13,8 @@ import java.util.Set;
 
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.Person;
 import app.philm.in.model.PhilmAccount;
-import app.philm.in.model.PhilmCast;
-import app.philm.in.model.PhilmCrew;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.TmdbConfiguration;
@@ -30,8 +29,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private Map<String, PhilmMovie> mTmdbIdMovies;
     private Map<String, PhilmMovie> mImdbIdMovies;
-    private Map<String, PhilmCrew> mCrew;
-    private Map<String, PhilmCast> mCast;
+    private Map<String, Person> mPeople;
 
     private SearchPaginatedResult mSearchResult;
 
@@ -59,8 +57,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
         mTmdbIdMovies = new HashMap<>(INITIAL_MOVIE_MAP_CAPACITY);
         mImdbIdMovies = new HashMap<>(INITIAL_MOVIE_MAP_CAPACITY);
-        mCrew = new HashMap<>();
-        mCast = new HashMap<>();
+        mPeople = new HashMap<>();
     }
 
     @Override
@@ -254,13 +251,8 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public Map<String, PhilmCast> getCast() {
-        return mCast;
-    }
-
-    @Override
-    public Map<String, PhilmCrew> getCrew() {
-        return mCrew;
+    public Map<String, Person> getPeople() {
+        return mPeople;
     }
 
     ///////////////////////////

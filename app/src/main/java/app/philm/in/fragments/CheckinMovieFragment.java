@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.ToggleButton;
 
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;

@@ -10,19 +10,15 @@ import android.widget.ListView;
 
 import java.util.List;
 
-import app.philm.in.adapters.MovieCastSectionedListAdapter;
 import app.philm.in.adapters.MovieCrewSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BaseMovieControllerListFragment;
-import app.philm.in.model.BasePhilmCast;
 import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmCast;
-import app.philm.in.model.PhilmCrew;
+import app.philm.in.model.PhilmCrewCredit;
 import app.philm.in.view.PinnedSectionListView;
 
-
 public class CrewListFragment
-        extends BaseMovieControllerListFragment<ListView, PhilmCrew>
+        extends BaseMovieControllerListFragment<ListView, PhilmCrewCredit>
         implements MovieController.MovieCrewListUi {
 
     private MovieCrewSectionedListAdapter mMovieListAdapter;
@@ -60,7 +56,7 @@ public class CrewListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (hasCallbacks()) {
-            ListItem<PhilmCrew> item = (ListItem<PhilmCrew>) l.getItemAtPosition(position);
+            ListItem<PhilmCrewCredit> item = (ListItem<PhilmCrewCredit>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
                 // TODO
                 //getCallbacks().showMovieDetail(item.getItem());
@@ -69,7 +65,7 @@ public class CrewListFragment
     }
 
     @Override
-    public void setItems(List<ListItem<PhilmCrew>> items) {
+    public void setItems(List<ListItem<PhilmCrewCredit>> items) {
         mMovieListAdapter.setItems(items);
     }
 

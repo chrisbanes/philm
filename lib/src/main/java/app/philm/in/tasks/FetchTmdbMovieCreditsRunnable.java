@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import app.philm.in.model.PhilmCrew;
+import app.philm.in.model.PhilmCrewCredit;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
@@ -42,12 +42,12 @@ public class FetchTmdbMovieCreditsRunnable extends BaseMovieRunnable<Credits> {
                         return castMember.order - castMember2.order;
                     }
                 });
-                movie.setCast(getTmdbCastEntityMapper().map(result.cast));
+                movie.setCast(getTmdbCastEntityMapper().mapCredits(result.cast));
             }
 
             if (!PhilmCollections.isEmpty(result.crew)) {
-                List<PhilmCrew> crew = getTmdbCrewEntityMapper().map(result.crew);
-                Collections.sort(crew, PhilmCrew.COMPARATOR);
+                List<PhilmCrewCredit> crew = getTmdbCrewEntityMapper().mapCredits(result.crew);
+                Collections.sort(crew);
                 movie.setCrew(crew);
             }
 

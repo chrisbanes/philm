@@ -6,10 +6,10 @@ import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmCrew;
+import app.philm.in.model.PhilmCrewCredit;
 import app.philm.in.view.PhilmImageView;
 
-public class MovieCrewSectionedListAdapter extends BasePhilmSectionedListAdapter<PhilmCrew> {
+public class MovieCrewSectionedListAdapter extends BasePhilmSectionedListAdapter<PhilmCrewCredit> {
 
     private static final String LOG_TAG = MovieCrewSectionedListAdapter.class.getSimpleName();
 
@@ -18,18 +18,17 @@ public class MovieCrewSectionedListAdapter extends BasePhilmSectionedListAdapter
     }
 
     @Override
-    protected void bindView(int position, View view, ListItem<PhilmCrew> item) {
-        PhilmCrew castMember = item.getItem();
+    protected void bindView(int position, View view, ListItem<PhilmCrewCredit> item) {
+        PhilmCrewCredit credit = item.getItem();
 
         final TextView nameTextView = (TextView) view.findViewById(R.id.textview_name);
-        nameTextView.setText(castMember.getName());
+        nameTextView.setText(credit.getPerson().getName());
 
         final TextView characterTextView =
                 (TextView) view.findViewById(R.id.textview_character);
-        characterTextView.setText(castMember.getJob());
+        characterTextView.setText(credit.getJob());
 
-        final PhilmImageView imageView =
-                (PhilmImageView) view.findViewById(R.id.imageview_profile);
-        imageView.loadProfileUrl(castMember);
+        final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_profile);
+        imageView.loadProfileUrl(credit.getPerson());
     }
 }

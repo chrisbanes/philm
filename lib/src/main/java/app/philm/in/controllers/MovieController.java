@@ -143,10 +143,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState.setWatchlist(null);
         mMoviesState.setRecommended(null);
         mMoviesState.setSearchResult(null);
-        mMoviesState.setUpcoming(null);
-        mMoviesState.setPopular(null);
-        mMoviesState.setTrending(null);
-        mMoviesState.setNowPlaying(null);
         mMoviesState.getImdbIdMovies().clear();
         mMoviesState.getTmdbIdMovies().clear();
         mMoviesState.setWatchingMovie(null);

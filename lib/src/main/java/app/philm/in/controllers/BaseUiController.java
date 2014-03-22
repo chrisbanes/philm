@@ -66,6 +66,13 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         }
     }
 
+    protected void updateDisplayTitle(String title, int color) {
+        Display display = getDisplay();
+        if (display != null) {
+            display.setActionBarTitle(title, color);
+        }
+    }
+
     public synchronized final void detachUi(U ui) {
         Preconditions.checkArgument(ui != null, "ui cannot be null");
         Preconditions.checkState(mUis.contains(ui), "ui is not attached");

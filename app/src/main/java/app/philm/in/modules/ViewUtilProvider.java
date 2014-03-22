@@ -13,6 +13,7 @@ import app.philm.in.modules.library.ContextProvider;
 import app.philm.in.modules.library.UtilProvider;
 import app.philm.in.modules.qualifiers.ApplicationContext;
 import app.philm.in.util.FlagUrlProvider;
+import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.util.TypefaceManager;
 import app.philm.in.view.FontTextView;
 import app.philm.in.view.PhilmImageView;
@@ -27,6 +28,7 @@ import dagger.Provides;
         },
         injects = {
                 FontTextView.class,
+                PhilmTypefaceSpan.class,
                 PhilmImageView.class,
                 RatingCircleView.class,
                 MovieSectionedListAdapter.class,

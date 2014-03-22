@@ -178,7 +178,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         if (movie != null && hasCallbacks()) {
-            getCallbacks().onTitleChanged(movie.getTitle());
+            getCallbacks().onTitleChanged();
         }
     }
 
@@ -329,6 +329,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     void onColorSchemeChanged() {
         mDetailAdapter.onColorSchemeChanged();
         setInsetColor(mMovie.getColorScheme().primaryAccent);
+
+        if (hasCallbacks()) {
+            getCallbacks().setTitleTextColor(mMovie.getColorScheme().primaryText);
+        }
     }
 
     private void captureYoutubeThumbnailLoader(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {

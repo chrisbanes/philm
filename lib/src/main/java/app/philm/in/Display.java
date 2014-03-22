@@ -40,6 +40,8 @@ public interface Display {
 
     public void setActionBarTitle(String title);
 
+    public void setActionBarTitle(String title, int color);
+
     public boolean popEntireFragmentBackStack();
 
     public void showUpNavigation(boolean show);

@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Spannable;
+import android.text.SpannableString;
 
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
@@ -27,15 +29,19 @@ import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.SearchListFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
+import app.philm.in.util.PhilmTypefaceSpan;
+import app.philm.in.view.FontTextView;
 
 public class AndroidDisplay implements Display {
 
     private final FragmentActivity mActivity;
     private final ActionBarDrawerToggle mActionBarDrawerToggle;
+    private final PhilmTypefaceSpan mDefaultTitleSpan;
 
     public AndroidDisplay(FragmentActivity activity, ActionBarDrawerToggle actionBarDrawerToggle) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mActionBarDrawerToggle = actionBarDrawerToggle;
+        mDefaultTitleSpan = new PhilmTypefaceSpan(activity, FontTextView.FONT_ROBOTO_CONDENSED);
     }
 
     @Override
@@ -147,7 +153,20 @@ public class AndroidDisplay implements Display {
     public void setActionBarTitle(String title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            ab.setTitle(title);
+            SpannableString s = new SpannableString(title);
+            s.setSpan(mDefaultTitleSpan, 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ab.setTitle(s);
+        }
+    }
+
+    @Override
+    public void setActionBarTitle(String title, int color) {
+        ActionBar ab = mActivity.getActionBar();
+        if (ab != null) {
+            SpannableString s = new SpannableString(title);
+            s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
+                    0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ab.setTitle(s);
         }
     }
 

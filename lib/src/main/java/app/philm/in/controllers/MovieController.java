@@ -268,9 +268,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     protected MovieUiCallbacks createUiCallbacks(final MovieUi ui) {
         return new MovieUiCallbacks() {
 
+            private int mTitleTextColor;
+            private boolean mTitleTextColorSet;
+
             @Override
-            public void onTitleChanged(String newTitle) {
-                updateDisplayTitle(newTitle);
+            public void onTitleChanged() {
+                if (mTitleTextColorSet) {
+                    updateDisplayTitle(ui.getUiTitle(), mTitleTextColor);
+                } else {
+                    updateDisplayTitle(ui.getUiTitle());
+                }
+            }
+
+            @Override
+            public void setTitleTextColor(int textColor) {
+                mTitleTextColor = textColor;
+                mTitleTextColorSet = true;
+                onTitleChanged();
             }
 
             @Override
@@ -1489,7 +1503,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public interface MovieUiCallbacks {
 
-        void onTitleChanged(String newTitle);
+        void onTitleChanged();
+
+        void setTitleTextColor(int textColor);
 
         void addFilter(MovieFilter filter);
 

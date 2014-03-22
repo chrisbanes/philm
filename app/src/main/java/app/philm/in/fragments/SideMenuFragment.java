@@ -21,7 +21,6 @@ import android.widget.TextView;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MainController;
-import app.philm.in.controllers.MainController.MainControllerUi;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.drawable.RoundedAvatarDrawable;
@@ -33,8 +32,8 @@ import app.philm.in.util.TextUtils;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.StringManager;
 
-public class SideMenuFragment extends InsetAwareFragment
-        implements MainControllerUi, View.OnClickListener, AdapterView.OnItemClickListener {
+public class SideMenuFragment extends InsetAwareFragment implements MainController.SideMenuUi,
+        View.OnClickListener, AdapterView.OnItemClickListener {
 
     private static final float CHECKIN_BACKDROP_DARKEN = 0.65f;
 

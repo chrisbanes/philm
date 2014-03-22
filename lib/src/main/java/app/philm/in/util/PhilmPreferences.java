@@ -7,4 +7,8 @@ public interface PhilmPreferences {
 
     public void setRemoveFromWatchlistOnWatched(boolean remove);
 
+    public boolean hasShownTraktLoginPrompt();
+
+    public void setShownTraktLoginPrompt();
+
 }

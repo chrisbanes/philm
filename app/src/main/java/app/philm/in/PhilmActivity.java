@@ -11,11 +11,15 @@ import android.view.View;
 
 import java.util.HashSet;
 
+import app.philm.in.controllers.MainController;
 import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.InsetFrameLayout;
 
-public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout.OnInsetsCallback {
+public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout.OnInsetsCallback,
+        MainController.MainUi{
+
+    private MainController.MainControllerUiCallbacks mUiCallbacks;
 
     public static interface OnActivityInsetsCallback {
         public void onInsetsChanged(Rect insets);
@@ -64,6 +68,18 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
     @Override
     protected ActionBarDrawerToggle getDrawerToggle() {
         return mDrawerToggle;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PhilmApplication.from(this).getMainController().attachUi(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PhilmApplication.from(this).getMainController().detachUi(this);
     }
 
     @Override
@@ -134,5 +150,25 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
         mInsetFrameLayout.resetInsetBackground();
         setInsetTopAlpha(255);
         setInsetBottomAlpha(0);
+    }
+
+    @Override
+    public void showLoginPrompt() {
+        // TODO
+    }
+
+    @Override
+    public String getUiTitle() {
+        return null;
+    }
+
+    @Override
+    public void setCallbacks(MainController.MainControllerUiCallbacks callbacks) {
+        mUiCallbacks = callbacks;
+    }
+
+    @Override
+    public boolean isModal() {
+        return false;
     }
 }

@@ -14,6 +14,7 @@ import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.MoviesState;
 import app.philm.in.state.UserState;
 import app.philm.in.util.Logger;
+import app.philm.in.util.PhilmPreferences;
 
 public class MainController extends BaseUiController<MainController.MainControllerUi,
         MainController.MainControllerUiCallbacks> {
@@ -31,6 +32,9 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     public interface MainControllerUi extends BaseUiController.Ui<MainControllerUiCallbacks> {
+    }
+
+    public interface SideMenuUi extends MainControllerUi {
         void setSideMenuItems(SideMenuItem[] items, SideMenuItem selected);
 
         void showUserProfile(PhilmUserProfile profile);
@@ -40,6 +44,12 @@ public class MainController extends BaseUiController<MainController.MainControll
         void showMovieCheckin(WatchingMovie movie);
 
         void hideMovieCheckin();
+    }
+
+    public interface MainUi extends MainControllerUi {
+
+        void showLoginPrompt();
+
     }
 
     public interface MainControllerUiCallbacks {
@@ -56,6 +66,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     private final AsyncDatabaseHelper mDbHelper;
     private final ApplicationState mState;
+    private final PhilmPreferences mPreferences;
     private final Logger mLogger;
 
     private HostCallbacks mHostCallbacks;
@@ -67,6 +78,7 @@ public class MainController extends BaseUiController<MainController.MainControll
             MovieController movieController,
             AboutController aboutController,
             AsyncDatabaseHelper dbHelper,
+            PhilmPreferences preferences,
             Logger logger) {
         super();
 
@@ -79,6 +91,7 @@ public class MainController extends BaseUiController<MainController.MainControll
         mAboutController = Preconditions.checkNotNull(aboutController,
                 "aboutController cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
+        mPreferences = Preconditions.checkNotNull(preferences, "preferences cannot be null");
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
 
         mUserController.setControllerCallbacks(new UserController.ControllerCallbacks() {
@@ -137,6 +150,14 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     @Override
     protected void populateUi(MainControllerUi ui) {
+        if (ui instanceof SideMenuUi) {
+            populateUi((SideMenuUi) ui);
+        } else if (ui instanceof MainUi) {
+            populateUi((MainUi) ui);
+        }
+    }
+
+    private void populateUi(SideMenuUi ui) {
         ui.setSideMenuItems(getEnabledSideMenuItems(), mState.getSelectedSideMenuItem());
 
         PhilmUserProfile profile = mState.getUserProfile();
@@ -152,6 +173,13 @@ public class MainController extends BaseUiController<MainController.MainControll
         } else {
             ui.hideMovieCheckin();
         }
+    }
+
+    private void populateUi(MainUi ui) {
+        //if (mState.getCurrentAccount() == null && !mPreferences.hasShownTraktLoginPrompt()) {
+            ui.showLoginPrompt();
+            mPreferences.setShownTraktLoginPrompt();
+        //}
     }
 
     @Override

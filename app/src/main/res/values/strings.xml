@@ -137,5 +137,6 @@
     <string name="trakt_wrong_credentials_title">Password changed</string>
     <string name="trakt_wrong_credentials_text">Your Trakt.tv password seems to have changed so you have been logged out. Please login again using your new password.</string>
 
+    <string name="trakt_login_prompt">Philm is much more fun when you\'re logged into trakt.tv. Click here to login or register.</string>
 
 </resources>

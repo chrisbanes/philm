@@ -5,9 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import app.philm.in.Display;
 
+@Singleton
 public class AboutController extends BaseUiController<AboutController.AboutUi,
         AboutController.AboutUiCallbacks> {
 

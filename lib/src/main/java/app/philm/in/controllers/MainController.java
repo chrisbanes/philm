@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import app.philm.in.Display;
 import app.philm.in.model.PhilmUserProfile;
@@ -16,6 +17,7 @@ import app.philm.in.state.UserState;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmPreferences;
 
+@Singleton
 public class MainController extends BaseUiController<MainController.MainControllerUi,
         MainController.MainControllerUiCallbacks> {
 

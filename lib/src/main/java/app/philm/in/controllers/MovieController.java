@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import app.philm.in.Constants;
 import app.philm.in.Display;
@@ -73,6 +74,7 @@ import static app.philm.in.util.TimeUtils.isBeforeThreshold;
 import static app.philm.in.util.TimeUtils.isInFuture;
 import static app.philm.in.util.TimeUtils.isInPast;
 
+@Singleton
 public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
 

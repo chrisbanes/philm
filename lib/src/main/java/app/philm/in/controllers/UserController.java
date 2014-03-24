@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import app.philm.in.Constants;
 import app.philm.in.Display;
@@ -33,6 +34,7 @@ import app.philm.in.util.TextUtils;
 import app.philm.in.util.TimeUtils;
 import retrofit.RetrofitError;
 
+@Singleton
 public class UserController extends BaseUiController<UserController.UserUi,
         UserController.UserUiCallbacks> {
 

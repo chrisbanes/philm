@@ -143,7 +143,8 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
     }
 
     public void setInsetColor(int color) {
-        mInsetFrameLayout.setInsetBackgroundColor(color);
+        final int alpha = getResources().getColor(R.color.chrome_custom_background_alpha);
+        mInsetFrameLayout.setInsetBackgroundColor(alpha & color);
     }
 
     public void resetInsets() {

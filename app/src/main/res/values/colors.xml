@@ -17,6 +17,7 @@
 
     <color name="drawer_background">#FFDDDDDD</color>
     <color name="chrome_background">#CCDDDDDD</color>
+    <color name="chrome_custom_background_alpha">#DDFFFFFF</color>
 
     <color name="translucent_black_dark">#BB000000</color>
     <color name="translucent_black_light">#70000000</color>

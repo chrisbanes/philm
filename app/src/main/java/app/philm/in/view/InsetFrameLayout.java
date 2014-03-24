@@ -104,7 +104,7 @@ public class InsetFrameLayout extends FrameLayout {
     }
 
     public void setInsetBackgroundColor(int color) {
-        setInsetBackground(new ColorDrawable(0xCCFFFFFF & color));
+        setInsetBackground(new ColorDrawable(color));
     }
 
     private void setInsetBackground(Drawable background) {

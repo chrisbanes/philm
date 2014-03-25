@@ -32,9 +32,9 @@ public class StringManager {
                 return R.string.in_theatres_title;
             case RELATED:
                 return R.string.related_movies;
-            case CAST:
+            case MOVIE_CAST:
                 return R.string.cast_movies;
-            case CREW:
+            case MOVIE_CREW:
                 return R.string.crew_movies;
         }
         return R.string.app_name;

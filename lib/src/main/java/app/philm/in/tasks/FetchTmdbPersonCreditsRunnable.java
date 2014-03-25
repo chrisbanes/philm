@@ -8,6 +8,7 @@ import java.util.List;
 import app.philm.in.model.Person;
 import app.philm.in.model.PhilmPersonCredit;
 import app.philm.in.network.NetworkError;
+import app.philm.in.state.MoviesState;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
@@ -46,8 +47,7 @@ public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCred
                 person.setCrewCredits(credits);
             }
 
-            // TODO
-            //getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), person));
+            getEventBus().post(new MoviesState.PersonCreditsChangedEvent(getCallingId(), person));
         }
     }
 
@@ -57,7 +57,7 @@ public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCred
 
         Person person = mMoviesState.getPerson(mId);
         if (person != null) {
-            //getEventBus().post(new MoviesState.MovieCastItemsUpdatedEvent(getCallingId(), movie));
+            getEventBus().post(new MoviesState.PersonCreditsChangedEvent(getCallingId(), person));
         }
     }
 

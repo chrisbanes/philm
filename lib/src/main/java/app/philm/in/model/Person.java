@@ -4,6 +4,8 @@ import com.uwetrottmann.tmdb.entities.Credits;
 
 import java.util.List;
 
+import app.philm.in.util.PhilmCollections;
+
 public class Person implements PhilmModel {
 
     Integer tmdbId;
@@ -59,5 +61,9 @@ public class Person implements PhilmModel {
 
     public void setCrewCredits(List<PhilmPersonCredit> crewCredits) {
         this.crewCredits = crewCredits;
+    }
+
+    public boolean isCreditsPopulated() {
+        return !PhilmCollections.isEmpty(castCredits) && !PhilmCollections.isEmpty(crewCredits);
     }
 }

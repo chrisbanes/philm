@@ -26,6 +26,6 @@ public class CastListFragment extends BaseMovieCreditListFragment {
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        return MovieController.MovieQueryType.CAST;
+        return MovieController.MovieQueryType.MOVIE_CAST;
     }
 }

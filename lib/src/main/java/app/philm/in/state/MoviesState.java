@@ -68,6 +68,8 @@ public interface MoviesState extends BaseState {
 
     public Person getPerson(int id);
 
+    public Person getPerson(String id);
+
     public static class LibraryChangedEvent {}
 
     public static class PopularChangedEvent {}
@@ -129,6 +131,12 @@ public interface MoviesState extends BaseState {
 
     public static class MovieUserRatingChangedEvent extends UiCausedEvent<PhilmMovie> {
         public MovieUserRatingChangedEvent(int callingId, PhilmMovie item) {
+            super(callingId, item);
+        }
+    }
+
+    public static class PersonCreditsChangedEvent extends UiCausedEvent<Person> {
+        public PersonCreditsChangedEvent(int callingId, Person item) {
             super(callingId, item);
         }
     }

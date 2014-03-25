@@ -26,6 +26,6 @@ public class CrewListFragment extends BaseMovieCreditListFragment {
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        return MovieController.MovieQueryType.CREW;
+        return MovieController.MovieQueryType.MOVIE_CREW;
     }
 }

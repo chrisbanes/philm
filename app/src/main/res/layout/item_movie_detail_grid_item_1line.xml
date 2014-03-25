@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<app.philm.in.view.ForegroundLinearLayout
+<FrameLayout
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="0px"
       android:layout_height="match_parent"
@@ -11,15 +11,17 @@
     <app.philm.in.view.PhilmImageView
           android:id="@+id/imageview_poster"
           android:layout_width="match_parent"
-          android:layout_height="0px"
-          android:layout_weight="1"
+          android:layout_height="match_parent"
           android:scaleType="centerCrop" />
 
     <app.philm.in.view.FontTextView
           android:id="@+id/textview_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          style="@style/Widget.Philm.Movie.Related.Title" />
+          android:layout_gravity="bottom"
+          android:background="@color/translucent_black_light"
+          android:padding="@dimen/spacing_micro"
+          style="@style/Widget.Philm.Movie.ListItem.Title" />
 
-</app.philm.in.view.ForegroundLinearLayout>
+</FrameLayout>
 

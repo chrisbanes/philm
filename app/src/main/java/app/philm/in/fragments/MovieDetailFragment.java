@@ -460,7 +460,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = mInflater.inflate(R.layout.item_related_movie, viewGroup, false);
+                view = mInflater.inflate(getLayoutId(), viewGroup, false);
             }
 
             final PhilmMovie movie = getItem(position);
@@ -476,6 +476,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             view.setTag(movie);
 
             return view;
+        }
+
+        protected int getLayoutId() {
+            return R.layout.item_movie_detail_grid_item_1line;
         }
     }
 
@@ -519,6 +523,21 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         public PhilmMovieCredit getItem(int position) {
             return mMovie.getCrew().get(position);
         }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            view = super.getView(position, view, viewGroup);
+
+            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
+            subTitle.setText(getItem(position).getJob());
+
+            return view;
+        }
+
+        @Override
+        protected int getLayoutId() {
+            return R.layout.item_movie_detail_grid_item_2line;
+        }
     }
 
     private abstract class BaseMovieCastAdapter extends BaseAdapter {
@@ -541,7 +560,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = mInflater.inflate(R.layout.item_related_movie, viewGroup, false);
+                view = mInflater.inflate(getLayoutId(), viewGroup, false);
             }
 
             final PhilmMovieCredit credit = getItem(position);
@@ -557,6 +576,10 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             view.setTag(credit);
 
             return view;
+        }
+
+        protected int getLayoutId() {
+            return R.layout.item_movie_detail_grid_item_1line;
         }
     }
 

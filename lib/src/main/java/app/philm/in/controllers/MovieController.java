@@ -623,7 +623,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case MOVIE_CREW:
                 fetchMovieCrewIfNeeded(callingId, ui.getRequestParameter());
                 break;
-            case PERSON_CREDITS:
+            case PERSON_CREDITS_CREW:
+            case PERSON_CREDITS_CAST:
                 fetchPersonCreditsIfNeeded(callingId, ui.getRequestParameter());
                 break;
         }
@@ -1244,13 +1245,24 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         final Person person = mMoviesState.getPerson(ui.getRequestParameter());
 
         switch (ui.getMovieQueryType()) {
-            case PERSON_CREDITS:
+            case PERSON_CREDITS_CAST:
                 if (person != null) {
                     updateDisplayTitle(person.getName());
-                    // TODO
-//                    if (!PhilmCollections.isEmpty(person.getCrew())) {
-//                        ui.setItems(createListItemList(MovieQueryType.MOVIE_CREW, person.getCrew()));
-//                    }
+                    if (!PhilmCollections.isEmpty(person.getCastCredits())) {
+                        ui.setItems(createListItemList(
+                                ListItem.SectionTitle.MOVIE_CAST,
+                                person.getCastCredits()));
+                    }
+                }
+                break;
+            case PERSON_CREDITS_CREW:
+                if (person != null) {
+                    updateDisplayTitle(person.getName());
+                    if (!PhilmCollections.isEmpty(person.getCrewCredits())) {
+                        ui.setItems(createListItemList(
+                                ListItem.SectionTitle.MOVIE_CREW,
+                                person.getCrewCredits()));
+                    }
                 }
                 break;
         }
@@ -1430,7 +1442,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, RECOMMENDED,
-        RELATED, MOVIE_CAST, MOVIE_CREW, PERSON_CREDITS, NONE;
+        RELATED, MOVIE_CAST, MOVIE_CREW, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW, NONE;
 
         public boolean requireLogin() {
             switch (this) {

@@ -7,24 +7,24 @@ import android.widget.ListView;
 
 import java.util.List;
 
-import app.philm.in.adapters.MovieCreditSectionedListAdapter;
+import app.philm.in.adapters.PersonCreditSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmMovieCredit;
+import app.philm.in.model.PhilmPersonCredit;
 import app.philm.in.view.PinnedSectionListView;
 
 
-public abstract class BaseMovieCreditListFragment
-        extends BaseMovieControllerListFragment<ListView, PhilmMovieCredit>
-        implements MovieController.MovieCreditListUi {
+public abstract class BasePersonCreditListFragment
+        extends BaseMovieControllerListFragment<ListView, PhilmPersonCredit>
+        implements MovieController.PersonCreditListUi {
 
-    private MovieCreditSectionedListAdapter mMovieListAdapter;
+    private PersonCreditSectionedListAdapter mMovieListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMovieListAdapter = new MovieCreditSectionedListAdapter(getActivity());
+        mMovieListAdapter = new PersonCreditSectionedListAdapter(getActivity());
         setListAdapter(mMovieListAdapter);
     }
 
@@ -39,18 +39,18 @@ public abstract class BaseMovieCreditListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (hasCallbacks()) {
-            ListItem<PhilmMovieCredit> item = (ListItem<PhilmMovieCredit>) l.getItemAtPosition(position);
+            ListItem<PhilmPersonCredit> item = (ListItem<PhilmPersonCredit>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
-                PhilmMovieCredit cast = item.getItem();
-                if (cast != null && cast.getPerson() != null) {
-                    getCallbacks().showCastDetail(cast.getPerson());
-                }
+                PhilmPersonCredit cast = item.getItem();
+//                if (cast != null && cast.getPerson() != null) {
+//                    getCallbacks().showCastDetail(cast.getPerson());
+//                }
             }
         }
     }
 
     @Override
-    public void setItems(List<ListItem<PhilmMovieCredit>> items) {
+    public void setItems(List<ListItem<PhilmPersonCredit>> items) {
         mMovieListAdapter.setItems(items);
     }
 

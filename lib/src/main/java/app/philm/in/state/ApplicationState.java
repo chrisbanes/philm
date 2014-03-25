@@ -255,6 +255,11 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
         return mPeople;
     }
 
+    @Override
+    public Person getPerson(int id) {
+        return mPeople.get(String.valueOf(id));
+    }
+
     ///////////////////////////
     //
     // UserState

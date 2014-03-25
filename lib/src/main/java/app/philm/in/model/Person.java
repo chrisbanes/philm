@@ -2,6 +2,8 @@ package app.philm.in.model;
 
 import com.uwetrottmann.tmdb.entities.Credits;
 
+import java.util.List;
+
 public class Person implements PhilmModel {
 
     Integer tmdbId;
@@ -9,6 +11,9 @@ public class Person implements PhilmModel {
     String pictureUrl;
 
     int pictureType;
+
+    transient List<PhilmCastCredit> castCredits;
+    transient List<PhilmCrewCredit> crewCredits;
 
     public void setFromTmdb(Credits.CrewMember tmdbCrewMember) {
         tmdbId = tmdbCrewMember.id;
@@ -38,5 +43,21 @@ public class Person implements PhilmModel {
 
     public int getPictureType() {
         return pictureType;
+    }
+
+    public List<PhilmCastCredit> getCastCredits() {
+        return castCredits;
+    }
+
+    public void setCastCredits(List<PhilmCastCredit> castCredits) {
+        this.castCredits = castCredits;
+    }
+
+    public List<PhilmCrewCredit> getCrewCredits() {
+        return crewCredits;
+    }
+
+    public void setCrewCredits(List<PhilmCrewCredit> crewCredits) {
+        this.crewCredits = crewCredits;
     }
 }

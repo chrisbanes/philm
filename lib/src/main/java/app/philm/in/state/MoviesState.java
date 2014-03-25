@@ -76,6 +76,8 @@ public interface MoviesState extends BaseState {
 
     public Map<String, Person> getPeople();
 
+    public Person getPerson(int id);
+
     public static class LibraryChangedEvent {}
 
     public static class PopularChangedEvent {}

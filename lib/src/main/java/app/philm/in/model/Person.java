@@ -12,8 +12,8 @@ public class Person implements PhilmModel {
 
     int pictureType;
 
-    transient List<PhilmCastCredit> castCredits;
-    transient List<PhilmCrewCredit> crewCredits;
+    transient List<PhilmPersonCredit> castCredits;
+    transient List<PhilmPersonCredit> crewCredits;
 
     public void setFromTmdb(Credits.CrewMember tmdbCrewMember) {
         tmdbId = tmdbCrewMember.id;
@@ -45,19 +45,19 @@ public class Person implements PhilmModel {
         return pictureType;
     }
 
-    public List<PhilmCastCredit> getCastCredits() {
+    public List<PhilmPersonCredit> getCastCredits() {
         return castCredits;
     }
 
-    public void setCastCredits(List<PhilmCastCredit> castCredits) {
+    public void setCastCredits(List<PhilmPersonCredit> castCredits) {
         this.castCredits = castCredits;
     }
 
-    public List<PhilmCrewCredit> getCrewCredits() {
+    public List<PhilmPersonCredit> getCrewCredits() {
         return crewCredits;
     }
 
-    public void setCrewCredits(List<PhilmCrewCredit> crewCredits) {
+    public void setCrewCredits(List<PhilmPersonCredit> crewCredits) {
         this.crewCredits = crewCredits;
     }
 }

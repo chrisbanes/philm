@@ -2,17 +2,11 @@ package app.philm.in.tasks;
 
 
 import com.uwetrottmann.tmdb.entities.AppendToResponse;
-import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.Movie;
 import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import javax.inject.Inject;
 
-import app.philm.in.model.PhilmMovieCrewCredit;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
@@ -60,20 +54,11 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
         }
 
         if (result.credits != null && !PhilmCollections.isEmpty(result.credits.cast)) {
-            // Sort the Cast based on order first
-            Collections.sort(result.credits.cast, new Comparator<Credits.CastMember>() {
-                @Override
-                public int compare(Credits.CastMember castMember, Credits.CastMember castMember2) {
-                    return castMember.order - castMember2.order;
-                }
-            });
             movie.setCast(getTmdbCastEntityMapper().mapCredits(result.credits.cast));
         }
 
         if (result.credits != null && !PhilmCollections.isEmpty(result.credits.crew)) {
-            List<PhilmMovieCrewCredit> crew = getTmdbCrewEntityMapper().mapCredits(result.credits.crew);
-            Collections.sort(crew);
-            movie.setCrew(crew);
+            movie.setCrew(getTmdbCrewEntityMapper().mapCredits(result.credits.crew));
         }
 
         checkPhilmState(movie);

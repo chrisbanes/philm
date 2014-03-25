@@ -23,8 +23,7 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.Person;
-import app.philm.in.model.PhilmMovieCastCredit;
-import app.philm.in.model.PhilmMovieCrewCredit;
+import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -645,10 +644,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateSearchUi((SearchMovieUi) ui);
         } else if (ui instanceof MovieListUi) {
             populateListUi((MovieListUi) ui);
-        } else if (ui instanceof MovieCastListUi) {
-            populateCastListUi((MovieCastListUi) ui);
-        } else if (ui instanceof MovieCrewListUi) {
-            populateCrewListUi((MovieCrewListUi) ui);
+        } else if (ui instanceof MovieCreditListUi) {
+            populateCreditListUi((MovieCreditListUi) ui);
         } else if (ui instanceof MovieDetailUi) {
             populateDetailUi((MovieDetailUi) ui);
         } else if (ui instanceof MovieRateUi) {
@@ -1196,10 +1193,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void populateCastListUi(MovieCastListUi ui) {
+    private void populateCreditListUi(MovieCreditListUi ui) {
+        final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+
         switch (ui.getMovieQueryType()) {
             case CAST:
-                PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
                     updateDisplayTitle(movie.getTitle());
                     if (!PhilmCollections.isEmpty(movie.getCast())) {
@@ -1207,13 +1205,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     }
                 }
                 break;
-        }
-    }
-
-    private void populateCrewListUi(MovieCrewListUi ui) {
-        switch (ui.getMovieQueryType()) {
             case CREW:
-                PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
                     updateDisplayTitle(movie.getTitle());
                     if (!PhilmCollections.isEmpty(movie.getCrew())) {
@@ -1450,10 +1442,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void disableBatchOperations();
     }
 
-    public interface MovieCastListUi extends BaseMovieListUi<PhilmMovieCastCredit> {
-    }
-
-    public interface MovieCrewListUi extends BaseMovieListUi<PhilmMovieCrewCredit> {
+    public interface MovieCreditListUi extends BaseMovieListUi<PhilmMovieCredit> {
     }
 
     public interface SearchMovieUi extends MovieListUi {

@@ -44,10 +44,8 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.ColorScheme;
-import app.philm.in.model.PhilmMovieCastCredit;
-import app.philm.in.model.PhilmMovieCredit;
-import app.philm.in.model.PhilmMovieCrewCredit;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmTrailer;
 import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
@@ -487,7 +485,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                 @Override
                 public void onClick(View view) {
                     if (hasCallbacks()) {
-                        PhilmMovieCastCredit cast = (PhilmMovieCastCredit) view.getTag();
+                        PhilmMovieCredit cast = (PhilmMovieCredit) view.getTag();
                         if (cast != null && cast.getPerson() != null) {
                             getCallbacks().showCastDetail(cast.getPerson());
                         }
@@ -502,7 +500,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         @Override
-        public PhilmMovieCastCredit getItem(int position) {
+        public PhilmMovieCredit getItem(int position) {
             return mMovie.getCast().get(position);
         }
     }
@@ -518,7 +516,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
 
         @Override
-        public PhilmMovieCrewCredit getItem(int position) {
+        public PhilmMovieCredit getItem(int position) {
             return mMovie.getCrew().get(position);
         }
     }

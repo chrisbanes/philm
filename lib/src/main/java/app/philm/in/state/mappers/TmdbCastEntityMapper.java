@@ -3,12 +3,13 @@ package app.philm.in.state.mappers;
 import com.uwetrottmann.tmdb.entities.Credits;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import app.philm.in.model.Person;
-import app.philm.in.model.PhilmMovieCastCredit;
+import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.state.MoviesState;
 
 public class TmdbCastEntityMapper extends BaseEntityMapper<Credits.CastMember, Person> {
@@ -34,11 +35,12 @@ public class TmdbCastEntityMapper extends BaseEntityMapper<Credits.CastMember, P
         return item;
     }
 
-    public List<PhilmMovieCastCredit> mapCredits(List<Credits.CastMember> entities) {
-        final ArrayList<PhilmMovieCastCredit> credits = new ArrayList<>(entities.size());
+    public List<PhilmMovieCredit> mapCredits(List<Credits.CastMember> entities) {
+        final ArrayList<PhilmMovieCredit> credits = new ArrayList<>(entities.size());
         for (Credits.CastMember entity : entities) {
-            credits.add(new PhilmMovieCastCredit(map(entity), entity.character, entity.order));
+            credits.add(new PhilmMovieCredit(map(entity), entity.character, entity.order));
         }
+        Collections.sort(credits);
         return credits;
     }
 

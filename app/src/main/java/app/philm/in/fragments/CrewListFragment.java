@@ -2,26 +2,13 @@ package app.philm.in.fragments;
 
 import com.google.common.base.Preconditions;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.ListView;
 
-import java.util.List;
-
-import app.philm.in.adapters.MovieCrewSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.BaseMovieControllerListFragment;
-import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmMovieCrewCredit;
-import app.philm.in.view.PinnedSectionListView;
+import app.philm.in.fragments.base.BaseMovieCreditListFragment;
 
-public class CrewListFragment
-        extends BaseMovieControllerListFragment<ListView, PhilmMovieCrewCredit>
-        implements MovieController.MovieCrewListUi {
-
-    private MovieCrewSectionedListAdapter mMovieListAdapter;
+public class CrewListFragment extends BaseMovieCreditListFragment {
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
@@ -38,54 +25,7 @@ public class CrewListFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mMovieListAdapter = new MovieCrewSectionedListAdapter(getActivity());
-        setListAdapter(mMovieListAdapter);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        ListView lv = getListView();
-        lv.setDrawSelectorOnTop(true);
-    }
-
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        if (hasCallbacks()) {
-            ListItem<PhilmMovieCrewCredit> item = (ListItem<PhilmMovieCrewCredit>) l.getItemAtPosition(position);
-            if (item.getType() == ListItem.TYPE_ITEM) {
-                // TODO
-                //getCallbacks().showMovieDetail(item.getItem());
-            }
-        }
-    }
-
-    @Override
-    public void setItems(List<ListItem<PhilmMovieCrewCredit>> items) {
-        mMovieListAdapter.setItems(items);
-    }
-
-    @Override
-    public boolean isModal() {
-        return false;
-    }
-
-    @Override
     public MovieController.MovieQueryType getMovieQueryType() {
         return MovieController.MovieQueryType.CREW;
-    }
-
-    @Override
-    public String getRequestParameter() {
-        return getArguments().getString(KEY_QUERY_MOVIE_ID);
-    }
-
-    @Override
-    protected ListView createListView(Context context) {
-        return new PinnedSectionListView(context);
     }
 }

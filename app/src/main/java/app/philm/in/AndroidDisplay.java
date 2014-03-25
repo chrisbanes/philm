@@ -15,10 +15,10 @@ import android.text.SpannableString;
 
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
-import app.philm.in.fragments.CastListFragment;
+import app.philm.in.fragments.MovieCastListFragment;
 import app.philm.in.fragments.CheckinMovieFragment;
 import app.philm.in.fragments.CredentialsChangedFragment;
-import app.philm.in.fragments.CrewListFragment;
+import app.philm.in.fragments.MovieCrewListFragment;
 import app.philm.in.fragments.DiscoverTabFragment;
 import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
@@ -204,7 +204,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showCastList(String movieId) {
-        CastListFragment fragment = CastListFragment.create(movieId);
+        MovieCastListFragment fragment = MovieCastListFragment.create(movieId);
 
         mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
@@ -215,7 +215,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showCrewList(String movieId) {
-        CrewListFragment fragment = CrewListFragment.create(movieId);
+        MovieCrewListFragment fragment = MovieCrewListFragment.create(movieId);
 
         mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)

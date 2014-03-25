@@ -8,17 +8,17 @@ import android.text.TextUtils;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BaseMovieCreditListFragment;
 
-public class CrewListFragment extends BaseMovieCreditListFragment {
+public class MovieCrewListFragment extends BaseMovieCreditListFragment {
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
-    public static CrewListFragment create(String movieId) {
+    public static MovieCrewListFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_QUERY_MOVIE_ID, movieId);
 
-        CrewListFragment fragment = new CrewListFragment();
+        MovieCrewListFragment fragment = new MovieCrewListFragment();
         fragment.setArguments(bundle);
 
         return fragment;

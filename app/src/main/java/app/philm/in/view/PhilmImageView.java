@@ -4,6 +4,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
 import android.content.Context;
@@ -21,6 +22,7 @@ import javax.inject.Inject;
 
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
+import app.philm.in.R;
 import app.philm.in.model.Person;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.ImageHelper;
@@ -85,6 +87,7 @@ public class PhilmImageView extends ImageView {
             setPicassoHandler(new CastProfileHandler(cast, listener));
         } else {
             reset();
+            setImageResource(R.drawable.ic_profile_placeholder);
         }
     }
 
@@ -119,8 +122,12 @@ public class PhilmImageView extends ImageView {
 
         if (url != null) {
             mPicassoHandler.markAsStarted();
-            Picasso.with(getContext()).load(url)
-                    .into(mPicassoTarget);
+
+            RequestCreator request = Picasso.with(getContext()).load(url);
+            if (mPicassoHandler.getPlaceholderDrawable() != 0) {
+                request = request.placeholder(mPicassoHandler.getPlaceholderDrawable());
+            }
+            request.into(mPicassoTarget);
 
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);
@@ -168,6 +175,10 @@ public class PhilmImageView extends ImageView {
 
         boolean isStarted() {
             return mIsStarted;
+        }
+
+        int getPlaceholderDrawable() {
+            return 0;
         }
     }
 
@@ -258,6 +269,11 @@ public class PhilmImageView extends ImageView {
             CastProfileHandler that = (CastProfileHandler) o;
             return Objects.equal(mPerson, that.mPerson);
         }
+
+        @Override
+        int getPlaceholderDrawable() {
+            return R.drawable.ic_profile_placeholder;
+        }
     }
 
     private final Target mPicassoTarget = new Target() {
@@ -286,7 +302,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onPrepareLoad(Drawable drawable) {
-            setImageDrawable(null);
+            setImageDrawable(drawable);
         }
     };
 
@@ -294,8 +310,13 @@ public class PhilmImageView extends ImageView {
         final boolean fade = mAutoFade && loadedFrom != Picasso.LoadedFrom.MEMORY;
 
         if (fade) {
+            Drawable currentDrawable = getDrawable();
+            if (currentDrawable == null) {
+                currentDrawable = mTransparentDrawable;
+            }
+
             TransitionDrawable transitionDrawable = new TransitionDrawable(
-                    new Drawable[]{mTransparentDrawable, new BitmapDrawable(getResources(), bitmap)});
+                    new Drawable[]{currentDrawable, new BitmapDrawable(getResources(), bitmap)});
             transitionDrawable.setCrossFadeEnabled(true);
 
             setImageDrawable(transitionDrawable);

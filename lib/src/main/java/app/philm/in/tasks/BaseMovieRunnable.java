@@ -15,6 +15,10 @@ import app.philm.in.network.NetworkError;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
+import app.philm.in.state.mappers.TmdbCastEntityMapper;
+import app.philm.in.state.mappers.TmdbCrewEntityMapper;
+import app.philm.in.state.mappers.TmdbMovieEntityMapper;
+import app.philm.in.state.mappers.TraktMovieEntityMapper;
 import app.philm.in.util.PhilmCollections;
 import dagger.Lazy;
 import retrofit.RetrofitError;
@@ -29,10 +33,10 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
     @Inject Lazy<Tmdb> mLazyTmdbClient;
     @Inject Lazy<Trakt> mLazyTraktClient;
     @Inject Lazy<AsyncDatabaseHelper> mDbHelper;
-    @Inject Lazy<MoviesState.TraktMovieEntityMapper> mLazyTraktMovieEntityMapper;
-    @Inject Lazy<MoviesState.TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
-    @Inject Lazy<MoviesState.TmdbCastEntityMapper> mLazyTmdbCastEntityMapper;
-    @Inject Lazy<MoviesState.TmdbCrewEntityMapper> mLazyTmdbCrewEntityMapper;
+    @Inject Lazy<TraktMovieEntityMapper> mLazyTraktMovieEntityMapper;
+    @Inject Lazy<TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
+    @Inject Lazy<TmdbCastEntityMapper> mLazyTmdbCastEntityMapper;
+    @Inject Lazy<TmdbCrewEntityMapper> mLazyTmdbCrewEntityMapper;
     @Inject Lazy<Bus> mEventBus;
 
     private final int mCallingId;
@@ -101,19 +105,19 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
         return mDbHelper.get();
     }
 
-    protected MoviesState.TraktMovieEntityMapper getTraktMovieEntityMapper() {
+    protected TraktMovieEntityMapper getTraktMovieEntityMapper() {
         return mLazyTraktMovieEntityMapper.get();
     }
 
-    protected MoviesState.TmdbMovieEntityMapper getTmdbMovieEntityMapper() {
+    protected TmdbMovieEntityMapper getTmdbMovieEntityMapper() {
         return mLazyTmdbMovieEntityMapper.get();
     }
 
-    protected MoviesState.TmdbCastEntityMapper getTmdbCastEntityMapper() {
+    protected TmdbCastEntityMapper getTmdbCastEntityMapper() {
         return mLazyTmdbCastEntityMapper.get();
     }
 
-    protected MoviesState.TmdbCrewEntityMapper getTmdbCrewEntityMapper() {
+    protected TmdbCrewEntityMapper getTmdbCrewEntityMapper() {
         return mLazyTmdbCrewEntityMapper.get();
     }
 

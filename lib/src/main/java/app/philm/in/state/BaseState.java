@@ -77,8 +77,8 @@ public interface BaseState {
         }
     }
 
-    public static class ShowCastLoadingProgressEvent extends ShowLoadingProgressEvent {
-        public ShowCastLoadingProgressEvent(int callingId, boolean show) {
+    public static class ShowCreditLoadingProgressEvent extends ShowLoadingProgressEvent {
+        public ShowCreditLoadingProgressEvent(int callingId, boolean show) {
             super(callingId, show);
         }
     }

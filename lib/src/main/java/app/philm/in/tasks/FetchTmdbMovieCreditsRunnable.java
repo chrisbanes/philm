@@ -72,6 +72,6 @@ public class FetchTmdbMovieCreditsRunnable extends BaseMovieRunnable<Credits> {
 
     @Override
     protected Object createLoadingProgressEvent(boolean show) {
-        return new BaseState.ShowCastLoadingProgressEvent(getCallingId(), show);
+        return new BaseState.ShowCreditLoadingProgressEvent(getCallingId(), show);
     }
 }

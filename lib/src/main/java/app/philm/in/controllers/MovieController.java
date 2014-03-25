@@ -23,8 +23,8 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.Person;
-import app.philm.in.model.PhilmCastCredit;
-import app.philm.in.model.PhilmCrewCredit;
+import app.philm.in.model.PhilmMovieCastCredit;
+import app.philm.in.model.PhilmMovieCrewCredit;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -1450,10 +1450,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void disableBatchOperations();
     }
 
-    public interface MovieCastListUi extends BaseMovieListUi<PhilmCastCredit> {
+    public interface MovieCastListUi extends BaseMovieListUi<PhilmMovieCastCredit> {
     }
 
-    public interface MovieCrewListUi extends BaseMovieListUi<PhilmCrewCredit> {
+    public interface MovieCrewListUi extends BaseMovieListUi<PhilmMovieCrewCredit> {
     }
 
     public interface SearchMovieUi extends MovieListUi {

@@ -6,10 +6,10 @@ import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmCastCredit;
+import app.philm.in.model.PhilmMovieCastCredit;
 import app.philm.in.view.PhilmImageView;
 
-public class MovieCastSectionedListAdapter extends BasePhilmSectionedListAdapter<PhilmCastCredit> {
+public class MovieCastSectionedListAdapter extends BasePhilmSectionedListAdapter<PhilmMovieCastCredit> {
 
     private static final String LOG_TAG = MovieCastSectionedListAdapter.class.getSimpleName();
 
@@ -18,8 +18,8 @@ public class MovieCastSectionedListAdapter extends BasePhilmSectionedListAdapter
     }
 
     @Override
-    protected void bindView(int position, View view, ListItem<PhilmCastCredit> item) {
-        PhilmCastCredit credit = item.getItem();
+    protected void bindView(int position, View view, ListItem<PhilmMovieCastCredit> item) {
+        PhilmMovieCastCredit credit = item.getItem();
 
         final TextView nameTextView = (TextView) view.findViewById(R.id.textview_name);
         nameTextView.setText(credit.getPerson().getName());

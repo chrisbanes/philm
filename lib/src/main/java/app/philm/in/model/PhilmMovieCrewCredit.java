@@ -2,7 +2,7 @@ package app.philm.in.model;
 
 import com.google.common.base.Preconditions;
 
-public class PhilmCrewCredit implements Comparable<PhilmCrewCredit>, PhilmCredit {
+public class PhilmMovieCrewCredit implements Comparable<PhilmMovieCrewCredit>, PhilmMovieCredit {
 
     private static int ORDER_DIRECTOR = 0;
     private static int ORDER_WRITER = 1;
@@ -17,7 +17,7 @@ public class PhilmCrewCredit implements Comparable<PhilmCrewCredit>, PhilmCredit
     String job;
     String department;
 
-    public PhilmCrewCredit(Person person, String job, String department) {
+    public PhilmMovieCrewCredit(Person person, String job, String department) {
         this.person = Preconditions.checkNotNull(person, "person cannot be null");
         this.job = Preconditions.checkNotNull(job, "job cannot be null");
         this.department = Preconditions.checkNotNull(department, "department cannot be null");
@@ -36,7 +36,7 @@ public class PhilmCrewCredit implements Comparable<PhilmCrewCredit>, PhilmCredit
     }
 
     @Override
-    public int compareTo(PhilmCrewCredit o) {
+    public int compareTo(PhilmMovieCrewCredit o) {
         final int orderThis = getOrder(this);
         final int orderOther = getOrder(o);
 
@@ -47,7 +47,7 @@ public class PhilmCrewCredit implements Comparable<PhilmCrewCredit>, PhilmCredit
         }
     }
 
-    private static int getOrder(PhilmCrewCredit crew) {
+    private static int getOrder(PhilmMovieCrewCredit crew) {
         if (crew.job.equals("Director")) {
             return ORDER_DIRECTOR;
         } else if (crew.department.equals("Writing")) {

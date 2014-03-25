@@ -128,8 +128,8 @@ public class PhilmMovie implements PhilmModel {
     boolean loadedFromTmdb;
 
     transient List<PhilmMovie> related;
-    transient List<PhilmCastCredit> cast;
-    transient List<PhilmCrewCredit> crew;
+    transient List<PhilmMovieCastCredit> cast;
+    transient List<PhilmMovieCrewCredit> crew;
     transient List<PhilmTrailer> trailers;
     transient List<CountryRelease> releases;
 
@@ -567,19 +567,19 @@ public class PhilmMovie implements PhilmModel {
         return loadedFromTrakt;
     }
 
-    public List<PhilmCastCredit> getCast() {
+    public List<PhilmMovieCastCredit> getCast() {
         return cast;
     }
 
-    public void setCast(List<PhilmCastCredit> cast) {
+    public void setCast(List<PhilmMovieCastCredit> cast) {
         this.cast = cast;
     }
 
-    public List<PhilmCrewCredit> getCrew() {
+    public List<PhilmMovieCrewCredit> getCrew() {
         return crew;
     }
 
-    public void setCrew(List<PhilmCrewCredit> crew) {
+    public void setCrew(List<PhilmMovieCrewCredit> crew) {
         this.crew = crew;
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import app.philm.in.model.PhilmCrewCredit;
+import app.philm.in.model.PhilmMovieCrewCredit;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
@@ -71,7 +71,7 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
         }
 
         if (result.credits != null && !PhilmCollections.isEmpty(result.credits.crew)) {
-            List<PhilmCrewCredit> crew = getTmdbCrewEntityMapper().mapCredits(result.credits.crew);
+            List<PhilmMovieCrewCredit> crew = getTmdbCrewEntityMapper().mapCredits(result.credits.crew);
             Collections.sort(crew);
             movie.setCrew(crew);
         }

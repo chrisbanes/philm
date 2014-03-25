@@ -1,6 +1,6 @@
 package app.philm.in.model;
 
-public interface PhilmCredit {
+public interface PhilmMovieCredit {
 
     Person getPerson();
 

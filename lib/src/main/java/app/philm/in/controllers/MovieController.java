@@ -692,13 +692,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         fetchDetailMovieIfNeeded(callingId, movie, false);
     }
 
-    private <T> List<ListItem<T>> createListItemList(MovieQueryType header, final List<T> items) {
+    private <T> List<ListItem<T>> createListItemList(
+            final ListItem.SectionTitle title,
+            final List<T> items) {
         Preconditions.checkNotNull(items, "items cannot be null");
 
         ArrayList<ListItem<T>> listItems = new ArrayList<>(items.size());
 
-        if (header != null) {
-            listItems.add(new ListItem<T>(header));
+        if (title != null) {
+            listItems.add(new ListItem<T>(title));
         }
 
         for (T item : items) {
@@ -707,10 +709,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return listItems;
     }
 
-    private List<ListItem<PhilmMovie>> createSectionedListItemList(
-            final List<PhilmMovie> items,
-            final List<MovieFilter> sections,
-            List<MovieFilter> sectionProcessingOrder) {
+    private <T, F extends Filter<T>> List<ListItem<T>> createSectionedListItemList(
+            final List<T> items,
+            final List<F> sections,
+            List<F> sectionProcessingOrder) {
         Preconditions.checkNotNull(items, "items cannot be null");
         Preconditions.checkNotNull(sections, "sections cannot be null");
 
@@ -721,21 +723,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             sectionProcessingOrder = sections;
         }
 
-        final List<ListItem<PhilmMovie>> result = new ArrayList<>(items.size());
-        final HashSet<PhilmMovie> movies = new HashSet<>(items);
+        final List<ListItem<T>> result = new ArrayList<>(items.size());
+        final HashSet<T> movies = new HashSet<>(items);
 
-        Map<MovieFilter, List<ListItem<PhilmMovie>>> sectionsItemLists = null;
+        Map<F, List<ListItem<T>>> sectionsItemLists = null;
 
-        for (MovieFilter filter : sectionProcessingOrder) {
-            List<ListItem<PhilmMovie>> sectionItems = null;
+        for (F filter : sectionProcessingOrder) {
+            List<ListItem<T>> sectionItems = null;
 
-            for (Iterator<PhilmMovie> i = movies.iterator(); i.hasNext(); ) {
-                PhilmMovie movie = i.next();
+            for (Iterator<T> i = movies.iterator(); i.hasNext(); ) {
+                T movie = i.next();
                 if (movie != null && filter.isFiltered(movie)) {
                     if (sectionItems == null) {
                         sectionItems = new ArrayList<>();
                         // Now add Title
-                        sectionItems.add(new ListItem<PhilmMovie>(filter));
+                        sectionItems.add(new ListItem<T>(filter.getSectionTitle()));
                     }
                     sectionItems.add(new ListItem<>(movie));
                     i.remove();
@@ -752,7 +754,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         if (sectionsItemLists != null) {
-            for (MovieFilter filter : sections) {
+            for (F filter : sections) {
                 if (sectionsItemLists.containsKey(filter)) {
                     result.addAll(sectionsItemLists.get(filter));
                 }
@@ -1138,7 +1140,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         List<PhilmMovie> items = null;
-        boolean displayHeader = false;
+        ListItem.SectionTitle sectionTitle = null;
 
         List<MovieFilter> sections = null;
         List<MovieFilter> sectionProcessingOrder = null;
@@ -1189,7 +1191,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (movie != null) {
                     items = movie.getRelated();
                 }
-                displayHeader = true;
+                sectionTitle = ListItem.SectionTitle.RELATED;
                 break;
         }
 
@@ -1200,7 +1202,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (items == null) {
             ui.setItems(null);
         } else if (PhilmCollections.isEmpty(sections)) {
-            ui.setItems(createListItemList(displayHeader ? queryType : null, items));
+            ui.setItems(createListItemList(sectionTitle, items));
 
             if (isLoggedIn()) {
                 ui.allowedBatchOperations(MovieOperation.MARK_SEEN,
@@ -1221,7 +1223,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (movie != null) {
                     updateDisplayTitle(movie.getTitle());
                     if (!PhilmCollections.isEmpty(movie.getCast())) {
-                        ui.setItems(createListItemList(MovieQueryType.MOVIE_CAST, movie.getCast()));
+                        ui.setItems(createListItemList(
+                                ListItem.SectionTitle.MOVIE_CAST, movie.getCast()));
                     }
                 }
                 break;
@@ -1229,7 +1232,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (movie != null) {
                     updateDisplayTitle(movie.getTitle());
                     if (!PhilmCollections.isEmpty(movie.getCrew())) {
-                        ui.setItems(createListItemList(MovieQueryType.MOVIE_CREW, movie.getCrew()));
+                        ui.setItems(createListItemList(
+                                ListItem.SectionTitle.MOVIE_CREW, movie.getCrew()));
                     }
                 }
                 break;
@@ -1314,6 +1318,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface Filter<T> {
 
         boolean isFiltered(T item);
+
+        void sortListItems(List<ListItem<T>> items);
+
+        ListItem.SectionTitle getSectionTitle();
 
     }
 
@@ -1402,6 +1410,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     Collections.sort(items, PhilmMovie.COMPARATOR_LIST_ITEM_DATE_ASC);
                     break;
             }
+        }
+
+        @Override
+        public ListItem.SectionTitle getSectionTitle() {
+            switch (this) {
+                case UPCOMING:
+                    return ListItem.SectionTitle.RELATED;
+                case SOON:
+                    return ListItem.SectionTitle.SOON;
+                case RELEASED:
+                    return ListItem.SectionTitle.RELEASED;
+                case SEEN:
+                    return ListItem.SectionTitle.SEEN;
+            }
+            return null;
         }
     }
 

@@ -79,11 +79,7 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
     protected abstract void bindView(int position, View view, ListItem<T> item);
 
     protected void bindPinnedView(int position, View view, ListItem<T> item) {
-        if (item.getFilter() != null) {
-            ((TextView) view).setText(StringManager.getStringResId(item.getFilter()));
-        } else if (item.getHeader() != null) {
-            ((TextView) view).setText(StringManager.getStringResId(item.getHeader()));
-        }
+        ((TextView) view).setText(StringManager.getStringResId(item.getSectionTitle()));
     }
 
     @Override

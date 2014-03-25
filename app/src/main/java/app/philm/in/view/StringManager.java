@@ -7,6 +7,7 @@ import app.philm.in.R;
 import app.philm.in.controllers.AboutController;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.ListItem;
 import app.philm.in.network.NetworkError;
 import app.philm.in.util.AppUtils;
 
@@ -40,6 +41,26 @@ public class StringManager {
         return R.string.app_name;
     }
 
+    public static int getStringResId(ListItem.SectionTitle title) {
+        switch (title) {
+            case RELATED:
+                return R.string.related_movies;
+            case UPCOMING:
+                return R.string.filter_upcoming;
+            case SOON:
+                return R.string.filter_soon;
+            case RELEASED:
+                return R.string.filter_released;
+            case SEEN:
+                return R.string.filter_seen;
+            case MOVIE_CAST:
+                return R.string.cast_movies;
+            case MOVIE_CREW:
+                return R.string.crew_movies;
+        }
+        return 0;
+    }
+
     public static int getStringResId(MovieController.DiscoverTab tab) {
         switch (tab) {
             case POPULAR:
@@ -68,28 +89,6 @@ public class StringManager {
                 return R.string.search_title;
         }
         return R.string.app_name;
-    }
-
-    public static int getStringResId(MovieController.MovieFilter filter) {
-        switch (filter) {
-            case COLLECTION:
-                return R.string.filter_collection;
-            case SEEN:
-                return R.string.filter_seen;
-            case UNSEEN:
-                return R.string.filter_unseen;
-            case NOT_RELEASED:
-                return R.string.filter_upcoming;
-            case RELEASED:
-                return R.string.filter_released;
-            case UPCOMING:
-                return R.string.filter_upcoming;
-            case SOON:
-                return R.string.filter_soon;
-            case HIGHLY_RATED:
-                return R.string.filter_highly_rated;
-        }
-        return 0;
     }
 
     public static int getStringResId(NetworkError error) {

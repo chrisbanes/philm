@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -1099,10 +1100,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
             final String url = mImageHelper.getResizedUrl(flagUrl, width, height, "gif");
 
-//            if (Constants.DEBUG) {
-//                Log.d(LOG_TAG, "Loading Flag URL: " + url);
-//            }
-
             Picasso.with(getActivity())
                     .load(url)
                     .into(layout);
@@ -1137,9 +1134,17 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             if (!adapter.isEmpty()) {
                 final int numItems = layout.getWidth() / getResources()
                         .getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
+                final int adapterCount = adapter.getCount();
 
-                for (int i = 0; i < Math.min(numItems, adapter.getCount()); i++) {
+                for (int i = 0; i < Math.min(numItems, adapterCount); i++) {
                     View view = adapter.getView(i, viewRecycler.getRecycledView(), layout);
+                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+
+                    if (lp.weight > .1f && adapterCount < numItems) {
+                        lp.weight = 0f;
+                        lp.width = layout.getWidth() / numItems;
+                    }
+
                     layout.addView(view);
                 }
 

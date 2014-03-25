@@ -200,6 +200,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
+    public void onPersonCreditsChanged(MoviesState.PersonCreditsChangedEvent event) {
+        MovieUi ui = findUi(event.callingId);
+        if (ui != null) {
+            populateUi(ui);
+        } else {
+            populateUis();
+        }
+    }
+
+    @Subscribe
     public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
@@ -350,7 +360,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 Display display = getDisplay();
                 if (display != null) {
                     if (!TextUtils.isEmpty(movie.getTraktId())) {
-                        display.showMovieDetailFragment(movie.getTraktId());
+                        display.showMovieDetail(movie.getTraktId());
                     }
                     // TODO: Handle the else case
                 }
@@ -527,17 +537,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showCastDetail(Person person) {
-                Preconditions.checkNotNull(person, "person cannot be null");
-                Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
-
-                Display display = getDisplay();
-                if (display != null) {
-                    display.showCastDetail(String.valueOf(person.getTmdbId()));
-                }
-            }
-
-            @Override
             public void checkin(PhilmMovie movie, String message, boolean shareFacebook,
                     boolean shareTwitter, boolean sharePath, boolean shareTumblr) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
@@ -565,6 +564,17 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 Display display = getDisplay();
                 if (display != null) {
                     display.showCancelCheckin();
+                }
+            }
+
+            @Override
+            public void showPersonDetail(Person person) {
+                Preconditions.checkNotNull(person, "person cannot be null");
+                Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
+
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showPersonDetail(String.valueOf(person.getTmdbId()));
                 }
             }
 
@@ -664,6 +674,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateCancelCheckinUi((CancelCheckinUi) ui);
         } else if (ui instanceof PersonCreditListUi) {
             populatePersonCreditListUi((PersonCreditListUi) ui);
+        } else if (ui instanceof PersonUi) {
+            populatePersonUi((PersonUi) ui);
         }
     }
 
@@ -1277,6 +1289,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void populatePersonUi(PersonUi ui) {
+        ui.setTabs(PersonTab.values());
+    }
+
     private void populateRateUi(MovieRateUi ui) {
         final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
         ui.setMovie(movie);
@@ -1486,6 +1502,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         POPULAR, IN_THEATRES, UPCOMING, RECOMMENDED
     }
 
+    public static enum PersonTab {
+        CREDITS_CAST, CREDIT_CREW
+    }
+
     public interface MovieUi extends BaseUiController.Ui<MovieUiCallbacks> {
 
         void showError(NetworkError error);
@@ -1553,6 +1573,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void setTabs(DiscoverTab... tabs);
     }
 
+    public interface PersonUi extends MovieUi {
+        void setTabs(PersonTab... tabs);
+    }
+
     public interface MovieCheckinUi extends MovieUi {
         void setMovie(PhilmMovie movie);
         void setShareText(String shareText);
@@ -1610,8 +1634,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void showCrewList(PhilmMovie movie);
 
-        void showCastDetail(Person person);
-
         void checkin(PhilmMovie movie, String message, boolean shareFacebook, boolean shareTwitter,
                 boolean sharePath, boolean shareTumblr);
 
@@ -1620,6 +1642,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void requestCancelCurrentCheckin();
 
         void requestCheckin(PhilmMovie movie);
+
+        void showPersonDetail(Person person);
     }
 
     private class LibraryDbLoadCallback

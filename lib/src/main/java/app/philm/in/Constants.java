@@ -20,7 +20,7 @@ public class Constants {
     public static final int FILTER_HIGHLY_RATED = 70;
 
     public static final boolean DEBUG = true;
-    public static final boolean DEBUG_NETWORK = false;
+    public static final boolean DEBUG_NETWORK = true;
 
     public static final String TRAKT_MESSAGE_ITEM_REPLACE = "[item]";
 

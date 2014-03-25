@@ -43,7 +43,7 @@ public abstract class BaseMovieCreditListFragment
             if (item.getType() == ListItem.TYPE_ITEM) {
                 PhilmMovieCredit cast = item.getItem();
                 if (cast != null && cast.getPerson() != null) {
-                    getCallbacks().showCastDetail(cast.getPerson());
+                    getCallbacks().showPersonDetail(cast.getPerson());
                 }
             }
         }

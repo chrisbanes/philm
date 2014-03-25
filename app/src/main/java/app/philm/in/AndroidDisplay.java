@@ -24,6 +24,7 @@ import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieDetailFragment;
+import app.philm.in.fragments.PersonFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.SearchListFragment;
@@ -74,7 +75,7 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void showMovieDetailFragment(String movieId) {
+    public void showMovieDetail(String movieId) {
         MovieDetailFragment fragment = MovieDetailFragment.create(movieId);
 
         mActivity.getSupportFragmentManager().beginTransaction()
@@ -225,11 +226,6 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void showCastDetail(String personId) {
-        // TODO
-    }
-
-    @Override
     public void showCheckin(String movieId) {
         CheckinMovieFragment fragment = CheckinMovieFragment.create(movieId);
         fragment.show(mActivity.getSupportFragmentManager(), FRAGMENT_TAG_CHECKIN_MOVIE);
@@ -245,6 +241,17 @@ public class AndroidDisplay implements Display {
     public void showCredentialsChanged() {
         new CredentialsChangedFragment().show(mActivity.getSupportFragmentManager(),
                 FRAGMENT_TAG_TRAKT_CREDENTIALS_WRONG);
+    }
+
+    @Override
+    public void showPersonDetail(String id) {
+        PersonFragment fragment = PersonFragment.create(id);
+
+        mActivity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {

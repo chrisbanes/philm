@@ -14,6 +14,7 @@ import app.philm.in.tasks.FetchTmdbMovieCreditsRunnable;
 import app.philm.in.tasks.FetchTmdbMovieTrailersRunnable;
 import app.philm.in.tasks.FetchTmdbMoviesReleasesRunnable;
 import app.philm.in.tasks.FetchTmdbNowPlayingRunnable;
+import app.philm.in.tasks.FetchTmdbPersonCreditsRunnable;
 import app.philm.in.tasks.FetchTmdbPopularRunnable;
 import app.philm.in.tasks.FetchTmdbRelatedMoviesRunnable;
 import app.philm.in.tasks.FetchTmdbSearchQueryRunnable;
@@ -60,7 +61,8 @@ import dagger.Module;
                 FetchTmdbMovieTrailersRunnable.class,
                 FetchTraktWatchingRunnable.class,
                 CheckinTraktRunnable.class,
-                CancelCheckinTraktRunnable.class
+                CancelCheckinTraktRunnable.class,
+                FetchTmdbPersonCreditsRunnable.class
         },
         includes = {
                 PersistenceProvider.class,

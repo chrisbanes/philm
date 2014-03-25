@@ -20,7 +20,7 @@ public interface Display {
 
     public void showLogin();
 
-    public void showMovieDetailFragment(String movieId);
+    public void showMovieDetail(String movieId);
 
     public void showSearchFragment();
 
@@ -56,11 +56,11 @@ public interface Display {
 
     public void showCrewList(String movieId);
 
-    public void showCastDetail(String personId);
-
     public void showCheckin(String movieId);
 
     public void showCancelCheckin();
+
+    public void showPersonDetail(String id);
 
     public void showCredentialsChanged();
 

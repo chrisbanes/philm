@@ -28,4 +28,9 @@ public class MovieCrewListFragment extends BaseMovieCreditListFragment {
     public MovieController.MovieQueryType getMovieQueryType() {
         return MovieController.MovieQueryType.MOVIE_CREW;
     }
+
+    @Override
+    public String getRequestParameter() {
+        return getArguments().getString(KEY_QUERY_MOVIE_ID);
+    }
 }

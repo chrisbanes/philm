@@ -147,6 +147,10 @@ public class PhilmActivity extends BasePhilmActivity implements InsetFrameLayout
         mInsetFrameLayout.setInsetBackgroundColor(alpha & color);
     }
 
+    public void setSolidInsetColor(int color) {
+        mInsetFrameLayout.setInsetBackgroundColor(color);
+    }
+
     public void resetInsets() {
         mInsetFrameLayout.resetInsetBackground();
         setInsetTopAlpha(255);

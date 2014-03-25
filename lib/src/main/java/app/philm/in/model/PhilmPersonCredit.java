@@ -2,7 +2,22 @@ package app.philm.in.model;
 
 import com.uwetrottmann.tmdb.entities.PersonCredits;
 
+import java.util.Comparator;
+
 public class PhilmPersonCredit {
+
+    public static final Comparator<PhilmPersonCredit> COMPARATOR_SORT_DATE
+            = new Comparator<PhilmPersonCredit>() {
+        @Override
+        public int compare(PhilmPersonCredit movie, PhilmPersonCredit movie2) {
+            if (movie.releaseDate > movie2.releaseDate) {
+                return -1;
+            } else if (movie.releaseDate < movie2.releaseDate) {
+                return 1;
+            }
+            return 0;
+        }
+    };
 
     final String title;
     final int id;

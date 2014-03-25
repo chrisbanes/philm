@@ -7,8 +7,9 @@ import android.text.TextUtils;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BaseMovieCreditListFragment;
+import app.philm.in.fragments.base.BasePersonCreditListFragment;
 
-public class PersonCrewListFragment extends BaseMovieCreditListFragment {
+public class PersonCrewListFragment extends BasePersonCreditListFragment {
 
     private static final String KEY_QUERY_PERSON_ID = "person_id";
 

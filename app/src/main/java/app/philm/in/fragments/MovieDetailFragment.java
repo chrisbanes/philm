@@ -492,7 +492,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     if (hasCallbacks()) {
                         PhilmMovieCredit cast = (PhilmMovieCredit) view.getTag();
                         if (cast != null && cast.getPerson() != null) {
-                            getCallbacks().showCastDetail(cast.getPerson());
+                            getCallbacks().showPersonDetail(cast.getPerson());
                         }
                     }
                 }
@@ -512,7 +512,17 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private class MovieCrewAdapter extends BaseMovieCastAdapter {
         MovieCrewAdapter(LayoutInflater inflater) {
-            super(inflater, null /* TODO */);
+            super(inflater, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (hasCallbacks()) {
+                        PhilmMovieCredit cast = (PhilmMovieCredit) view.getTag();
+                        if (cast != null && cast.getPerson() != null) {
+                            getCallbacks().showPersonDetail(cast.getPerson());
+                        }
+                    }
+                }
+            });
         }
 
         @Override

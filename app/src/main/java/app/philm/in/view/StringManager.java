@@ -75,6 +75,16 @@ public class StringManager {
         return 0;
     }
 
+    public static int getStringResId(MovieController.PersonTab tab) {
+        switch (tab) {
+            case CREDIT_CREW:
+                return R.string.crew_movies;
+            case CREDITS_CAST:
+                return R.string.cast_movies;
+        }
+        return 0;
+    }
+
     public static int getStringResId(MainController.SideMenuItem item) {
         switch (item) {
             case DISCOVER:

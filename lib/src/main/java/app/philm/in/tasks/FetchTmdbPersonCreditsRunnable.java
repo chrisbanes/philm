@@ -1,8 +1,11 @@
 package app.philm.in.tasks;
 
+import com.google.common.base.Preconditions;
+
 import com.uwetrottmann.tmdb.entities.PersonCredits;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import app.philm.in.model.Person;
@@ -36,6 +39,7 @@ public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCred
                 for (PersonCredits.CastCredit credit : result.cast) {
                     credits.add(new PhilmPersonCredit(credit));
                 }
+                Collections.sort(credits, PhilmPersonCredit.COMPARATOR_SORT_DATE);
                 person.setCastCredits(credits);
             }
 
@@ -44,6 +48,7 @@ public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCred
                 for (PersonCredits.CrewCredit credit : result.crew) {
                     credits.add(new PhilmPersonCredit(credit));
                 }
+                Collections.sort(credits, PhilmPersonCredit.COMPARATOR_SORT_DATE);
                 person.setCrewCredits(credits);
             }
 

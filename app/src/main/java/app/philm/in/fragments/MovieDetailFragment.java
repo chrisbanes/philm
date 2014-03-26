@@ -267,16 +267,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                     getCallbacks().requestCancelCurrentCheckin();
                 }
                 break;
-            case R.id.textview_summary:
-                final TextView summaryView = (TextView) view;
-                final int defaultMaxLines = getResources()
-                        .getInteger(R.integer.default_summary_maxlines);
-                if (summaryView.getLineCount() == defaultMaxLines) {
-                    summaryView.setMaxLines(Integer.MAX_VALUE);
-                } else if (summaryView.getLineCount() > defaultMaxLines) {
-                    summaryView.setMaxLines(defaultMaxLines);
-                }
-                break;
             case R.id.rcv_rating:
                 if (hasCallbacks()) {
                     getCallbacks().showRateMovie(mMovie);
@@ -905,8 +895,8 @@ public class MovieDetailFragment extends BaseDetailFragment
             RatingBarLayout ratingBarLayout = (RatingBarLayout) view;
             ratingBarLayout.setRatingCircleEnabled(mRatingCircleEnabled);
 
-            if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {                ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
-
+            if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
+                ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
             } else {
                 ratingBarLayout.showRatePrompt();
             }
@@ -949,7 +939,6 @@ public class MovieDetailFragment extends BaseDetailFragment
         private void bindSummary(final View view) {
             TextView summary = (TextView) view.findViewById(R.id.textview_summary);
             summary.setText(mMovie.getOverview());
-            summary.setOnClickListener(MovieDetailFragment.this);
         }
 
         private void bindTitle(View view) {

@@ -201,14 +201,33 @@ public class PersonFragment extends BaseDetailFragment
             TextView title = (TextView) view.findViewById(R.id.textview_title);
             title.setText(mPerson.getName());
 
+            TextView bornDate = (TextView) view.findViewById(R.id.textview_born_date);
             if (mPerson.getDateOfBirth() != 0) {
-                TextView bornDate = (TextView) view.findViewById(R.id.textview_born_date);
                 mDate.setTime(mPerson.getDateOfBirth());
-                bornDate.setText(mMediumDateFormatter.format(mDate));
-            }
 
-            TextView bornPlace = (TextView) view.findViewById(R.id.textview_born_place);
-            bornPlace.setText(mPerson.getPlaceOfBirth());
+                if (!TextUtils.isEmpty(mPerson.getPlaceOfBirth())) {
+                    bornDate.setText(
+                            getString(
+                                    R.string.person_born_date_with_loc,
+                                    mMediumDateFormatter.format(mDate),
+                                    mPerson.getPlaceOfBirth(),
+                                    mPerson.getAge()
+                            )
+                    );
+                } else {
+                    bornDate.setText(
+                            getString(
+                                    R.string.person_born_date,
+                                    mMediumDateFormatter.format(mDate),
+                                    mPerson.getAge()
+                            )
+                    );
+                }
+
+                bornDate.setVisibility(View.VISIBLE);
+            } else {
+                bornDate.setVisibility(View.GONE);
+            }
         }
 
         private void bindBiography(final View view) {

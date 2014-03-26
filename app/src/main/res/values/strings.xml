@@ -93,6 +93,9 @@
     <string name="movie_detail_global">Global</string>
     <string name="movie_detail_rate">Rate</string>
 
+    <string name="person_born_date">Born: %1$s (Age: %2$d)</string>
+    <string name="person_born_date_with_loc">Born: %1$s at %2$s (Age: %3$d)</string>
+
     <string-array name="movie_rating_descriptions">
         <item>Unrated</item>
         <item>Weak sauce</item>

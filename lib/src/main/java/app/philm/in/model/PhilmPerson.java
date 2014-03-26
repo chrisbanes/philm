@@ -3,6 +3,7 @@ package app.philm.in.model;
 import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.Person;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class PhilmPerson implements PhilmModel {
@@ -13,6 +14,7 @@ public class PhilmPerson implements PhilmModel {
 
     String placeOfBirth;
     long dateOfBirth;
+    int age;
     String biography;
 
     int pictureType;
@@ -43,6 +45,8 @@ public class PhilmPerson implements PhilmModel {
         dateOfBirth = person.birthday != null ? person.birthday.getTime() : 0;
         placeOfBirth = person.place_of_birth;
         pictureType = TYPE_TMDB;
+
+        calculateAge();
     }
 
     public Integer getTmdbId() {
@@ -95,5 +99,17 @@ public class PhilmPerson implements PhilmModel {
 
     public String getPlaceOfBirth() {
         return placeOfBirth;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    private void calculateAge() {
+        if (dateOfBirth != 0) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(System.currentTimeMillis() - dateOfBirth);
+            age = cal.get(Calendar.YEAR) - 1970;
+        }
     }
 }

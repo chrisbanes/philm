@@ -97,6 +97,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     private PhilmMovie mMovie;
     private PhilmImageView mBackdropImageView;
+    private int mBackdropOriginalHeight;
     private ListView mListView;
     private DetailAdapter mDetailAdapter;
 
@@ -129,6 +130,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mBackdropImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
+        mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
 
         mListView = (ListView) view.findViewById(android.R.id.list);
         mDetailAdapter = new DetailAdapter();
@@ -245,8 +247,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     public void onInsetsChanged(Rect insets) {
         mListView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
 
-        mBackdropImageView.getLayoutParams().height += insets.top;
-        mBackdropImageView.requestLayout();
+        final int targetBackdropHeight = mBackdropOriginalHeight + insets.top;
+        if (mBackdropImageView.getLayoutParams().height != targetBackdropHeight) {
+            mBackdropImageView.getLayoutParams().height = targetBackdropHeight;
+            mBackdropImageView.requestLayout();
+        }
     }
 
     @Override

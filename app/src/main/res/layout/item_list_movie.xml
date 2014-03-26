@@ -27,18 +27,17 @@
                 style="@style/Widget.Philm.Movie.List.Title"/>
 
         <app.philm.in.view.FontTextView
-                android:id="@+id/textview_rating"
+                android:id="@+id/textview_subtitle_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.Philm.Movie.List.Subtitle"/>
 
         <app.philm.in.view.FontTextView
-                android:id="@+id/textview_release"
+                android:id="@+id/textview_subtitle_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Widget.Philm.Movie.List.Subtitle"/>
 
     </LinearLayout>
-
 
 </LinearLayout>

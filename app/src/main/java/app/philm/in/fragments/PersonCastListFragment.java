@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.BaseMovieCreditListFragment;
 import app.philm.in.fragments.base.BasePersonCreditListFragment;
 
 public class PersonCastListFragment extends BasePersonCreditListFragment {
@@ -23,6 +22,12 @@ public class PersonCastListFragment extends BasePersonCreditListFragment {
         fragment.setArguments(bundle);
 
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setUseTopInset(false);
     }
 
     @Override

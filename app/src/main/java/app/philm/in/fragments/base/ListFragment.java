@@ -52,6 +52,9 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
     CharSequence mEmptyText;
     boolean mListShown;
 
+    Rect mInsets;
+    boolean mUseTopInset = true;
+
     public ListFragment() {
     }
 
@@ -330,11 +333,27 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
 
     @Override
     public void onInsetsChanged(Rect insets) {
+        mInsets = insets;
+        updateInsets(insets);
+    }
+
+    public void setUseTopInset(final boolean use) {
+        mUseTopInset = use;
+        if (mInsets != null) {
+            updateInsets(mInsets);
+        }
+    }
+
+    private void updateInsets(Rect insets) {
         mSecondaryProgressView.setPadding(0, 0, 0, insets.bottom);
 
-        E view = getListView();
+        final E view = getListView();
         view.setClipToPadding(false);
-        view.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        view.setPadding(
+                insets.left,
+                mUseTopInset ? insets.top : 0,
+                insets.right,
+                insets.bottom);
     }
 
     protected abstract E createListView(Context context);

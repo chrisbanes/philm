@@ -8,12 +8,11 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 
-import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.BasePhilmMovieTabFragment;
+import app.philm.in.fragments.base.BasePhilmTabFragment;
 import app.philm.in.view.StringManager;
 
-public class PersonFragment extends BasePhilmMovieTabFragment
+public class PersonFragment extends BasePhilmTabFragment
         implements MovieController.PersonUi {
 
     private static final String KEY_QUERY_PERSON_ID = "person_id";
@@ -31,6 +30,10 @@ public class PersonFragment extends BasePhilmMovieTabFragment
     }
 
     private MovieController.PersonTab[] mTabs;
+
+    public PersonFragment() {
+        super(true);
+    }
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {

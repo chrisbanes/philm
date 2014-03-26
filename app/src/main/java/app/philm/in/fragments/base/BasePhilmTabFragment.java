@@ -19,7 +19,7 @@ import java.util.List;
 import app.philm.in.R;
 import app.philm.in.view.SlidingTabLayout;
 
-public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
+public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
 
     private static final int HIDE_DELAY = 2500;
 
@@ -31,10 +31,24 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
 
     private int mCurrentItem;
 
+    private boolean mInline;
+
+    public BasePhilmTabFragment(boolean inline) {
+        super();
+        mInline = inline;
+    }
+
+    public BasePhilmTabFragment() {
+        this(false);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_viewpager, container, false);
+        return inflater.inflate(mInline
+                ? R.layout.fragment_viewpager_inline
+                : R.layout.fragment_viewpager,
+                container, false);
     }
 
     @Override
@@ -53,40 +67,42 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
         mSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.primary_accent_color));
         mSlidingTabStrip.setDividerColors(getResources().getColor(R.color.primary_accent_color_dark_10));
 
-        mSlidingTabStrip.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        if (!mInline) {
+            mSlidingTabStrip.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 
-            private int mState = ViewPager.SCROLL_STATE_IDLE;
+                private int mState = ViewPager.SCROLL_STATE_IDLE;
 
-            @Override
-            public void onPageScrollStateChanged(final int state) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    scheduleHideTabs();
-                } else if (mState == ViewPager.SCROLL_STATE_IDLE
-                        && state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    showTabs();
-                }
-                mState = state;
-            }
-        });
-
-        mSlidingTabStrip.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent ev) {
-                switch (ev.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        removeScheduledHideTabs();
-                        break;
-                    case MotionEvent.ACTION_UP:
+                @Override
+                public void onPageScrollStateChanged(final int state) {
+                    if (state == ViewPager.SCROLL_STATE_IDLE) {
                         scheduleHideTabs();
-                        break;
+                    } else if (mState == ViewPager.SCROLL_STATE_IDLE
+                            && state == ViewPager.SCROLL_STATE_DRAGGING) {
+                        showTabs();
+                    }
+                    mState = state;
                 }
-                return false;
-            }
-        });
+            });
+
+            mSlidingTabStrip.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent ev) {
+                    switch (ev.getAction()) {
+                        case MotionEvent.ACTION_MOVE:
+                            removeScheduledHideTabs();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            scheduleHideTabs();
+                            break;
+                    }
+                    return false;
+                }
+            });
+
+            scheduleHideTabs();
+        }
 
         mSlidingTabStrip.getBackground().setAlpha(255);
-
-        scheduleHideTabs();
 
         if (savedInstanceState != null) {
             mCurrentItem = savedInstanceState.getInt(SAVE_SELECTED_TAB);
@@ -114,7 +130,6 @@ public abstract class BasePhilmMovieTabFragment extends BasePhilmMovieFragment {
     public void onInsetsChanged(Rect insets) {
         ((ViewGroup.MarginLayoutParams) mSlidingTabStrip.getLayoutParams()).topMargin = insets.top;
         mSlidingTabStrip.setPadding(insets.left, 0, insets.right, 0);
-        mSlidingTabStrip.requestLayout();
     }
 
     protected ViewPager getViewPager() {

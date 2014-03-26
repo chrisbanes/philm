@@ -30,7 +30,7 @@ import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
 
 public class PersonFragment extends BaseDetailFragment
-        implements MovieController.PersonUi {
+        implements MovieController.PersonUi, View.OnClickListener {
 
     private static final String LOG_TAG = PersonFragment.class.getSimpleName();
 
@@ -48,8 +48,25 @@ public class PersonFragment extends BaseDetailFragment
         return fragment;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.textview_summary:
+                final TextView summaryView = (TextView) view;
+                final int defaultMaxLines = getResources()
+                        .getInteger(R.integer.default_summary_maxlines);
+                if (summaryView.getLineCount() == defaultMaxLines) {
+                    summaryView.setMaxLines(Integer.MAX_VALUE);
+                } else if (summaryView.getLineCount() > defaultMaxLines) {
+                    summaryView.setMaxLines(defaultMaxLines);
+                }
+                break;
+        }
+    }
+
     private enum PersonItems implements DetailType {
         TITLE(R.layout.item_person_detail_title),
+        BIOGRAPHY(R.layout.item_movie_detail_summary),
         CREDITS_CAST(R.layout.item_movie_detail_generic_card),
         CREDITS_CREW(R.layout.item_movie_detail_generic_card);
 
@@ -118,6 +135,10 @@ public class PersonFragment extends BaseDetailFragment
 
         items.add(PersonItems.TITLE);
 
+        if (!TextUtils.isEmpty(mPerson.getBiography())) {
+            items.add(PersonItems.BIOGRAPHY);
+        }
+
         if (!PhilmCollections.isEmpty(mPerson.getCastCredits())) {
             items.add(PersonItems.CREDITS_CAST);
         }
@@ -155,6 +176,9 @@ public class PersonFragment extends BaseDetailFragment
                 case TITLE:
                     bindTitle(view);
                     break;
+                case BIOGRAPHY:
+                    bindBiography(view);
+                    break;
                 case CREDITS_CAST:
                     bindCast(view);
                     break;
@@ -185,6 +209,12 @@ public class PersonFragment extends BaseDetailFragment
 
             TextView bornPlace = (TextView) view.findViewById(R.id.textview_born_place);
             bornPlace.setText(mPerson.getPlaceOfBirth());
+        }
+
+        private void bindBiography(final View view) {
+            TextView summary = (TextView) view.findViewById(R.id.textview_summary);
+            summary.setText(mPerson.getBiography());
+            summary.setOnClickListener(PersonFragment.this);
         }
 
         private void bindCast(View view) {

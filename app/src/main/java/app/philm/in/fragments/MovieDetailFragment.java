@@ -27,14 +27,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,7 +40,7 @@ import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.fragments.base.BasePhilmMovieFragment;
+import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
@@ -58,9 +55,8 @@ import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
-import app.philm.in.view.ViewRecycler;
 
-public class MovieDetailFragment extends BasePhilmMovieFragment
+public class MovieDetailFragment extends BaseDetailFragment
         implements MovieController.MovieDetailUi, View.OnClickListener,
         AbsListView.OnScrollListener {
 
@@ -96,10 +92,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Inject DateFormat mMediumDateFormatter;
 
     private PhilmMovie mMovie;
+
     private PhilmImageView mBackdropImageView;
     private int mBackdropOriginalHeight;
-    private ListView mListView;
-    private DetailAdapter mDetailAdapter;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -122,23 +117,13 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_movie_detail_list, container, false);
-    }
-
-    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         mBackdropImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
         mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
 
-        mListView = (ListView) view.findViewById(android.R.id.list);
-        mDetailAdapter = new DetailAdapter();
-
-        mListView.setOnScrollListener(this);
-        mListView.setAdapter(mDetailAdapter);
-
-        super.onViewCreated(view, savedInstanceState);
+        getListView().setOnScrollListener(this);
     }
 
     @Override
@@ -187,37 +172,32 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void setCheckinVisible(boolean visible) {
-        mDetailAdapter.setCheckinButtonVisible(visible);
+        getListAdapter().setCheckinButtonVisible(visible);
     }
 
     @Override
     public void setCancelCheckinVisible(boolean visible) {
-        mDetailAdapter.setCancelCheckinButtonVisible(visible);
+        getListAdapter().setCancelCheckinButtonVisible(visible);
     }
 
     @Override
     public void setRateCircleEnabled(final boolean enabled) {
-        mDetailAdapter.setRateCircleEnabled(enabled);
+        getListAdapter().setRateCircleEnabled(enabled);
     }
 
     @Override
     public void setCollectionButtonEnabled(final boolean enabled) {
-        mDetailAdapter.setCollectionButtonEnabled(enabled);
+        getListAdapter().setCollectionButtonEnabled(enabled);
     }
 
     @Override
     public void setWatchlistButtonEnabled(final boolean enabled) {
-        mDetailAdapter.setWatchlistButtonEnabled(enabled);
+        getListAdapter().setWatchlistButtonEnabled(enabled);
     }
 
     @Override
     public void setToggleWatchedButtonEnabled(final boolean enabled) {
-        mDetailAdapter.setToggleWatchedButtonEnabled(enabled);
-    }
-
-    @Override
-    public void showLoadingProgress(boolean visible) {
-        getActivity().setProgressBarIndeterminateVisibility(visible);
+        getListAdapter().setToggleWatchedButtonEnabled(enabled);
     }
 
     @Override
@@ -228,6 +208,11 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
     @Override
     public String getRequestParameter() {
         return getArguments().getString(KEY_QUERY_MOVIE_ID);
+    }
+
+    @Override
+    protected DetailAdapter getListAdapter() {
+        return (DetailAdapter) super.getListAdapter();
     }
 
     @Override
@@ -245,7 +230,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
     @Override
     public void onInsetsChanged(Rect insets) {
-        mListView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        getListView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
 
         final int targetBackdropHeight = mBackdropOriginalHeight + insets.top;
         if (mBackdropImageView.getLayoutParams().height != targetBackdropHeight) {
@@ -316,7 +301,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                          int totalItemCount) {
         if (visibleItemCount > 0 && firstVisibleItem == 0) {
             final View firstView = absListView.getChildAt(0);
-            final int y = mListView.getPaddingTop() - firstView.getTop();
+            final int y = absListView.getPaddingTop() - firstView.getTop();
             final float percent = y / (float) firstView.getHeight();
 
             setTopInsetAlpha(percent);
@@ -332,8 +317,13 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
     }
 
+    @Override
+    protected DetailAdapter createListAdapter() {
+        return new DetailAdapter();
+    }
+
     void onColorSchemeChanged() {
-        mDetailAdapter.onColorSchemeChanged();
+        getListAdapter().onColorSchemeChanged();
         setInsetColor(mMovie.getColorScheme().primaryAccent);
 
         if (hasCallbacks()) {
@@ -391,7 +381,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
 
         mBackdropImageView.loadBackdropUrl(mMovie);
 
-        mDetailAdapter.setItems(items);
+        getListAdapter().setItems(items);
     }
 
     private void setActionBarTitleEnabled(boolean enabled) {
@@ -404,7 +394,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
     }
 
-    private enum DetailItemType {
+    private enum DetailItemType implements DetailType {
         TITLE(R.layout.item_movie_detail_title),
         BUTTONS(R.layout.item_movie_detail_buttons),
         DETAILS(R.layout.item_movie_detail_details),
@@ -421,7 +411,7 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             mLayoutId = layoutId;
         }
 
-        int getLayoutId() {
+        public int getLayoutId() {
             return mLayoutId;
         }
     }
@@ -728,9 +718,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         }
     }
 
-    private class DetailAdapter extends BaseAdapter {
+    private class DetailAdapter extends BaseDetailAdapter<DetailItemType> {
 
-        private List<DetailItemType> mItems;
         private boolean mRatingCircleEnabled;
         private boolean mCollectionButtonEnabled;
         private boolean mWatchlistButtonEnabled;
@@ -738,64 +727,9 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
         private boolean mCheckinButtonVisible;
         private boolean mCancelCheckinButtonVisible;
 
-        public void setItems(List<DetailItemType> items) {
-            mItems = items;
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getCount() {
-            return mItems != null ? mItems.size() : 0;
-        }
-
-        @Override
-        public DetailItemType getItem(int position) {
-            return mItems.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return getItem(position).ordinal();
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
         @Override
         public int getViewTypeCount() {
             return DetailItemType.values().length;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return getItem(position).ordinal();
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            return false;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled() {
-            return false;
-        }
-
-        @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
-            final DetailItemType item = getItem(position);
-
-            if (view == null) {
-                final LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                view = inflater.inflate(item.getLayoutId(), viewGroup, false);
-            }
-
-            // Now bind to the view
-            bindView(item, view);
-
-            return view;
         }
 
         public void setCheckinButtonVisible(boolean visible) {
@@ -983,8 +917,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             RatingBarLayout ratingBarLayout = (RatingBarLayout) view;
             ratingBarLayout.setRatingCircleEnabled(mRatingCircleEnabled);
 
-            if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
-                ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
+            if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {                ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
+
             } else {
                 ratingBarLayout.showRatePrompt();
             }
@@ -1068,7 +1002,8 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
                     adapter);
         }
 
-        private void bindView(final DetailItemType item, final View view) {
+        @Override
+        protected void bindView(final DetailItemType item, final View view) {
             if (Constants.DEBUG) {
                 Log.d(LOG_TAG, "bindView. Item: " + item.name());
             }
@@ -1118,71 +1053,6 @@ public class MovieDetailFragment extends BasePhilmMovieFragment
             Picasso.with(getActivity())
                     .load(url)
                     .into(layout);
-        }
-
-        private void populateDetailGrid(
-                final ViewGroup layout,
-                final MovieDetailCardLayout cardLayout,
-                final View.OnClickListener seeMoreClickListener,
-                final BaseAdapter adapter) {
-
-            if (layout.getWidth() == 0) {
-                layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                    @Override
-                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                            int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                        layout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateDetailGrid(layout, cardLayout, seeMoreClickListener, adapter);
-                            }
-                        });
-                        layout.removeOnLayoutChangeListener(this);
-                    }
-                });
-                return;
-            }
-
-            final ViewRecycler viewRecycler = new ViewRecycler(layout);
-            viewRecycler.recycleViews();
-
-            if (!adapter.isEmpty()) {
-                final int numItems = layout.getWidth() / getResources()
-                        .getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
-                final int adapterCount = adapter.getCount();
-
-                for (int i = 0; i < Math.min(numItems, adapterCount); i++) {
-                    View view = adapter.getView(i, viewRecycler.getRecycledView(), layout);
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
-
-                    if (lp.weight > .1f && adapterCount < numItems) {
-                        lp.weight = 0f;
-                        lp.width = layout.getWidth() / numItems;
-                    }
-
-                    layout.addView(view);
-                }
-
-                final boolean showSeeMore = numItems < adapter.getCount();
-                cardLayout.setSeeMoreVisibility(showSeeMore);
-                cardLayout.setSeeMoreOnClickListener(showSeeMore ? seeMoreClickListener : null);
-            }
-
-            viewRecycler.clearRecycledViews();
-        }
-
-        private void rebindView(final DetailItemType item) {
-            if (Constants.DEBUG) {
-                Log.d(LOG_TAG, "rebindView. Item: " + item.name());
-            }
-
-            for (int i = 0, z = mListView.getChildCount(); i < z; i++) {
-                View child = mListView.getChildAt(i);
-                if (child != null && child.getTag() == item) {
-                    bindView(item, child);
-                    return;
-                }
-            }
         }
 
         private void updateButtonState(CheckableImageButton button, final boolean checked,

@@ -1,0 +1,199 @@
+package app.philm.in.fragments.base;
+
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import java.util.List;
+
+import app.philm.in.Constants;
+import app.philm.in.R;
+import app.philm.in.view.MovieDetailCardLayout;
+import app.philm.in.view.ViewRecycler;
+
+public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
+
+    private ListView mListView;
+    private ListAdapter mAdapter;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_movie_detail_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        mListView = (ListView) view.findViewById(android.R.id.list);
+        mAdapter = createListAdapter();
+
+        mListView.setAdapter(mAdapter);
+
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void showLoadingProgress(boolean visible) {
+        getActivity().setProgressBarIndeterminateVisibility(visible);
+    }
+
+    protected abstract ListAdapter createListAdapter();
+
+    protected ListView getListView() {
+        return mListView;
+    }
+
+    protected ListAdapter getListAdapter() {
+        return mAdapter;
+    }
+
+    protected interface DetailType<E> {
+
+        public String name();
+
+        public int ordinal();
+
+        public int getLayoutId();
+
+    }
+
+    protected abstract class BaseDetailAdapter<E extends DetailType> extends BaseAdapter {
+
+        private List<E> mListItems;
+
+        public void setItems(List<E> listItems) {
+            mListItems = listItems;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mListItems != null ? mListItems.size() : 0;
+        }
+
+        @Override
+        public E getItem(int position) {
+            return mListItems.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem(position).ordinal();
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override
+        public abstract int getViewTypeCount();
+
+        @Override
+        public int getItemViewType(int position) {
+            return getItem(position).ordinal();
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return false;
+        }
+
+        @Override
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup viewGroup) {
+            final E item = getItem(position);
+
+            if (view == null) {
+                final LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                view = inflater.inflate(item.getLayoutId(), viewGroup, false);
+            }
+
+            // Now bind to the view
+            bindView(item, view);
+
+            return view;
+        }
+
+        protected abstract void bindView(final E item, final View view);
+
+        protected void populateDetailGrid(
+                final ViewGroup layout,
+                final MovieDetailCardLayout cardLayout,
+                final View.OnClickListener seeMoreClickListener,
+                final BaseAdapter adapter) {
+
+            if (layout.getWidth() == 0) {
+                layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                            int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        layout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                populateDetailGrid(layout, cardLayout, seeMoreClickListener, adapter);
+                            }
+                        });
+                        layout.removeOnLayoutChangeListener(this);
+                    }
+                });
+                return;
+            }
+
+            final ViewRecycler viewRecycler = new ViewRecycler(layout);
+            viewRecycler.recycleViews();
+
+            if (!adapter.isEmpty()) {
+                final int numItems = layout.getWidth() / mListView.getResources()
+                        .getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
+                final int adapterCount = adapter.getCount();
+
+                for (int i = 0; i < Math.min(numItems, adapterCount); i++) {
+                    View view = adapter.getView(i, viewRecycler.getRecycledView(), layout);
+                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+
+                    if (lp.weight > .1f && adapterCount < numItems) {
+                        lp.weight = 0f;
+                        lp.width = layout.getWidth() / numItems;
+                    }
+
+                    layout.addView(view);
+                }
+
+                final boolean showSeeMore = numItems < adapter.getCount();
+                cardLayout.setSeeMoreVisibility(showSeeMore);
+                cardLayout.setSeeMoreOnClickListener(showSeeMore ? seeMoreClickListener : null);
+            }
+
+            viewRecycler.clearRecycledViews();
+        }
+
+        protected void rebindView(final E item) {
+            if (Constants.DEBUG) {
+                Log.d(getClass().getSimpleName(), "rebindView. Item: " + item.name());
+            }
+
+            ListView listView = getListView();
+
+            for (int i = 0, z = listView.getChildCount(); i < z; i++) {
+                View child = listView.getChildAt(i);
+                if (child != null && child.getTag() == item) {
+                    bindView(item, child);
+                    return;
+                }
+            }
+        }
+    }
+
+}

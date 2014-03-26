@@ -643,6 +643,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case MOVIE_CREW:
                 fetchMovieCrewIfNeeded(callingId, ui.getRequestParameter());
                 break;
+            case PERSON_DETAIL:
             case PERSON_CREDITS_CREW:
             case PERSON_CREDITS_CAST:
                 fetchPersonCreditsIfNeeded(callingId, ui.getRequestParameter());
@@ -1296,7 +1297,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void populatePersonUi(PersonUi ui) {
-        ui.setTabs(PersonTab.values());
+        final Person person = mMoviesState.getPerson(ui.getRequestParameter());
+        if (person != null) {
+            ui.setPerson(person);
+        }
     }
 
     private void populateRateUi(MovieRateUi ui) {
@@ -1464,7 +1468,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, RECOMMENDED,
-        RELATED, MOVIE_CAST, MOVIE_CREW, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW, NONE;
+        RELATED, MOVIE_CAST, MOVIE_CREW,
+        PERSON_DETAIL, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW,
+        NONE;
 
         public boolean requireLogin() {
             switch (this) {
@@ -1582,7 +1588,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface PersonUi extends MovieUi {
-        void setTabs(PersonTab... tabs);
+        void setPerson(Person person);
     }
 
     public interface MovieCheckinUi extends MovieUi {

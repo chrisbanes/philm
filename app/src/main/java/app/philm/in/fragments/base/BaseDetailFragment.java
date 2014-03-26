@@ -1,6 +1,7 @@
 package app.philm.in.fragments.base;
 
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +43,11 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
     @Override
     public void showLoadingProgress(boolean visible) {
         getActivity().setProgressBarIndeterminateVisibility(visible);
+    }
+
+    @Override
+    public void onInsetsChanged(Rect insets) {
+        getListView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 
     protected abstract ListAdapter createListAdapter();

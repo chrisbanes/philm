@@ -230,7 +230,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     @Override
     public void onInsetsChanged(Rect insets) {
-        getListView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        super.onInsetsChanged(insets);
 
         final int targetBackdropHeight = mBackdropOriginalHeight + insets.top;
         if (mBackdropImageView.getLayoutParams().height != targetBackdropHeight) {

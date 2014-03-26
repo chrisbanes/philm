@@ -18,6 +18,7 @@ import app.philm.in.state.MoviesState;
 import app.philm.in.state.mappers.TmdbCastEntityMapper;
 import app.philm.in.state.mappers.TmdbCrewEntityMapper;
 import app.philm.in.state.mappers.TmdbMovieEntityMapper;
+import app.philm.in.state.mappers.TmdbPersonEntityMapper;
 import app.philm.in.state.mappers.TraktMovieEntityMapper;
 import app.philm.in.util.PhilmCollections;
 import dagger.Lazy;
@@ -37,6 +38,7 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
     @Inject Lazy<TmdbMovieEntityMapper> mLazyTmdbMovieEntityMapper;
     @Inject Lazy<TmdbCastEntityMapper> mLazyTmdbCastEntityMapper;
     @Inject Lazy<TmdbCrewEntityMapper> mLazyTmdbCrewEntityMapper;
+    @Inject Lazy<TmdbPersonEntityMapper> mLazyTmdbPersonEntityMapper;
     @Inject Lazy<Bus> mEventBus;
 
     private final int mCallingId;
@@ -119,6 +121,10 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
     protected TmdbCrewEntityMapper getTmdbCrewEntityMapper() {
         return mLazyTmdbCrewEntityMapper.get();
+    }
+
+    protected TmdbPersonEntityMapper getTmdbPersonEntityMapper() {
+        return mLazyTmdbPersonEntityMapper.get();
     }
 
     protected Bus getEventBus() {

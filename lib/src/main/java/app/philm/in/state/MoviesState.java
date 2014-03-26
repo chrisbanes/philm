@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import app.philm.in.controllers.MovieController;
-import app.philm.in.model.Person;
+import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.TmdbConfiguration;
 import app.philm.in.model.WatchingMovie;
@@ -64,11 +64,11 @@ public interface MoviesState extends BaseState {
 
     public WatchingMovie getWatchingMovie();
 
-    public Map<String, Person> getPeople();
+    public Map<String, PhilmPerson> getPeople();
 
-    public Person getPerson(int id);
+    public PhilmPerson getPerson(int id);
 
-    public Person getPerson(String id);
+    public PhilmPerson getPerson(String id);
 
     public static class LibraryChangedEvent {}
 
@@ -135,8 +135,8 @@ public interface MoviesState extends BaseState {
         }
     }
 
-    public static class PersonCreditsChangedEvent extends UiCausedEvent<Person> {
-        public PersonCreditsChangedEvent(int callingId, Person item) {
+    public static class PersonChangedEvent extends UiCausedEvent<PhilmPerson> {
+        public PersonChangedEvent(int callingId, PhilmPerson item) {
             super(callingId, item);
         }
     }

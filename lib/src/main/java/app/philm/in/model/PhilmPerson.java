@@ -1,10 +1,11 @@
 package app.philm.in.model;
 
 import com.uwetrottmann.tmdb.entities.Credits;
+import com.uwetrottmann.tmdb.entities.Person;
 
 import java.util.List;
 
-public class Person implements PhilmModel {
+public class PhilmPerson implements PhilmModel {
 
     Integer tmdbId;
     String name;
@@ -31,6 +32,16 @@ public class Person implements PhilmModel {
         tmdbId = tmdbCastMember.id;
         name = tmdbCastMember.name;
         pictureUrl = tmdbCastMember.profile_path;
+        pictureType = TYPE_TMDB;
+    }
+
+    public void setFromTmdb(Person person) {
+        tmdbId = person.id;
+        name = person.name;
+        pictureUrl = person.profile_path;
+        biography = person.biography;
+        dateOfBirth = person.birthday != null ? person.birthday.getTime() : 0;
+        placeOfBirth = person.place_of_birth;
         pictureType = TYPE_TMDB;
     }
 

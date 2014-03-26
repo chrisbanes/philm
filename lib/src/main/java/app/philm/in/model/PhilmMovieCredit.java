@@ -13,25 +13,25 @@ public class PhilmMovieCredit implements Comparable<PhilmMovieCredit> {
     private static int ORDER_ART = 6;
     private static int ORDER_SOUND = 7;
 
-    Person person;
+    PhilmPerson person;
     String job;
     String department;
     int order;
 
-    public PhilmMovieCredit(Person person, String character, int order) {
+    public PhilmMovieCredit(PhilmPerson person, String character, int order) {
         this.person = Preconditions.checkNotNull(person, "person cannot be null");
         this.job = Preconditions.checkNotNull(character, "character cannot be null");
         this.order = order;
     }
 
-    public PhilmMovieCredit(Person person, String job, String department) {
+    public PhilmMovieCredit(PhilmPerson person, String job, String department) {
         this.person = Preconditions.checkNotNull(person, "person cannot be null");
         this.job = Preconditions.checkNotNull(job, "job cannot be null");
         this.department = Preconditions.checkNotNull(department, "department cannot be null");
         this.order = calculateCrewOrder(this);
     }
 
-    public Person getPerson() {
+    public PhilmPerson getPerson() {
         return person;
     }
 

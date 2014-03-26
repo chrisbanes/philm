@@ -23,7 +23,7 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BaseDetailFragment;
-import app.philm.in.model.Person;
+import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.MovieDetailCardLayout;
@@ -65,7 +65,7 @@ public class PersonFragment extends BaseDetailFragment
         }
     }
 
-    private Person mPerson;
+    private PhilmPerson mPerson;
     @Inject DateFormat mMediumDateFormatter;
     private Date mDate = new Date();
 
@@ -99,7 +99,7 @@ public class PersonFragment extends BaseDetailFragment
     }
 
     @Override
-    public void setPerson(Person person) {
+    public void setPerson(PhilmPerson person) {
         mPerson = person;
 
         populateUi();

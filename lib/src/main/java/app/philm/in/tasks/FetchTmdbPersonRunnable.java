@@ -1,6 +1,9 @@
 package app.philm.in.tasks;
 
+import com.uwetrottmann.tmdb.entities.AppendToResponse;
+import com.uwetrottmann.tmdb.entities.Person;
 import com.uwetrottmann.tmdb.entities.PersonCredits;
+import com.uwetrottmann.tmdb.enumerations.AppendToResponseItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,37 +16,41 @@ import app.philm.in.state.MoviesState;
 import app.philm.in.util.PhilmCollections;
 import retrofit.RetrofitError;
 
-public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCredits> {
+public class FetchTmdbPersonRunnable extends BaseMovieRunnable<Person> {
 
     private final int mId;
 
-    public FetchTmdbPersonCreditsRunnable(int callingId, int id) {
+    public FetchTmdbPersonRunnable(int callingId, int id) {
         super(callingId);
         mId = id;
     }
 
     @Override
-    public PersonCredits doBackgroundCall() throws RetrofitError {
-        return getTmdbClient().personService().movieCredits(mId);
+    public Person doBackgroundCall() throws RetrofitError {
+        return getTmdbClient().personService().summary(
+                mId,
+                new AppendToResponse(AppendToResponseItem.MOVIE_CREDITS)
+        );
     }
 
     @Override
-    public void onSuccess(PersonCredits result) {
-        PhilmPerson person = mMoviesState.getPerson(mId);
+    public void onSuccess(Person result) {
+        PhilmPerson person = getTmdbPersonEntityMapper().map(result);
 
-        if (person != null) {
-            if (!PhilmCollections.isEmpty(result.cast)) {
+        if (person != null && result.movie_credits != null) {
+
+            if (!PhilmCollections.isEmpty(result.movie_credits.cast)) {
                 List<PhilmPersonCredit> credits = new ArrayList<>();
-                for (PersonCredits.CastCredit credit : result.cast) {
+                for (PersonCredits.CastCredit credit : result.movie_credits.cast) {
                     credits.add(new PhilmPersonCredit(credit));
                 }
                 Collections.sort(credits, PhilmPersonCredit.COMPARATOR_SORT_DATE);
                 person.setCastCredits(credits);
             }
 
-            if (!PhilmCollections.isEmpty(result.crew)) {
+            if (!PhilmCollections.isEmpty(result.movie_credits.crew)) {
                 List<PhilmPersonCredit> credits = new ArrayList<>();
-                for (PersonCredits.CrewCredit credit : result.crew) {
+                for (PersonCredits.CrewCredit credit : result.movie_credits.crew) {
                     credits.add(new PhilmPersonCredit(credit));
                 }
                 Collections.sort(credits, PhilmPersonCredit.COMPARATOR_SORT_DATE);

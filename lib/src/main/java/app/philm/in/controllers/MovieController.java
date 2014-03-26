@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.model.ListItem;
-import app.philm.in.model.Person;
+import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
@@ -47,6 +47,7 @@ import app.philm.in.tasks.FetchTmdbMovieTrailersRunnable;
 import app.philm.in.tasks.FetchTmdbMoviesReleasesRunnable;
 import app.philm.in.tasks.FetchTmdbNowPlayingRunnable;
 import app.philm.in.tasks.FetchTmdbPersonCreditsRunnable;
+import app.philm.in.tasks.FetchTmdbPersonRunnable;
 import app.philm.in.tasks.FetchTmdbPopularRunnable;
 import app.philm.in.tasks.FetchTmdbRelatedMoviesRunnable;
 import app.philm.in.tasks.FetchTmdbSearchQueryRunnable;
@@ -200,7 +201,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Subscribe
-    public void onPersonCreditsChanged(MoviesState.PersonCreditsChangedEvent event) {
+    public void onPersonCreditsChanged(MoviesState.PersonChangedEvent event) {
         MovieUi ui = findUi(event.callingId);
         if (ui != null) {
             populateUi(ui);
@@ -578,7 +579,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showPersonDetail(Person person) {
+            public void showPersonDetail(PhilmPerson person) {
                 Preconditions.checkNotNull(person, "person cannot be null");
                 Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
 
@@ -589,7 +590,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showPersonCastCredits(Person person) {
+            public void showPersonCastCredits(PhilmPerson person) {
                 Preconditions.checkNotNull(person, "person cannot be null");
                 Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
 
@@ -600,7 +601,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showPersonCrewCredits(Person person) {
+            public void showPersonCrewCredits(PhilmPerson person) {
                 Preconditions.checkNotNull(person, "person cannot be null");
                 Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
 
@@ -667,6 +668,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 fetchMovieCrewIfNeeded(callingId, ui.getRequestParameter());
                 break;
             case PERSON_DETAIL:
+                fetchPersonIfNeeded(callingId, ui.getRequestParameter());
+                break;
             case PERSON_CREDITS_CREW:
             case PERSON_CREDITS_CAST:
                 fetchPersonCreditsIfNeeded(callingId, ui.getRequestParameter());
@@ -906,10 +909,19 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void fetchPersonIfNeeded(final int callingId, String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmPerson person = mMoviesState.getPerson(id);
+        if (person == null || !person.hasFetchedCredits()) {
+            fetchPerson(callingId, Integer.parseInt(id));
+        }
+    }
+
     private void fetchPersonCreditsIfNeeded(final int callingId, String id) {
         Preconditions.checkNotNull(id, "id cannot be null");
 
-        Person person = mMoviesState.getPerson(id);
+        PhilmPerson person = mMoviesState.getPerson(id);
         if (person != null && !person.hasFetchedCredits()) {
             fetchPersonCredits(callingId, person);
         }
@@ -994,8 +1006,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    private void fetchPersonCredits(final int callingId, Person person) {
+    private void fetchPersonCredits(final int callingId, PhilmPerson person) {
         executeTask(new FetchTmdbPersonCreditsRunnable(callingId, person.getTmdbId()));
+    }
+
+    private void fetchPerson(final int callingId, int id) {
+        executeTask(new FetchTmdbPersonRunnable(callingId, id));
     }
 
     private void fetchSearchResults(final int callingId, String query) {
@@ -1288,7 +1304,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void populatePersonCreditListUi(PersonCreditListUi ui) {
-        final Person person = mMoviesState.getPerson(ui.getRequestParameter());
+        final PhilmPerson person = mMoviesState.getPerson(ui.getRequestParameter());
 
         switch (ui.getMovieQueryType()) {
             case PERSON_CREDITS_CAST:
@@ -1322,7 +1338,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void populatePersonUi(PersonUi ui) {
-        final Person person = mMoviesState.getPerson(ui.getRequestParameter());
+        final PhilmPerson person = mMoviesState.getPerson(ui.getRequestParameter());
         if (person != null) {
             ui.setPerson(person);
         }
@@ -1613,7 +1629,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public interface PersonUi extends MovieUi {
-        void setPerson(Person person);
+        void setPerson(PhilmPerson person);
     }
 
     public interface MovieCheckinUi extends MovieUi {
@@ -1684,11 +1700,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void requestCheckin(PhilmMovie movie);
 
-        void showPersonDetail(Person person);
+        void showPersonDetail(PhilmPerson person);
 
-        void showPersonCastCredits(Person person);
+        void showPersonCastCredits(PhilmPerson person);
 
-        void showPersonCrewCredits(Person person);
+        void showPersonCrewCredits(PhilmPerson person);
     }
 
     private class LibraryDbLoadCallback

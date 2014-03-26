@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.model.Person;
+import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmPersonCredit;
 import app.philm.in.util.ImageHelper;
@@ -91,11 +91,11 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    public void loadProfileUrl(Person person) {
+    public void loadProfileUrl(PhilmPerson person) {
         loadProfileUrl(person, null);
     }
 
-    public void loadProfileUrl(Person cast, Listener listener) {
+    public void loadProfileUrl(PhilmPerson cast, Listener listener) {
         if (!TextUtils.isEmpty(cast.getPictureUrl())) {
             setPicassoHandler(new CastProfileHandler(cast, listener));
         } else {
@@ -258,9 +258,9 @@ public class PhilmImageView extends ImageView {
 
     private class CastProfileHandler extends PicassoHandler {
 
-        private final Person mPerson;
+        private final PhilmPerson mPerson;
 
-        CastProfileHandler(Person cast, Listener callback) {
+        CastProfileHandler(PhilmPerson cast, Listener callback) {
             super(callback);
             mPerson = Preconditions.checkNotNull(cast, "cast cannot be null");
         }

@@ -13,7 +13,7 @@ import java.util.Set;
 
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.model.Person;
+import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -29,7 +29,7 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
 
     private Map<String, PhilmMovie> mTmdbIdMovies;
     private Map<String, PhilmMovie> mImdbIdMovies;
-    private Map<String, Person> mPeople;
+    private Map<String, PhilmPerson> mPeople;
 
     private SearchPaginatedResult mSearchResult;
 
@@ -251,17 +251,17 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     }
 
     @Override
-    public Map<String, Person> getPeople() {
+    public Map<String, PhilmPerson> getPeople() {
         return mPeople;
     }
 
     @Override
-    public Person getPerson(int id) {
+    public PhilmPerson getPerson(int id) {
         return getPerson(String.valueOf(id));
     }
 
     @Override
-    public Person getPerson(String id) {
+    public PhilmPerson getPerson(String id) {
         return mPeople.get(id);
     }
 

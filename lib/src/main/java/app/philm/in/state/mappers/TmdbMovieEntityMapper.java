@@ -3,10 +3,12 @@ package app.philm.in.state.mappers;
 import com.uwetrottmann.tmdb.entities.Movie;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.state.MoviesState;
 
+@Singleton
 public class TmdbMovieEntityMapper extends MovieEntityMapper<Movie> {
 
     @Inject

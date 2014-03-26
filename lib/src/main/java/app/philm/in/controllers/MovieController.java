@@ -1261,9 +1261,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (person != null) {
                     updateDisplayTitle(person.getName());
                     if (!PhilmCollections.isEmpty(person.getCastCredits())) {
-                        ui.setItems(createListItemList(
-                                ListItem.SectionTitle.MOVIE_CAST,
-                                person.getCastCredits()));
+                        ui.setItems(createListItemList(null, person.getCastCredits()));
                     }
                 }
                 break;
@@ -1271,9 +1269,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (person != null) {
                     updateDisplayTitle(person.getName());
                     if (!PhilmCollections.isEmpty(person.getCrewCredits())) {
-                        ui.setItems(createListItemList(
-                                ListItem.SectionTitle.MOVIE_CREW,
-                                person.getCrewCredits()));
+                        ui.setItems(createListItemList(null, person.getCrewCredits()));
                     }
                 }
                 break;
@@ -1487,6 +1483,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 case RELATED:
                 case MOVIE_CAST:
                 case MOVIE_CREW:
+                case PERSON_CREDITS_CAST:
+                case PERSON_CREDITS_CREW:
                     return true;
                 default:
                     return false;

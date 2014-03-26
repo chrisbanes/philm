@@ -25,12 +25,6 @@ public class PersonCastListFragment extends BasePersonCreditListFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setUseTopInset(false);
-    }
-
-    @Override
     public MovieController.MovieQueryType getMovieQueryType() {
         return MovieController.MovieQueryType.PERSON_CREDITS_CAST;
     }

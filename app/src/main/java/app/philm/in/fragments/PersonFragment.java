@@ -156,9 +156,9 @@ public class PersonFragment extends BaseDetailFragment
             final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    if (hasCallbacks()) {
-//                        getCallbacks().showCastList(mMovie);
-//                    }
+                    if (hasCallbacks()) {
+                        getCallbacks().showPersonCastCredits(mPerson);
+                    }
                 }
             };
 
@@ -182,9 +182,9 @@ public class PersonFragment extends BaseDetailFragment
             final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    if (hasCallbacks()) {
-//                        getCallbacks().showCrewList(mMovie);
-//                    }
+                    if (hasCallbacks()) {
+                        getCallbacks().showPersonCrewCredits(mPerson);
+                    }
                 }
             };
 

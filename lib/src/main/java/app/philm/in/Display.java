@@ -62,6 +62,10 @@ public interface Display {
 
     public void showPersonDetail(String id);
 
+    public void showPersonCastCredits(String id);
+
+    public void showPersonCrewCredits(String id);
+
     public void showCredentialsChanged();
 
 }

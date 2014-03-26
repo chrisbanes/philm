@@ -588,6 +588,29 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
 
+            @Override
+            public void showPersonCastCredits(Person person) {
+                Preconditions.checkNotNull(person, "person cannot be null");
+                Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
+
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showPersonCastCredits(String.valueOf(person.getTmdbId()));
+                }
+            }
+
+            @Override
+            public void showPersonCrewCredits(Person person) {
+                Preconditions.checkNotNull(person, "person cannot be null");
+                Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
+
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showPersonCrewCredits(String.valueOf(person.getTmdbId()));
+                }
+
+            }
+
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -1272,7 +1295,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (person != null) {
                     updateDisplayTitle(person.getName());
                     if (!PhilmCollections.isEmpty(person.getCastCredits())) {
-                        ui.setItems(createListItemList(null, person.getCastCredits()));
+                        ui.setItems(createListItemList(ListItem.SectionTitle.MOVIE_CAST,
+                                person.getCastCredits()));
                     }
                 }
                 break;
@@ -1280,7 +1304,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (person != null) {
                     updateDisplayTitle(person.getName());
                     if (!PhilmCollections.isEmpty(person.getCrewCredits())) {
-                        ui.setItems(createListItemList(null, person.getCrewCredits()));
+                        ui.setItems(createListItemList(ListItem.SectionTitle.MOVIE_CREW,
+                                person.getCrewCredits()));
                     }
                 }
                 break;
@@ -1660,6 +1685,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void requestCheckin(PhilmMovie movie);
 
         void showPersonDetail(Person person);
+
+        void showPersonCastCredits(Person person);
+
+        void showPersonCrewCredits(Person person);
     }
 
     private class LibraryDbLoadCallback

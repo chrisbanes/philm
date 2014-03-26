@@ -24,6 +24,8 @@ import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieDetailFragment;
+import app.philm.in.fragments.PersonCastListFragment;
+import app.philm.in.fragments.PersonCrewListFragment;
 import app.philm.in.fragments.PersonFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.RelatedMoviesFragment;
@@ -76,13 +78,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showMovieDetail(String movieId) {
-        MovieDetailFragment fragment = MovieDetailFragment.create(movieId);
-
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+        showFragment(MovieDetailFragment.create(movieId));
     }
 
     @Override
@@ -100,13 +96,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showLicencesFragment() {
-        LicencesFragment fragment = new LicencesFragment();
-
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+        showFragment(new LicencesFragment());
     }
 
     @Override
@@ -194,35 +184,17 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showRelatedMovies(String movieId) {
-        RelatedMoviesFragment fragment = RelatedMoviesFragment.create(movieId);
-
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+        showFragment(RelatedMoviesFragment.create(movieId));
     }
 
     @Override
     public void showCastList(String movieId) {
-        MovieCastListFragment fragment = MovieCastListFragment.create(movieId);
-
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+        showFragment(MovieCastListFragment.create(movieId));
     }
 
     @Override
     public void showCrewList(String movieId) {
-        MovieCrewListFragment fragment = MovieCrewListFragment.create(movieId);
-
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+        showFragment(MovieCrewListFragment.create(movieId));
     }
 
     @Override
@@ -245,13 +217,17 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showPersonDetail(String id) {
-        PersonFragment fragment = PersonFragment.create(id);
+        showFragment(PersonFragment.create(id));
+    }
 
-        mActivity.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_main, fragment)
-                .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+    @Override
+    public void showPersonCastCredits(String id) {
+        showFragment(PersonCastListFragment.create(id));
+    }
+
+    @Override
+    public void showPersonCrewCredits(String id) {
+        showFragment(PersonCrewListFragment.create(id));
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {
@@ -259,6 +235,14 @@ public class AndroidDisplay implements Display {
 
         mActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_main, fragment)
+                .commit();
+    }
+
+    private void showFragment(Fragment fragment) {
+        mActivity.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_main, fragment)
+                .addToBackStack(null)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
     }
 

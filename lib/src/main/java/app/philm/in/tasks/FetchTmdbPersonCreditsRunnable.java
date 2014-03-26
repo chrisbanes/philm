@@ -1,7 +1,5 @@
 package app.philm.in.tasks;
 
-import com.google.common.base.Preconditions;
-
 import com.uwetrottmann.tmdb.entities.PersonCredits;
 
 import java.util.ArrayList;
@@ -51,6 +49,8 @@ public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCred
                 Collections.sort(credits, PhilmPersonCredit.COMPARATOR_SORT_DATE);
                 person.setCrewCredits(credits);
             }
+
+            person.setFetchedCredits(true);
 
             getEventBus().post(new MoviesState.PersonCreditsChangedEvent(getCallingId(), person));
         }

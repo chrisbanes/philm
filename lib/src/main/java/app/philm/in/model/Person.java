@@ -4,8 +4,6 @@ import com.uwetrottmann.tmdb.entities.Credits;
 
 import java.util.List;
 
-import app.philm.in.util.PhilmCollections;
-
 public class Person implements PhilmModel {
 
     Integer tmdbId;
@@ -16,6 +14,7 @@ public class Person implements PhilmModel {
 
     transient List<PhilmPersonCredit> castCredits;
     transient List<PhilmPersonCredit> crewCredits;
+    transient boolean fetchedCredits;
 
     public void setFromTmdb(Credits.CrewMember tmdbCrewMember) {
         tmdbId = tmdbCrewMember.id;
@@ -63,7 +62,11 @@ public class Person implements PhilmModel {
         this.crewCredits = crewCredits;
     }
 
-    public boolean isCreditsPopulated() {
-        return !PhilmCollections.isEmpty(castCredits) && !PhilmCollections.isEmpty(crewCredits);
+    public boolean hasFetchedCredits() {
+        return fetchedCredits;
+    }
+
+    public void setFetchedCredits(boolean fetchedCredits) {
+        this.fetchedCredits = fetchedCredits;
     }
 }

@@ -886,7 +886,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         Preconditions.checkNotNull(id, "id cannot be null");
 
         Person person = mMoviesState.getPerson(id);
-        if (person != null && !person.isCreditsPopulated()) {
+        if (person != null && !person.hasFetchedCredits()) {
             fetchPersonCredits(callingId, person);
         }
     }

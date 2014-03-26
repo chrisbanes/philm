@@ -367,6 +367,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
+            public void showMovieDetail(PhilmPersonCredit credit) {
+                Preconditions.checkNotNull(credit, "credit cannot be null");
+
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showMovieDetail(String.valueOf(credit.getId()));
+                }
+            }
+
+            @Override
             public void toggleMovieSeen(PhilmMovie movie) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
 
@@ -1603,6 +1613,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void refresh();
 
         void showMovieDetail(PhilmMovie movie);
+
+        void showMovieDetail(PhilmPersonCredit credit);
 
         void toggleMovieSeen(PhilmMovie movie);
 

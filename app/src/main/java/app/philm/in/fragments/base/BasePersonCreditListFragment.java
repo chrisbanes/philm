@@ -41,10 +41,10 @@ public abstract class BasePersonCreditListFragment
         if (hasCallbacks()) {
             ListItem<PhilmPersonCredit> item = (ListItem<PhilmPersonCredit>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
-                PhilmPersonCredit cast = item.getItem();
-//                if (cast != null && cast.getPerson() != null) {
-//                    getCallbacks().showCastDetail(cast.getPerson());
-//                }
+                PhilmPersonCredit credit = item.getItem();
+                if (credit != null) {
+                    getCallbacks().showMovieDetail(credit);
+                }
             }
         }
     }

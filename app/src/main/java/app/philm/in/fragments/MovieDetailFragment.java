@@ -971,22 +971,13 @@ public class MovieDetailFragment extends BaseDetailFragment
                 Log.d(LOG_TAG, "bindTrailers");
             }
 
-            final View.OnClickListener seeMoreClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-//                if (hasCallbacks()) {
-//                    getCallbacks().showCastList(mMovie);
-//                }
-                }
-            };
-
             MovieTrailersAdapter adapter = new MovieTrailersAdapter(
                     LayoutInflater.from(getActivity()));
 
             populateDetailGrid(
                     (ViewGroup) view.findViewById(R.id.card_content),
                     (MovieDetailCardLayout) view,
-                    seeMoreClickListener,
+                    null,
                     adapter);
         }
 

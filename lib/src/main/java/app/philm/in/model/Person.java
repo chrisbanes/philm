@@ -10,6 +10,10 @@ public class Person implements PhilmModel {
     String name;
     String pictureUrl;
 
+    String placeOfBirth;
+    long dateOfBirth;
+    String biography;
+
     int pictureType;
 
     transient List<PhilmPersonCredit> castCredits;
@@ -68,5 +72,17 @@ public class Person implements PhilmModel {
 
     public void setFetchedCredits(boolean fetchedCredits) {
         this.fetchedCredits = fetchedCredits;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public long getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
     }
 }

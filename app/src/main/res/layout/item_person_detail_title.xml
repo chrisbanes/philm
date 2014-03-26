@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/primary_accent_color_dark_10"
+    android:baselineAligned="false"
+    android:gravity="bottom"
+    android:padding="@dimen/movie_detail_fanart_padding">
+
+    <app.philm.in.view.PhilmImageView
+        android:id="@+id/imageview_poster"
+        android:layout_width="@dimen/movie_detail_poster_width"
+        android:layout_height="@dimen/movie_detail_poster_height"
+        android:layout_marginRight="@dimen/movie_detail_fanart_padding"
+        android:background="?android:attr/colorForeground"
+        android:cropToPadding="true"
+        android:padding="1dp"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <app.philm.in.view.FontTextView
+            android:id="@+id/textview_title"
+            style="@style/Widget.Philm.Person.Detail.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <app.philm.in.view.FontTextView
+            android:id="@+id/textview_born_date"
+            style="@style/Widget.Philm.Person.Detail.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <app.philm.in.view.FontTextView
+            android:id="@+id/textview_born_place"
+            style="@style/Widget.Philm.Person.Detail.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>

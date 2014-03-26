@@ -12,9 +12,14 @@ import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import javax.inject.Inject;
 
 import app.philm.in.Constants;
+import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BaseDetailFragment;
@@ -44,7 +49,7 @@ public class PersonFragment extends BaseDetailFragment
     }
 
     private enum PersonItems implements DetailType {
-        TITLE(0),
+        TITLE(R.layout.item_person_detail_title),
         CREDITS_CAST(R.layout.item_movie_detail_generic_card),
         CREDITS_CREW(R.layout.item_movie_detail_generic_card);
 
@@ -61,6 +66,14 @@ public class PersonFragment extends BaseDetailFragment
     }
 
     private Person mPerson;
+    @Inject DateFormat mMediumDateFormatter;
+    private Date mDate = new Date();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        PhilmApplication.from(getActivity()).inject(this);
+    }
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
@@ -103,6 +116,8 @@ public class PersonFragment extends BaseDetailFragment
 
         final ArrayList<PersonItems> items = new ArrayList<>();
 
+        items.add(PersonItems.TITLE);
+
         if (!PhilmCollections.isEmpty(mPerson.getCastCredits())) {
             items.add(PersonItems.CREDITS_CAST);
         }
@@ -137,6 +152,9 @@ public class PersonFragment extends BaseDetailFragment
             }
 
             switch (item) {
+                case TITLE:
+                    bindTitle(view);
+                    break;
                 case CREDITS_CAST:
                     bindCast(view);
                     break;
@@ -146,6 +164,27 @@ public class PersonFragment extends BaseDetailFragment
             }
 
             view.setTag(item);
+        }
+
+        private void bindTitle(View view) {
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "bindTitle");
+            }
+
+            PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
+            imageView.loadProfileUrl(mPerson);
+
+            TextView title = (TextView) view.findViewById(R.id.textview_title);
+            title.setText(mPerson.getName());
+
+            if (mPerson.getDateOfBirth() != 0) {
+                TextView bornDate = (TextView) view.findViewById(R.id.textview_born_date);
+                mDate.setTime(mPerson.getDateOfBirth());
+                bornDate.setText(mMediumDateFormatter.format(mDate));
+            }
+
+            TextView bornPlace = (TextView) view.findViewById(R.id.textview_born_place);
+            bornPlace.setText(mPerson.getPlaceOfBirth());
         }
 
         private void bindCast(View view) {

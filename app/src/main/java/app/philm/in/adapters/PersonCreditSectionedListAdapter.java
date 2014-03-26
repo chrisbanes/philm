@@ -29,6 +29,6 @@ public class PersonCreditSectionedListAdapter
         characterTextView.setText(credit.getJob());
 
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_profile);
-        //imageView.loadProfileUrl(credit.getPosterPath());
+        imageView.loadPosterUrl(credit);
     }
 }

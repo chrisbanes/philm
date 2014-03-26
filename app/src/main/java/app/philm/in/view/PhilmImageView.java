@@ -25,6 +25,7 @@ import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.model.Person;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmPersonCredit;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
 
@@ -61,6 +62,18 @@ public class PhilmImageView extends ImageView {
     public void loadPosterUrl(PhilmMovie movie, Listener listener) {
         if (!TextUtils.isEmpty(movie.getPosterUrl())) {
             setPicassoHandler(new MoviePosterHandler(movie, listener));
+        } else {
+            reset();
+        }
+    }
+
+    public void loadPosterUrl(PhilmPersonCredit credit) {
+        loadPosterUrl(credit, null);
+    }
+
+    public void loadPosterUrl(PhilmPersonCredit credit, Listener listener) {
+        if (!TextUtils.isEmpty(credit.getPosterPath())) {
+            setPicassoHandler(new PersonCreditHandler(credit, listener));
         } else {
             reset();
         }
@@ -273,6 +286,34 @@ public class PhilmImageView extends ImageView {
         @Override
         int getPlaceholderDrawable() {
             return R.drawable.ic_profile_placeholder;
+        }
+    }
+
+    private class PersonCreditHandler extends PicassoHandler {
+
+        private final PhilmPersonCredit mCredit;
+
+        PersonCreditHandler(PhilmPersonCredit credit, Listener callback) {
+            super(callback);
+            mCredit = Preconditions.checkNotNull(credit, "credit cannot be null");
+        }
+
+        @Override
+        public String getUrl(ImageHelper helper, ImageView imageView) {
+            return helper.getPosterUrl(mCredit, imageView.getWidth());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            PersonCreditHandler that = (PersonCreditHandler) o;
+            return Objects.equal(mCredit, that.mCredit);
         }
     }
 

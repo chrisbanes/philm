@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 
 import app.philm.in.model.Person;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmPersonCredit;
 
 public class ImageHelper {
 
@@ -31,6 +32,12 @@ public class ImageHelper {
 
     public void setTmdbProfileSizes(int[] tmdbProfileSizes) {
         mTmdbProfileSizes = tmdbProfileSizes;
+    }
+
+    public String getPosterUrl(final PhilmPersonCredit credit, final int width) {
+        final String imageUrl = credit.getPosterPath();
+        Preconditions.checkNotNull(imageUrl, "movie must have poster url");
+        return buildTmdbPosterUrl(imageUrl, width);
     }
 
     public String getPosterUrl(final PhilmMovie movie, final int width) {

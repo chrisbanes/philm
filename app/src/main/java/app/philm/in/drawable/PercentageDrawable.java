@@ -47,7 +47,7 @@ public class PercentageDrawable extends Drawable {
     private float mTargetValue;
 
     private String mText;
-    private float mTextX, mTextY;
+    private float mTextWidth, mTextHeight;
 
     private boolean mEnabled;
     private boolean mPressed;
@@ -136,11 +136,9 @@ public class PercentageDrawable extends Drawable {
                 mForegroundCirclePaint);
 
         if (mText != null) {
-            final float width = mTextPaint.measureText(mText);
-            mTextPaint.getTextBounds(mText, 0, mText.length(), mTextBounds);
             canvas.drawText(mText,
-                    mBounds.centerX() - (width / 2f),
-                    mBounds.centerY() + (mTextBounds.height() / 2f),
+                    mBounds.centerX() - (mTextWidth / 2f),
+                    mBounds.centerY() + (mTextHeight / 2f),
                     mTextPaint);
         }
     }
@@ -249,6 +247,9 @@ public class PercentageDrawable extends Drawable {
             mTextPaint.getTextBounds(mText, 0, mText.length(), mTextBounds);
             textSize += 2f;
         } while (mTextBounds.width() < targetWidth && mTextBounds.height() < targetHeight);
+
+        mTextWidth = mTextPaint.measureText(mText);
+        mTextHeight = mTextBounds.height();
     }
 
     @Override

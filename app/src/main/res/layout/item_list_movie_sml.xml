@@ -3,13 +3,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="@dimen/movie_list_item_height"
+              android:layout_height="wrap_content"
+              android:minHeight="@dimen/movie_list_small_item_height"
               android:foreground="?android:attr/selectableItemBackground"
               android:baselineAligned="false">
 
     <app.philm.in.view.PhilmImageView
             android:id="@+id/imageview_poster"
-            android:layout_width="@dimen/movie_list_image_width"
+            android:layout_width="@dimen/movie_list_small_image_width"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
 

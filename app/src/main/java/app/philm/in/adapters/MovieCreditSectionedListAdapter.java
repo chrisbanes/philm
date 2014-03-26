@@ -14,7 +14,7 @@ public class MovieCreditSectionedListAdapter extends BasePhilmSectionedListAdapt
     private static final String LOG_TAG = MovieCreditSectionedListAdapter.class.getSimpleName();
 
     public MovieCreditSectionedListAdapter(Activity activity) {
-        super(activity, R.layout.item_list_movie, R.layout.item_list_movie_section_header);
+        super(activity, R.layout.item_list_movie_sml, R.layout.item_list_movie_section_header);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class MovieCreditSectionedListAdapter extends BasePhilmSectionedListAdapt
         final TextView characterTextView = (TextView) view.findViewById(R.id.textview_subtitle_1);
         characterTextView.setText(credit.getJob());
 
-        final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.textview_subtitle_2);
+        final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
         imageView.loadProfileUrl(credit.getPerson());
     }
 }

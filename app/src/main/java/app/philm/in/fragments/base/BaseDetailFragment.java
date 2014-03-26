@@ -31,12 +31,12 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mListView = (ListView) view.findViewById(android.R.id.list);
+        super.onViewCreated(view, savedInstanceState);
+
         mAdapter = createListAdapter();
 
+        mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
-
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

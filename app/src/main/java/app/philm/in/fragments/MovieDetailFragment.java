@@ -529,21 +529,6 @@ public class MovieDetailFragment extends BaseDetailFragment
         public PhilmMovieCredit getItem(int position) {
             return mMovie.getCrew().get(position);
         }
-
-        @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
-            view = super.getView(position, view, viewGroup);
-
-            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
-            subTitle.setText(getItem(position).getJob());
-
-            return view;
-        }
-
-        @Override
-        protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_2line;
-        }
     }
 
     private abstract class BaseMovieCastAdapter extends BaseAdapter {
@@ -578,6 +563,9 @@ public class MovieDetailFragment extends BaseDetailFragment
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
             imageView.loadProfileUrl(credit.getPerson());
 
+            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
+            subTitle.setText(credit.getJob());
+
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(credit);
 
@@ -585,7 +573,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_1line;
+            return R.layout.item_movie_detail_grid_item_2line;
         }
     }
 

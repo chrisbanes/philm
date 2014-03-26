@@ -285,6 +285,9 @@ public class PersonFragment extends BaseDetailFragment
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
             imageView.loadPosterUrl(credit);
 
+            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
+            subTitle.setText(credit.getJob());
+
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(credit);
 
@@ -292,7 +295,7 @@ public class PersonFragment extends BaseDetailFragment
         }
 
         protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_1line;
+            return R.layout.item_movie_detail_grid_item_2line;
         }
     }
 }

@@ -15,19 +15,19 @@ import android.text.SpannableString;
 
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
-import app.philm.in.fragments.MovieCastListFragment;
 import app.philm.in.fragments.CheckinMovieFragment;
 import app.philm.in.fragments.CredentialsChangedFragment;
-import app.philm.in.fragments.MovieCrewListFragment;
 import app.philm.in.fragments.DiscoverTabFragment;
 import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
+import app.philm.in.fragments.MovieCastListFragment;
+import app.philm.in.fragments.MovieCrewListFragment;
 import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.fragments.MovieSearchListFragment;
 import app.philm.in.fragments.PersonCastListFragment;
 import app.philm.in.fragments.PersonCrewListFragment;
-import app.philm.in.fragments.PersonFragment;
+import app.philm.in.fragments.PersonDetailFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
@@ -217,7 +217,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showPersonDetail(String id) {
-        showFragment(PersonFragment.create(id));
+        showFragment(PersonDetailFragment.create(id));
     }
 
     @Override

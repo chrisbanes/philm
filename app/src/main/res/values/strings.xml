@@ -86,6 +86,7 @@
     <string name="action_mark_unseen">Mark as unseen</string>
 
     <string name="search_hint_movies">Search movies</string>
+    <string name="search_hint_people">Search people</string>
 
     <string name="search_empty">Search for movies by entering text above</string>
 

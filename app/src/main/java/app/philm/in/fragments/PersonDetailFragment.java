@@ -29,20 +29,20 @@ import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
 
-public class PersonFragment extends BaseDetailFragment
+public class PersonDetailFragment extends BaseDetailFragment
         implements MovieController.PersonUi, View.OnClickListener {
 
-    private static final String LOG_TAG = PersonFragment.class.getSimpleName();
+    private static final String LOG_TAG = PersonDetailFragment.class.getSimpleName();
 
     private static final String KEY_QUERY_PERSON_ID = "person_id";
 
-    public static PersonFragment create(String personId) {
+    public static PersonDetailFragment create(String personId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(personId), "personId cannot be empty");
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_QUERY_PERSON_ID, personId);
 
-        PersonFragment fragment = new PersonFragment();
+        PersonDetailFragment fragment = new PersonDetailFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -233,7 +233,7 @@ public class PersonFragment extends BaseDetailFragment
         private void bindBiography(final View view) {
             TextView summary = (TextView) view.findViewById(R.id.textview_summary);
             summary.setText(mPerson.getBiography());
-            summary.setOnClickListener(PersonFragment.this);
+            summary.setOnClickListener(PersonDetailFragment.this);
         }
 
         private void bindCast(View view) {

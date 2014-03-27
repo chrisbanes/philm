@@ -7,10 +7,10 @@ import com.uwetrottmann.tmdb.entities.ResultsPage;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
-public class FetchTmdbSearchQueryRunnable extends BaseTmdbPaginatedRunnable {
+public class FetchTmdbSearchMoviesRunnable extends BaseTmdbPaginatedRunnable {
     private final String mQuery;
 
-    public FetchTmdbSearchQueryRunnable(int callingId, String query, int page) {
+    public FetchTmdbSearchMoviesRunnable(int callingId, String query, int page) {
         super(callingId, page);
         mQuery = Preconditions.checkNotNull(query, "query cannot be null");
     }

@@ -50,7 +50,7 @@ import app.philm.in.tasks.FetchTmdbPersonCreditsRunnable;
 import app.philm.in.tasks.FetchTmdbPersonRunnable;
 import app.philm.in.tasks.FetchTmdbPopularRunnable;
 import app.philm.in.tasks.FetchTmdbRelatedMoviesRunnable;
-import app.philm.in.tasks.FetchTmdbSearchQueryRunnable;
+import app.philm.in.tasks.FetchTmdbSearchMoviesRunnable;
 import app.philm.in.tasks.FetchTmdbUpcomingRunnable;
 import app.philm.in.tasks.FetchTraktDetailMovieRunnable;
 import app.philm.in.tasks.FetchTraktLibraryRunnable;
@@ -1020,7 +1020,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchSearchResults(final int callingId, String query, int page) {
-        executeTask(new FetchTmdbSearchQueryRunnable(callingId, query, page));
+        executeTask(new FetchTmdbSearchMoviesRunnable(callingId, query, page));
     }
 
     private void fetchTmdbConfiguration() {

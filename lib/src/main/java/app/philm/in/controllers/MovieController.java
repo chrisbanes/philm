@@ -499,13 +499,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                             fetchPopular(getId(ui), result.page + 1);
                         }
                         break;
-                    case SEARCH:
-                        MoviesState.SearchPaginatedResult searchResult = mMoviesState
-                                .getSearchResult();
-                        if (canFetchNextPage(searchResult)) {
+                    case SEARCH_MOVIES:
+                        MoviesState.SearchResult searchResult = mMoviesState.getSearchResult();
+                        if (searchResult != null && canFetchNextPage(searchResult.movies)) {
                             fetchSearchResults(getId(ui),
                                     searchResult.query,
-                                    searchResult.page + 1);
+                                    searchResult.movies.page + 1);
                         }
                         break;
                     case UPCOMING:
@@ -694,7 +693,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         if (ui instanceof SearchMovieUi) {
-            populateSearchUi((SearchMovieUi) ui);
+            populateSearchMovieUi((SearchMovieUi) ui);
         } else if (ui instanceof MovieListUi) {
             populateListUi((MovieListUi) ui);
         } else if (ui instanceof MovieCreditListUi) {
@@ -1015,7 +1014,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void fetchSearchResults(final int callingId, String query) {
-        mMoviesState.setSearchResult(null);
+        mMoviesState.setSearchResult(new MoviesState.SearchResult(query));
         fetchSearchResults(callingId, query, TMDB_FIRST_PAGE);
     }
 
@@ -1228,10 +1227,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 sectionProcessingOrder = Arrays.asList(MovieFilter.UPCOMING, MovieFilter.SOON,
                         MovieFilter.SEEN, MovieFilter.RELEASED);
                 break;
-            case SEARCH:
-                MoviesState.MoviePaginatedResult searchResult = mMoviesState.getSearchResult();
-                if (searchResult != null) {
-                    items = searchResult.items;
+            case SEARCH_MOVIES:
+                MoviesState.SearchResult searchResult = mMoviesState.getSearchResult();
+                if (searchResult != null && searchResult.movies != null) {
+                    items = searchResult.movies.items;
                 }
                 break;
             case NOW_PLAYING:
@@ -1350,8 +1349,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         ui.setMarkMovieWatchedCheckboxVisible(!movie.isWatched());
     }
 
-    private void populateSearchUi(SearchMovieUi ui) {
-        MoviesState.SearchPaginatedResult result = mMoviesState.getSearchResult();
+    private void populateSearchMovieUi(SearchMovieUi ui) {
+        MoviesState.SearchResult result = mMoviesState.getSearchResult();
         ui.setQuery(result != null ? result.query : null);
 
         // Now carry on with list ui population
@@ -1508,7 +1507,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, SEARCH, NOW_PLAYING, UPCOMING, RECOMMENDED,
+        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, NOW_PLAYING, UPCOMING, RECOMMENDED,
+        SEARCH, SEARCH_MOVIES, SEARCH_PEOPLE,
         RELATED, MOVIE_CAST, MOVIE_CREW,
         PERSON_DETAIL, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW,
         NONE;

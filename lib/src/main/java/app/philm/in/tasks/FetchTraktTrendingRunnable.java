@@ -22,7 +22,7 @@ public class FetchTraktTrendingRunnable extends BaseMovieRunnable<List<Movie>> {
     @Override
     public void onSuccess(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
-            mMoviesState.setTrending(getTraktMovieEntityMapper().map(result));
+            mMoviesState.setTrending(getTraktMovieEntityMapper().mapAll(result));
         } else {
             mMoviesState.setTrending(null);
         }

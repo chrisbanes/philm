@@ -50,7 +50,7 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
 
         // Need to manually update releases here due to entity mapper
         if (result.similar_movies != null) {
-            movie.setRelated(getTmdbMovieEntityMapper().map(result.similar_movies.results));
+            movie.setRelated(getTmdbMovieEntityMapper().mapAll(result.similar_movies.results));
         }
 
         if (result.credits != null && !PhilmCollections.isEmpty(result.credits.cast)) {

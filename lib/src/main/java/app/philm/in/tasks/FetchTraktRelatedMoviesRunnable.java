@@ -27,7 +27,7 @@ public class FetchTraktRelatedMoviesRunnable extends BaseMovieRunnable<List<Movi
     @Override
     public void onSuccess(List<Movie> result) {
         PhilmMovie movie = mMoviesState.getMovie(mId);
-        movie.setRelated(getTraktMovieEntityMapper().map(result));
+        movie.setRelated(getTraktMovieEntityMapper().mapAll(result));
 
         getEventBus().post(new MoviesState.MovieRelatedItemsUpdatedEvent(getCallingId(), movie));
     }

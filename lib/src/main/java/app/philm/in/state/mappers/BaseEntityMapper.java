@@ -16,7 +16,7 @@ abstract class BaseEntityMapper<T, R> {
 
     public abstract R map(T entity);
 
-    public List<R> map(List<T> entities) {
+    public List<R> mapAll(List<T> entities) {
         final ArrayList<R> movies = new ArrayList<>(entities.size());
         for (T entity : entities) {
             movies.add(map(entity));

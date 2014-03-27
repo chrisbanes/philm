@@ -1,5 +1,7 @@
 package app.philm.in.state;
 
+import com.google.common.base.Preconditions;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,9 +52,9 @@ public interface MoviesState extends BaseState {
 
     public void setRecommended(List<PhilmMovie> recommended);
 
-    public void setSearchResult(SearchPaginatedResult result);
+    public void setSearchResult(SearchResult result);
 
-    public SearchPaginatedResult getSearchResult();
+    public SearchResult getSearchResult();
 
     public Set<MovieController.MovieFilter> getFilters();
 
@@ -147,11 +149,20 @@ public interface MoviesState extends BaseState {
         }
     }
 
-    public class MoviePaginatedResult extends PaginatedResult<List<PhilmMovie>> {
+    public class MoviePaginatedResult extends PaginatedResult<PhilmMovie> {
     }
 
-    public class SearchPaginatedResult extends MoviePaginatedResult {
-        public String query;
+    public class PersonPaginatedResult extends PaginatedResult<PhilmPerson> {
+    }
+
+    public class SearchResult {
+        public final String query;
+        public MoviePaginatedResult movies;
+        public PersonPaginatedResult people;
+
+        public SearchResult(String query) {
+            this.query = Preconditions.checkNotNull(query, "query cannot be null");
+        }
     }
 
 }

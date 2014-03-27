@@ -121,7 +121,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
                     dbItemsMap.put(movie.getDbId(), movie);
                 }
 
-                // Now lets remove the items from the map, leaving only those not in the library
+                // Now lets remove the items from the mapAll, leaving only those not in the library
                 for (PhilmMovie movie : library) {
                     dbItemsMap.remove(movie.getDbId());
                 }
@@ -149,7 +149,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
                     dbItemsMap.put(movie.getDbId(), movie);
                 }
 
-                // Now lets remove the items from the map, leaving only those not in the watchlist
+                // Now lets remove the items from the mapAll, leaving only those not in the watchlist
                 for (PhilmMovie movie : watchlist) {
                     dbItemsMap.remove(movie.getDbId());
                 }

@@ -1,14 +1,13 @@
 package app.philm.in.tasks;
 
-import com.uwetrottmann.tmdb.entities.ResultsPage;
-
 import java.util.ArrayList;
 
 import app.philm.in.network.NetworkError;
 import app.philm.in.state.BaseState;
-import app.philm.in.state.MoviesState;
 
-abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> {
+abstract class BaseTmdbPaginatedRunnable<R extends BaseState.PaginatedResult<PE>, PE, TR>
+        extends BaseMovieRunnable<TR> {
+
     private final int mPage;
 
     BaseTmdbPaginatedRunnable(int callingId, int page) {
@@ -17,21 +16,16 @@ abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> 
     }
 
     @Override
-    public final void onSuccess(ResultsPage result) {
+    public final void onSuccess(TR result) {
         if (result != null) {
-            MoviesState.MoviePaginatedResult paginatedResult = getResultFromState();
+            R paginatedResult = getResultFromState();
+
             if (paginatedResult == null) {
                 paginatedResult = createPaginatedResult();
                 paginatedResult.items = new ArrayList<>();
             }
 
-            paginatedResult.items.addAll(getTmdbMovieEntityMapper().map(result.results));
-            paginatedResult.page = result.page;
-
-            if (result.total_pages != null) {
-                paginatedResult.totalPages = result.total_pages;
-            }
-
+            updatePaginatedResult(paginatedResult, result);
             updateState(paginatedResult);
         }
     }
@@ -45,13 +39,13 @@ abstract class BaseTmdbPaginatedRunnable extends BaseMovieRunnable<ResultsPage> 
         return mPage;
     }
 
-    protected abstract MoviesState.MoviePaginatedResult getResultFromState();
+    protected abstract void updatePaginatedResult(R result, TR tmdbResult);
 
-    protected abstract void updateState(MoviesState.MoviePaginatedResult result);
+    protected abstract R getResultFromState();
 
-    protected MoviesState.MoviePaginatedResult createPaginatedResult() {
-        return new MoviesState.MoviePaginatedResult();
-    }
+    protected abstract R createPaginatedResult();
+
+    protected abstract void updateState(R result);
 
     @Override
     protected Object createLoadingProgressEvent(boolean show) {

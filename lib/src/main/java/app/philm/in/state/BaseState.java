@@ -3,6 +3,8 @@ package app.philm.in.state;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
+import java.util.List;
+
 import app.philm.in.controllers.MainController;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
@@ -32,8 +34,8 @@ public interface BaseState {
         }
     }
 
-    abstract static class PaginatedResult<T> {
-        public T items;
+    public abstract static class PaginatedResult<T> {
+        public List<T> items;
         public int page;
         public int totalPages;
 

@@ -28,7 +28,7 @@ public class FetchTraktRecommendationsRunnable extends BaseMovieRunnable<List<Mo
     @Override
     public void onSuccess(List<Movie> result) {
         if (!PhilmCollections.isEmpty(result)) {
-            mMoviesState.setRecommended(getTraktMovieEntityMapper().map(result));
+            mMoviesState.setRecommended(getTraktMovieEntityMapper().mapAll(result));
         } else {
             mMoviesState.setRecommended(null);
         }

@@ -7,7 +7,7 @@ import com.uwetrottmann.tmdb.entities.ResultsPage;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
-public class FetchTmdbSearchMoviesRunnable extends BaseTmdbPaginatedRunnable {
+public class FetchTmdbSearchMoviesRunnable extends BaseTmdbPaginatedMovieRunnable {
     private final String mQuery;
 
     public FetchTmdbSearchMoviesRunnable(int callingId, String query, int page) {
@@ -23,18 +23,19 @@ public class FetchTmdbSearchMoviesRunnable extends BaseTmdbPaginatedRunnable {
 
     @Override
     protected MoviesState.MoviePaginatedResult getResultFromState() {
-        return mMoviesState.getSearchResult();
+        MoviesState.SearchResult searchResult = mMoviesState.getSearchResult();
+        return searchResult != null ? searchResult.movies : null;
     }
 
     @Override
     protected void updateState(MoviesState.MoviePaginatedResult result) {
-        mMoviesState.setSearchResult((MoviesState.SearchPaginatedResult) result);
+        MoviesState.SearchResult searchResult = mMoviesState.getSearchResult();
+        searchResult.movies = result;
+        mMoviesState.setSearchResult(searchResult);
     }
 
     @Override
     protected MoviesState.MoviePaginatedResult createPaginatedResult() {
-        MoviesState.SearchPaginatedResult result = new MoviesState.SearchPaginatedResult();
-        result.query = mQuery;
-        return result;
+        return new MoviesState.MoviePaginatedResult();
     }
 }

@@ -24,12 +24,12 @@ import app.philm.in.fragments.LibraryMoviesFragment;
 import app.philm.in.fragments.LicencesFragment;
 import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieDetailFragment;
+import app.philm.in.fragments.MovieSearchListFragment;
 import app.philm.in.fragments.PersonCastListFragment;
 import app.philm.in.fragments.PersonCrewListFragment;
 import app.philm.in.fragments.PersonFragment;
 import app.philm.in.fragments.RateMovieFragment;
 import app.philm.in.fragments.RelatedMoviesFragment;
-import app.philm.in.fragments.SearchListFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.util.PhilmTypefaceSpan;
@@ -83,7 +83,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showSearchFragment() {
-        showFragmentFromDrawer(new SearchListFragment());
+        showFragmentFromDrawer(new MovieSearchListFragment());
     }
 
     @Override

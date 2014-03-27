@@ -12,7 +12,8 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.MovieListFragment;
 
-public class SearchListFragment extends MovieListFragment implements MovieController.SearchMovieUi {
+public class MovieSearchListFragment extends MovieListFragment
+        implements MovieController.SearchMovieUi {
 
     private SearchView mSearchView;
     private String mQueryToDisplay;
@@ -73,7 +74,7 @@ public class SearchListFragment extends MovieListFragment implements MovieContro
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        return MovieController.MovieQueryType.SEARCH;
+        return MovieController.MovieQueryType.SEARCH_MOVIES;
     }
 
     @Override

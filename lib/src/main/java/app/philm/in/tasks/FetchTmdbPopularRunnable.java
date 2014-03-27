@@ -5,7 +5,7 @@ import com.uwetrottmann.tmdb.entities.ResultsPage;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
-public class FetchTmdbPopularRunnable extends BaseTmdbPaginatedRunnable {
+public class FetchTmdbPopularRunnable extends BaseTmdbPaginatedMovieRunnable {
 
     public FetchTmdbPopularRunnable(int callingId, int page) {
         super(callingId, page);

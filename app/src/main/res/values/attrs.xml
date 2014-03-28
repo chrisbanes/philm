@@ -11,10 +11,6 @@
 
     <attr name="title" format="string|reference" />
 
-    <declare-styleable name="ParallaxContentScrollView">
-        <attr name="contentOverlay" format="dimension|reference" />
-    </declare-styleable>
-
     <declare-styleable name="RatingCircleView">
         <attr name="ratePrompt" format="string|reference" />
         <attr name="backgroundCircleColor" format="color|reference" />

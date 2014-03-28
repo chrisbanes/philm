@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/primary_accent_color_dark_10"
+              android:background="@color/dark_gray"
               android:baselineAligned="false"
               android:gravity="bottom"
               android:padding="@dimen/movie_detail_fanart_padding">
@@ -32,10 +32,16 @@
                 android:layout_height="wrap_content"/>
 
         <app.philm.in.view.FontTextView
-                android:id="@+id/textview_born_date"
+                android:id="@+id/textview_subtitle_1"
                 style="@style/Widget.Philm.Person.Detail.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
+        <app.philm.in.view.FontTextView
+              android:id="@+id/textview_subtitle_2"
+              style="@style/Widget.Philm.Person.Detail.Subtitle"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

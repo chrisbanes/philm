@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -67,7 +66,6 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
 
     private PhilmPerson mPerson;
     @Inject DateFormat mMediumDateFormatter;
-    private Date mDate = new Date();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -181,35 +179,41 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
             PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
             imageView.loadProfileUrl(mPerson);
 
-            TextView title = (TextView) view.findViewById(R.id.textview_title);
+            final TextView title = (TextView) view.findViewById(R.id.textview_title);
             title.setText(mPerson.getName());
 
-            TextView bornDate = (TextView) view.findViewById(R.id.textview_born_date);
-            if (mPerson.getDateOfBirth() != 0) {
-                mDate.setTime(mPerson.getDateOfBirth());
-
+            final TextView subtitle1 = (TextView) view.findViewById(R.id.textview_subtitle_1);
+            if (mPerson.getDateOfBirth() != null) {
                 if (!TextUtils.isEmpty(mPerson.getPlaceOfBirth())) {
-                    bornDate.setText(
-                            getString(
-                                    R.string.person_born_date_with_loc,
-                                    mMediumDateFormatter.format(mDate),
-                                    mPerson.getPlaceOfBirth(),
-                                    mPerson.getAge()
-                            )
+                    subtitle1.setText(
+                            getString(R.string.person_born_date_with_loc,
+                                    mMediumDateFormatter.format(mPerson.getDateOfBirth()),
+                                    mPerson.getPlaceOfBirth())
                     );
                 } else {
-                    bornDate.setText(
-                            getString(
-                                    R.string.person_born_date,
-                                    mMediumDateFormatter.format(mDate),
-                                    mPerson.getAge()
-                            )
+                    subtitle1.setText(
+                            getString(R.string.person_born_date,
+                                    mMediumDateFormatter.format(mPerson.getDateOfBirth()))
                     );
                 }
-
-                bornDate.setVisibility(View.VISIBLE);
+                subtitle1.setVisibility(View.VISIBLE);
             } else {
-                bornDate.setVisibility(View.GONE);
+                subtitle1.setVisibility(View.GONE);
+            }
+
+            final TextView subtitle2 = (TextView) view.findViewById(R.id.textview_subtitle_2);
+            if (mPerson.getDateOfDeath() != null) {
+                subtitle2.setText(
+                        getString(R.string.person_death_date,
+                                mMediumDateFormatter.format(mPerson.getDateOfDeath()),
+                                mPerson.getAge())
+                );
+                subtitle2.setVisibility(View.VISIBLE);
+            } else if (mPerson.getDateOfBirth() != null) {
+                subtitle2.setText(getString(R.string.person_age, mPerson.getAge()));
+                subtitle2.setVisibility(View.VISIBLE);
+            } else {
+                subtitle2.setVisibility(View.GONE);
             }
         }
 
@@ -356,7 +360,12 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
             imageView.loadPosterUrl(credit);
 
             TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
-            subTitle.setText(credit.getJob());
+            if (!TextUtils.isEmpty(credit.getJob())) {
+                subTitle.setText(credit.getJob());
+                subTitle.setVisibility(View.VISIBLE);
+            } else {
+                subTitle.setVisibility(View.GONE);
+            }
 
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(credit);

@@ -4,6 +4,7 @@ import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.Person;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class PhilmPerson implements PhilmModel {
@@ -13,7 +14,8 @@ public class PhilmPerson implements PhilmModel {
     String pictureUrl;
 
     String placeOfBirth;
-    long dateOfBirth;
+    Date dateOfBirth;
+    Date dateOfDeath;
     int age;
     String biography;
 
@@ -42,7 +44,8 @@ public class PhilmPerson implements PhilmModel {
         name = person.name;
         pictureUrl = person.profile_path;
         biography = person.biography;
-        dateOfBirth = person.birthday != null ? person.birthday.getTime() : 0;
+        dateOfBirth = person.birthday;
+        dateOfDeath = person.deathday;
         placeOfBirth = person.place_of_birth;
         pictureType = TYPE_TMDB;
 
@@ -93,8 +96,12 @@ public class PhilmPerson implements PhilmModel {
         return biography;
     }
 
-    public long getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
+    }
+
+    public Date getDateOfDeath() {
+        return dateOfDeath;
     }
 
     public String getPlaceOfBirth() {
@@ -106,9 +113,10 @@ public class PhilmPerson implements PhilmModel {
     }
 
     private void calculateAge() {
-        if (dateOfBirth != 0) {
+        if (dateOfBirth != null) {
+            long endDate = dateOfDeath != null ? dateOfDeath.getTime() : System.currentTimeMillis();
             Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(System.currentTimeMillis() - dateOfBirth);
+            cal.setTimeInMillis(endDate - dateOfBirth.getTime());
             age = cal.get(Calendar.YEAR) - 1970;
         }
     }

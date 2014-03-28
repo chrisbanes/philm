@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/spacing_major"
     android:paddingRight="@dimen/spacing_major"
-    android:paddingBottom="@dimen/spacing_minor"
     android:paddingTop="@dimen/spacing_minor"
     android:background="?android:attr/colorBackground"
     style="?android:buttonBarStyle">

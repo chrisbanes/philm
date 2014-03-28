@@ -6,7 +6,7 @@
     android:id="@+id/movie_detail_card_details"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/spacing_major"
+    android:paddingTop="@dimen/spacing_major"
     android:background="?android:attr/colorBackground"
     internal:title="@string/details">
 

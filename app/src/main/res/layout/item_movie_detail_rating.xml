@@ -4,4 +4,5 @@
     android:id="@+id/rating_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/movie_detail_ratingbar_height"
+    android:paddingTop="@dimen/spacing_major"
     android:background="?android:attr/colorBackground" />

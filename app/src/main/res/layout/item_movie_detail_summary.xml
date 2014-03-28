@@ -4,16 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/colorBackground"
-    android:paddingLeft="@dimen/spacing_micro"
-    android:paddingRight="@dimen/spacing_micro">
+    android:paddingTop="@dimen/spacing_major"
+    android:paddingLeft="@dimen/spacing_major"
+    android:paddingRight="@dimen/spacing_major">
 
     <app.philm.in.view.FontTextView
         android:id="@+id/textview_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_major"
-        android:layout_marginRight="@dimen/spacing_major"
-        android:layout_marginBottom="@dimen/spacing_minor"
         style="@style/Widget.Philm.Movie.Detail.Summary" />
 
 </FrameLayout>

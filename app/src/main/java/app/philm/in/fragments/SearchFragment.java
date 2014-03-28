@@ -109,6 +109,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
     private void populateUi() {
         if (mSearchResult == null) {
             getListAdapter().setItems(null);
+            setEmptyText(R.string.search_empty);
             return;
         }
 
@@ -120,6 +121,10 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
 
         if (mSearchResult.people != null && !PhilmCollections.isEmpty(mSearchResult.people.items)) {
             items.add(SearchCategoryItems.PEOPLE);
+        }
+
+        if (PhilmCollections.isEmpty(items)) {
+            setEmptyText(R.string.search_empty_no_results);
         }
 
         getListAdapter().setItems(items);

@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -24,10 +25,12 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
     private ListView mListView;
     private ListAdapter mAdapter;
 
+    private TextView mEmptyView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_movie_detail_list, container, false);
+        return inflater.inflate(R.layout.fragment_detail_list, container, false);
     }
 
     @Override
@@ -38,6 +41,15 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
+
+        mEmptyView = (TextView) view.findViewById(android.R.id.empty);
+        mListView.setEmptyView(mEmptyView);
+    }
+
+    protected void setEmptyText(int stringId) {
+        if (mEmptyView != null) {
+            mEmptyView.setText(stringId);
+        }
     }
 
     @Override

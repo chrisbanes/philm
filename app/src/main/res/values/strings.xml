@@ -85,10 +85,13 @@
     <string name="action_mark_seen">Mark as seen</string>
     <string name="action_mark_unseen">Mark as unseen</string>
 
-    <string name="search_hint_movies">Search movies</string>
-    <string name="search_hint_people">Search people</string>
+    <string name="search_hint">Search</string>
 
-    <string name="search_empty">Search for movies by entering text above</string>
+    <string name="category_movies">Movies</string>
+    <string name="category_people">People</string>
+
+    <string name="search_empty">Search by entering text above</string>
+    <string name="search_empty_no_results">No results found</string>
 
     <string name="movie_detail_votes">Votes</string>
     <string name="movie_detail_global">Global</string>

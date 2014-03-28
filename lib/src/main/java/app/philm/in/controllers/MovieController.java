@@ -465,6 +465,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             @Override
             public void search(String query) {
                 switch (ui.getMovieQueryType()) {
+                    case SEARCH:
+                        fetchSearchResults(getId(ui), query);
+                        break;
                     case SEARCH_MOVIES:
                         fetchMovieSearchResults(getId(ui), query);
                         break;
@@ -619,6 +622,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             }
 
+            @Override
+            public void showMovieSearchResults() {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showSearchMoviesFragment();
+                }
+            }
+
+            @Override
+            public void showPeopleSearchResults() {
+                Display display = getDisplay();
+                if (display != null) {
+                    display.showSearchPeopleFragment();
+                }
+            }
+
             private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -720,6 +739,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populatePersonCreditListUi((PersonCreditListUi) ui);
         } else if (ui instanceof PersonUi) {
             populatePersonUi((PersonUi) ui);
+        } else if (ui instanceof MainSearchUi) {
+            populateSearchUi((MainSearchUi) ui);
         } else if (ui instanceof SearchPersonUi) {
             populateSearchPersonUi((SearchPersonUi) ui);
         } else if (ui instanceof PersonListUi) {
@@ -1023,6 +1044,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void fetchPerson(final int callingId, int id) {
         executeTask(new FetchTmdbPersonRunnable(callingId, id));
+    }
+
+    private void fetchSearchResults(final int callingId, String query) {
+        mMoviesState.setSearchResult(new MoviesState.SearchResult(query));
+        fetchMovieSearchResults(callingId, query, TMDB_FIRST_PAGE);
+        fetchPeopleSearchResults(callingId, query, TMDB_FIRST_PAGE);
     }
 
     private void fetchMovieSearchResults(final int callingId, String query) {
@@ -1381,9 +1408,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         ui.setMarkMovieWatchedCheckboxVisible(!movie.isWatched());
     }
 
+    private void populateSearchUi(MainSearchUi ui) {
+        ui.setSearchResult(mMoviesState.getSearchResult());
+    }
+
     private void populateSearchMovieUi(SearchMovieUi ui) {
         MoviesState.SearchResult result = mMoviesState.getSearchResult();
-        ui.setQuery(result != null ? result.query : null);
+        updateDisplayTitle(result != null ? result.query : null);
 
         // Now carry on with list ui population
         populateMovieListUi(ui);
@@ -1391,7 +1422,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void populateSearchPersonUi(SearchPersonUi ui) {
         MoviesState.SearchResult result = mMoviesState.getSearchResult();
-        ui.setQuery(result != null ? result.query : null);
+        updateDisplayTitle(result != null ? result.query : null);
 
         // Now carry on with list ui population
         populatePersonListUi(ui);
@@ -1583,6 +1614,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 case PERSON_DETAIL:
                 case PERSON_CREDITS_CAST:
                 case PERSON_CREDITS_CREW:
+                case SEARCH_MOVIES:
+                case SEARCH_PEOPLE:
                     return true;
                 default:
                     return false;
@@ -1635,15 +1668,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public interface PersonCreditListUi extends BaseMovieListUi<PhilmPersonCredit> {
     }
 
-    public interface SearchUi {
-        void setQuery(String query);
+    public interface MainSearchUi {
+        void setSearchResult(MoviesState.SearchResult result);
     }
 
     public interface PersonListUi extends BaseMovieListUi<PhilmPerson> {}
 
-    public interface SearchPersonUi extends PersonListUi, SearchUi {}
+    public interface SearchPersonUi extends PersonListUi {}
 
-    public interface SearchMovieUi extends MovieListUi, SearchUi {}
+    public interface SearchMovieUi extends MovieListUi {}
 
     public interface MovieDetailUi extends MovieUi {
 
@@ -1751,6 +1784,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showPersonCastCredits(PhilmPerson person);
 
         void showPersonCrewCredits(PhilmPerson person);
+
+        void showPeopleSearchResults();
+
+        void showMovieSearchResults();
     }
 
     private class LibraryDbLoadCallback

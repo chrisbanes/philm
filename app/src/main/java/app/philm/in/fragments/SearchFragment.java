@@ -1,6 +1,9 @@
 package app.philm.in.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,11 +12,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import app.philm.in.Constants;
@@ -31,10 +36,15 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
 
     private static final String LOG_TAG = SearchFragment.class.getSimpleName();
 
+    private static final AutoCompleteTextViewReflector HIDDEN_METHOD_INVOKER
+            = new AutoCompleteTextViewReflector();
+
     private MoviesState.SearchResult mSearchResult;
 
     private SearchView mSearchView;
     private String mQueryToDisplay;
+
+    private final Handler mHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,11 +94,9 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
                     return false;
                 }
             });
-        }
-    }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+            mHandler.post(mShowImeRunnable);
+        }
     }
 
     @Override
@@ -379,4 +387,44 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
             return R.layout.item_movie_detail_grid_item_1line;
         }
     }
+
+    private static class AutoCompleteTextViewReflector {
+        private Method showSoftInputUnchecked;
+
+        AutoCompleteTextViewReflector() {
+            try {
+                showSoftInputUnchecked = InputMethodManager.class.getMethod(
+                        "showSoftInputUnchecked", int.class, ResultReceiver.class);
+                showSoftInputUnchecked.setAccessible(true);
+            } catch (NoSuchMethodException e) {
+                // Ah well.
+            }
+        }
+
+        void showSoftInputUnchecked(InputMethodManager imm, View view, int flags) {
+            if (showSoftInputUnchecked != null) {
+                try {
+                    showSoftInputUnchecked.invoke(imm, flags, null);
+                    return;
+                } catch (Exception e) {
+                }
+            }
+
+            // Hidden method failed, call public version instead
+            imm.showSoftInput(view, flags);
+        }
+    }
+
+    private final Runnable mShowImeRunnable = new Runnable() {
+        public void run() {
+            InputMethodManager imm = (InputMethodManager)
+                    getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (imm != null) {
+                mSearchView.requestFocus();
+                HIDDEN_METHOD_INVOKER.showSoftInputUnchecked(imm, mSearchView, 0);
+            }
+        }
+    };
+
 }

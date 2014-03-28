@@ -17,6 +17,7 @@ import app.philm.in.modules.qualifiers.ApplicationContext;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.util.TypefaceManager;
+import app.philm.in.view.ExpandingTextView;
 import app.philm.in.view.FontTextView;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingCircleView;
@@ -30,6 +31,7 @@ import dagger.Provides;
         },
         injects = {
                 FontTextView.class,
+                ExpandingTextView.class,
                 PhilmTypefaceSpan.class,
                 PhilmImageView.class,
                 RatingCircleView.class,

@@ -20,8 +20,8 @@ public class InsetAwareFragment extends Fragment
     public void onPause() {
         if (getActivity() instanceof PhilmActivity) {
             PhilmActivity activity = ((PhilmActivity) getActivity());
-            activity.resetInsets();
             activity.removeInsetChangedCallback(this);
+            activity.resetInsets();
         }
         super.onPause();
     }

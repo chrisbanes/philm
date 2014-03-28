@@ -117,7 +117,7 @@ public class InsetFrameLayout extends FrameLayout {
         if (mInsetBackground != null && getWindowToken() != null) {
             mInsetBackground.setCallback(this);
         }
-        invalidate();
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     @Override

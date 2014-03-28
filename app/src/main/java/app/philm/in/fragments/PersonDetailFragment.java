@@ -29,8 +29,7 @@ import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
 
-public class PersonDetailFragment extends BaseDetailFragment
-        implements MovieController.PersonUi, View.OnClickListener {
+public class PersonDetailFragment extends BaseDetailFragment implements MovieController.PersonUi {
 
     private static final String LOG_TAG = PersonDetailFragment.class.getSimpleName();
 
@@ -46,22 +45,6 @@ public class PersonDetailFragment extends BaseDetailFragment
         fragment.setArguments(bundle);
 
         return fragment;
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.textview_summary:
-                final TextView summaryView = (TextView) view;
-                final int defaultMaxLines = getResources()
-                        .getInteger(R.integer.default_summary_maxlines);
-                if (summaryView.getLineCount() == defaultMaxLines) {
-                    summaryView.setMaxLines(Integer.MAX_VALUE);
-                } else if (summaryView.getLineCount() > defaultMaxLines) {
-                    summaryView.setMaxLines(defaultMaxLines);
-                }
-                break;
-        }
     }
 
     private enum PersonItems implements DetailType {
@@ -233,7 +216,6 @@ public class PersonDetailFragment extends BaseDetailFragment
         private void bindBiography(final View view) {
             TextView summary = (TextView) view.findViewById(R.id.textview_summary);
             summary.setText(mPerson.getBiography());
-            summary.setOnClickListener(PersonDetailFragment.this);
         }
 
         private void bindCast(View view) {

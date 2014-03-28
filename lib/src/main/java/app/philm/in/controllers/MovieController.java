@@ -501,6 +501,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             @Override
             public void onScrolledToBottom() {
+                MoviesState.SearchResult searchResult;
                 MoviesState.MoviePaginatedResult result;
 
                 switch (ui.getMovieQueryType()) {
@@ -510,10 +511,20 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                             fetchPopular(getId(ui), result.page + 1);
                         }
                         break;
+                    case SEARCH_PEOPLE:
+                        searchResult = mMoviesState.getSearchResult();
+                        if (searchResult != null && canFetchNextPage(searchResult.people)) {
+                            fetchPeopleSearchResults(
+                                    getId(ui),
+                                    searchResult.query,
+                                    searchResult.people.page + 1);
+                        }
+                        break;
                     case SEARCH_MOVIES:
-                        MoviesState.SearchResult searchResult = mMoviesState.getSearchResult();
+                        searchResult = mMoviesState.getSearchResult();
                         if (searchResult != null && canFetchNextPage(searchResult.movies)) {
-                            fetchMovieSearchResults(getId(ui),
+                            fetchMovieSearchResults(
+                                    getId(ui),
                                     searchResult.query,
                                     searchResult.movies.page + 1);
                         }
@@ -638,7 +649,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
 
-            private boolean canFetchNextPage(MoviesState.MoviePaginatedResult paginatedResult) {
+            private boolean canFetchNextPage(MoviesState.PaginatedResult<?> paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
         };

@@ -174,7 +174,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
             if (!adapter.isEmpty()) {
                 final int numItems = layout.getWidth() / mListView.getResources()
-                        .getDimensionPixelSize(R.dimen.movie_detail_multi_item_width);
+                        .getDimensionPixelSize(R.dimen.detail_card_item_width);
                 final int adapterCount = adapter.getCount();
 
                 for (int i = 0; i < Math.min(numItems, adapterCount); i++) {

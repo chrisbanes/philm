@@ -18,9 +18,6 @@
     <!-- Should be movie_detail_poster_width * 1.6 -->
     <dimen name="movie_detail_poster_height">105dp</dimen>
 
-    <!-- Should be movie_detail_poster_height + movie_detail_fanart_padding -->
-    <dimen name="movie_detail_content_overlay">113dp</dimen>
-
     <dimen name="movie_detail_ratingbar_height">120dp</dimen>
 
     <dimen name="movie_detail_fanart_height">160dp</dimen>
@@ -30,12 +27,15 @@
     <dimen name="movie_detail_summary_textsize">16dp</dimen>
     <dimen name="movie_detail_flag_width">18dp</dimen>
     <dimen name="movie_detail_flag_height">12dp</dimen>
-    <dimen name="movie_detail_card_height">140dp</dimen>
+
     <dimen name="movie_detail_trailers_height">160dp</dimen>
     <dimen name="movie_detail_trailers_item_width">240dp</dimen>
     <dimen name="movie_detail_multi_item_width">75dp</dimen>
 
     <dimen name="person_detail_subtitle_textsize">13dp</dimen>
+
+    <dimen name="detail_card_height">140dp</dimen>
+    <dimen name="detail_card_item_width">75dp</dimen>
 
     <dimen name="movie_list_image_width">80dp</dimen>
     <dimen name="movie_list_item_height">120dp</dimen>

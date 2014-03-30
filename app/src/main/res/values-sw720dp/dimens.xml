@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="movie_grid_item_width">140dp</dimen>
-    <dimen name="movie_grid_item_height">224dp</dimen>
+    <dimen name="movie_grid_item_width">175dp</dimen>
+    <dimen name="movie_grid_item_height">280dp</dimen>
 
-    <dimen name="detail_card_height">175dp</dimen>
-    <dimen name="detail_card_item_width">110dp</dimen>
+    <dimen name="detail_card_height">200dp</dimen>
+    <dimen name="detail_card_item_width">125dp</dimen>
 
     <dimen name="movie_detail_poster_width">100dp</dimen>
     <!-- Should be movie_detail_poster_width * 1.6 -->

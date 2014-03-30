@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/card_content"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/movie_detail_card_height"
+        android:layout_height="@dimen/detail_card_height"
         android:orientation="horizontal"
         android:divider="?android:dividerHorizontal"
         android:showDividers="middle" />

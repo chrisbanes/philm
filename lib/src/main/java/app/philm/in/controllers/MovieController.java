@@ -1577,7 +1577,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         public ListItem.SectionTitle getSectionTitle() {
             switch (this) {
                 case UPCOMING:
-                    return ListItem.SectionTitle.RELATED;
+                    return ListItem.SectionTitle.UPCOMING;
                 case SOON:
                     return ListItem.SectionTitle.SOON;
                 case RELEASED:

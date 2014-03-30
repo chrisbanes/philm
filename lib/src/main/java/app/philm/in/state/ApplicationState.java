@@ -5,7 +5,8 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Bus;
 
-import java.util.HashMap;
+import android.support.v4.util.ArrayMap;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,9 +14,9 @@ import java.util.Set;
 
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.TmdbConfiguration;
 import app.philm.in.model.WatchingMovie;
@@ -55,9 +56,9 @@ public final class ApplicationState implements BaseState, MoviesState, UserState
     public ApplicationState(Bus eventBus) {
         mEventBus = Preconditions.checkNotNull(eventBus, "eventBus cannot null");
 
-        mTmdbIdMovies = new HashMap<>(INITIAL_MOVIE_MAP_CAPACITY);
-        mImdbIdMovies = new HashMap<>(INITIAL_MOVIE_MAP_CAPACITY);
-        mPeople = new HashMap<>();
+        mTmdbIdMovies = new ArrayMap<>(INITIAL_MOVIE_MAP_CAPACITY);
+        mImdbIdMovies = new ArrayMap<>(INITIAL_MOVIE_MAP_CAPACITY);
+        mPeople = new ArrayMap<>();
     }
 
     @Override

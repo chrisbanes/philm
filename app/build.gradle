@@ -80,9 +80,7 @@ android {
 
 dependencies {
     compile project(':lib')
-    compile findProject(":lib").fileTree(dir: 'libs', include: '*.jar')
 
-    compile 'com.android.support:support-v4:+'
     compile 'com.squareup.picasso:picasso:2.+'
     compile 'nl.qbusict:cupboard:1.+'
     compile 'com.crashlytics.android:crashlytics:1.+'

@@ -6,10 +6,11 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.squareup.otto.Subscribe;
 
+import android.support.v4.util.ArrayMap;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -839,7 +840,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
             if (!PhilmCollections.isEmpty(sectionItems)) {
                 if (sectionsItemLists == null) {
-                    sectionsItemLists = new HashMap<>();
+                    sectionsItemLists = new ArrayMap<>();
                 }
                 filter.sortListItems(sectionItems);
                 sectionsItemLists.put(filter, sectionItems);

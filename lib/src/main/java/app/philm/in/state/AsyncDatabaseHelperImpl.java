@@ -2,9 +2,11 @@ package app.philm.in.state;
 
 import com.google.common.base.Preconditions;
 
+import android.support.v4.util.ArrayMap;
+
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
@@ -116,7 +118,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
             public Void doDatabaseCall() {
-                HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<>();
+                Map<Long, PhilmMovie> dbItemsMap = new ArrayMap<>();
                 for (PhilmMovie movie : mDbHelper.getLibrary()) {
                     dbItemsMap.put(movie.getDbId(), movie);
                 }
@@ -144,7 +146,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
             public Void doDatabaseCall() {
-                HashMap<Long, PhilmMovie> dbItemsMap = new HashMap<>();
+                Map<Long, PhilmMovie> dbItemsMap = new ArrayMap<>();
                 for (PhilmMovie movie : mDbHelper.getWatchlist()) {
                     dbItemsMap.put(movie.getDbId(), movie);
                 }

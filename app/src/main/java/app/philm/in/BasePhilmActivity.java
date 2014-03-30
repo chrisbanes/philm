@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.Window;
 
@@ -44,7 +45,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
     protected void onResume() {
         super.onResume();
 
-        mMainController.setDisplay(new AndroidDisplay(this, getDrawerToggle()));
+        mMainController.setDisplay(new AndroidDisplay(this, getDrawerToggle(), getDrawerLayout()));
         mMainController.setHostCallbacks(this);
         mMainController.init();
 
@@ -55,6 +56,10 @@ public abstract class BasePhilmActivity extends FragmentActivity
     }
 
     protected ActionBarDrawerToggle getDrawerToggle() {
+        return null;
+    }
+
+    protected DrawerLayout getDrawerLayout() {
         return null;
     }
 

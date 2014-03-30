@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,11 @@ public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayou
     @Override
     protected ActionBarDrawerToggle getDrawerToggle() {
         return mDrawerToggle;
+    }
+
+    @Override
+    protected DrawerLayout getDrawerLayout() {
+        return mDrawerLayout;
     }
 
     @Override

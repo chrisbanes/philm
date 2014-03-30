@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.view.Gravity;
 
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
@@ -41,11 +42,15 @@ public class AndroidDisplay implements Display {
 
     private final FragmentActivity mActivity;
     private final ActionBarDrawerToggle mActionBarDrawerToggle;
+    private final DrawerLayout mDrawerLayout;
     private final PhilmTypefaceSpan mDefaultTitleSpan;
 
-    public AndroidDisplay(FragmentActivity activity, ActionBarDrawerToggle actionBarDrawerToggle) {
+    public AndroidDisplay(FragmentActivity activity,
+                          ActionBarDrawerToggle actionBarDrawerToggle,
+                          DrawerLayout drawerLayout) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mActionBarDrawerToggle = actionBarDrawerToggle;
+        mDrawerLayout = drawerLayout;
         mDefaultTitleSpan = new PhilmTypefaceSpan(activity, FontTextView.FONT_ROBOTO_CONDENSED);
     }
 
@@ -119,9 +124,8 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void closeDrawerLayout() {
-        DrawerLayout drawerLayout = (DrawerLayout) mActivity.findViewById(R.id.drawer_layout);
-        if (drawerLayout != null) {
-            drawerLayout.closeDrawers();
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            mDrawerLayout.closeDrawers();
         }
     }
 

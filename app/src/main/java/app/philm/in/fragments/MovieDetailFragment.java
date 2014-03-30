@@ -62,7 +62,6 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private static final Date DATE = new Date();
 
-    private static final float BOTTOM_INSET_ALPHA = 0.75f;
     private static final float PARALLAX_FRICTION = 0.5f;
 
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
@@ -93,8 +92,11 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private PhilmMovie mMovie;
 
+    private PhilmImageView mBigPosterImageView;
     private PhilmImageView mBackdropImageView;
     private int mBackdropOriginalHeight;
+
+    private boolean mFadeActionBar;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -114,6 +116,8 @@ public class MovieDetailFragment extends BaseDetailFragment
         PhilmApplication.from(getActivity()).inject(this);
 
         setHasOptionsMenu(true);
+
+        mFadeActionBar = getResources().getBoolean(R.bool.movie_detail_fade_action_bar);
     }
 
     @Override
@@ -127,7 +131,11 @@ public class MovieDetailFragment extends BaseDetailFragment
         super.onViewCreated(view, savedInstanceState);
 
         mBackdropImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
-        mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
+        if (mBackdropImageView != null) {
+            mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
+        }
+
+        mBigPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
 
         getListView().setOnScrollListener(this);
     }
@@ -148,12 +156,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setBottomInsetAlpha(BOTTOM_INSET_ALPHA);
     }
 
     @Override
@@ -238,10 +240,12 @@ public class MovieDetailFragment extends BaseDetailFragment
     public void onInsetsChanged(Rect insets) {
         super.onInsetsChanged(insets);
 
-        final int targetBackdropHeight = mBackdropOriginalHeight + insets.top;
-        if (mBackdropImageView.getLayoutParams().height != targetBackdropHeight) {
-            mBackdropImageView.getLayoutParams().height = targetBackdropHeight;
-            mBackdropImageView.requestLayout();
+        if (mBackdropImageView != null) {
+            final int targetBackdropHeight = mBackdropOriginalHeight + insets.top;
+            if (mBackdropImageView.getLayoutParams().height != targetBackdropHeight) {
+                mBackdropImageView.getLayoutParams().height = targetBackdropHeight;
+                mBackdropImageView.requestLayout();
+            }
         }
     }
 
@@ -300,16 +304,24 @@ public class MovieDetailFragment extends BaseDetailFragment
             final int y = absListView.getPaddingTop() - firstView.getTop();
             final float percent = y / (float) firstView.getHeight();
 
-            setTopInsetAlpha(percent);
-            setActionBarTitleEnabled(percent >= 0.8f);
+            if (mFadeActionBar) {
+                setTopInsetAlpha(percent);
+                setActionBarTitleEnabled(percent >= 0.8f);
+            }
 
-            mBackdropImageView.setVisibility(View.VISIBLE);
-            final int newTop = Math.round(-y * PARALLAX_FRICTION);
-            mBackdropImageView.offsetTopAndBottom(newTop - mBackdropImageView.getTop());
-
+            if (mBackdropImageView != null) {
+                mBackdropImageView.setVisibility(View.VISIBLE);
+                final int newTop = Math.round(-y * PARALLAX_FRICTION);
+                mBackdropImageView.offsetTopAndBottom(newTop - mBackdropImageView.getTop());
+            }
         } else {
-            setTopInsetAlpha(1f);
-            mBackdropImageView.setVisibility(View.INVISIBLE);
+            if (mFadeActionBar) {
+                setTopInsetAlpha(1f);
+            }
+
+            if (mBackdropImageView != null) {
+                mBackdropImageView.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -349,7 +361,10 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         final ArrayList<DetailItemType> items = new ArrayList<>();
 
-        items.add(DetailItemType.TITLE);
+        if (mBigPosterImageView == null) {
+            items.add(DetailItemType.TITLE);
+        }
+
         items.add(DetailItemType.BUTTONS);
 
         if (!TextUtils.isEmpty(mMovie.getOverview())) {
@@ -375,7 +390,13 @@ public class MovieDetailFragment extends BaseDetailFragment
             items.add(DetailItemType.CREW);
         }
 
-        mBackdropImageView.loadBackdropUrl(mMovie);
+        if (mBackdropImageView != null) {
+            mBackdropImageView.loadBackdropUrl(mMovie);
+        }
+
+        if (mBigPosterImageView != null) {
+            mBigPosterImageView.loadPosterUrl(mMovie, mPosterListener);
+        }
 
         getListAdapter().setItems(items);
     }

@@ -140,7 +140,7 @@ public class PhilmImageView extends ImageView {
             if (mPicassoHandler.getPlaceholderDrawable() != 0) {
                 request = request.placeholder(mPicassoHandler.getPlaceholderDrawable());
             }
-            request.into(mPicassoTarget);
+            request.resize(getWidth(), getHeight()).centerCrop().into(mPicassoTarget);
 
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);

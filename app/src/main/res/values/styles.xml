@@ -127,7 +127,7 @@
 
     <style name="Widget.Philm.Account.Drawer.Fullname" parent="android:Widget">
         <item name="font">roboto_condensed_bold</item>
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">@dimen/drawer_user_text_size</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:shadowColor">@android:color/black</item>
@@ -142,7 +142,7 @@
         <item name="font">roboto_condensed</item>
     </style>
 
-    <style name="Widget.Philm.Movie.Drawer.Header" parent="android:Widget">
+    <style name="Widget.Philm.Movie.Drawer.Checkin.Header" parent="android:Widget">
         <item name="font">roboto_condensed_bold</item>
         <item name="android:textSize">12dp</item>
         <item name="android:maxLines">1</item>
@@ -159,7 +159,7 @@
     </style>
 
 
-    <style name="Widget.Philm.Movie.Drawer.Title" parent="android:Widget">
+    <style name="Widget.Philm.Movie.Drawer.Checkin.Title" parent="android:Widget">
         <item name="font">roboto_condensed</item>
         <item name="android:textSize">18dp</item>
         <item name="android:maxLines">1</item>

@@ -69,13 +69,13 @@
                   android:layout_height="wrap_content"
                   android:layout_width="wrap_content"
                   android:text="@string/movie_checkin_header"
-                  style="@style/Widget.Philm.Movie.Drawer.Header" />
+                  style="@style/Widget.Philm.Movie.Drawer.Checkin.Header" />
 
             <app.philm.in.view.FontTextView
                   android:id="@+id/textview_title"
                   android:layout_height="wrap_content"
                   android:layout_width="wrap_content"
-                  style="@style/Widget.Philm.Movie.Drawer.Title" />
+                  style="@style/Widget.Philm.Movie.Drawer.Checkin.Title" />
 
         </app.philm.in.view.ForegroundLinearLayout>
 

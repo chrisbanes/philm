@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="drawer_side_menu_width">300dp</dimen>
+    <dimen name="drawer_user_text_size">16dp</dimen>
+    <dimen name="drawer_movie_checkin_poster_width">68dp</dimen>
+    <!-- Should be movie_detail_poster_width * 1.6 -->
+    <dimen name="drawer_movie_checkin_poster_height">110dp</dimen>
+    <dimen name="drawer_account_avatar_width">60dp</dimen>
+    <dimen name="drawer_account_avatar_height">60dp</dimen>
+
     <dimen name="movie_grid_item_width">140dp</dimen>
     <dimen name="movie_grid_item_height">224dp</dimen>
 

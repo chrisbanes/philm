@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<app.philm.in.view.InsetFrameLayout
+<app.philm.in.view.InsetDrawerLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/inset_fl"
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:insetBackground="?attr/default_inset_color">
-
-    <android.support.v4.widget.DrawerLayout
-            android:id="@+id/drawer_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
         <FrameLayout
                 android:layout_width="match_parent"
@@ -44,5 +39,4 @@
 
         </FrameLayout>
 
-    </android.support.v4.widget.DrawerLayout>
-</app.philm.in.view.InsetFrameLayout>
+</app.philm.in.view.InsetDrawerLayout>

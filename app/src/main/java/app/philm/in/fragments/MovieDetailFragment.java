@@ -1048,7 +1048,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             final int height = getResources()
                     .getDimensionPixelSize(R.dimen.movie_detail_flag_height);
 
-            final String url = mImageHelper.getResizedUrl(flagUrl, width, height, "gif");
+            final String url = ImageHelper.getResizedUrl(flagUrl, width, height);
 
             Picasso.with(getActivity())
                     .load(url)

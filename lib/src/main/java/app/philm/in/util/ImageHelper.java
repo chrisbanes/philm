@@ -10,6 +10,8 @@ import app.philm.in.model.PhilmPersonCredit;
 
 public class ImageHelper {
 
+    private static final boolean RESIZE_ALL = false;
+
     private static final int[] TRAKT_POSTER_SIZES = { 138, 300 };
     private static final int[] TRAKT_BACKDROP_SIZES = { 218, 940 };
 
@@ -34,52 +36,65 @@ public class ImageHelper {
         mTmdbProfileSizes = tmdbProfileSizes;
     }
 
-    public String getPosterUrl(final PhilmPersonCredit credit, final int width) {
+    public String getPosterUrl(final PhilmPersonCredit credit, final int width, final int height) {
         final String imageUrl = credit.getPosterPath();
         Preconditions.checkNotNull(imageUrl, "movie must have poster url");
-        return buildTmdbPosterUrl(imageUrl, width);
+        String url = buildTmdbPosterUrl(imageUrl, width, RESIZE_ALL);
+        return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
     }
 
-    public String getPosterUrl(final PhilmMovie movie, final int width) {
+    public String getPosterUrl(final PhilmMovie movie, final int width, final int height) {
         final String imageUrl = movie.getPosterUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have poster url");
 
+        String url = null;
         switch (movie.getPosterSourceType()) {
             case PhilmMovie.TYPE_TMDB:
-                return buildTmdbPosterUrl(imageUrl, width);
-            default:
+                url = buildTmdbPosterUrl(imageUrl, width, RESIZE_ALL);
+                break;
             case PhilmMovie.TYPE_TRAKT:
-                return buildTraktUrl(imageUrl, selectSize(width, TRAKT_POSTER_SIZES));
+                url = buildTraktUrl(imageUrl, selectSize(width, TRAKT_POSTER_SIZES, RESIZE_ALL));
+                break;
         }
+
+        return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
     }
 
-    public String getFanartUrl(final PhilmMovie movie, final int width) {
+    public String getFanartUrl(final PhilmMovie movie, final int width, final int height) {
         final String imageUrl = movie.getBackdropUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have backdrop url");
 
+        String url = null;
         switch (movie.getBackdropSourceType()) {
             case PhilmMovie.TYPE_TMDB:
-                return buildTmdbBackdropUrl(imageUrl, width);
-            default:
+                url = buildTmdbBackdropUrl(imageUrl, width, RESIZE_ALL);
+                break;
             case PhilmMovie.TYPE_TRAKT:
-                return buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES));
+                url = buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES, RESIZE_ALL));
+                break;
         }
+
+        return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
     }
 
-    public String getProfileUrl(final PhilmPerson person, final int width) {
+    public String getProfileUrl(final PhilmPerson person, final int width, final int height) {
         final String imageUrl = person.getPictureUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have picture url");
 
+        String url = null;
         switch (person.getPictureType()) {
             case PhilmMovie.TYPE_TMDB:
-                return buildTmdbBackdropUrl(imageUrl, width);
-            default:
+                url = buildTmdbBackdropUrl(imageUrl, width, RESIZE_ALL);
+                break;
             case PhilmMovie.TYPE_TRAKT:
-                return buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES));
+                url = buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES, RESIZE_ALL));
+                break;
         }
+
+        return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
     }
 
-    public String getResizedUrl(String url, int width, int height, String format) {
+    public static String getResizedUrl(String url, int width, int height) {
         StringBuffer sb = new StringBuffer("https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy");
         sb.append("?container=focus");
         sb.append("&resize_w=").append(width);
@@ -89,38 +104,42 @@ public class ImageHelper {
         return sb.toString();
     }
 
-    private String buildTmdbPosterUrl(String imageUrl, int width) {
+    private String buildTmdbPosterUrl(String imageUrl, int width, boolean forceLarger) {
         if (mTmdbBaseUrl != null && mTmdbPosterSizes != null) {
-            return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbPosterSizes));
+            return buildTmdbUrl(mTmdbBaseUrl, imageUrl,
+                    selectSize(width, mTmdbPosterSizes, forceLarger));
         } else {
             return null;
         }
     }
 
-    private String buildTmdbBackdropUrl(String imageUrl, int width) {
+    private String buildTmdbBackdropUrl(String imageUrl, int width, boolean forceLarger) {
         if (mTmdbBaseUrl != null && mTmdbBackdropSizes != null) {
-            return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbBackdropSizes));
+            return buildTmdbUrl(mTmdbBaseUrl, imageUrl,
+                    selectSize(width, mTmdbBackdropSizes, forceLarger));
         } else {
             return null;
         }
     }
 
-    private String buildTmdbProfileUrl(String imageUrl, int width) {
+    private String buildTmdbProfileUrl(String imageUrl, int width, boolean forceLarger) {
         if (mTmdbBaseUrl != null && mTmdbProfileSizes != null) {
-            return buildTmdbUrl(mTmdbBaseUrl, imageUrl, selectSize(width, mTmdbProfileSizes));
+            return buildTmdbUrl(mTmdbBaseUrl, imageUrl,
+                    selectSize(width, mTmdbProfileSizes, forceLarger));
         } else {
             return null;
         }
     }
 
-    private static int selectSize(final int width, final int[] widths) {
+    private static int selectSize(final int width, final int[] widths, final boolean forceLarger) {
         int previousBucketWidth = 0;
 
         for (int i = 0; i < widths.length; i++) {
             final int currentBucketWidth = widths[i];
 
             if (width < currentBucketWidth) {
-                if (previousBucketWidth != 0) {
+                if (forceLarger || previousBucketWidth != 0) {
+                    // We're in between this and the previous bucket
                     final int bucketDiff = currentBucketWidth - previousBucketWidth;
                     if (width < previousBucketWidth + (bucketDiff / 2)) {
                         return previousBucketWidth;

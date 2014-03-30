@@ -206,7 +206,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getFanartUrl(mMovie, imageView.getWidth());
+            return helper.getFanartUrl(mMovie, imageView.getWidth(), imageView.getHeight());
         }
 
         @Override
@@ -239,7 +239,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getPosterUrl(mMovie, imageView.getWidth());
+            return helper.getPosterUrl(mMovie, imageView.getWidth(), imageView.getHeight());
         }
 
         @Override
@@ -267,7 +267,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getProfileUrl(mPerson, imageView.getWidth());
+            return helper.getProfileUrl(mPerson, imageView.getWidth(), imageView.getHeight());
         }
 
         @Override
@@ -300,7 +300,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getPosterUrl(mCredit, imageView.getWidth());
+            return helper.getPosterUrl(mCredit, imageView.getWidth(), imageView.getHeight());
         }
 
         @Override

@@ -420,7 +420,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
             InputMethodManager imm = (InputMethodManager)
                     getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-            if (imm != null) {
+            if (mSearchResult == null && imm != null) {
                 mSearchView.requestFocus();
                 HIDDEN_METHOD_INVOKER.showSoftInputUnchecked(imm, mSearchView, 0);
             }

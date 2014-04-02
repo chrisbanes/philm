@@ -83,6 +83,7 @@ public class PhilmMovie implements PhilmModel {
     String title;
     String sortTitle;
     String overview;
+    String tagline;
 
     String posterUrl;
     int posterSourceType;
@@ -179,6 +180,10 @@ public class PhilmMovie implements PhilmModel {
             overview = movie.overview;
         }
 
+        if (!TextUtils.isEmpty(movie.tagline)) {
+            tagline = movie.tagline;
+        }
+
         year = unbox(year, movie.year);
         inCollection = unbox(inCollection, movie.inCollection);
         inWatchlist = unbox(inWatchlist, movie.inWatchlist);
@@ -256,6 +261,10 @@ public class PhilmMovie implements PhilmModel {
 
         if (!TextUtils.isEmpty(movie.overview)) {
             overview = movie.overview;
+        }
+
+        if (!TextUtils.isEmpty(movie.tagline)) {
+            tagline = movie.tagline;
         }
 
         // Only update from here if we do not have a country code
@@ -393,6 +402,10 @@ public class PhilmMovie implements PhilmModel {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTagline() {
+        return tagline;
     }
 
     @Override

@@ -45,6 +45,7 @@ import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmTrailer;
+import app.philm.in.util.ColorUtils;
 import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
@@ -361,10 +362,17 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         final ArrayList<DetailItemType> items = new ArrayList<>();
 
-        if (mBigPosterImageView == null) {
-            items.add(DetailItemType.TITLE);
+        if (mBigPosterImageView == null && mBackdropImageView != null) {
+            if (!TextUtils.isEmpty(mMovie.getBackdropUrl())) {
+                items.add(DetailItemType.BACKDROP_SPACING);
+                mBackdropImageView.setVisibility(View.VISIBLE);
+                mBackdropImageView.loadBackdropUrl(mMovie);
+            } else {
+                mBackdropImageView.setVisibility(View.GONE);
+            }
         }
 
+        items.add(DetailItemType.TITLE);
         items.add(DetailItemType.BUTTONS);
 
         if (!TextUtils.isEmpty(mMovie.getOverview())) {
@@ -390,10 +398,6 @@ public class MovieDetailFragment extends BaseDetailFragment
             items.add(DetailItemType.CREW);
         }
 
-        if (mBackdropImageView != null) {
-            mBackdropImageView.loadBackdropUrl(mMovie);
-        }
-
         if (mBigPosterImageView != null) {
             mBigPosterImageView.loadPosterUrl(mMovie, mPosterListener);
         }
@@ -412,6 +416,7 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     private enum DetailItemType implements DetailType {
+        BACKDROP_SPACING(R.layout.item_movie_backdrop_spacing),
         TITLE(R.layout.item_movie_detail_title),
         BUTTONS(R.layout.item_movie_detail_buttons),
         DETAILS(R.layout.item_movie_detail_details),
@@ -978,12 +983,18 @@ public class MovieDetailFragment extends BaseDetailFragment
             titleTextView.setText(getString(R.string.movie_title_year,
                     mMovie.getTitle(), mMovie.getYear()));
 
+            TextView taglineTextView = (TextView) view.findViewById(R.id.textview_tagline);
+            taglineTextView.setText(mMovie.getTagline());
+
             PhilmImageView posterImageView = (PhilmImageView)
                     view.findViewById(R.id.imageview_poster);
             posterImageView.loadPosterUrl(mMovie, mPosterListener);
 
-            if (mMovie.getColorScheme() != null) {
-                posterImageView.setBackgroundColor(mMovie.getColorScheme().primaryAccent);
+            final ColorScheme colorScheme = mMovie.getColorScheme();
+            if (colorScheme != null) {
+                view.setBackgroundColor(colorScheme.primaryAccent);
+                titleTextView.setTextColor(colorScheme.primaryText);
+                taglineTextView.setTextColor(colorScheme.secondaryText);
             }
         }
 

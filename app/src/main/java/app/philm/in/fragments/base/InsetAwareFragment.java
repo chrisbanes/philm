@@ -36,18 +36,6 @@ public class InsetAwareFragment extends Fragment
         }
     }
 
-    public void setInsetColor(int color) {
-        if (getActivity() instanceof PhilmActivity) {
-            ((PhilmActivity) getActivity()).setInsetColor(color);
-        }
-    }
-
-    public void setSolidInsetColor(int color) {
-        if (getActivity() instanceof PhilmActivity) {
-            ((PhilmActivity) getActivity()).setSolidInsetColor(color);
-        }
-    }
-
     public void setBottomInsetAlpha(float alpha) {
         if (getActivity() instanceof PhilmActivity) {
             ((PhilmActivity) getActivity()).setInsetBottomAlpha(alpha);

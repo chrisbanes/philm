@@ -16,7 +16,7 @@
     <color name="primary_accent_color_dark_40">#FF004F00</color>
 
     <color name="drawer_background">#FFDDDDDD</color>
-    <color name="chrome_background">#CCDDDDDD</color>
+    <color name="chrome_background">#DDDDDDDD</color>
     <color name="chrome_custom_background_alpha">#DDFFFFFF</color>
 
     <color name="translucent_black_dark">#BB000000</color>

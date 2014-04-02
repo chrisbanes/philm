@@ -100,7 +100,9 @@ public class InsetDrawerLayout extends DrawerLayout {
     }
 
     public void resetInsetBackground() {
-        setInsetBackground(mDefaultInsetBackground);
+        if (mInsetBackground != mDefaultInsetBackground) {
+            setInsetBackground(mDefaultInsetBackground);
+        }
     }
 
     public void setInsetBackgroundColor(int color) {

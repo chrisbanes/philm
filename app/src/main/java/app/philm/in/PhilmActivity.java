@@ -142,17 +142,7 @@ public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayou
         mDrawerLayout.setBottomInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
     }
 
-    public void setInsetColor(int color) {
-        final int alpha = getResources().getColor(R.color.chrome_custom_background_alpha);
-        mDrawerLayout.setInsetBackgroundColor(alpha & color);
-    }
-
-    public void setSolidInsetColor(int color) {
-        mDrawerLayout.setInsetBackgroundColor(color);
-    }
-
     public void resetInsets() {
-        mDrawerLayout.resetInsetBackground();
         setInsetTopAlpha(255);
         setInsetBottomAlpha(0);
     }

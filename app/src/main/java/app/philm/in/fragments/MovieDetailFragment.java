@@ -333,11 +333,6 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     void onColorSchemeChanged() {
         getListAdapter().onColorSchemeChanged();
-        setInsetColor(mMovie.getColorScheme().primaryAccent);
-
-        if (hasCallbacks()) {
-            getCallbacks().setTitleTextColor(mMovie.getColorScheme().primaryText);
-        }
     }
 
     private void captureYoutubeThumbnailLoader(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {

@@ -19,16 +19,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_major">
+        android:padding="@dimen/spacing_minor">
 
-        <app.philm.in.view.FontTextView
+        <app.philm.in.view.AutofitTextView
             android:id="@+id/textview_title"
             style="@style/Widget.Philm.Movie.Detail.Title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_micro"/>
+            android:layout_height="wrap_content"/>
 
-        <app.philm.in.view.FontTextView
+        <app.philm.in.view.AutofitTextView
             android:id="@+id/textview_tagline"
             style="@style/Widget.Philm.Movie.Detail.Tagline"
             android:layout_width="match_parent"

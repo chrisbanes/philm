@@ -51,4 +51,10 @@
         <attr name="collapsed_maxLines" format="integer|reference" />
     </declare-styleable>
 
+    <declare-styleable name="AutofitTextView">
+        <attr name="minTextSize" format="dimension|reference" />
+        <attr name="precision" format="float|reference" />
+        <attr name="sizeToFit" format="boolean|reference" />
+    </declare-styleable>
+
 </resources>

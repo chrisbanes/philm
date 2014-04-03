@@ -73,6 +73,7 @@
     <style name="Widget.Philm.Person.Detail.Title"
         parent="Widget.Philm.Movie.Detail.Title">
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">bottom|left</item>
     </style>
 
     <style name="Widget.Philm.Person.Detail.Subtitle" parent="android:Widget">
@@ -88,7 +89,6 @@
         <item name="android:textSize">@dimen/movie_detail_title_textsize</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:gravity">bottom|left</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Tagline" parent="android:Widget">
@@ -96,7 +96,6 @@
         <item name="android:textSize">@dimen/movie_detail_tagline_textsize</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:gravity">bottom|left</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.SectionHeader" parent="android:Widget">

@@ -10,10 +10,8 @@ import com.squareup.picasso.Target;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -351,18 +349,9 @@ public class PhilmImageView extends ImageView {
         final boolean fade = mAutoFade && loadedFrom != Picasso.LoadedFrom.MEMORY;
 
         if (fade) {
-            Drawable currentDrawable = getDrawable();
-            if (currentDrawable == null) {
-                currentDrawable = mTransparentDrawable;
-            }
-
-            TransitionDrawable transitionDrawable = new TransitionDrawable(
-                    new Drawable[]{currentDrawable, new BitmapDrawable(getResources(), bitmap)});
-            transitionDrawable.setCrossFadeEnabled(true);
-
-            setImageDrawable(transitionDrawable);
-
-            transitionDrawable.startTransition(TRANSITION_DURATION);
+            setAlpha(0f);
+            setImageBitmap(bitmap);
+            animate().alpha(1f).setDuration(TRANSITION_DURATION);
         } else {
             setImageBitmap(bitmap);
         }

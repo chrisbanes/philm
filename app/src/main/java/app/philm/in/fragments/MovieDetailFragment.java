@@ -50,6 +50,7 @@ import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
+import app.philm.in.view.BackdropImageView;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailCardLayout;
@@ -94,7 +95,7 @@ public class MovieDetailFragment extends BaseDetailFragment
     private PhilmMovie mMovie;
 
     private PhilmImageView mBigPosterImageView;
-    private PhilmImageView mBackdropImageView;
+    private BackdropImageView mBackdropImageView;
     private int mBackdropOriginalHeight;
 
     private boolean mFadeActionBar;
@@ -131,7 +132,7 @@ public class MovieDetailFragment extends BaseDetailFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mBackdropImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
+        mBackdropImageView = (BackdropImageView) view.findViewById(R.id.imageview_fanart);
         if (mBackdropImageView != null) {
             mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
         }
@@ -312,8 +313,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             if (mBackdropImageView != null) {
                 mBackdropImageView.setVisibility(View.VISIBLE);
-                final int newTop = Math.round(-y * PARALLAX_FRICTION);
-                mBackdropImageView.offsetTopAndBottom(newTop - mBackdropImageView.getTop());
+                mBackdropImageView.offsetBackdrop(Math.round(-y * PARALLAX_FRICTION));
             }
         } else {
             if (mFadeActionBar) {

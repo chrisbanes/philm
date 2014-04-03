@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <app.philm.in.view.PhilmImageView
+    <app.philm.in.view.BackdropImageView
         android:id="@+id/imageview_fanart"
         android:layout_width="match_parent"
         android:layout_height="@dimen/movie_detail_fanart_height"

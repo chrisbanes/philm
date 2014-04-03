@@ -3,7 +3,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/colorBackground"
     android:paddingTop="@dimen/spacing_minor"
     android:paddingLeft="@dimen/spacing_major"
     android:paddingRight="@dimen/spacing_major">

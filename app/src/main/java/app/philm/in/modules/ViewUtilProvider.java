@@ -18,6 +18,7 @@ import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.util.TypefaceManager;
 import app.philm.in.view.AutofitTextView;
+import app.philm.in.view.BackdropImageView;
 import app.philm.in.view.ExpandingTextView;
 import app.philm.in.view.FontTextView;
 import app.philm.in.view.PhilmImageView;
@@ -36,6 +37,7 @@ import dagger.Provides;
                 ExpandingTextView.class,
                 PhilmTypefaceSpan.class,
                 PhilmImageView.class,
+                BackdropImageView.class,
                 RatingCircleView.class,
                 MovieSectionedListAdapter.class,
                 PersonCreditSectionedListAdapter.class,

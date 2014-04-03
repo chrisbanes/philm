@@ -3,14 +3,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/colorBackground"
     android:baselineAligned="false">
 
     <app.philm.in.view.PhilmImageView
         android:id="@+id/imageview_poster"
         android:layout_width="@dimen/movie_detail_poster_width"
         android:layout_height="@dimen/movie_detail_poster_height"
-        android:background="?android:attr/colorForeground"
         android:cropToPadding="true"
         android:scaleType="centerCrop" />
 

@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/spacing_major"
-    internal:title="@string/trailers_movies"
-    android:background="?android:attr/colorBackground">
+    internal:title="@string/trailers_movies">
 
     <HorizontalScrollView
         android:layout_width="match_parent"

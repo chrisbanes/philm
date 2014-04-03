@@ -130,7 +130,7 @@ public class DominantColorCalculator {
      */
     private int findPrimaryTextColor(final ColorNode primary) {
         // Try and find a colour with sufficient contrast from the primary colour
-        for (ColorNode color : mPalette) {
+        for (ColorNode color : mWeightedPalette) {
             if (ColorUtils.calculateContrast(color, primary) >= PRIMARY_TEXT_MIN_CONTRAST) {
                 return color.getRgb();
             }

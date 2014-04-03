@@ -62,6 +62,17 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
         public int getLayoutId() {
             return mLayoutId;
         }
+
+        @Override
+        public int getViewType() {
+            switch (this) {
+                case CREDITS_CAST:
+                case CREDITS_CREW:
+                    return CREDITS_CAST.ordinal();
+                default:
+                    return ordinal();
+            }
+        }
     }
 
     private PhilmPerson mPerson;

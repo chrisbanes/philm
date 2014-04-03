@@ -182,6 +182,12 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
         public int getLayoutId() {
             return mLayoutId;
         }
+
+        @Override
+        public int getViewType() {
+            // Both items use the same type
+            return 0;
+        }
     }
 
     protected class SearchCategoryAdapter extends BaseDetailAdapter<SearchCategoryItems> {

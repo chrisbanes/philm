@@ -80,6 +80,8 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
         public int getLayoutId();
 
+        public int getViewType();
+
     }
 
     protected abstract class BaseDetailAdapter<E extends DetailType> extends BaseAdapter {
@@ -116,7 +118,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
         @Override
         public int getItemViewType(int position) {
-            return getItem(position).ordinal();
+            return getItem(position).getViewType();
         }
 
         @Override

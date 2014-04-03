@@ -428,8 +428,21 @@ public class MovieDetailFragment extends BaseDetailFragment
             mLayoutId = layoutId;
         }
 
+        @Override
         public int getLayoutId() {
             return mLayoutId;
+        }
+
+        @Override
+        public int getViewType() {
+            switch (this) {
+                case RELATED:
+                case CAST:
+                case CREW:
+                    return RELATED.ordinal();
+                default:
+                    return ordinal();
+            }
         }
     }
 

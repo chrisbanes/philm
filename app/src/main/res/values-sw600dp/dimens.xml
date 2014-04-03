@@ -23,6 +23,7 @@
     <dimen name="movie_detail_fanart_padding">@dimen/spacing_major</dimen>
 
     <dimen name="movie_detail_title_textsize">32dp</dimen>
+    <dimen name="movie_detail_tagline_textsize">18dp</dimen>
     <dimen name="movie_detail_summary_textsize">18dp</dimen>
 
     <dimen name="movie_list_image_width">80dp</dimen>

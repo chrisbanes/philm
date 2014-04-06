@@ -8,11 +8,14 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
 
+import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
@@ -46,9 +49,11 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmTrailer;
 import app.philm.in.util.ColorUtils;
+import app.philm.in.util.ColorValueAnimator;
 import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
+import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.BackdropImageView;
 import app.philm.in.view.CheatSheet;
@@ -986,23 +991,40 @@ public class MovieDetailFragment extends BaseDetailFragment
             summary.setText(mMovie.getOverview());
         }
 
-        private void bindTitle(View view) {
-            TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
+        private void bindTitle(final View view) {
+            final TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
             titleTextView.setText(getString(R.string.movie_title_year,
                     mMovie.getTitle(), mMovie.getYear()));
 
-            TextView taglineTextView = (TextView) view.findViewById(R.id.textview_tagline);
+            final TextView taglineTextView = (TextView) view.findViewById(R.id.textview_tagline);
             taglineTextView.setText(mMovie.getTagline());
 
             PhilmImageView posterImageView = (PhilmImageView)
                     view.findViewById(R.id.imageview_poster);
             posterImageView.loadPosterUrl(mMovie, mPosterListener);
 
-            final ColorScheme colorScheme = mMovie.getColorScheme();
-            if (colorScheme != null) {
-                view.setBackgroundColor(colorScheme.primaryAccent);
-                titleTextView.setTextColor(colorScheme.primaryText);
-                taglineTextView.setTextColor(colorScheme.secondaryText);
+            final ColorScheme scheme = mMovie.getColorScheme();
+            if (scheme != null) {
+
+                final int bgColor = (view.getBackground() instanceof ColorDrawable)
+                        ? ((ColorDrawable) view.getBackground()).getColor()
+                        : Color.WHITE;
+                final int titleColor = titleTextView.getCurrentTextColor();
+                final int taglineColor = taglineTextView.getCurrentTextColor();
+
+                ColorValueAnimator.start(view,
+                        IntUtils.toArray(bgColor, titleColor, taglineColor),
+                        IntUtils.toArray(scheme.primaryAccent, scheme.primaryText, scheme.secondaryText),
+                        175,
+                        new ColorValueAnimator.OnColorSetListener() {
+                            @Override
+                            public void onUpdateColor(int[] newColors) {
+                                view.setBackgroundColor(newColors[0]);
+                                titleTextView.setTextColor(newColors[1]);
+                                taglineTextView.setTextColor(newColors[2]);
+                            }
+                        }
+                );
             }
         }
 

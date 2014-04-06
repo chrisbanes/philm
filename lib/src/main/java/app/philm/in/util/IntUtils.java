@@ -25,4 +25,8 @@ public class IntUtils {
         return sum / sumWeight;
     }
 
+    public static int[] toArray(int... array) {
+        return array;
+    }
+
 }

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -102,8 +103,6 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
             scheduleHideTabs();
         }
 
-        mSlidingTabStrip.getBackground().setAlpha(255);
-
         if (savedInstanceState != null) {
             mCurrentItem = savedInstanceState.getInt(SAVE_SELECTED_TAB);
         }
@@ -112,6 +111,12 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
     @Override
     public void showSecondaryLoadingProgress(boolean visible) {
         // NO-OP
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSlidingTabStrip.getBackground().setAlpha(255);
     }
 
     @Override

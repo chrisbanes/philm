@@ -3,6 +3,7 @@ package app.philm.in.modules.library;
 import com.google.common.base.Preconditions;
 
 import android.accounts.AccountManager;
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.res.AssetManager;
 
@@ -43,6 +44,11 @@ public class ContextProvider {
     @Provides @Singleton
     public AssetManager provideAssetManager() {
         return mApplicationContext.getAssets();
+    }
+
+    @Provides @Singleton
+    public AlarmManager provideAlarmManager() {
+        return (AlarmManager) mApplicationContext.getSystemService(Context.ALARM_SERVICE);
     }
 
 }

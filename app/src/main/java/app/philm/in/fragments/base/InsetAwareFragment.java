@@ -35,10 +35,4 @@ public class InsetAwareFragment extends Fragment
             ((PhilmActivity) getActivity()).setInsetTopAlpha(alpha);
         }
     }
-
-    public void setBottomInsetAlpha(float alpha) {
-        if (getActivity() instanceof PhilmActivity) {
-            ((PhilmActivity) getActivity()).setInsetBottomAlpha(alpha);
-        }
-    }
 }

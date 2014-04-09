@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
 import app.philm.in.R;
 
@@ -27,7 +26,6 @@ public class InsetDrawerLayout extends DrawerLayout {
     private OnInsetsCallback mOnInsetsCallback;
 
     private int mTopAlpha = 255;
-    private int mBottomAlpha = 0;
 
     public InsetDrawerLayout(Context context) {
         super(context);
@@ -82,12 +80,6 @@ public class InsetDrawerLayout extends DrawerLayout {
             mInsetBackground.setBounds(mTempRect);
             mInsetBackground.setAlpha(mTopAlpha);
             mInsetBackground.draw(canvas);
-
-            // Bottom
-            mTempRect.set(0, height - mInsets.bottom, width, height);
-            mInsetBackground.setBounds(mTempRect);
-            mInsetBackground.setAlpha(mBottomAlpha);
-            mInsetBackground.draw(canvas);
         }
     }
 
@@ -132,11 +124,6 @@ public class InsetDrawerLayout extends DrawerLayout {
 
     public void setTopInsetAlpha(int alpha) {
         mTopAlpha = alpha;
-        ViewCompat.postInvalidateOnAnimation(this);
-    }
-
-    public void setBottomInsetAlpha(int alpha) {
-        mBottomAlpha = alpha;
         ViewCompat.postInvalidateOnAnimation(this);
     }
 

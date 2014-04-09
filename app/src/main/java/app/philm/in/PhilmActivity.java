@@ -138,13 +138,8 @@ public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayou
         mDrawerLayout.setTopInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
     }
 
-    public void setInsetBottomAlpha(float alpha) {
-        mDrawerLayout.setBottomInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
-    }
-
     public void resetInsets() {
         setInsetTopAlpha(255);
-        setInsetBottomAlpha(0);
     }
 
     @Override

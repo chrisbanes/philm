@@ -81,6 +81,6 @@ public abstract class BasePhilmMovieFragment extends InsetAwareFragment
     }
 
     @Override
-    public void onInsetsChanged(Rect insets) {
+    public void populateInsets(Rect insets) {
     }
 }

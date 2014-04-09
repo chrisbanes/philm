@@ -58,7 +58,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
     }
 
     @Override
-    public void onInsetsChanged(Rect insets) {
+    public void populateInsets(Rect insets) {
         getListView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
 

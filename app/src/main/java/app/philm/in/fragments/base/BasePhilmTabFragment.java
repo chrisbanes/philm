@@ -1,16 +1,12 @@
 package app.philm.in.fragments.base;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,34 +18,20 @@ import app.philm.in.view.SlidingTabLayout;
 
 public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
 
-    private static final int HIDE_DELAY = 2500;
-
     private static final String SAVE_SELECTED_TAB = "selected_tab";
 
     private ViewPager mViewPager;
     private TabPagerAdapter mAdapter;
     private SlidingTabLayout mSlidingTabStrip;
 
+    private final Rect mChildrenInsets = new Rect();
+
     private int mCurrentItem;
-
-    private boolean mInline;
-
-    public BasePhilmTabFragment(boolean inline) {
-        super();
-        mInline = inline;
-    }
-
-    public BasePhilmTabFragment() {
-        this(false);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(mInline
-                ? R.layout.fragment_viewpager_inline
-                : R.layout.fragment_viewpager,
-                container, false);
+        return inflater.inflate(R.layout.fragment_viewpager, container, false);
     }
 
     @Override
@@ -68,40 +50,16 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
         mSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.primary_accent_color));
         mSlidingTabStrip.setDividerColors(getResources().getColor(R.color.primary_accent_color_dark_10));
 
-        if (!mInline) {
-            mSlidingTabStrip.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mSlidingTabStrip.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                mChildrenInsets.top = (bottom - top);
+                propogateAdditionalInsetsToChildren(mChildrenInsets);
 
-                private int mState = ViewPager.SCROLL_STATE_IDLE;
-
-                @Override
-                public void onPageScrollStateChanged(final int state) {
-                    if (state == ViewPager.SCROLL_STATE_IDLE) {
-                        scheduleHideTabs();
-                    } else if (mState == ViewPager.SCROLL_STATE_IDLE
-                            && state == ViewPager.SCROLL_STATE_DRAGGING) {
-                        showTabs();
-                    }
-                    mState = state;
-                }
-            });
-
-            mSlidingTabStrip.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent ev) {
-                    switch (ev.getAction()) {
-                        case MotionEvent.ACTION_MOVE:
-                            removeScheduledHideTabs();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            scheduleHideTabs();
-                            break;
-                    }
-                    return false;
-                }
-            });
-
-            scheduleHideTabs();
-        }
+                v.removeOnLayoutChangeListener(this);
+            }
+        });
 
         if (savedInstanceState != null) {
             mCurrentItem = savedInstanceState.getInt(SAVE_SELECTED_TAB);
@@ -132,7 +90,7 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
     }
 
     @Override
-    public void onInsetsChanged(Rect insets) {
+    public void populateInsets(Rect insets) {
         ((ViewGroup.MarginLayoutParams) mSlidingTabStrip.getLayoutParams()).topMargin = insets.top;
         mSlidingTabStrip.setPadding(insets.left, 0, insets.right, 0);
     }
@@ -173,7 +131,13 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
 
         @Override
         public final Fragment getItem(int position) {
-            return mFragments.get(position);
+            final Fragment fragment = mFragments.get(position);
+
+            if (fragment instanceof InsetAwareFragment) {
+                ((InsetAwareFragment) fragment).setAdditionalInsets(mChildrenInsets);
+            }
+
+            return fragment;
         }
 
         @Override
@@ -184,42 +148,6 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
         @Override
         public CharSequence getPageTitle(int position) {
             return getTabTitle(position);
-        }
-    }
-
-    private final Runnable mHideTabsRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mSlidingTabStrip.getVisibility() == View.VISIBLE) {
-                mSlidingTabStrip.animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mSlidingTabStrip.setVisibility(View.GONE);
-                    }
-                }).start();
-            }
-        }
-    };
-
-    private void scheduleHideTabs() {
-        removeScheduledHideTabs();
-        getView().postDelayed(mHideTabsRunnable, HIDE_DELAY);
-    }
-
-    private void removeScheduledHideTabs() {
-        getView().removeCallbacks(mHideTabsRunnable);
-    }
-
-    private void showTabs() {
-        removeScheduledHideTabs();
-
-        if (mSlidingTabStrip.getVisibility() != View.VISIBLE) {
-            mSlidingTabStrip.animate().alpha(1f).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mSlidingTabStrip.setVisibility(View.VISIBLE);
-                }
-            }).start();
         }
     }
 

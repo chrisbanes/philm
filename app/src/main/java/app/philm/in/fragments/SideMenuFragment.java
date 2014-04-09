@@ -204,7 +204,7 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
     }
 
     @Override
-    public void onInsetsChanged(Rect insets) {
+    public void populateInsets(Rect insets) {
         getView().setPadding(insets.left, insets.top, 0, 0);
         mListView.setPadding(0, 0, 0, insets.bottom);
     }

@@ -8,7 +8,6 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
 
-import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -48,7 +47,6 @@ import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmTrailer;
-import app.philm.in.util.ColorUtils;
 import app.philm.in.util.ColorValueAnimator;
 import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
@@ -244,8 +242,8 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    public void onInsetsChanged(Rect insets) {
-        super.onInsetsChanged(insets);
+    public void populateInsets(Rect insets) {
+        super.populateInsets(insets);
 
         if (mBackdropImageView != null) {
             final int targetBackdropHeight = mBackdropOriginalHeight + insets.top;

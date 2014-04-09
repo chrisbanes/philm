@@ -335,7 +335,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
     }
 
     @Override
-    public void onInsetsChanged(Rect insets) {
+    public void populateInsets(Rect insets) {
         mInsets = insets;
         updateInsets(insets);
     }

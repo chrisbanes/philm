@@ -1,7 +1,5 @@
 package app.philm.in.fragments.base;
 
-import com.google.common.base.Objects;
-
 import android.graphics.Rect;
 import android.support.v4.app.Fragment;
 
@@ -50,10 +48,8 @@ public abstract class InsetAwareFragment extends Fragment
     }
 
     public void setAdditionalInsets(final Rect rect) {
-        if (!Objects.equal(mAdditionalInsets, rect)) {
-            mAdditionalInsets = rect;
-            doPopulateInsets();
-        }
+        mAdditionalInsets = rect;
+        doPopulateInsets();
     }
 
     protected void propogateAdditionalInsetsToChildren(final Rect rect) {

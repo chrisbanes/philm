@@ -54,10 +54,13 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                     int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                mChildrenInsets.top = (bottom - top);
+                final int h = bottom - top;
+                mChildrenInsets.top = h;
                 propogateAdditionalInsetsToChildren(mChildrenInsets);
 
-                v.removeOnLayoutChangeListener(this);
+                if (h > 0) {
+                    v.removeOnLayoutChangeListener(this);
+                }
             }
         });
 

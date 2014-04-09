@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_minor">
+        android:padding="@dimen/spacing_major">
 
         <app.philm.in.view.AutofitTextView
             android:id="@+id/textview_title"

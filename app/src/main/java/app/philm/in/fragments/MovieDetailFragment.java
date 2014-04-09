@@ -999,7 +999,14 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             PhilmImageView posterImageView = (PhilmImageView)
                     view.findViewById(R.id.imageview_poster);
-            posterImageView.loadPosterUrl(mMovie, mPosterListener);
+
+            if (mBigPosterImageView == null) {
+                posterImageView.setVisibility(View.VISIBLE);
+                posterImageView.loadPosterUrl(mMovie, mPosterListener);
+            } else {
+                // Hide small poster if there's a big poster imageview
+                posterImageView.setVisibility(View.GONE);
+            }
 
             final ColorScheme scheme = mMovie.getColorScheme();
             if (scheme != null) {

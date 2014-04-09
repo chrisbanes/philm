@@ -54,7 +54,6 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
     boolean mListShown;
 
     Rect mInsets;
-    boolean mUseTopInset = true;
 
     public ListFragment() {
     }
@@ -346,13 +345,6 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
         updateInsets(insets);
     }
 
-    public void setUseTopInset(final boolean use) {
-        mUseTopInset = use;
-        if (mInsets != null) {
-            updateInsets(mInsets);
-        }
-    }
-
     private void updateInsets(Rect insets) {
         mSecondaryProgressView.setPadding(0, 0, 0, insets.bottom);
 
@@ -360,7 +352,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
         view.setClipToPadding(false);
         view.setPadding(
                 insets.left,
-                mUseTopInset ? insets.top : 0,
+                insets.top,
                 insets.right,
                 insets.bottom);
     }

@@ -70,9 +70,15 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     }
 
     protected void moveListViewToSavedPositions() {
+        final E list = getListView();
         if (mFirstVisiblePosition != AdapterView.INVALID_POSITION
-                && getListView().getFirstVisiblePosition() <= 0) {
-            getListView().setSelection(mFirstVisiblePosition);
+                && list.getFirstVisiblePosition() <= 0) {
+            list.post(new Runnable() {
+                @Override
+                public void run() {
+                    list.setSelection(mFirstVisiblePosition);
+                }
+            });
         }
     }
 

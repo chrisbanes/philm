@@ -47,6 +47,14 @@ import android.widget.TextView;
  */
 public class SlidingTabLayout extends HorizontalScrollView {
 
+    public interface TabListener {
+
+        void onTabSelected(int pos);
+
+        void onTabReSelected(int pos);
+
+    }
+
     /**
      * Allows complete control over the colors drawn in the tab layout. Set with
      * {@link #setCustomTabColorizer(TabColorizer)}.
@@ -76,6 +84,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
+
+    private TabListener mTabListener;
 
     private final SlidingTabStrip mTabStrip;
 
@@ -148,6 +158,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
     public void setCustomTabView(int layoutResId, int textViewId) {
         mTabViewLayoutId = layoutResId;
         mTabViewTextViewId = textViewId;
+    }
+
+    public void setTabListener(TabListener tabListener) {
+        mTabListener = tabListener;
     }
 
     /**
@@ -309,7 +323,17 @@ public class SlidingTabLayout extends HorizontalScrollView {
         public void onClick(View v) {
             for (int i = 0; i < mTabStrip.getChildCount(); i++) {
                 if (v == mTabStrip.getChildAt(i)) {
+                    final int previousPos = mViewPager.getCurrentItem();
                     mViewPager.setCurrentItem(i);
+
+                    if (mTabListener != null) {
+                        if (previousPos != i) {
+                            mTabListener.onTabSelected(i);
+                        } else {
+                            mTabListener.onTabReSelected(i);
+                        }
+                    }
+
                     return;
                 }
             }

@@ -46,6 +46,20 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
 
         mSlidingTabStrip = (SlidingTabLayout) view.findViewById(R.id.viewpager_tabs);
         mSlidingTabStrip.setViewPager(mViewPager);
+        mSlidingTabStrip.setTabListener(new SlidingTabLayout.TabListener() {
+            @Override
+            public void onTabSelected(int pos) {
+                // NO-OP
+            }
+
+            @Override
+            public void onTabReSelected(int pos) {
+                final Fragment fragment = mAdapter.getItem(pos);
+                if (fragment instanceof ListFragment) {
+                    ((ListFragment) fragment).smoothScrollTo(0);
+                }
+            }
+        });
 
         mSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.primary_accent_color));
         mSlidingTabStrip.setDividerColors(getResources().getColor(R.color.primary_accent_color_dark_10));

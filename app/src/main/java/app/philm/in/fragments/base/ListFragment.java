@@ -327,6 +327,12 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
         mSecondaryProgressView.startAnimation(anim);
     }
 
+    public void smoothScrollTo(int position) {
+        if (mList != null) {
+            mList.smoothScrollToPosition(position);
+        }
+    }
+
     /**
      * Get the ListAdapter associated with this activity's ListView.
      */

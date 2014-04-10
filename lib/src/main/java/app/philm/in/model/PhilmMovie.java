@@ -319,9 +319,12 @@ public class PhilmMovie implements PhilmModel {
             final ArrayList<PhilmTrailer> philmTrailers = new ArrayList<>();
 
             for (Trailer trailer : trailers.youtube) {
-                final PhilmTrailer philmTrailer = new PhilmTrailer();
-                philmTrailer.setFromTmdb(PhilmTrailer.Source.YOUTUBE, trailer);
-                philmTrailers.add(philmTrailer);
+                if (!TextUtils.isEmpty(trailer.source)) {
+                    // If the trailer has an id...
+                    final PhilmTrailer philmTrailer = new PhilmTrailer();
+                    philmTrailer.setFromTmdb(PhilmTrailer.Source.YOUTUBE, trailer);
+                    philmTrailers.add(philmTrailer);
+                }
             }
 
             setTrailers(philmTrailers);

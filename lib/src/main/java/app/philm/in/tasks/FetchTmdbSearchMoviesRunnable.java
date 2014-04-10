@@ -1,5 +1,6 @@
 package app.philm.in.tasks;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.uwetrottmann.tmdb.entities.ResultsPage;
@@ -30,8 +31,10 @@ public class FetchTmdbSearchMoviesRunnable extends BaseTmdbPaginatedMovieRunnabl
     @Override
     protected void updateState(MoviesState.MoviePaginatedResult result) {
         MoviesState.SearchResult searchResult = mMoviesState.getSearchResult();
-        searchResult.movies = result;
-        mMoviesState.setSearchResult(searchResult);
+        if (searchResult != null && Objects.equal(mQuery, searchResult.query)) {
+            searchResult.movies = result;
+            mMoviesState.setSearchResult(searchResult);
+        }
     }
 
     @Override

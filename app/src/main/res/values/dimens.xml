@@ -26,7 +26,6 @@
     <dimen name="movie_detail_ratingbar_height">120dp</dimen>
 
     <dimen name="movie_detail_fanart_height">180dp</dimen>
-    <dimen name="movie_detail_fanart_padding">@dimen/spacing_minor</dimen>
 
     <dimen name="movie_detail_title_textsize">26dp</dimen>
     <dimen name="movie_detail_tagline_textsize">16dp</dimen>

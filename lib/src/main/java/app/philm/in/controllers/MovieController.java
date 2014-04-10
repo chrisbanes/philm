@@ -1196,12 +1196,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         if (movie != null) {
             ui.setMovie(movie);
-            ui.showFacebookShare(userProfile.isFacebookConnected());
-            ui.showTwitterShare(userProfile.isTwitterConnected());
-            ui.showTumblrShare(userProfile.isTumblrConnected());
-            ui.showPathShare(userProfile.isPathConnected());
 
-            if (userProfile.getDefaultShareMessage() != null) {
+            ui.showFacebookShare(userProfile != null && userProfile.isFacebookConnected());
+            ui.showTwitterShare(userProfile != null && userProfile.isTwitterConnected());
+            ui.showTumblrShare(userProfile != null && userProfile.isTumblrConnected());
+            ui.showPathShare(userProfile != null && userProfile.isPathConnected());
+
+            if (userProfile != null && userProfile.getDefaultShareMessage() != null) {
                 ui.setShareText(userProfile.getDefaultShareMessage()
                         .replace(Constants.TRAKT_MESSAGE_ITEM_REPLACE, movie.getTitle()));
             }

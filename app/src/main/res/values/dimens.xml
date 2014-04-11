@@ -19,9 +19,9 @@
     <dimen name="movie_grid_item_width">100dp</dimen>
     <dimen name="movie_grid_item_height">170dp</dimen>
 
-    <dimen name="movie_detail_poster_width">90dp</dimen>
+    <dimen name="movie_detail_poster_width">96dp</dimen>
     <!-- Should be movie_detail_poster_width * 1.6 -->
-    <dimen name="movie_detail_poster_height">140dp</dimen>
+    <dimen name="movie_detail_poster_height">152dp</dimen>
 
     <dimen name="movie_detail_ratingbar_height">120dp</dimen>
 

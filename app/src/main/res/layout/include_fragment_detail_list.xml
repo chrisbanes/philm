@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:internal="http://schemas.android.com/apk/res-auto">
+
+    <app.philm.in.view.FontTextView
+          android:id="@android:id/empty"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center"
+          android:padding="@dimen/spacing_minor"
+          internal:font="roboto_condensed" />
+
+    <ListView
+          android:id="@android:id/list"
+          android:layout_height="match_parent"
+          android:layout_width="match_parent"
+          android:clipToPadding="false"
+          android:divider="@null"
+          android:dividerHeight="0px" />
+
+</merge>

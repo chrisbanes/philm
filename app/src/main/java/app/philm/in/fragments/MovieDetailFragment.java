@@ -625,23 +625,18 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
+            if (view == null) {
+                view = mInflater.inflate(R.layout.item_movie_trailer, viewGroup, false);
+            }
+
             final PhilmTrailer trailer = getItem(position);
 
-            switch (trailer.getSource()) {
-                case YOUTUBE:
-                    final boolean viewWasInflated = view == null;
-                    if (view == null) {
-                        view = mInflater.inflate(R.layout.item_movie_trailer_youtube,
-                                viewGroup, false);
-                    }
+            final PhilmImageView imageView = (PhilmImageView)
+                    view.findViewById(R.id.imageview_thumbnail);
+            imageView.loadTrailer(trailer);
 
-                    final PhilmImageView imageView = (PhilmImageView)
-                            view.findViewById(R.id.imageview_thumbnail);
-                    imageView.loadTrailer(trailer);
-
-                    final TextView title = (TextView) view.findViewById(R.id.textview_title);
-                    title.setText(trailer.getName());
-            }
+            final TextView title = (TextView) view.findViewById(R.id.textview_title);
+            title.setText(trailer.getName());
 
             view.setOnClickListener(mOnClickListener);
             view.setTag(trailer);

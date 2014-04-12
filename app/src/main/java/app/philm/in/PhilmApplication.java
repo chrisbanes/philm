@@ -3,6 +3,7 @@ package app.philm.in;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.StrictMode;
 
 import javax.inject.Inject;
 
@@ -29,6 +30,19 @@ public class PhilmApplication extends Application implements Injector {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (AndroidConstants.STRICT_MODE) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDialog()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyDeath()
+                    .penaltyLog()
+                    .build());
+        }
 
         mObjectGraph = ObjectGraph.create(
                 new ContextProvider(this),

@@ -6,8 +6,8 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:addStatesFromChildren="true">
 
-    <com.google.android.youtube.player.YouTubeThumbnailView
-        android:id="@+id/imageview_youtube_thumbnail"
+    <app.philm.in.view.PhilmImageView
+        android:id="@+id/imageview_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />

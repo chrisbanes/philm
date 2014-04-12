@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmPersonCredit;
+import app.philm.in.model.PhilmTrailer;
 
 public class ImageHelper {
 
@@ -14,6 +15,12 @@ public class ImageHelper {
 
     private static final int[] TRAKT_POSTER_SIZES = { 138, 300 };
     private static final int[] TRAKT_BACKDROP_SIZES = { 218, 940 };
+
+    private static final String YOUTUBE_URL_BASE = "http://img.youtube.com/vi/";
+    private static final String YOUTUBE_MEDIUM_Q_FILENAME = "mqdefault.jpg";
+    private static final int YOUTUBE_MEDIUM_Q_WIDTH = 180;
+    private static final String YOUTUBE_HIGH_Q_FILENAME = "hqdefault.jpg";
+    private static final int YOUTUBE_HIGH_Q_WIDTH = 480;
 
     private String mTmdbBaseUrl;
     private int[] mTmdbPosterSizes;
@@ -183,6 +190,29 @@ public class ImageHelper {
         }
         url.append(imagePath);
         return url.toString();
+    }
+
+    public String getTrailerUrl(PhilmTrailer trailer, final int width, final int height) {
+        switch (trailer.getSource()) {
+            case YOUTUBE:
+                StringBuilder url = new StringBuilder(YOUTUBE_URL_BASE);
+                url.append(trailer.getId()).append("/");
+
+                final int size = selectSize(width,
+                        new int[] { YOUTUBE_MEDIUM_Q_WIDTH, YOUTUBE_HIGH_Q_WIDTH }, false);
+                switch (size) {
+                    case YOUTUBE_MEDIUM_Q_WIDTH:
+                        url.append(YOUTUBE_MEDIUM_Q_FILENAME);
+                        break;
+                    case YOUTUBE_HIGH_Q_WIDTH:
+                    case Integer.MAX_VALUE:
+                        url.append(YOUTUBE_HIGH_Q_FILENAME);
+                        break;
+                }
+
+                return url.toString();
+        }
+        return null;
     }
 
 }

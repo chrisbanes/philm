@@ -24,6 +24,7 @@ import app.philm.in.R;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmPersonCredit;
+import app.philm.in.model.PhilmTrailer;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
 
@@ -53,11 +54,11 @@ public class PhilmImageView extends ImageView {
         mTransparentDrawable = new ColorDrawable(Color.TRANSPARENT);
     }
 
-    public void loadPosterUrl(PhilmMovie movie) {
-        loadPosterUrl(movie, null);
+    public void loadPoster(PhilmMovie movie) {
+        loadPoster(movie, null);
     }
 
-    public void loadPosterUrl(PhilmMovie movie, Listener listener) {
+    public void loadPoster(PhilmMovie movie, Listener listener) {
         if (!TextUtils.isEmpty(movie.getPosterUrl())) {
             setPicassoHandler(new MoviePosterHandler(movie, listener));
         } else {
@@ -65,11 +66,11 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    public void loadPosterUrl(PhilmPersonCredit credit) {
-        loadPosterUrl(credit, null);
+    public void loadPoster(PhilmPersonCredit credit) {
+        loadPoster(credit, null);
     }
 
-    public void loadPosterUrl(PhilmPersonCredit credit, Listener listener) {
+    public void loadPoster(PhilmPersonCredit credit, Listener listener) {
         if (!TextUtils.isEmpty(credit.getPosterPath())) {
             setPicassoHandler(new PersonCreditHandler(credit, listener));
         } else {
@@ -77,11 +78,11 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    public void loadBackdropUrl(PhilmMovie movie) {
-        loadBackdropUrl(movie, null);
+    public void loadBackdrop(PhilmMovie movie) {
+        loadBackdrop(movie, null);
     }
 
-    public void loadBackdropUrl(PhilmMovie movie, Listener listener) {
+    public void loadBackdrop(PhilmMovie movie, Listener listener) {
         if (!TextUtils.isEmpty(movie.getBackdropUrl())) {
             setPicassoHandler(new MovieBackdropHandler(movie, listener));
         } else {
@@ -89,17 +90,25 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    public void loadProfileUrl(PhilmPerson person) {
-        loadProfileUrl(person, null);
+    public void loadProfile(PhilmPerson person) {
+        loadProfile(person, null);
     }
 
-    public void loadProfileUrl(PhilmPerson cast, Listener listener) {
+    public void loadProfile(PhilmPerson cast, Listener listener) {
         if (!TextUtils.isEmpty(cast.getPictureUrl())) {
             setPicassoHandler(new CastProfileHandler(cast, listener));
         } else {
             reset();
             setImageResource(R.drawable.ic_profile_placeholder);
         }
+    }
+
+    public void loadTrailer(PhilmTrailer trailer) {
+        loadTrailer(trailer, null);
+    }
+
+    public void loadTrailer(PhilmTrailer trailer, Listener listener) {
+        setPicassoHandler(new MovieTrailerHandler(trailer, listener));
     }
 
     public void setAutoFade(boolean autoFade) {
@@ -251,6 +260,34 @@ public class PhilmImageView extends ImageView {
 
             MoviePosterHandler that = (MoviePosterHandler) o;
             return Objects.equal(mMovie, that.mMovie);
+        }
+    }
+
+    private class MovieTrailerHandler extends PicassoHandler {
+
+        private final PhilmTrailer mTrailer;
+
+        MovieTrailerHandler(PhilmTrailer movie, Listener callback) {
+            super(callback);
+            mTrailer = Preconditions.checkNotNull(movie, "movie cannot be null");
+        }
+
+        @Override
+        public String getUrl(ImageHelper helper, ImageView imageView) {
+            return helper.getTrailerUrl(mTrailer, imageView.getWidth(), imageView.getHeight());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            MovieTrailerHandler that = (MovieTrailerHandler) o;
+            return Objects.equal(mTrailer, that.mTrailer);
         }
     }
 

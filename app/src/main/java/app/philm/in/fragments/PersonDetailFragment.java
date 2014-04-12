@@ -149,7 +149,7 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
         getListAdapter().setItems(items);
 
         if (mBigPosterImageView != null) {
-            mBigPosterImageView.loadProfileUrl(mPerson);
+            mBigPosterImageView.loadProfile(mPerson);
         }
     }
 
@@ -202,7 +202,7 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
             PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
             if (mBigPosterImageView == null) {
                 imageView.setVisibility(View.VISIBLE);
-                imageView.loadProfileUrl(mPerson);
+                imageView.loadProfile(mPerson);
             } else {
                 // Hide small poster if there's a big poster imageview
                 imageView.setVisibility(View.GONE);
@@ -386,7 +386,7 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadPosterUrl(credit);
+            imageView.loadPoster(credit);
 
             TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
             if (!TextUtils.isEmpty(credit.getJob())) {

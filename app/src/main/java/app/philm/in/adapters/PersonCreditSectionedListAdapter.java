@@ -51,6 +51,6 @@ public class PersonCreditSectionedListAdapter
                 mMediumDateFormatter.format(mDate)));
 
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
-        imageView.loadPosterUrl(credit);
+        imageView.loadPoster(credit);
     }
 }

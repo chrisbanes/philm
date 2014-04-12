@@ -25,6 +25,6 @@ public class PersonSectionedListAdapter extends BasePhilmSectionedListAdapter<Ph
         nameTextView.setText(person.getName());
 
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
-        imageView.loadProfileUrl(person);
+        imageView.loadProfile(person);
     }
 }

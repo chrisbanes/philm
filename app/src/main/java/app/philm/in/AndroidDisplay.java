@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -244,6 +245,16 @@ public class AndroidDisplay implements Display {
     @Override
     public void showPersonCrewCredits(String id) {
         showFragment(PersonCrewListFragment.create(id));
+    }
+
+    @Override
+    public void playYoutubeVideo(String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + id));
+
+        mActivity.startActivity(intent);
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {

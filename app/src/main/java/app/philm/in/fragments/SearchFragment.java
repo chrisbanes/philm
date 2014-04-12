@@ -318,7 +318,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadProfileUrl(item);
+            imageView.loadProfile(item);
 
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(item);
@@ -381,7 +381,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadPosterUrl(item);
+            imageView.loadPoster(item);
 
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(item);

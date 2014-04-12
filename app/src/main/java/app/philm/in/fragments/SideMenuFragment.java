@@ -172,7 +172,7 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
 
         mCheckinTitleTextView.setText(movie.getTitle());
 
-        mCheckinImageView.loadBackdropUrl(movie);
+        mCheckinImageView.loadBackdrop(movie);
         mCheckinImageView.setColorFilter(mColorFilter);
     }
 

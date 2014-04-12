@@ -28,6 +28,6 @@ public class MovieCreditSectionedListAdapter extends BasePhilmSectionedListAdapt
         characterTextView.setText(credit.getJob());
 
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
-        imageView.loadProfileUrl(credit.getPerson());
+        imageView.loadProfile(credit.getPerson());
     }
 }

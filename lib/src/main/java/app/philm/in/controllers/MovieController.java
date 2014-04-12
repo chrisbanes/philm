@@ -28,6 +28,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
+import app.philm.in.model.PhilmTrailer;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.WatchingMovie;
 import app.philm.in.modules.qualifiers.GeneralPurpose;
@@ -647,6 +648,21 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 Display display = getDisplay();
                 if (display != null) {
                     display.showSearchPeopleFragment();
+                }
+            }
+
+            @Override
+            public void playTrailer(PhilmTrailer trailer) {
+                Preconditions.checkNotNull(trailer, "trailer cannot be null");
+                Preconditions.checkNotNull(trailer.getId(), "trailer id cannot be null");
+
+                final Display display = getDisplay();
+                if (display != null) {
+                    switch (trailer.getSource()) {
+                        case YOUTUBE:
+                            display.playYoutubeVideo(trailer.getId());
+                            break;
+                    }
                 }
             }
 
@@ -1801,6 +1817,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showPeopleSearchResults();
 
         void showMovieSearchResults();
+
+        void playTrailer(PhilmTrailer trailer);
     }
 
     private class LibraryDbLoadCallback

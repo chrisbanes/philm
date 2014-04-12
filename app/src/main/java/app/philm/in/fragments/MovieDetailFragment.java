@@ -1,24 +1,17 @@
 package app.philm.in.fragments;
 
-import com.google.android.youtube.player.YouTubeApiServiceUtil;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubeIntents;
-import com.google.android.youtube.player.YouTubeThumbnailLoader;
-import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +31,6 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import app.philm.in.AndroidConstants;
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -74,8 +66,6 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
-    private final ArrayMap<YouTubeThumbnailView, YouTubeThumbnailLoader> mYoutubeLoaders
-            = new ArrayMap<>();
     private final PhilmImageView.Listener mPosterListener = new PhilmImageView.Listener() {
         @Override
         public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {
@@ -103,8 +93,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     private int mBackdropOriginalHeight;
 
     private boolean mFadeActionBar;
-
-    private YouTubeInitializationResult mYoutubeAvailable;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -294,12 +282,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        clearYoutubeLoaders();
-    }
-
-    @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
         // NO-OP
     }
@@ -341,21 +323,6 @@ public class MovieDetailFragment extends BaseDetailFragment
         getListAdapter().onColorSchemeChanged();
     }
 
-    private void captureYoutubeThumbnailLoader(YouTubeThumbnailView view, YouTubeThumbnailLoader loader) {
-        mYoutubeLoaders.put(view, loader);
-    }
-
-    private void clearYoutubeLoaders() {
-        for (YouTubeThumbnailLoader loader : mYoutubeLoaders.values()) {
-            loader.release();
-        }
-        mYoutubeLoaders.clear();
-    }
-
-    private YouTubeThumbnailLoader getYoutubeThumbnailLoader(YouTubeThumbnailView view) {
-        return mYoutubeLoaders.get(view);
-    }
-
     private void populateUi() {
         if (mMovie == null) {
             return;
@@ -367,7 +334,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             if (!TextUtils.isEmpty(mMovie.getBackdropUrl())) {
                 items.add(DetailItemType.BACKDROP_SPACING);
                 mBackdropImageView.setVisibility(View.VISIBLE);
-                mBackdropImageView.loadBackdropUrl(mMovie);
+                mBackdropImageView.loadBackdrop(mMovie);
             } else {
                 mBackdropImageView.setVisibility(View.GONE);
             }
@@ -383,7 +350,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         items.add(DetailItemType.RATING);
         items.add(DetailItemType.DETAILS);
 
-        if (isYoutubeAvailable() && !PhilmCollections.isEmpty(mMovie.getTrailers())) {
+        if (!PhilmCollections.isEmpty(mMovie.getTrailers())) {
             items.add(DetailItemType.TRAILERS);
         }
 
@@ -400,7 +367,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         if (mBigPosterImageView != null) {
-            mBigPosterImageView.loadPosterUrl(mMovie, mPosterListener);
+            mBigPosterImageView.loadPoster(mMovie, mPosterListener);
         }
 
         getListAdapter().setItems(items);
@@ -414,13 +381,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                 ab.setDisplayShowTitleEnabled(enabled);
             }
         }
-    }
-
-    private boolean isYoutubeAvailable() {
-        if (mYoutubeAvailable == null) {
-            mYoutubeAvailable = YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getActivity());
-        }
-        return mYoutubeAvailable == YouTubeInitializationResult.SUCCESS;
     }
 
     private enum DetailItemType implements DetailType {
@@ -509,7 +469,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadPosterUrl(movie);
+            imageView.loadPoster(movie);
 
             view.setOnClickListener(mItemOnClickListener);
             view.setTag(movie);
@@ -604,7 +564,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            imageView.loadProfileUrl(credit.getPerson());
+            imageView.loadProfile(credit.getPerson());
 
             TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
             if (!TextUtils.isEmpty(credit.getJob())) {
@@ -627,12 +587,21 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private class MovieTrailersAdapter extends BaseAdapter {
 
-        private final YoutubeViewListener mYoutubeViewListener;
         private final LayoutInflater mInflater;
+        private final View.OnClickListener mOnClickListener;
 
         MovieTrailersAdapter(LayoutInflater inflater) {
             mInflater = inflater;
-            mYoutubeViewListener = new YoutubeViewListener();
+
+            mOnClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PhilmTrailer trailer = (PhilmTrailer) view.getTag();
+                    if (trailer != null && hasCallbacks()) {
+                        getCallbacks().playTrailer(trailer);
+                    }
+                }
+            };
         }
 
         @Override
@@ -666,65 +635,18 @@ public class MovieDetailFragment extends BaseDetailFragment
                                 viewGroup, false);
                     }
 
-                    final YouTubeThumbnailView youtubeView = (YouTubeThumbnailView)
-                            view.findViewById(R.id.imageview_youtube_thumbnail);
-                    youtubeView.setTag(trailer.getId());
-
-                    final YouTubeThumbnailLoader loader = getYoutubeThumbnailLoader(youtubeView);
-                    if (loader == null) {
-                        if (viewWasInflated) {
-                            youtubeView.initialize(
-                                    AndroidConstants.GOOGLE_CLIENT_KEY,
-                                    mYoutubeViewListener);
-                        }
-                    } else {
-                        loader.setVideo(trailer.getId());
-                    }
+                    final PhilmImageView imageView = (PhilmImageView)
+                            view.findViewById(R.id.imageview_thumbnail);
+                    imageView.loadTrailer(trailer);
 
                     final TextView title = (TextView) view.findViewById(R.id.textview_title);
                     title.setText(trailer.getName());
             }
 
+            view.setOnClickListener(mOnClickListener);
+            view.setTag(trailer);
+
             return view;
-        }
-    }
-
-    private class YoutubeViewListener implements YouTubeThumbnailView.OnInitializedListener,
-            YouTubeThumbnailLoader.OnThumbnailLoadedListener, View.OnClickListener {
-
-        @Override
-        public void onInitializationSuccess(
-                YouTubeThumbnailView view,
-                YouTubeThumbnailLoader loader) {
-            loader.setOnThumbnailLoadedListener(this);
-            captureYoutubeThumbnailLoader(view, loader);
-            loader.setVideo((String) view.getTag());
-        }
-
-        @Override
-        public void onInitializationFailure(
-                YouTubeThumbnailView view,
-                YouTubeInitializationResult loader) {
-            view.setOnClickListener(null);
-        }
-
-        @Override
-        public void onThumbnailLoaded(YouTubeThumbnailView view, String id) {
-            view.setOnClickListener(this);
-        }
-
-        @Override
-        public void onThumbnailError(
-                YouTubeThumbnailView view,
-                YouTubeThumbnailLoader.ErrorReason errorReason) {
-            view.setOnClickListener(null);
-        }
-
-        @Override
-        public void onClick(View view) {
-            Intent intent = YouTubeIntents.createPlayVideoIntent(getActivity(),
-                    (String) view.getTag());
-            startActivity(intent);
         }
     }
 
@@ -1012,7 +934,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             if (mBigPosterImageView == null) {
                 posterImageView.setVisibility(View.VISIBLE);
-                posterImageView.loadPosterUrl(mMovie, mPosterListener);
+                posterImageView.loadPoster(mMovie, mPosterListener);
             } else {
                 // Hide small poster if there's a big poster imageview
                 posterImageView.setVisibility(View.GONE);

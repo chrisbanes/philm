@@ -46,6 +46,6 @@ public class MovieSectionedListAdapter extends BasePhilmSectionedListAdapter<Phi
                 mMediumDateFormatter.format(mDate)));
 
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
-        imageView.loadPosterUrl(movie);
+        imageView.loadPoster(movie);
     }
 }

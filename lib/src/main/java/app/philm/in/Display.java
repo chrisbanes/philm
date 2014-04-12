@@ -72,4 +72,6 @@ public interface Display {
 
     public void showCredentialsChanged();
 
+    public void playYoutubeVideo(String id);
+
 }

@@ -387,16 +387,16 @@ public class MovieDetailFragment extends BaseDetailFragment
             items.add(DetailItemType.TRAILERS);
         }
 
-        if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
-            items.add(DetailItemType.RELATED);
-        }
-
         if (!PhilmCollections.isEmpty(mMovie.getCast())) {
             items.add(DetailItemType.CAST);
         }
 
         if (!PhilmCollections.isEmpty(mMovie.getCrew())) {
             items.add(DetailItemType.CREW);
+        }
+
+        if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
+            items.add(DetailItemType.RELATED);
         }
 
         if (mBigPosterImageView != null) {

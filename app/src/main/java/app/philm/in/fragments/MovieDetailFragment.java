@@ -1,5 +1,6 @@
 package app.philm.in.fragments;
 
+import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeIntents;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
@@ -102,6 +103,8 @@ public class MovieDetailFragment extends BaseDetailFragment
     private int mBackdropOriginalHeight;
 
     private boolean mFadeActionBar;
+
+    private YouTubeInitializationResult mYoutubeAvailable;
 
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
@@ -380,7 +383,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         items.add(DetailItemType.RATING);
         items.add(DetailItemType.DETAILS);
 
-        if (!PhilmCollections.isEmpty(mMovie.getTrailers())) {
+        if (isYoutubeAvailable() && !PhilmCollections.isEmpty(mMovie.getTrailers())) {
             items.add(DetailItemType.TRAILERS);
         }
 
@@ -411,6 +414,13 @@ public class MovieDetailFragment extends BaseDetailFragment
                 ab.setDisplayShowTitleEnabled(enabled);
             }
         }
+    }
+
+    private boolean isYoutubeAvailable() {
+        if (mYoutubeAvailable == null) {
+            mYoutubeAvailable = YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getActivity());
+        }
+        return mYoutubeAvailable == YouTubeInitializationResult.SUCCESS;
     }
 
     private enum DetailItemType implements DetailType {

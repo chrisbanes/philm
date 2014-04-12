@@ -18,6 +18,7 @@ import java.util.List;
 import app.philm.in.Constants;
 import app.philm.in.R;
 import app.philm.in.view.MovieDetailCardLayout;
+import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.ViewRecycler;
 
 public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
@@ -26,6 +27,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
     private ListAdapter mAdapter;
 
     private TextView mEmptyView;
+    private PhilmImageView mBigPosterImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,12 +46,22 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
         mEmptyView = (TextView) view.findViewById(android.R.id.empty);
         mListView.setEmptyView(mEmptyView);
+
+        mBigPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
     }
 
     protected void setEmptyText(int stringId) {
         if (mEmptyView != null) {
             mEmptyView.setText(stringId);
         }
+    }
+
+    protected PhilmImageView getBigPosterView() {
+        return mBigPosterImageView;
+    }
+
+    protected boolean hasBigPosterView() {
+        return mBigPosterImageView != null;
     }
 
     @Override

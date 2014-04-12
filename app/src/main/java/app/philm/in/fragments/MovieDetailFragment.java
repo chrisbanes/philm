@@ -88,7 +88,6 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private PhilmMovie mMovie;
 
-    private PhilmImageView mBigPosterImageView;
     private BackdropImageView mBackdropImageView;
     private int mBackdropOriginalHeight;
 
@@ -130,8 +129,6 @@ public class MovieDetailFragment extends BaseDetailFragment
         if (mBackdropImageView != null) {
             mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
         }
-
-        mBigPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
 
         getListView().setOnScrollListener(this);
     }
@@ -330,7 +327,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         final ArrayList<DetailItemType> items = new ArrayList<>();
 
-        if (mBigPosterImageView == null && mBackdropImageView != null) {
+        if (hasBigPosterView() && mBackdropImageView != null) {
             if (!TextUtils.isEmpty(mMovie.getBackdropUrl())) {
                 items.add(DetailItemType.BACKDROP_SPACING);
                 mBackdropImageView.setVisibility(View.VISIBLE);
@@ -366,8 +363,8 @@ public class MovieDetailFragment extends BaseDetailFragment
             items.add(DetailItemType.RELATED);
         }
 
-        if (mBigPosterImageView != null) {
-            mBigPosterImageView.loadPoster(mMovie, mPosterListener);
+        if (hasBigPosterView()) {
+            getBigPosterView().loadPoster(mMovie, mPosterListener);
         }
 
         getListAdapter().setItems(items);
@@ -927,12 +924,12 @@ public class MovieDetailFragment extends BaseDetailFragment
             PhilmImageView posterImageView = (PhilmImageView)
                     view.findViewById(R.id.imageview_poster);
 
-            if (mBigPosterImageView == null) {
-                posterImageView.setVisibility(View.VISIBLE);
-                posterImageView.loadPoster(mMovie, mPosterListener);
-            } else {
+            if (hasBigPosterView()) {
                 // Hide small poster if there's a big poster imageview
                 posterImageView.setVisibility(View.GONE);
+            } else {
+                posterImageView.setVisibility(View.VISIBLE);
+                posterImageView.loadPoster(mMovie, mPosterListener);
             }
 
             final ColorScheme scheme = mMovie.getColorScheme();

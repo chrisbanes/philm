@@ -100,6 +100,16 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (hasBigPosterView()) {
+            // Hide big poster view if there is one
+            getBigPosterView().setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         mSearchView = null;

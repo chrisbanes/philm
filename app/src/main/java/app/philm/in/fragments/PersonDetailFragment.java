@@ -78,18 +78,10 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
     private PhilmPerson mPerson;
     @Inject DateFormat mMediumDateFormatter;
 
-    private PhilmImageView mBigPosterImageView;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PhilmApplication.from(getActivity()).inject(this);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mBigPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
     }
 
     @Override
@@ -148,8 +140,8 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
 
         getListAdapter().setItems(items);
 
-        if (mBigPosterImageView != null) {
-            mBigPosterImageView.loadProfile(mPerson);
+        if (hasBigPosterView()) {
+            getBigPosterView().loadProfile(mPerson);
         }
     }
 
@@ -200,12 +192,12 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
             }
 
             PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
-            if (mBigPosterImageView == null) {
-                imageView.setVisibility(View.VISIBLE);
-                imageView.loadProfile(mPerson);
-            } else {
+            if (hasBigPosterView()) {
                 // Hide small poster if there's a big poster imageview
                 imageView.setVisibility(View.GONE);
+            } else {
+                imageView.setVisibility(View.VISIBLE);
+                imageView.loadProfile(mPerson);
             }
 
             final TextView title = (TextView) view.findViewById(R.id.textview_title);

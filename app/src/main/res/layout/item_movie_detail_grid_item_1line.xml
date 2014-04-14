@@ -21,7 +21,7 @@
           android:layout_gravity="bottom"
           android:background="@color/translucent_black_light"
           android:padding="@dimen/spacing_micro"
-          style="@style/Widget.Philm.Movie.ListItem.Title" />
+          style="@style/Widget.Philm.Movie.CardItem.Title" />
 
 </FrameLayout>
 

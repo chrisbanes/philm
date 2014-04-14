@@ -40,7 +40,7 @@
     <dimen name="person_detail_subtitle_textsize">13dp</dimen>
 
     <dimen name="detail_card_height">140dp</dimen>
-    <dimen name="detail_card_item_width">75dp</dimen>
+    <dimen name="detail_card_item_width">90dp</dimen>
 
     <dimen name="movie_list_image_width">48dp</dimen>
     <dimen name="movie_list_item_height">88dp</dimen>

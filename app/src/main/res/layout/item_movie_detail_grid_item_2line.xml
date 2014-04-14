@@ -26,13 +26,13 @@
               android:id="@+id/textview_title"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              style="@style/Widget.Philm.Movie.ListItem.Title" />
+              style="@style/Widget.Philm.Movie.CardItem.Title" />
 
         <app.philm.in.view.FontTextView
               android:id="@+id/textview_subtitle"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              style="@style/Widget.Philm.Movie.ListItem.Subtitle" />
+              style="@style/Widget.Philm.Movie.CardItem.Subtitle" />
 
     </LinearLayout>
 

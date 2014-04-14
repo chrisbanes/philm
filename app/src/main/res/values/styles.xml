@@ -19,16 +19,15 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
     </style>
 
-    <style name="Widget.Philm.Movie.ListItem.Title" parent="android:Widget">
+    <style name="Widget.Philm.Movie.CardItem.Title" parent="android:Widget">
         <item name="font">roboto_condensed</item>
         <item name="android:textSize">13dp</item>
-        <item name="android:maxLines">2</item>
+        <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
-    <style name="Widget.Philm.Movie.ListItem.Subtitle" parent="Widget.Philm.Movie.ListItem.Title">
-        <item name="font">roboto_condensed</item>
+    <style name="Widget.Philm.Movie.CardItem.Subtitle" parent="Widget.Philm.Movie.CardItem.Title">
         <item name="android:textSize">11dp</item>
         <item name="android:maxLines">1</item>
     </style>

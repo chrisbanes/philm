@@ -8,7 +8,7 @@ import android.support.v4.app.DialogFragment;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.controllers.UserController;
+import app.philm.in.lib.controllers.UserController;
 
 public class CredentialsChangedFragment extends DialogFragment
         implements DialogInterface.OnClickListener, UserController.UserUi {

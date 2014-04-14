@@ -8,9 +8,9 @@ import android.widget.ListView;
 import java.util.List;
 
 import app.philm.in.adapters.PersonCreditSectionedListAdapter;
-import app.philm.in.controllers.MovieController;
-import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmPersonCredit;
+import app.philm.in.lib.controllers.MovieController;
+import app.philm.in.lib.model.ListItem;
+import app.philm.in.lib.model.PhilmPersonCredit;
 import app.philm.in.view.PinnedSectionListView;
 
 

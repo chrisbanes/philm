@@ -25,7 +25,7 @@ import java.util.Set;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.controllers.UserController;
+import app.philm.in.lib.controllers.UserController;
 
 public class LoginFragment extends Fragment implements UserController.UserUi, View.OnClickListener,
         TextView.OnEditorActionListener, RadioGroup.OnCheckedChangeListener {

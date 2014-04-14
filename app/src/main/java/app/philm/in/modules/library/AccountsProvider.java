@@ -5,7 +5,7 @@ import android.accounts.AccountManager;
 import javax.inject.Singleton;
 
 import app.philm.in.account.AndroidAccountManager;
-import app.philm.in.accounts.PhilmAccountManager;
+import app.philm.in.lib.accounts.PhilmAccountManager;
 import dagger.Module;
 import dagger.Provides;
 

@@ -11,7 +11,7 @@ import java.io.File;
 
 import javax.inject.Singleton;
 
-import app.philm.in.modules.qualifiers.ApplicationContext;
+import app.philm.in.lib.qualifiers.ApplicationContext;
 import dagger.Module;
 import dagger.Provides;
 

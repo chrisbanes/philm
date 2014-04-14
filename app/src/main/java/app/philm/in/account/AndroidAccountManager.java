@@ -9,9 +9,9 @@ import android.accounts.AccountManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.philm.in.Constants;
-import app.philm.in.accounts.PhilmAccountManager;
-import app.philm.in.model.PhilmAccount;
+import app.philm.in.lib.Constants;
+import app.philm.in.lib.accounts.PhilmAccountManager;
+import app.philm.in.lib.model.PhilmAccount;
 
 public class AndroidAccountManager implements PhilmAccountManager {
 

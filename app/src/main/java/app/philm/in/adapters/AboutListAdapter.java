@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import app.philm.in.R;
-import app.philm.in.controllers.AboutController;
+import app.philm.in.lib.controllers.AboutController;
 import app.philm.in.view.StringManager;
 
 public class AboutListAdapter extends BaseAdapter {

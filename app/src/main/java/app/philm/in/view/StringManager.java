@@ -4,12 +4,12 @@ import android.content.Context;
 
 import app.philm.in.BuildConfig;
 import app.philm.in.R;
-import app.philm.in.controllers.AboutController;
-import app.philm.in.controllers.MainController;
-import app.philm.in.controllers.MovieController;
-import app.philm.in.model.ListItem;
-import app.philm.in.network.NetworkError;
-import app.philm.in.util.AppUtils;
+import app.philm.in.lib.controllers.AboutController;
+import app.philm.in.lib.controllers.MainController;
+import app.philm.in.lib.controllers.MovieController;
+import app.philm.in.lib.model.ListItem;
+import app.philm.in.lib.network.NetworkError;
+import app.philm.in.lib.util.AppUtils;
 
 public class StringManager {
 
@@ -41,26 +41,6 @@ public class StringManager {
         return R.string.app_name;
     }
 
-    public static int getStringResId(ListItem.SectionTitle title) {
-        switch (title) {
-            case RELATED:
-                return R.string.related_movies;
-            case UPCOMING:
-                return R.string.filter_upcoming;
-            case SOON:
-                return R.string.filter_soon;
-            case RELEASED:
-                return R.string.filter_released;
-            case SEEN:
-                return R.string.filter_seen;
-            case MOVIE_CAST:
-                return R.string.cast_movies;
-            case MOVIE_CREW:
-                return R.string.crew_movies;
-        }
-        return 0;
-    }
-
     public static int getStringResId(MovieController.DiscoverTab tab) {
         switch (tab) {
             case POPULAR:
@@ -71,16 +51,6 @@ public class StringManager {
                 return R.string.upcoming_title;
             case RECOMMENDED:
                 return R.string.recommended_title;
-        }
-        return 0;
-    }
-
-    public static int getStringResId(MovieController.PersonTab tab) {
-        switch (tab) {
-            case CREDIT_CREW:
-                return R.string.crew_movies;
-            case CREDITS_CAST:
-                return R.string.cast_movies;
         }
         return 0;
     }

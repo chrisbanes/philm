@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.util.TypefaceManager;
+import app.philm.in.lib.util.TypefaceManager;
 
 public class FontTextView extends TextView {
 

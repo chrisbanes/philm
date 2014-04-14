@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import app.philm.in.controllers.MovieController;
+import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.fragments.base.BasePersonCreditListFragment;
 
 public class PersonCrewListFragment extends BasePersonCreditListFragment {

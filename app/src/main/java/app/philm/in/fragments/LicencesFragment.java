@@ -9,7 +9,7 @@ import android.webkit.WebView;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.controllers.AboutController;
+import app.philm.in.lib.controllers.AboutController;
 
 public class LicencesFragment extends Fragment implements AboutController.AboutOpenSourcesUi {
 

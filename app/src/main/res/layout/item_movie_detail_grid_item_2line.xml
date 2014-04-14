@@ -20,7 +20,7 @@
           android:layout_gravity="bottom"
           android:orientation="vertical"
           android:background="@color/translucent_black_light"
-          android:padding="@dimen/spacing_micro">
+          android:padding="@dimen/spacing_minor">
 
         <app.philm.in.view.FontTextView
               android:id="@+id/textview_title"

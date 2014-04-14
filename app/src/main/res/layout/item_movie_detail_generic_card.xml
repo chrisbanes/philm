@@ -10,8 +10,6 @@
         android:id="@+id/card_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_card_height"
-        android:orientation="horizontal"
-        android:divider="?android:dividerHorizontal"
-        android:showDividers="middle" />
+        android:orientation="horizontal" />
 
 </app.philm.in.view.MovieDetailCardLayout>

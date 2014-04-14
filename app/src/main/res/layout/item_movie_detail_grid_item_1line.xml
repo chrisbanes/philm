@@ -20,7 +20,7 @@
           android:layout_height="wrap_content"
           android:layout_gravity="bottom"
           android:background="@color/translucent_black_light"
-          android:padding="@dimen/spacing_micro"
+          android:padding="@dimen/spacing_minor"
           style="@style/Widget.Philm.Movie.CardItem.Title" />
 
 </FrameLayout>

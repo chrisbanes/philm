@@ -190,6 +190,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
                 final int numItems = layout.getWidth() / mListView.getResources()
                         .getDimensionPixelSize(R.dimen.detail_card_item_width);
                 final int adapterCount = adapter.getCount();
+                final int gridSpacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
 
                 for (int i = 0; i < Math.min(numItems, adapterCount); i++) {
                     View view = adapter.getView(i, viewRecycler.getRecycledView(), layout);
@@ -199,6 +200,8 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
                         lp.weight = 0f;
                         lp.width = layout.getWidth() / numItems;
                     }
+
+                    lp.rightMargin = i < (numItems - 1) ? gridSpacing : 0;
 
                     layout.addView(view);
                 }

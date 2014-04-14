@@ -93,6 +93,8 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private boolean mFadeActionBar;
 
+    private final ArrayList<DetailItemType> mItems = new ArrayList<>();
+
     public static MovieDetailFragment create(String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
 
@@ -325,11 +327,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             return;
         }
 
-        final ArrayList<DetailItemType> items = new ArrayList<>();
+        mItems.clear();
 
-        if (hasBigPosterView() && mBackdropImageView != null) {
+        if (!hasBigPosterView() && mBackdropImageView != null) {
             if (!TextUtils.isEmpty(mMovie.getBackdropUrl())) {
-                items.add(DetailItemType.BACKDROP_SPACING);
+                mItems.add(DetailItemType.BACKDROP_SPACING);
                 mBackdropImageView.setVisibility(View.VISIBLE);
                 mBackdropImageView.loadBackdrop(mMovie);
             } else {
@@ -337,37 +339,37 @@ public class MovieDetailFragment extends BaseDetailFragment
             }
         }
 
-        items.add(DetailItemType.TITLE);
-        items.add(DetailItemType.BUTTONS);
+        mItems.add(DetailItemType.TITLE);
+        mItems.add(DetailItemType.BUTTONS);
 
         if (!TextUtils.isEmpty(mMovie.getOverview())) {
-            items.add(DetailItemType.SUMMARY);
+            mItems.add(DetailItemType.SUMMARY);
         }
 
-        items.add(DetailItemType.RATING);
-        items.add(DetailItemType.DETAILS);
+        mItems.add(DetailItemType.RATING);
+        mItems.add(DetailItemType.DETAILS);
 
         if (!PhilmCollections.isEmpty(mMovie.getTrailers())) {
-            items.add(DetailItemType.TRAILERS);
+            mItems.add(DetailItemType.TRAILERS);
         }
 
         if (!PhilmCollections.isEmpty(mMovie.getCast())) {
-            items.add(DetailItemType.CAST);
+            mItems.add(DetailItemType.CAST);
         }
 
         if (!PhilmCollections.isEmpty(mMovie.getCrew())) {
-            items.add(DetailItemType.CREW);
+            mItems.add(DetailItemType.CREW);
         }
 
         if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
-            items.add(DetailItemType.RELATED);
+            mItems.add(DetailItemType.RELATED);
         }
 
         if (hasBigPosterView()) {
             getBigPosterView().loadPoster(mMovie, mPosterListener);
         }
 
-        getListAdapter().setItems(items);
+        getListAdapter().setItems(mItems);
     }
 
     private void setActionBarTitleEnabled(boolean enabled) {

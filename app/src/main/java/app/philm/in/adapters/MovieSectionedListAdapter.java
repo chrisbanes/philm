@@ -23,7 +23,7 @@ public class MovieSectionedListAdapter extends BasePhilmSectionedListAdapter<Phi
     private final Date mDate;
 
     public MovieSectionedListAdapter(Activity activity) {
-        super(activity, R.layout.item_list_movie, R.layout.item_list_movie_section_header);
+        super(activity, R.layout.item_list_3line, R.layout.item_list_movie_section_header);
         mDate = new Date();
         PhilmApplication.from(activity).inject(this);
     }

@@ -10,6 +10,7 @@ import com.squareup.picasso.Target;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -21,8 +22,9 @@ import javax.inject.Inject;
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.model.PhilmPerson;
+import app.philm.in.drawable.RoundedAvatarDrawable;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
 import app.philm.in.model.PhilmTrailer;
 import app.philm.in.util.ImageHelper;
@@ -46,12 +48,17 @@ public class PhilmImageView extends ImageView {
     private final Drawable mTransparentDrawable;
 
     private boolean mAutoFade = true;
+    private boolean mAvatarMode = false;
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         PhilmApplication.from(context).inject(this);
 
         mTransparentDrawable = new ColorDrawable(Color.TRANSPARENT);
+    }
+
+    public void setAvatarMode(boolean avatarMode) {
+        mAvatarMode = avatarMode;
     }
 
     public void loadPoster(PhilmMovie movie) {
@@ -99,7 +106,7 @@ public class PhilmImageView extends ImageView {
             setPicassoHandler(new CastProfileHandler(cast, listener));
         } else {
             reset();
-            setImageResource(R.drawable.ic_profile_placeholder);
+            setImageResourceImpl(R.drawable.ic_profile_placeholder);
         }
     }
 
@@ -378,7 +385,7 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onPrepareLoad(Drawable drawable) {
-            setImageDrawable(drawable);
+            setImageDrawableImpl(drawable);
         }
     };
 
@@ -387,10 +394,35 @@ public class PhilmImageView extends ImageView {
 
         if (fade) {
             setAlpha(0f);
-            setImageBitmap(bitmap);
+            setImageBitmapImpl(bitmap);
             animate().alpha(1f).setDuration(TRANSITION_DURATION);
         } else {
+            setImageBitmapImpl(bitmap);
+        }
+    }
+
+    void setImageBitmapImpl(final Bitmap bitmap) {
+        if (mAvatarMode) {
+            setImageDrawable(new RoundedAvatarDrawable(bitmap));
+        } else {
             setImageBitmap(bitmap);
+        }
+    }
+
+    void setImageDrawableImpl(final Drawable drawable) {
+        if (mAvatarMode && drawable instanceof BitmapDrawable) {
+            setImageBitmapImpl(((BitmapDrawable) drawable).getBitmap());
+        } else {
+            setImageDrawable(drawable);
+        }
+    }
+
+    void setImageResourceImpl(int resId) {
+        if (mAvatarMode) {
+            BitmapDrawable d = (BitmapDrawable) getResources().getDrawable(resId);
+            setImageDrawable(new RoundedAvatarDrawable(d.getBitmap()));
+        } else {
+            setImageResource(resId);
         }
     }
 

@@ -61,7 +61,10 @@ public abstract class PersonListFragment
 
     @Override
     protected ListView createListView(Context context) {
-        return new PinnedSectionListView(context);
+        ListView lv = new PinnedSectionListView(context);
+        lv.setDivider(null);
+        lv.setDividerHeight(0);
+        return lv;
     }
 
 }

@@ -15,7 +15,7 @@
 
     <dimen name="movie_detail_login_title_textsize">26dp</dimen>
 
-    <dimen name="movie_grid_spacing">1dp</dimen>
+    <dimen name="movie_grid_spacing">4dp</dimen>
     <dimen name="movie_grid_item_width">100dp</dimen>
     <dimen name="movie_grid_item_height">170dp</dimen>
 

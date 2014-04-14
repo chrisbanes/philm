@@ -2,6 +2,7 @@ package app.philm.in.fragments.base;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
@@ -48,6 +49,18 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
                 getCallbacks().showMovieDetail(item.getItem());
             }
         }
+    }
+
+    @Override
+    public void populateInsets(Rect insets) {
+        super.populateInsets(insets);
+
+        final int spacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
+        getListView().setPadding(
+                insets.left + spacing,
+                insets.top + spacing,
+                insets.right + spacing,
+                insets.bottom + spacing);
     }
 
     @Override

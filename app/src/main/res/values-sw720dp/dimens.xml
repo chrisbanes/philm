@@ -11,8 +11,6 @@
     <!-- Should be movie_detail_poster_width * 1.6 -->
     <dimen name="movie_detail_poster_height">160dp</dimen>
 
-    <dimen name="movie_detail_fanart_height">240dp</dimen>
-
     <dimen name="movie_detail_title_textsize">32dp</dimen>
     <dimen name="movie_detail_summary_textsize">18dp</dimen>
 

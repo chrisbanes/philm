@@ -8,17 +8,18 @@
           android:id="@+id/imageview_poster"
           android:layout_width="@dimen/movie_list_image_width"
           android:layout_height="match_parent"
-          android:adjustViewBounds="true"
-          android:paddingLeft="16dp"
-          android:layout_gravity="center_vertical" />
+          android:layout_gravity="center_vertical"
+          android:layout_marginTop="@dimen/spacing_minor"
+          android:layout_marginBottom="@dimen/spacing_minor"
+          android:layout_marginLeft="@dimen/spacing_major" />
 
     <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
-          android:layout_gravity="center_vertical"
           android:layout_marginLeft="72dp"
-          android:layout_marginRight="16dp">
+          android:layout_marginRight="@dimen/spacing_major"
+          android:layout_gravity="center_vertical">
 
         <app.philm.in.view.FontTextView
               android:id="@+id/textview_title"

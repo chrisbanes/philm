@@ -18,15 +18,15 @@ import android.widget.ImageView;
 
 import javax.inject.Inject;
 
-import app.philm.in.Constants;
+import app.philm.in.lib.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.model.PhilmPerson;
-import app.philm.in.model.PhilmMovie;
-import app.philm.in.model.PhilmPersonCredit;
-import app.philm.in.model.PhilmTrailer;
-import app.philm.in.util.ImageHelper;
-import app.philm.in.util.TextUtils;
+import app.philm.in.lib.model.PhilmPerson;
+import app.philm.in.lib.model.PhilmMovie;
+import app.philm.in.lib.model.PhilmPersonCredit;
+import app.philm.in.lib.model.PhilmTrailer;
+import app.philm.in.lib.util.ImageHelper;
+import app.philm.in.lib.util.TextUtils;
 
 public class PhilmImageView extends ImageView {
 

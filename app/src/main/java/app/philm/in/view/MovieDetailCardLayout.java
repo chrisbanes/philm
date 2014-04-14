@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import app.philm.in.R;
-import app.philm.in.util.TextUtils;
+import app.philm.in.lib.util.TextUtils;
 
 public class MovieDetailCardLayout extends LinearLayout {
 

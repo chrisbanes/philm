@@ -1,0 +1,41 @@
+package app.philm.in.lib.tasks;
+
+import com.jakewharton.trakt.entities.Movie;
+import com.jakewharton.trakt.services.RecommendationsService;
+
+import java.util.List;
+
+import app.philm.in.lib.network.NetworkError;
+import app.philm.in.lib.util.PhilmCollections;
+import retrofit.RetrofitError;
+
+public class FetchTraktRecommendationsRunnable extends BaseMovieRunnable<List<Movie>> {
+
+    public FetchTraktRecommendationsRunnable(int callingId) {
+        super(callingId);
+    }
+
+    @Override
+    public List<Movie> doBackgroundCall() throws RetrofitError {
+        RecommendationsService.RecommendationsQuery query
+                = new RecommendationsService.RecommendationsQuery();
+        query.hideCollected(true);
+        query.hideWatchlisted(true);
+
+        return getTraktClient().recommendationsService().movies(query);
+    }
+
+    @Override
+    public void onSuccess(List<Movie> result) {
+        if (!PhilmCollections.isEmpty(result)) {
+            mMoviesState.setRecommended(getTraktMovieEntityMapper().mapAll(result));
+        } else {
+            mMoviesState.setRecommended(null);
+        }
+    }
+
+    @Override
+    protected int getSource() {
+        return NetworkError.SOURCE_TRAKT;
+    }
+}

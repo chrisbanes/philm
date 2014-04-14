@@ -36,7 +36,8 @@ import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
-import app.philm.in.util.PhilmTypefaceSpan;
+import app.philm.in.lib.Display;
+import app.philm.in.lib.util.PhilmTypefaceSpan;
 import app.philm.in.view.FontTextView;
 
 public class AndroidDisplay implements Display {
@@ -175,6 +176,28 @@ public class AndroidDisplay implements Display {
             s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
                     0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             ab.setTitle(s);
+        }
+    }
+
+    @Override
+    public void setActionBarSubtitle(String title) {
+        ActionBar ab = mActivity.getActionBar();
+        if (ab != null) {
+            SpannableString s = new SpannableString(title);
+            s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED),
+                    0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ab.setSubtitle(s);
+        }
+    }
+
+    @Override
+    public void setActionBarSubtitle(String title, int color) {
+        ActionBar ab = mActivity.getActionBar();
+        if (ab != null) {
+            SpannableString s = new SpannableString(title);
+            s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
+                    0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ab.setSubtitle(s);
         }
     }
 

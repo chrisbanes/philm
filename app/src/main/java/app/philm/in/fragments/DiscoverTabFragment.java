@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import java.util.ArrayList;
 
 import app.philm.in.R;
-import app.philm.in.controllers.MovieController;
+import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmTabFragment;
 import app.philm.in.view.StringManager;
 

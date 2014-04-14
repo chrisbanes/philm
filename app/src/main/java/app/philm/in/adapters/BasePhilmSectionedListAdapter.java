@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import app.philm.in.model.ListItem;
+import app.philm.in.lib.model.ListItem;
 import app.philm.in.view.PinnedSectionListView;
 import app.philm.in.view.StringManager;
 
@@ -79,7 +79,7 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
     protected abstract void bindView(int position, View view, ListItem<T> item);
 
     protected void bindPinnedView(int position, View view, ListItem<T> item) {
-        ((TextView) view).setText(StringManager.getStringResId(item.getSectionTitle()));
+        ((TextView) view).setText(item.getSectionTitle());
     }
 
     @Override

@@ -11,9 +11,9 @@ import android.view.View;
 
 import java.util.HashSet;
 
-import app.philm.in.controllers.MainController;
-import app.philm.in.util.IntUtils;
-import app.philm.in.util.PhilmCollections;
+import app.philm.in.lib.controllers.MainController;
+import app.philm.in.lib.util.IntUtils;
+import app.philm.in.lib.util.PhilmCollections;
 import app.philm.in.view.InsetDrawerLayout;
 
 public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayout.OnInsetsCallback,

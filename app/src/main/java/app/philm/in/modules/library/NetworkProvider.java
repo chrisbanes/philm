@@ -5,7 +5,7 @@ import com.uwetrottmann.tmdb.Tmdb;
 
 import javax.inject.Singleton;
 
-import app.philm.in.Constants;
+import app.philm.in.lib.Constants;
 import dagger.Module;
 import dagger.Provides;
 

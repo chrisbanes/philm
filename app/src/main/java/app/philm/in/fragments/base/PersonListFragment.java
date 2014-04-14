@@ -9,8 +9,8 @@ import android.widget.ListView;
 import java.util.List;
 
 import app.philm.in.adapters.PersonSectionedListAdapter;
-import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmPerson;
+import app.philm.in.lib.model.ListItem;
+import app.philm.in.lib.model.PhilmPerson;
 import app.philm.in.view.PinnedSectionListView;
 
 public abstract class PersonListFragment

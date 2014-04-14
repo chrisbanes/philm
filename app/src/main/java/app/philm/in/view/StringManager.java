@@ -4,12 +4,12 @@ import android.content.Context;
 
 import app.philm.in.BuildConfig;
 import app.philm.in.R;
-import app.philm.in.controllers.AboutController;
-import app.philm.in.controllers.MainController;
-import app.philm.in.controllers.MovieController;
-import app.philm.in.model.ListItem;
-import app.philm.in.network.NetworkError;
-import app.philm.in.util.AppUtils;
+import app.philm.in.lib.controllers.AboutController;
+import app.philm.in.lib.controllers.MainController;
+import app.philm.in.lib.controllers.MovieController;
+import app.philm.in.lib.model.ListItem;
+import app.philm.in.lib.network.NetworkError;
+import app.philm.in.lib.util.AppUtils;
 
 public class StringManager {
 

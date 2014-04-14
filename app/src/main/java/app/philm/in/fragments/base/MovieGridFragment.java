@@ -10,8 +10,8 @@ import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
-import app.philm.in.model.ListItem;
-import app.philm.in.model.PhilmMovie;
+import app.philm.in.lib.model.ListItem;
+import app.philm.in.lib.model.PhilmMovie;
 
 public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridView> {
 

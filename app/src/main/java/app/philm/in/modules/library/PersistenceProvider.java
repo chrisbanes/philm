@@ -9,17 +9,17 @@ import java.io.File;
 
 import javax.inject.Singleton;
 
-import app.philm.in.modules.qualifiers.ApplicationContext;
-import app.philm.in.modules.qualifiers.ForDatabase;
-import app.philm.in.state.AsyncDatabaseHelper;
-import app.philm.in.state.AsyncDatabaseHelperImpl;
-import app.philm.in.state.DatabaseHelper;
-import app.philm.in.state.PhilmSQLiteOpenHelper;
-import app.philm.in.util.AndroidFileManager;
-import app.philm.in.util.AndroidPhilmPreferences;
-import app.philm.in.util.BackgroundExecutor;
-import app.philm.in.util.FileManager;
-import app.philm.in.util.PhilmPreferences;
+import app.philm.in.lib.qualifiers.ApplicationContext;
+import app.philm.in.lib.qualifiers.ForDatabase;
+import app.philm.in.lib.state.AsyncDatabaseHelper;
+import app.philm.in.lib.state.AsyncDatabaseHelperImpl;
+import app.philm.in.lib.state.DatabaseHelper;
+import app.philm.in.lib.state.PhilmSQLiteOpenHelper;
+import app.philm.in.lib.util.AndroidFileManager;
+import app.philm.in.lib.util.AndroidPhilmPreferences;
+import app.philm.in.lib.util.BackgroundExecutor;
+import app.philm.in.lib.util.FileManager;
+import app.philm.in.lib.util.PhilmPreferences;
 import dagger.Module;
 import dagger.Provides;
 

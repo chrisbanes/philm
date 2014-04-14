@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-        package="app.philm.in.lib">
+<manifest package="app.philm.in.lib">
+
+    <application />
 
 </manifest>

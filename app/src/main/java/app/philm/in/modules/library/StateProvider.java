@@ -4,9 +4,9 @@ import com.squareup.otto.Bus;
 
 import javax.inject.Singleton;
 
-import app.philm.in.state.ApplicationState;
-import app.philm.in.state.MoviesState;
-import app.philm.in.state.UserState;
+import app.philm.in.lib.state.ApplicationState;
+import app.philm.in.lib.state.MoviesState;
+import app.philm.in.lib.state.UserState;
 import dagger.Module;
 import dagger.Provides;
 

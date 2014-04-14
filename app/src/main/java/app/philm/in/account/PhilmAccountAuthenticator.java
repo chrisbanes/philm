@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import app.philm.in.Display;
+import app.philm.in.lib.Display;
 
 public class PhilmAccountAuthenticator extends AbstractAccountAuthenticator {
 

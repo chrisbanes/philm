@@ -12,7 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import app.philm.in.util.ColorUtils;
+import app.philm.in.lib.util.ColorUtils;
 
 public class PercentageDrawable extends Drawable {
 

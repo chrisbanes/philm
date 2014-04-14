@@ -55,12 +55,11 @@
     </style>
 
     <style name="Widget.Philm.Movie.List.SectionHeader" parent="android:Widget">
-        <item name="font">roboto_condensed</item>
-        <item name="android:textSize">18dp</item>
-        <item name="android:padding">@dimen/spacing_micro</item>
-        <item name="android:paddingLeft">@dimen/spacing_major</item>
+        <item name="font">roboto_condensed_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">@dimen/spacing_major</item>
         <item name="android:background">@color/primary_accent_color</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
     <style name="Widget.Philm.Movie.Login.Title" parent="android:Widget">

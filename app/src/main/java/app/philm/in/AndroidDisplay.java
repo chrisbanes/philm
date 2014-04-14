@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.view.Gravity;
 
 import app.philm.in.fragments.AboutFragment;
@@ -162,9 +163,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarTitle(String title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            SpannableString s = new SpannableString(title);
-            s.setSpan(mDefaultTitleSpan, 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ab.setTitle(s);
+            ab.setTitle(convertToCondensed(title));
         }
     }
 
@@ -172,10 +171,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarTitle(String title, int color) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            SpannableString s = new SpannableString(title);
-            s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
-                    0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ab.setTitle(s);
+            ab.setTitle(convertToCondensed(title, color));
         }
     }
 
@@ -183,10 +179,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarSubtitle(String title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            SpannableString s = new SpannableString(title);
-            s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED),
-                    0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ab.setSubtitle(s);
+            ab.setSubtitle(convertToCondensed(title));
         }
     }
 
@@ -194,10 +187,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarSubtitle(String title, int color) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            SpannableString s = new SpannableString(title);
-            s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
-                    0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ab.setSubtitle(s);
+            ab.setSubtitle(convertToCondensed(title, color));
         }
     }
 
@@ -294,6 +284,32 @@ public class AndroidDisplay implements Display {
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
+    }
+
+    private CharSequence convertToCondensed(final String string) {
+        if (!TextUtils.isEmpty(string)) {
+            SpannableString s = new SpannableString(string);
+            s.setSpan(
+                    new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED),
+                    0,
+                    s.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return s;
+        }
+        return string;
+    }
+
+    private CharSequence convertToCondensed(final String string, int color) {
+        if (!TextUtils.isEmpty(string)) {
+            SpannableString s = new SpannableString(string);
+            s.setSpan(
+                    new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
+                    0,
+                    s.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return s;
+        }
+        return string;
     }
 
 }

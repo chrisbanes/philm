@@ -685,10 +685,15 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             return;
         }
 
-        Display display = getDisplay();
-        if (display != null && !ui.isModal()) {
-            display.showUpNavigation(queryType != null && queryType.showUpNavigation());
+        final Display display = getDisplay();
+        if (display != null) {
+            if (!ui.isModal()) {
+                display.showUpNavigation(queryType != null && queryType.showUpNavigation());
+            }
         }
+
+        String title = null;
+        String subtitle = null;
 
         final int callingId = getId(ui);
 
@@ -719,21 +724,33 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case RELATED:
                 fetchRelatedIfNeeded(callingId, ui.getRequestParameter());
+                subtitle = mStringFetcher.getString(R.string.related_movies);
                 break;
             case MOVIE_CAST:
                 fetchMovieCastIfNeeded(callingId, ui.getRequestParameter());
+                subtitle = mStringFetcher.getString(R.string.cast_movies);
                 break;
             case MOVIE_CREW:
                 fetchMovieCrewIfNeeded(callingId, ui.getRequestParameter());
+                subtitle = mStringFetcher.getString(R.string.crew_movies);
                 break;
             case PERSON_DETAIL:
                 fetchPersonIfNeeded(callingId, ui.getRequestParameter());
                 break;
             case PERSON_CREDITS_CREW:
+                fetchPersonCreditsIfNeeded(callingId, ui.getRequestParameter());
+                subtitle = mStringFetcher.getString(R.string.crew_movies);
+                break;
             case PERSON_CREDITS_CAST:
                 fetchPersonCreditsIfNeeded(callingId, ui.getRequestParameter());
+                subtitle = mStringFetcher.getString(R.string.cast_movies);
                 break;
         }
+
+        if (display != null) {
+            display.setActionBarSubtitle(subtitle);
+        }
+
     }
 
     @Override

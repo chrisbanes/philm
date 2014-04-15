@@ -566,11 +566,13 @@ public class MovieDetailFragment extends BaseDetailFragment
             imageView.loadProfile(credit.getPerson());
 
             TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
-            if (!TextUtils.isEmpty(credit.getJob())) {
-                subTitle.setText(credit.getJob());
-                subTitle.setVisibility(View.VISIBLE);
-            } else {
-                subTitle.setVisibility(View.GONE);
+            if (subTitle != null) {
+                if (!TextUtils.isEmpty(credit.getJob())) {
+                    subTitle.setText(credit.getJob());
+                    subTitle.setVisibility(View.VISIBLE);
+                } else {
+                    subTitle.setVisibility(View.GONE);
+                }
             }
 
             view.setOnClickListener(mItemOnClickListener);

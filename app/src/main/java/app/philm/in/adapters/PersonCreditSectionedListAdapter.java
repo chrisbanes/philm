@@ -25,7 +25,7 @@ public class PersonCreditSectionedListAdapter
     private final Date mDate;
 
     public PersonCreditSectionedListAdapter(Activity activity) {
-        super(activity, R.layout.item_list_2line, R.layout.item_list_movie_section_header);
+        super(activity, R.layout.item_list_3line, R.layout.item_list_movie_section_header);
         mDate = new Date();
         PhilmApplication.from(activity).inject(this);
     }

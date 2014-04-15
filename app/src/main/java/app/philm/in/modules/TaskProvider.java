@@ -1,9 +1,5 @@
 package app.philm.in.modules;
 
-import app.philm.in.modules.library.NetworkProvider;
-import app.philm.in.modules.library.PersistenceProvider;
-import app.philm.in.modules.library.StateProvider;
-import app.philm.in.modules.library.UtilProvider;
 import app.philm.in.lib.tasks.AddToTraktCollectionRunnable;
 import app.philm.in.lib.tasks.AddToTraktWatchlistRunnable;
 import app.philm.in.lib.tasks.CancelCheckinTraktRunnable;
@@ -33,6 +29,10 @@ import app.philm.in.lib.tasks.MarkTraktMovieUnseenRunnable;
 import app.philm.in.lib.tasks.RemoveFromTraktCollectionRunnable;
 import app.philm.in.lib.tasks.RemoveFromTraktWatchlistRunnable;
 import app.philm.in.lib.tasks.SubmitTraktMovieRatingRunnable;
+import app.philm.in.modules.library.NetworkProvider;
+import app.philm.in.modules.library.PersistenceProvider;
+import app.philm.in.modules.library.StateProvider;
+import app.philm.in.modules.library.UtilProvider;
 import dagger.Module;
 
 @Module(

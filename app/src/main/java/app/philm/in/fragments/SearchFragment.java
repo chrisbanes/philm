@@ -21,10 +21,10 @@ import android.widget.TextView;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import app.philm.in.lib.Constants;
 import app.philm.in.R;
-import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.fragments.base.BaseDetailFragment;
+import app.philm.in.lib.Constants;
+import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.lib.model.PhilmMovie;
 import app.philm.in.lib.model.PhilmPerson;
 import app.philm.in.lib.state.MoviesState;

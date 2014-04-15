@@ -12,7 +12,6 @@ import java.util.List;
 
 import app.philm.in.lib.model.ListItem;
 import app.philm.in.view.PinnedSectionListView;
-import app.philm.in.view.StringManager;
 
 abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
         implements PinnedSectionListView.PinnedSectionListAdapter {

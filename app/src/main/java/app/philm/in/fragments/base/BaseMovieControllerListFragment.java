@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 
-import app.philm.in.lib.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
+import app.philm.in.lib.Constants;
 import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.lib.network.NetworkError;
 import app.philm.in.view.StringManager;

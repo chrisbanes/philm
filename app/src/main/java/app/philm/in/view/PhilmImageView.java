@@ -18,11 +18,11 @@ import android.widget.ImageView;
 
 import javax.inject.Inject;
 
-import app.philm.in.lib.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.lib.model.PhilmPerson;
+import app.philm.in.lib.Constants;
 import app.philm.in.lib.model.PhilmMovie;
+import app.philm.in.lib.model.PhilmPerson;
 import app.philm.in.lib.model.PhilmPersonCredit;
 import app.philm.in.lib.model.PhilmTrailer;
 import app.philm.in.lib.util.ImageHelper;

@@ -1,8 +1,9 @@
 package app.philm.in.fragments.base;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
 
@@ -26,21 +27,6 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        final GridView gridView = getListView();
-        final Resources res = getResources();
-
-        gridView.setNumColumns(GridView.AUTO_FIT);
-        gridView.setColumnWidth(res.getDimensionPixelSize(R.dimen.movie_grid_item_width));
-        gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setFastScrollAlwaysVisible(true);
-        gridView.setDrawSelectorOnTop(true);
-    }
-
-    @Override
     public void onListItemClick(GridView l, View v, int position, long id) {
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
@@ -48,6 +34,18 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
                 getCallbacks().showMovieDetail(item.getItem());
             }
         }
+    }
+
+    @Override
+    public void populateInsets(Rect insets) {
+        super.populateInsets(insets);
+
+        final int spacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
+        getListView().setPadding(
+                insets.left + spacing,
+                insets.top + spacing,
+                insets.right + spacing,
+                insets.bottom + spacing);
     }
 
     @Override
@@ -67,8 +65,8 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
     }
 
     @Override
-    protected GridView createListView(Context context) {
-        return new GridView(context);
+    protected GridView createListView(Context context, LayoutInflater inflater) {
+        return (GridView) inflater.inflate(R.layout.view_grid, null);
     }
 
 }

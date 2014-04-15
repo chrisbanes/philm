@@ -109,10 +109,8 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
         lframe.addView(tv, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
-        E lv = createListView(getActivity());
-        lv.setClipToPadding(false);
+        E lv = createListView(context, inflater);
         lv.setId(android.R.id.list);
-        lv.setDrawSelectorOnTop(false);
         lframe.addView(lv, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
@@ -357,7 +355,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
                 insets.bottom);
     }
 
-    protected abstract E createListView(Context context);
+    protected abstract E createListView(Context context, LayoutInflater inflater);
 
     private void ensureList() {
         if (mList != null) {

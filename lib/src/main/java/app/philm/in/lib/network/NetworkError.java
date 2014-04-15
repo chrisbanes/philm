@@ -1,6 +1,7 @@
 package app.philm.in.lib.network;
 
 import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public enum NetworkError {
 
@@ -10,21 +11,36 @@ public enum NetworkError {
     public static final int SOURCE_TMDB = 1;
 
     public static NetworkError from(final RetrofitError error, final int source) {
-        if (error == null || error.isNetworkError() || error.getResponse() == null) {
+        if (error == null) {
+            return UNKNOWN;
+        }
+
+        final Response response = error.getResponse();
+
+        if (response == null) {
+            return UNKNOWN;
+        }
+
+        if (error.isNetworkError()) {
             return NETWORK_ERROR;
-        } else if (error.getResponse().getStatus() == 404) {
+        }
+
+        final int statusCode = response.getStatus();
+
+        if (statusCode == 401) {
+            switch (source) {
+                case SOURCE_TRAKT:
+                    return UNAUTHORIZED_TRAKT;
+            }
+        } else if (statusCode == 404) {
             switch (source) {
                 case SOURCE_TMDB:
                     return NOT_FOUND_TMDB;
                 case SOURCE_TRAKT:
                     return NOT_FOUND_TRAKT;
             }
-        } else if (error.getResponse().getStatus() == 401) {
-            switch (source) {
-                case SOURCE_TRAKT:
-                    return UNAUTHORIZED_TRAKT;
-            }
         }
+
         return UNKNOWN;
     }
 }

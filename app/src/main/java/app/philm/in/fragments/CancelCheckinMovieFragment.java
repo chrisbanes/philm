@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import app.philm.in.R;
-import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieDialogFragment;
+import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.lib.model.PhilmMovie;
 import app.philm.in.lib.network.NetworkError;
 

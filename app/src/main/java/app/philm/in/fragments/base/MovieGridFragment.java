@@ -1,9 +1,9 @@
 package app.philm.in.fragments.base;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
 
@@ -24,21 +24,6 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
 
         mMovieGridAdapter = new MovieGridAdapter(getActivity());
         setListAdapter(mMovieGridAdapter);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        final GridView gridView = getListView();
-        final Resources res = getResources();
-
-        gridView.setNumColumns(GridView.AUTO_FIT);
-        gridView.setColumnWidth(res.getDimensionPixelSize(R.dimen.movie_grid_item_width));
-        gridView.setHorizontalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setVerticalSpacing(res.getDimensionPixelSize(R.dimen.movie_grid_spacing));
-        gridView.setFastScrollAlwaysVisible(true);
-        gridView.setDrawSelectorOnTop(true);
     }
 
     @Override
@@ -80,8 +65,8 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
     }
 
     @Override
-    protected GridView createListView(Context context) {
-        return new GridView(context);
+    protected GridView createListView(Context context, LayoutInflater inflater) {
+        return (GridView) inflater.inflate(R.layout.view_grid, null);
     }
 
 }

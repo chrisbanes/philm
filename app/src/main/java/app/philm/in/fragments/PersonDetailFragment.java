@@ -17,11 +17,11 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import app.philm.in.lib.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.fragments.base.BaseDetailFragment;
+import app.philm.in.lib.Constants;
+import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.lib.model.PhilmPerson;
 import app.philm.in.lib.model.PhilmPersonCredit;
 import app.philm.in.lib.util.PhilmCollections;

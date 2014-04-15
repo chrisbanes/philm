@@ -7,7 +7,6 @@ import app.philm.in.R;
 import app.philm.in.lib.controllers.AboutController;
 import app.philm.in.lib.controllers.MainController;
 import app.philm.in.lib.controllers.MovieController;
-import app.philm.in.lib.model.ListItem;
 import app.philm.in.lib.network.NetworkError;
 import app.philm.in.lib.util.AppUtils;
 

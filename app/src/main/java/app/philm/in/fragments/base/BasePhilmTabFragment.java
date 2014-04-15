@@ -31,12 +31,7 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_viewpager, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_viewpager, container, false);
 
         mAdapter = new TabPagerAdapter(getChildFragmentManager());
 
@@ -81,6 +76,8 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
         if (savedInstanceState != null) {
             mCurrentItem = savedInstanceState.getInt(SAVE_SELECTED_TAB);
         }
+
+        return view;
     }
 
     @Override

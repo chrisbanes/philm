@@ -3,15 +3,16 @@ package app.philm.in.fragments.base;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 
 import java.util.List;
 
+import app.philm.in.R;
 import app.philm.in.adapters.PersonSectionedListAdapter;
 import app.philm.in.lib.model.ListItem;
 import app.philm.in.lib.model.PhilmPerson;
-import app.philm.in.view.PinnedSectionListView;
 
 public abstract class PersonListFragment
         extends BaseMovieControllerListFragment<ListView, PhilmPerson> {
@@ -24,14 +25,6 @@ public abstract class PersonListFragment
 
         mAdapter = new PersonSectionedListAdapter(getActivity());
         setListAdapter(mAdapter);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        ListView lv = getListView();
-        lv.setDrawSelectorOnTop(true);
     }
 
     @Override
@@ -60,11 +53,8 @@ public abstract class PersonListFragment
     }
 
     @Override
-    protected ListView createListView(Context context) {
-        ListView lv = new PinnedSectionListView(context);
-        lv.setDivider(null);
-        lv.setDividerHeight(0);
-        return lv;
+    protected ListView createListView(Context context, LayoutInflater inflater) {
+        return (ListView) inflater.inflate(R.layout.view_pinned_list, null);
     }
 
 }

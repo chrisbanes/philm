@@ -2,6 +2,7 @@ package app.philm.in.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 
@@ -10,8 +11,8 @@ import java.util.List;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.adapters.AboutListAdapter;
-import app.philm.in.lib.controllers.AboutController;
 import app.philm.in.fragments.base.ListFragment;
+import app.philm.in.lib.controllers.AboutController;
 
 
 public class AboutFragment extends ListFragment<ListView>
@@ -80,7 +81,7 @@ public class AboutFragment extends ListFragment<ListView>
     }
 
     @Override
-    protected ListView createListView(Context context) {
-        return new ListView(context);
+    protected ListView createListView(Context context, LayoutInflater inflater) {
+        return (ListView) inflater.inflate(R.layout.view_list, null);
     }
 }

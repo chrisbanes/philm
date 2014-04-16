@@ -20,11 +20,11 @@ import android.widget.TextView;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
+import app.philm.in.drawable.RoundedAvatarDrawable;
+import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.lib.controllers.MainController;
 import app.philm.in.lib.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.lib.controllers.MainController.SideMenuItem;
-import app.philm.in.drawable.RoundedAvatarDrawable;
-import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.lib.model.PhilmMovie;
 import app.philm.in.lib.model.PhilmUserProfile;
 import app.philm.in.lib.model.WatchingMovie;
@@ -61,22 +61,7 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
-        return inflater.inflate(R.layout.fragment_drawer, container, false);
-    }
-
-    @Override
-    public String getUiTitle() {
-        return null;
-    }
-
-    @Override
-    public boolean isModal() {
-        return false;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_drawer, container, false);
 
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setOnItemClickListener(this);
@@ -103,6 +88,18 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
 
         final int darkenByte = Math.round(255 * CHECKIN_BACKDROP_DARKEN);
         mColorFilter = new LightingColorFilter(Color.rgb(darkenByte, darkenByte, darkenByte), 0);
+
+        return view;
+    }
+
+    @Override
+    public String getUiTitle() {
+        return null;
+    }
+
+    @Override
+    public boolean isModal() {
+        return false;
     }
 
     @Override

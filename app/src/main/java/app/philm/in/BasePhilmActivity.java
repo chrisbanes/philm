@@ -50,7 +50,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
         mMainController.init();
 
         if (mLaunchIntent != null) {
-            mMainController.handleIntent(mLaunchIntent.getAction());
+            mMainController.handleIntent(mLaunchIntent);
             mLaunchIntent = null;
         }
     }
@@ -78,31 +78,13 @@ public abstract class BasePhilmActivity extends FragmentActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (mMainController.onHomeButtonPressed()) {
-                    return true;
-                }
-                break;
-            case R.id.menu_about:
-                if (mMainController.onAboutButtonPressed()) {
-                    return true;
-                }
-                break;
-            case R.id.menu_settings:
-                if (mMainController.onSettingsButtonPressed()) {
-                    return true;
-                }
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void setAccountAuthenticatorResult(String username, String authToken,
             String authTokenType) {
         // NO-OP
+    }
+
+    protected MainController getMainController() {
+        return mMainController;
     }
 
 }

@@ -87,8 +87,15 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void showMovieDetail(String movieId) {
-        showFragment(MovieDetailFragment.create(movieId));
+    public void startMovieDetailActivity(String movieId) {
+        Intent intent = new Intent(PHILM_ACTION_VIEW_MOVIE);
+        intent.putExtra(PARAM_ID, movieId);
+        mActivity.startActivity(intent);
+    }
+
+    @Override
+    public void showMovieDetailFragment(String movieId) {
+        showFragmentFromDrawer(MovieDetailFragment.create(movieId));
     }
 
     @Override
@@ -139,13 +146,13 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void startAddAccountActivity() {
-        Intent intent = new Intent(ACTION_LOGIN);
+        Intent intent = new Intent(PHILM_ACTION_LOGIN);
         mActivity.startActivity(intent);
     }
 
     @Override
     public void startAboutActivity() {
-        Intent intent = new Intent(ACTION_ABOUT);
+        Intent intent = new Intent(PHILM_ACTION_ABOUT);
         mActivity.startActivity(intent);
     }
 

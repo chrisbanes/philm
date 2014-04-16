@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.otto.Subscribe;
 
+import android.content.Intent;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -60,6 +62,8 @@ public class MainController extends BaseUiController<MainController.MainControll
         void addAccountRequested();
 
         void showMovieCheckin();
+
+        void setShownLoginPrompt();
     }
 
     private final UserController mUserController;
@@ -124,10 +128,10 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     @Override
-    public boolean handleIntent(String intentAction) {
-        mLogger.d(LOG_TAG, "handleIntent: " + intentAction);
+    public boolean handleIntent(Intent intent) {
+        mLogger.d(LOG_TAG, "handleIntent: " + intent);
 
-        if (Display.ACTION_MAIN.equals(intentAction)) {
+        if (Display.ANDROID_ACTION_MAIN.equals(intent.getAction())) {
             Display display = getDisplay();
             if (display != null && !display.hasMainFragment()) {
                 showUiItem(display, SideMenuItem.DISCOVER);
@@ -135,9 +139,9 @@ public class MainController extends BaseUiController<MainController.MainControll
             return true;
         }
 
-        return mUserController.handleIntent(intentAction)
-                || mMovieController.handleIntent(intentAction)
-                || mAboutController.handleIntent(intentAction);
+        return mUserController.handleIntent(intent)
+                || mMovieController.handleIntent(intent)
+                || mAboutController.handleIntent(intent);
     }
 
     @Override
@@ -178,10 +182,9 @@ public class MainController extends BaseUiController<MainController.MainControll
     }
 
     private void populateUi(MainUi ui) {
-        //if (mState.getCurrentAccount() == null && !mPreferences.hasShownTraktLoginPrompt()) {
+        if (mState.getCurrentAccount() == null && !mPreferences.hasShownTraktLoginPrompt()) {
             ui.showLoginPrompt();
-            mPreferences.setShownTraktLoginPrompt();
-        //}
+        }
     }
 
     @Override
@@ -212,8 +215,13 @@ public class MainController extends BaseUiController<MainController.MainControll
 
                 if (display != null && checkin != null) {
                     display.closeDrawerLayout();
-                    display.showMovieDetail(checkin.movie.getImdbId());
+                    display.startMovieDetailActivity(checkin.movie.getImdbId());
                 }
+            }
+
+            @Override
+            public void setShownLoginPrompt() {
+                mPreferences.setShownTraktLoginPrompt();
             }
         };
     }

@@ -1,5 +1,6 @@
 package app.philm.in;
 
+import android.app.ActionBar;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -16,10 +17,8 @@ import app.philm.in.lib.util.IntUtils;
 import app.philm.in.lib.util.PhilmCollections;
 import app.philm.in.view.InsetDrawerLayout;
 
-public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayout.OnInsetsCallback,
-        MainController.MainUi{
-
-    private MainController.MainControllerUiCallbacks mUiCallbacks;
+public abstract class PhilmActivity extends BasePhilmActivity
+        implements InsetDrawerLayout.OnInsetsCallback {
 
     public static interface OnActivityInsetsCallback {
         public void onInsetsChanged(Rect insets);
@@ -41,14 +40,17 @@ public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayou
         mCardContainer = findViewById(R.id.card_container);
 
         mDrawerLayout = (InsetDrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setOnInsetsCallback(this);
         if (mDrawerLayout != null) {
+            mDrawerLayout.setOnInsetsCallback(this);
+
             mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer,
                     R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
 
             mDrawerLayout.setDrawerListener(mDrawerToggle);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setHomeButtonEnabled(true);
+
+            ActionBar ab = getActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
         }
     }
 
@@ -70,23 +72,6 @@ public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayou
         return mDrawerLayout;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        PhilmApplication.from(this).getMainController().attachUi(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        PhilmApplication.from(this).getMainController().detachUi(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -142,23 +127,4 @@ public class PhilmActivity extends BasePhilmActivity implements InsetDrawerLayou
         setInsetTopAlpha(255);
     }
 
-    @Override
-    public void showLoginPrompt() {
-        // TODO
-    }
-
-    @Override
-    public String getUiTitle() {
-        return null;
-    }
-
-    @Override
-    public void setCallbacks(MainController.MainControllerUiCallbacks callbacks) {
-        mUiCallbacks = callbacks;
-    }
-
-    @Override
-    public boolean isModal() {
-        return false;
-    }
 }

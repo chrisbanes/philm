@@ -6,9 +6,12 @@ public interface Display {
     public static final String FRAGMENT_TAG_CHECKIN_MOVIE = "checkin_movie";
     public static final String FRAGMENT_TAG_TRAKT_CREDENTIALS_WRONG = "trakt_credentials_wrong";
 
-    public static final String ACTION_ABOUT = "philm.intent.action.ABOUT";
-    public static final String ACTION_LOGIN = "philm.intent.action.LOGIN";
-    public static final String ACTION_MAIN = "android.intent.action.MAIN";
+    public static final String ANDROID_ACTION_MAIN = "android.intent.action.MAIN";
+    public static final String PHILM_ACTION_ABOUT = "philm.intent.action.ABOUT";
+    public static final String PHILM_ACTION_LOGIN = "philm.intent.action.LOGIN";
+    public static final String PHILM_ACTION_VIEW_MOVIE = "philm.intent.action.VIEW_MOVIE";
+
+    public static final String PARAM_ID = "_id";
 
     public void showLibrary();
 
@@ -20,7 +23,9 @@ public interface Display {
 
     public void showLogin();
 
-    public void showMovieDetail(String movieId);
+    public void startMovieDetailActivity(String movieId);
+
+    public void showMovieDetailFragment(String movieId);
 
     public void showSearchFragment();
 

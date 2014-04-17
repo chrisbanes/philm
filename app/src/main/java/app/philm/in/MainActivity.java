@@ -1,11 +1,10 @@
 package app.philm.in;
 
 import android.view.Menu;
-import android.view.MenuItem;
 
 import app.philm.in.lib.controllers.MainController;
 
-public class MainActivity extends PhilmActivity implements MainController.MainUi {
+public class MainActivity extends BasePhilmActivity implements MainController.MainUi {
 
     private MainController.MainControllerUiCallbacks mUiCallbacks;
 
@@ -13,28 +12,6 @@ public class MainActivity extends PhilmActivity implements MainController.MainUi
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (getMainController().onHomeButtonPressed()) {
-                    return true;
-                }
-                break;
-            case R.id.menu_about:
-                if (getMainController().onAboutButtonPressed()) {
-                    return true;
-                }
-                break;
-            case R.id.menu_settings:
-                if (getMainController().onSettingsButtonPressed()) {
-                    return true;
-                }
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

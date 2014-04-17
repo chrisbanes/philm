@@ -309,7 +309,7 @@ public class MainController extends BaseUiController<MainController.MainControll
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     private SideMenuItem[] getEnabledSideMenuItems() {

@@ -23,10 +23,10 @@ import app.philm.in.lib.Display;
 import app.philm.in.lib.controllers.MainController;
 import app.philm.in.lib.util.IntUtils;
 import app.philm.in.lib.util.PhilmCollections;
-import app.philm.in.view.InsetDrawerLayout;
+import app.philm.in.view.InsetFrameLayout;
 
 public abstract class BasePhilmActivity extends FragmentActivity
-        implements MainController.HostCallbacks, InsetDrawerLayout.OnInsetsCallback {
+        implements MainController.HostCallbacks, InsetFrameLayout.OnInsetsCallback {
 
     private MainController mMainController;
     private Intent mLaunchIntent;
@@ -40,7 +40,8 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     private View mCardContainer;
 
-    private InsetDrawerLayout mDrawerLayout;
+    private InsetFrameLayout mInsetFrameLayout;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,18 +56,22 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
         mCardContainer = findViewById(R.id.card_container);
 
-        mDrawerLayout = (InsetDrawerLayout) findViewById(R.id.drawer_layout);
-        if (mDrawerLayout != null) {
-            mDrawerLayout.setOnInsetsCallback(this);
+        mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.fl_insets);
+        if (mInsetFrameLayout != null) {
+            mInsetFrameLayout.setOnInsetsCallback(this);
+        }
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (mDrawerLayout != null) {
             mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer,
                     R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
-
             mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-            ActionBar ab = getActionBar();
-            ab.setDisplayHomeAsUpEnabled(true);
-            ab.setHomeButtonEnabled(true);
+            final ActionBar ab = getActionBar();
+            if (ab != null) {
+                ab.setDisplayHomeAsUpEnabled(true);
+                ab.setHomeButtonEnabled(true);
+            }
         }
 
         // Record launch intent
@@ -214,8 +219,8 @@ public abstract class BasePhilmActivity extends FragmentActivity
     }
 
     public void setInsetTopAlpha(float alpha) {
-        if (mDrawerLayout != null) {
-            mDrawerLayout.setTopInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
+        if (mInsetFrameLayout != null) {
+            mInsetFrameLayout.setTopInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
         }
     }
 

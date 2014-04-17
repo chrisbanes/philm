@@ -253,8 +253,15 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
+    public void startPersonDetailActivity(String id) {
+        Intent intent = new Intent(PHILM_ACTION_VIEW_PERSON);
+        intent.putExtra(PARAM_ID, id);
+        mActivity.startActivity(intent);
+    }
+
+    @Override
     public void showPersonDetail(String id) {
-        showFragment(PersonDetailFragment.create(id));
+        showFragmentFromDrawer(PersonDetailFragment.create(id));
     }
 
     @Override

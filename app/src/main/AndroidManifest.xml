@@ -28,11 +28,25 @@
 
         <activity
                 android:name=".MovieActivity"
-                android:label="@string/app_name"
                 android:parentActivityName=".MainActivity">
 
             <intent-filter>
                 <action android:name="philm.intent.action.VIEW_MOVIE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <meta-data
+                  android:name="android.support.PARENT_ACTIVITY"
+                  android:value=".MainActivity" />
+
+        </activity>
+
+        <activity
+              android:name=".PersonActivity"
+              android:parentActivityName=".MainActivity">
+
+            <intent-filter>
+                <action android:name="philm.intent.action.VIEW_PERSON"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 

@@ -10,6 +10,7 @@ public interface Display {
     public static final String PHILM_ACTION_ABOUT = "philm.intent.action.ABOUT";
     public static final String PHILM_ACTION_LOGIN = "philm.intent.action.LOGIN";
     public static final String PHILM_ACTION_VIEW_MOVIE = "philm.intent.action.VIEW_MOVIE";
+    public static final String PHILM_ACTION_VIEW_PERSON = "philm.intent.action.VIEW_PERSON";
 
     public static final String PARAM_ID = "_id";
 
@@ -72,6 +73,8 @@ public interface Display {
     public void showCheckin(String movieId);
 
     public void showCancelCheckin();
+
+    public void startPersonDetailActivity(String id);
 
     public void showPersonDetail(String id);
 

@@ -614,7 +614,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showPersonDetail(String.valueOf(person.getTmdbId()));
+                    display.startPersonDetailActivity(String.valueOf(person.getTmdbId()));
                 }
             }
 
@@ -756,14 +756,27 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Override
     public boolean handleIntent(Intent intent) {
-        if (Display.PHILM_ACTION_VIEW_MOVIE.equals(intent.getAction())) {
-            final String id = intent.getStringExtra(Display.PARAM_ID);
-            final Display display = getDisplay();
+        final String id = intent.getStringExtra(Display.PARAM_ID);
+        final Display display = getDisplay();
 
-            if (!TextUtils.isEmpty(id) && display != null && !display.hasMainFragment()) {
-                display.showMovieDetailFragment(id);
-                return true;
-            }
+        if (display == null) {
+            return false;
+        }
+
+        switch (intent.getAction()) {
+            case Display.PHILM_ACTION_VIEW_MOVIE:
+                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
+                    display.showMovieDetailFragment(id);
+                    return true;
+                }
+                break;
+
+            case Display.PHILM_ACTION_VIEW_PERSON:
+                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
+                    display.showPersonDetail(id);
+                    return true;
+                }
+                break;
         }
 
         return super.handleIntent(intent);

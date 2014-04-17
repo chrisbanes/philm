@@ -1,6 +1,6 @@
 package app.philm.in;
 
-public class MovieActivity extends BasePhilmActivity {
+public class PersonActivity extends BasePhilmActivity {
 
     @Override
     protected int getContentViewLayoutId() {

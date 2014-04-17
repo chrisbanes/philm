@@ -112,7 +112,10 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
     @Override
     public void onPause() {
         super.onPause();
-        mSearchView = null;
+        if (mSearchView != null) {
+            mSearchView.clearFocus();
+            mSearchView = null;
+        }
     }
 
     private void setQuery(String query) {

@@ -7,8 +7,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
+import android.widget.FrameLayout;
 
 import app.philm.in.R;
 
@@ -16,7 +16,7 @@ import app.philm.in.R;
  * A layout that draws something in the insets passed to {@link #fitSystemWindows(Rect)}, i.e. the
  * area above UI chrome (status and navigation bars, overlay action bars).
  */
-public class InsetDrawerLayout extends DrawerLayout {
+public class InsetFrameLayout extends FrameLayout {
 
     private Drawable mDefaultInsetBackground;
     private Drawable mInsetBackground;
@@ -27,17 +27,17 @@ public class InsetDrawerLayout extends DrawerLayout {
 
     private int mTopAlpha = 255;
 
-    public InsetDrawerLayout(Context context) {
+    public InsetFrameLayout(Context context) {
         super(context);
         init(context, null, 0);
     }
 
-    public InsetDrawerLayout(Context context, AttributeSet attrs) {
+    public InsetFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0);
     }
 
-    public InsetDrawerLayout(Context context, AttributeSet attrs, int defStyle) {
+    public InsetFrameLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs, defStyle);
     }

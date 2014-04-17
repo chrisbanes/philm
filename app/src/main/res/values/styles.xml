@@ -5,6 +5,10 @@
         <item name="android:indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
     </style>
 
+    <style name="Widget.Philm.ActionBar.Solid" parent="Widget.Philm.ActionBar">
+        <item name="android:background">?attr/default_inset_color</item>
+    </style>
+
     <style name="Widget.Philm.ActionBar.Progress" parent="@android:style/Widget.Holo.Light.ProgressBar">
         <item name="android:minHeight">36dip</item>
         <item name="android:maxHeight">36dip</item>

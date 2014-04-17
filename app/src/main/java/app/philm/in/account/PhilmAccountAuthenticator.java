@@ -32,7 +32,7 @@ public class PhilmAccountAuthenticator extends AbstractAccountAuthenticator {
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType,
             String authTokenType, String[] requiredFeatures, Bundle options)
             throws NetworkErrorException {
-        final Intent intent = new Intent(Display.ACTION_LOGIN);
+        final Intent intent = new Intent(Display.PHILM_ACTION_LOGIN);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -58,7 +58,7 @@ public class PhilmAccountAuthenticator extends AbstractAccountAuthenticator {
             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
             result.putString(AccountManager.KEY_AUTHTOKEN, password);
         } else {
-            final Intent intent = new Intent(Display.ACTION_LOGIN);
+            final Intent intent = new Intent(Display.PHILM_ACTION_LOGIN);
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
             result.putParcelable(AccountManager.KEY_INTENT, intent);
         }

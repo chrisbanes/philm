@@ -14,6 +14,7 @@ import app.philm.in.lib.util.TextUtils;
 
 public class MovieDetailCardLayout extends LinearLayout {
 
+    private final View mTitleLayout;
     private final TextView mTitleTextView;
     private final TextView mSeeMoreTextView;
     private LinearLayout mCardContent;
@@ -32,8 +33,9 @@ public class MovieDetailCardLayout extends LinearLayout {
         setOrientation(VERTICAL);
         LayoutInflater.from(context).inflate(R.layout.include_movie_detail_card, this, true);
 
-        mTitleTextView = (TextView) findViewById(R.id.textview_title);
-        mSeeMoreTextView = (TextView) findViewById(R.id.textview_see_more);
+        mTitleLayout = getChildAt(0);
+        mTitleTextView = (TextView) mTitleLayout.findViewById(R.id.textview_title);
+        mSeeMoreTextView = (TextView) mTitleLayout.findViewById(R.id.textview_see_more);
         mCardContent = (LinearLayout) getChildAt(1);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MovieDetailCardLayout);
@@ -49,7 +51,7 @@ public class MovieDetailCardLayout extends LinearLayout {
     }
 
     public void setSeeMoreOnClickListener(OnClickListener listener) {
-        mSeeMoreTextView.setOnClickListener(listener);
+        mTitleLayout.setOnClickListener(listener);
     }
 
     public void setTitle(CharSequence title) {

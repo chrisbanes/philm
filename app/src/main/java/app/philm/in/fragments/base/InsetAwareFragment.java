@@ -5,11 +5,11 @@ import android.support.v4.app.Fragment;
 
 import java.util.List;
 
-import app.philm.in.PhilmActivity;
+import app.philm.in.BasePhilmActivity;
 import app.philm.in.lib.util.PhilmCollections;
 
 public abstract class InsetAwareFragment extends Fragment
-        implements PhilmActivity.OnActivityInsetsCallback {
+        implements BasePhilmActivity.OnActivityInsetsCallback {
 
     private final Rect mInsets = new Rect();
     private Rect mAdditionalInsets;
@@ -17,15 +17,15 @@ public abstract class InsetAwareFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        if (getActivity() instanceof PhilmActivity) {
-            ((PhilmActivity) getActivity()).addInsetChangedCallback(this);
+        if (getActivity() instanceof BasePhilmActivity) {
+            ((BasePhilmActivity) getActivity()).addInsetChangedCallback(this);
         }
     }
 
     @Override
     public void onPause() {
-        if (getActivity() instanceof PhilmActivity) {
-            PhilmActivity activity = ((PhilmActivity) getActivity());
+        if (getActivity() instanceof BasePhilmActivity) {
+            BasePhilmActivity activity = ((BasePhilmActivity) getActivity());
             activity.removeInsetChangedCallback(this);
             activity.resetInsets();
         }
@@ -42,8 +42,8 @@ public abstract class InsetAwareFragment extends Fragment
     }
 
     public void setTopInsetAlpha(float alpha) {
-        if (getActivity() instanceof PhilmActivity) {
-            ((PhilmActivity) getActivity()).setInsetTopAlpha(alpha);
+        if (getActivity() instanceof BasePhilmActivity) {
+            ((BasePhilmActivity) getActivity()).setInsetTopAlpha(alpha);
         }
     }
 

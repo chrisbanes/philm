@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.squareup.otto.Subscribe;
 
+import android.content.Intent;
 import android.support.v4.util.ArrayMap;
 
 import java.util.ArrayList;
@@ -369,7 +370,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 Display display = getDisplay();
                 if (display != null) {
                     if (!TextUtils.isEmpty(movie.getTraktId())) {
-                        display.showMovieDetail(movie.getTraktId());
+                        display.startMovieDetailActivity(movie.getTraktId());
                     }
                     // TODO: Handle the else case
                 }
@@ -381,7 +382,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showMovieDetail(String.valueOf(credit.getId()));
+                    display.startMovieDetailActivity(String.valueOf(credit.getId()));
                 }
             }
 
@@ -613,7 +614,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
                 Display display = getDisplay();
                 if (display != null) {
-                    display.showPersonDetail(String.valueOf(person.getTmdbId()));
+                    display.startPersonDetailActivity(String.valueOf(person.getTmdbId()));
                 }
             }
 
@@ -751,6 +752,34 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             display.setActionBarSubtitle(subtitle);
         }
 
+    }
+
+    @Override
+    public boolean handleIntent(Intent intent) {
+        final String id = intent.getStringExtra(Display.PARAM_ID);
+        final Display display = getDisplay();
+
+        if (display == null) {
+            return false;
+        }
+
+        switch (intent.getAction()) {
+            case Display.PHILM_ACTION_VIEW_MOVIE:
+                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
+                    display.showMovieDetailFragment(id);
+                    return true;
+                }
+                break;
+
+            case Display.PHILM_ACTION_VIEW_PERSON:
+                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
+                    display.showPersonDetail(id);
+                    return true;
+                }
+                break;
+        }
+
+        return super.handleIntent(intent);
     }
 
     @Override

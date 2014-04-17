@@ -1,6 +1,8 @@
 package app.philm.in.lib.controllers;
 
 
+import android.content.Intent;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,15 +39,16 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
     }
 
     @Override
-    public boolean handleIntent(String intentAction) {
-        final Display display = getDisplay();
-        if (Display.ACTION_ABOUT.equals(intentAction)) {
+    public boolean handleIntent(Intent intent) {
+        if (Display.PHILM_ACTION_ABOUT.equals(intent.getAction())) {
+            final Display display = getDisplay();
             if (display != null && !display.hasMainFragment()) {
                 display.showAboutFragment();
             }
             return true;
         }
-        return super.handleIntent(intentAction);
+
+        return super.handleIntent(intent);
     }
 
     @Override

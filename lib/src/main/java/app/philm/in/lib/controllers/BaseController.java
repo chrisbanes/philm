@@ -2,6 +2,8 @@ package app.philm.in.lib.controllers;
 
 import com.google.common.base.Preconditions;
 
+import android.content.Intent;
+
 import app.philm.in.lib.Display;
 
 abstract class BaseController {
@@ -29,15 +31,15 @@ abstract class BaseController {
 
     protected void onSuspended() {}
 
-    public boolean handleIntent(String intentAction) {
+    public boolean handleIntent(Intent intent) {
         return false;
     }
 
-    public void setDisplay(Display display) {
+    protected void setDisplay(Display display) {
         mDisplay = display;
     }
 
-    public final Display getDisplay() {
+    protected final Display getDisplay() {
         return mDisplay;
     }
 

@@ -8,10 +8,12 @@ public class AboutActivity extends BasePhilmActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_about);
-
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
     }
 
+    @Override
+    protected int getContentViewLayoutId() {
+        return R.layout.activity_about;
+    }
 }

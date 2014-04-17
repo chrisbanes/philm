@@ -9,7 +9,7 @@
     </style>
 
     <style name="Theme.Philm.Framed" parent="Theme.Philm">
-        <item name="android:actionBarStyle">@android:style/Widget.Holo.Light.ActionBar</item>
+        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar.Solid</item>
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>

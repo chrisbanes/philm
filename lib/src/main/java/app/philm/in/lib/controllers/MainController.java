@@ -266,8 +266,20 @@ public class MainController extends BaseUiController<MainController.MainControll
         super.onSuspended();
     }
 
+    public void attachDisplay(Display display) {
+        Preconditions.checkNotNull(display, "display is null");
+        Preconditions.checkState(getDisplay() == null, "we currently have a display");
+        setDisplay(display);
+    }
+
+    public void detachDisplay(Display display) {
+        Preconditions.checkNotNull(display, "display is null");
+        Preconditions.checkState(getDisplay() == display, "display is not attached");
+        setDisplay(null);
+    }
+
     @Override
-    public void setDisplay(Display display) {
+    protected void setDisplay(Display display) {
         super.setDisplay(display);
         mMovieController.setDisplay(display);
         mUserController.setDisplay(display);
@@ -296,7 +308,6 @@ public class MainController extends BaseUiController<MainController.MainControll
             if (display.popEntireFragmentBackStack()) {
                 return true;
             }
-            display.finishActivity();
         }
         return true;
     }

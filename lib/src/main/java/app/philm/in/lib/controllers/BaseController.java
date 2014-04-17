@@ -35,11 +35,11 @@ abstract class BaseController {
         return false;
     }
 
-    public void setDisplay(Display display) {
+    protected void setDisplay(Display display) {
         mDisplay = display;
     }
 
-    public final Display getDisplay() {
+    protected final Display getDisplay() {
         return mDisplay;
     }
 

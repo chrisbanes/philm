@@ -4,13 +4,16 @@ import com.crashlytics.android.Crashlytics;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.Window;
 
+import app.philm.in.lib.Display;
 import app.philm.in.lib.controllers.MainController;
 
 public abstract class BasePhilmActivity extends FragmentActivity
@@ -18,6 +21,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     private MainController mMainController;
     private Intent mLaunchIntent;
+    private Display mDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,12 @@ public abstract class BasePhilmActivity extends FragmentActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mDisplay = new AndroidDisplay(this, getDrawerToggle(), getDrawerLayout());
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         mLaunchIntent = intent;
@@ -45,7 +55,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
     protected void onResume() {
         super.onResume();
 
-        mMainController.setDisplay(new AndroidDisplay(this, getDrawerToggle(), getDrawerLayout()));
+        mMainController.attachDisplay(mDisplay);
         mMainController.setHostCallbacks(this);
         mMainController.init();
 
@@ -70,11 +80,28 @@ public abstract class BasePhilmActivity extends FragmentActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN
+                && item.getItemId() == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onPause() {
         mMainController.suspend();
         mMainController.setHostCallbacks(null);
-        mMainController.setDisplay(null);
+        mMainController.detachDisplay(mDisplay);
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mDisplay = null;
     }
 
     @Override

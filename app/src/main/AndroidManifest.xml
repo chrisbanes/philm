@@ -28,12 +28,17 @@
 
         <activity
                 android:name=".MovieActivity"
-                android:label="@string/app_name">
+                android:label="@string/app_name"
+                android:parentActivityName=".MainActivity">
 
             <intent-filter>
                 <action android:name="philm.intent.action.VIEW_MOVIE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+
+            <meta-data
+                  android:name="android.support.PARENT_ACTIVITY"
+                  android:value=".MainActivity" />
 
         </activity>
 
@@ -53,12 +58,17 @@
                 android:name=".AboutActivity"
                 android:exported="false"
                 android:theme="@style/Theme.Philm.Framed"
-                android:launchMode="singleTask">
+                android:launchMode="singleTask"
+                android:parentActivityName=".MainActivity">
 
             <intent-filter>
                 <action android:name="philm.intent.action.ABOUT"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+
+            <meta-data
+                  android:name="android.support.PARENT_ACTIVITY"
+                  android:value=".MainActivity" />
 
         </activity>
 
@@ -67,7 +77,14 @@
                 android:theme="@style/Theme.Philm.Framed"
                 android:label="@string/settings_title"
                 android:exported="false"
-                android:launchMode="singleTask"/>
+                android:launchMode="singleTask"
+                android:parentActivityName=".MainActivity">
+
+            <meta-data
+                  android:name="android.support.PARENT_ACTIVITY"
+                  android:value=".MainActivity" />
+
+        </activity>
 
         <service android:name=".account.PhilmAuthenticatorService">
             <intent-filter>

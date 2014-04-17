@@ -6,7 +6,6 @@
     android:id="@+id/movie_detail_card_details"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_major"
     internal:title="@string/details">
 
     <app.philm.in.view.MovieDetailInfoLayout

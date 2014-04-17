@@ -4,6 +4,7 @@
     <dimen name="spacing_micro">4dp</dimen>
     <dimen name="spacing_minor">8dp</dimen>
     <dimen name="spacing_major">16dp</dimen>
+    <dimen name="spacing_massive">24dp</dimen>
 
     <dimen name="drawer_side_menu_width">240dp</dimen>
     <dimen name="drawer_user_text_size">14dp</dimen>

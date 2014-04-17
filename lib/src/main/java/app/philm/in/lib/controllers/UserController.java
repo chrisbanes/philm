@@ -9,6 +9,8 @@ import com.jakewharton.trakt.entities.Response;
 import com.jakewharton.trakt.entities.Settings;
 import com.squareup.otto.Subscribe;
 
+import android.content.Intent;
+
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -168,13 +170,14 @@ public class UserController extends BaseUiController<UserController.UserUi,
     }
 
     @Override
-    public boolean handleIntent(String intentAction) {
+    public boolean handleIntent(Intent intent) {
         final Display display = getDisplay();
-        if (display != null && Display.ACTION_LOGIN.equals(intentAction)) {
+        if (display != null && Display.PHILM_ACTION_LOGIN.equals(intent.getAction())) {
             display.showLogin();
             return true;
         }
-        return super.handleIntent(intentAction);
+
+        return super.handleIntent(intent);
     }
 
     void setControllerCallbacks(ControllerCallbacks controllerCallbacks) {

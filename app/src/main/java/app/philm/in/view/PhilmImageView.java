@@ -161,23 +161,22 @@ public class PhilmImageView extends ImageView {
     }
 
     private void setPicassoHandler(PicassoHandler handler) {
-        if (mPicassoHandler != null) {
+        if (mPicassoHandler != null && mPicassoHandler.isStarted()
+                && !mPicassoHandler.isFinished()) {
             Picasso.with(getContext()).cancelRequest(mPicassoTarget);
         }
 
-        if (handler != null) {
-            mPicassoHandler = handler;
-            if (canLoadImage()) {
-                loadUrlImmediate();
-            }
+        mPicassoHandler = handler;
+
+        if (handler != null && canLoadImage()) {
+            loadUrlImmediate();
         }
     }
 
     private static abstract class PicassoHandler {
 
         private final Listener mCallback;
-
-        private boolean mIsStarted;
+        private boolean mIsStarted, mIsFinished;
 
         PicassoHandler(Listener callback) {
             mCallback = callback;
@@ -190,11 +189,15 @@ public class PhilmImageView extends ImageView {
         }
 
         void markAsFinished() {
-            mIsStarted = false;
+            mIsFinished = true;
         }
 
         boolean isStarted() {
             return mIsStarted;
+        }
+
+        boolean isFinished() {
+            return mIsFinished;
         }
 
         int getPlaceholderDrawable() {

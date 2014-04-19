@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import app.philm.in.R;
+import app.philm.in.drawable.TintingBitmapDrawable;
 import app.philm.in.fragments.base.BasePhilmMovieDialogFragment;
 import app.philm.in.lib.controllers.MovieController;
 import app.philm.in.lib.model.PhilmMovie;
@@ -38,7 +39,8 @@ public class CancelCheckinMovieFragment extends BasePhilmMovieDialogFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.movie_checkin_cancel);
-        builder.setIcon(R.drawable.ic_btn_cancel_checkin);
+        builder.setIcon(TintingBitmapDrawable.createFromColorResource(getResources(),
+                R.drawable.ic_btn_checkin, android.R.color.holo_red_dark));
         builder.setView(layout);
         builder.setPositiveButton(android.R.string.ok, this);
         builder.setNegativeButton(android.R.string.no, this);

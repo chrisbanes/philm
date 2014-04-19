@@ -92,58 +92,49 @@ public interface MoviesState extends BaseState {
 
     public static class WatchingMovieUpdatedEvent {}
 
-    public static class UiCausedEvent<T> extends BaseArgumentEvent<T> {
-        public final int callingId;
-
-        public UiCausedEvent(int callingId, T item) {
-            super(item);
-            this.callingId = callingId;
-        }
-    }
-
-    public static class MovieInformationUpdatedEvent extends UiCausedEvent<PhilmMovie> {
+    public static class MovieInformationUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
         public MovieInformationUpdatedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);
         }
     }
 
-    public static class MovieReleasesUpdatedEvent extends UiCausedEvent<PhilmMovie> {
+    public static class MovieReleasesUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
         public MovieReleasesUpdatedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);
         }
     }
 
-    public static class MovieRelatedItemsUpdatedEvent extends UiCausedEvent<PhilmMovie> {
+    public static class MovieRelatedItemsUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
         public MovieRelatedItemsUpdatedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);
         }
     }
 
-    public static class MovieTrailersItemsUpdatedEvent extends UiCausedEvent<PhilmMovie> {
+    public static class MovieTrailersItemsUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
         public MovieTrailersItemsUpdatedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);
         }
     }
 
-    public static class MovieCastItemsUpdatedEvent extends UiCausedEvent<PhilmMovie> {
+    public static class MovieCastItemsUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
         public MovieCastItemsUpdatedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);
         }
     }
 
-    public static class MovieUserRatingChangedEvent extends UiCausedEvent<PhilmMovie> {
+    public static class MovieUserRatingChangedEvent extends BaseArgumentEvent<PhilmMovie> {
         public MovieUserRatingChangedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);
         }
     }
 
-    public static class PersonChangedEvent extends UiCausedEvent<PhilmPerson> {
+    public static class PersonChangedEvent extends BaseArgumentEvent<PhilmPerson> {
         public PersonChangedEvent(int callingId, PhilmPerson item) {
             super(callingId, item);
         }
     }
 
-    public static class MovieFlagsUpdatedEvent extends UiCausedEvent<List<PhilmMovie>> {
+    public static class MovieFlagsUpdatedEvent extends BaseArgumentEvent<List<PhilmMovie>> {
         public MovieFlagsUpdatedEvent(int callingId, List<PhilmMovie> item) {
             super(callingId, item);
         }

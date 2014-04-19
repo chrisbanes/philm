@@ -122,32 +122,32 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onLibraryChanged(MoviesState.LibraryChangedEvent event) {
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.LIBRARY);
     }
 
     @Subscribe
     public void onTrendingChanged(MoviesState.TrendingChangedEvent event) {
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.TRENDING);
     }
 
     @Subscribe
     public void onPopularChanged(MoviesState.PopularChangedEvent event) {
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.POPULAR);
     }
 
     @Subscribe
     public void onInTheatresChanged(MoviesState.InTheatresChangedEvent event) {
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.NOW_PLAYING);
     }
 
     @Subscribe
     public void onUpcomingChanged(MoviesState.UpcomingChangedEvent event) {
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.UPCOMING);
     }
 
     @Subscribe
     public void onWatchlistChanged(MoviesState.WatchlistChangedEvent event) {
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.WATCHLIST);
     }
 
     @Subscribe
@@ -172,12 +172,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onSearchResultChanged(MoviesState.SearchResultChangedEvent event) {
-        populateUis();
+        populateUisFromQueryTypes(MovieQueryType.SEARCH, MovieQueryType.SEARCH_MOVIES,
+                MovieQueryType.SEARCH_PEOPLE);
     }
 
     @Subscribe
     public void onRecommendedChanged(MoviesState.RecommendedChangedEvent event) {
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.RECOMMENDED);
     }
 
     @Subscribe
@@ -202,39 +203,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieDetailChanged(MoviesState.MovieInformationUpdatedEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null) {
-            populateUi(ui);
-            checkDetailMovieResult(event.callingId, event.item);
-        }
+        populateUiFromEvent(event);
+        checkDetailMovieResult(event.callingId, event.item);
     }
 
     @Subscribe
     public void onPersonCreditsChanged(MoviesState.PersonChangedEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null) {
-            populateUi(ui);
-        } else {
-            populateUis();
-        }
+        populateUiFromEvent(event);
     }
 
     @Subscribe
     public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null) {
-            populateUi(ui);
-        } else {
-            populateUis();
-        }
+        populateUiFromQueryType(MovieQueryType.DETAIL);
     }
 
     @Subscribe
     public void onMovieReleasesChanged(MoviesState.MovieReleasesUpdatedEvent event) {
-        MovieUi ui = findUi(event.callingId);
-        if (ui != null) {
-            populateUi(ui);
-        }
+        populateUiFromEvent(event);
     }
 
     @Subscribe
@@ -243,7 +228,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (watching != null && watching.movie != null) {
             fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
         }
-        populateUis();
+        populateUiFromQueryType(MovieQueryType.DETAIL);
     }
 
     @Subscribe
@@ -1218,7 +1203,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         return filteredMovies;
     }
 
-    private MovieUi getMovieUiAttached(MovieQueryType queryType) {
+    private MovieUi findUiFromQueryType(MovieQueryType queryType) {
         for (MovieUi ui : getUis()) {
             if (ui.getMovieQueryType() == queryType) {
                 return ui;
@@ -1505,12 +1490,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     private void prefetchLibraryIfNeeded() {
-        MovieUi ui = getMovieUiAttached(MovieQueryType.LIBRARY);
+        MovieUi ui = findUiFromQueryType(MovieQueryType.LIBRARY);
         fetchLibraryIfNeeded(ui != null ? getId(ui) : 0);
     }
 
     private void prefetchWatchlistIfNeeded() {
-        MovieUi ui = getMovieUiAttached(MovieQueryType.WATCHLIST);
+        MovieUi ui = findUiFromQueryType(MovieQueryType.WATCHLIST);
         fetchWatchlistIfNeeded(ui != null ? getId(ui) : 0);
     }
 
@@ -1890,6 +1875,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             mPopulatedWatchlistFromDb = true;
 
             prefetchWatchlistIfNeeded();
+        }
+    }
+
+    private final void populateUiFromQueryType(MovieQueryType queryType) {
+        MovieUi ui = findUiFromQueryType(queryType);
+        if (ui != null) {
+            populateUi(ui);
+        }
+    }
+
+    private final void populateUisFromQueryTypes(MovieQueryType... queryTypes) {
+        final List<MovieQueryType> list = Arrays.asList(queryTypes);
+
+        for (MovieUi ui : getUis()) {
+            if (list.contains(ui.getMovieQueryType())) {
+                populateUi(ui);
+            }
         }
     }
 }

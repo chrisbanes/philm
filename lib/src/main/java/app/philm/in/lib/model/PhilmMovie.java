@@ -1,5 +1,6 @@
 package app.philm.in.lib.model;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import com.jakewharton.trakt.entities.Images;
@@ -626,21 +627,22 @@ public class PhilmMovie implements PhilmModel {
 
         PhilmMovie that = (PhilmMovie) o;
 
-        if (imdbId != null ? !imdbId.equals(that.imdbId) : that.imdbId != null) {
-            return false;
+        if (imdbId != null && that.imdbId != null) {
+            return imdbId.equals(that.imdbId);
         }
-        if (tmdbId != null ? !tmdbId.equals(that.tmdbId) : that.tmdbId != null) {
-            return false;
+        if (tmdbId != null && that.tmdbId != null) {
+            return tmdbId.equals(that.tmdbId);
+        }
+        if (title != null && that.title != null) {
+            return title.equals(that.title);
         }
 
-        return true;
+        return false;
     }
 
     @Override
     public int hashCode() {
-        int result = imdbId != null ? imdbId.hashCode() : 0;
-        result = 31 * result + (tmdbId != null ? tmdbId.hashCode() : 0);
-        return result;
+        return Objects.hashCode(imdbId, tmdbId);
     }
 
     private static boolean unbox(boolean currentValue, Boolean newValue) {
@@ -694,6 +696,14 @@ public class PhilmMovie implements PhilmModel {
         return null;
     }
 
-
-
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("tmdbId", tmdbId)
+                .add("imdbId", imdbId)
+                .add("title", title)
+                .add("year", year)
+                .add("runtime", runtime)
+                .toString();
+    }
 }

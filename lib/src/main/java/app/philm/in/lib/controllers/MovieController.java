@@ -299,14 +299,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void addFilter(MovieFilter filter) {
                 if (mMoviesState.getFilters().add(filter)) {
                     removeMutuallyExclusiveFilters(filter);
-                    populateUis();
+                    populateUi(ui);
                 }
             }
 
             @Override
             public void removeFilter(MovieFilter filter) {
                 if (mMoviesState.getFilters().remove(filter)) {
-                    populateUis();
+                    populateUi(ui);
                 }
             }
 
@@ -314,7 +314,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void clearFilters() {
                 if (!mMoviesState.getFilters().isEmpty()) {
                     mMoviesState.getFilters().clear();
-                    populateUis();
+                    populateUi(ui);
                 }
             }
 

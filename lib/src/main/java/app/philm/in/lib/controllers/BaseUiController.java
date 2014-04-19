@@ -10,6 +10,8 @@ import javax.inject.Inject;
 
 import app.philm.in.lib.Constants;
 import app.philm.in.lib.Display;
+import app.philm.in.lib.state.BaseState;
+import app.philm.in.lib.state.MoviesState;
 import app.philm.in.lib.util.Logger;
 import app.philm.in.lib.util.TextUtils;
 
@@ -55,7 +57,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
             }
 
             onUiAttached(ui);
-            populateUis();
+            populateUi(ui);
         }
     }
 
@@ -90,8 +92,8 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         if (!mUis.isEmpty()) {
             for (U ui : mUis) {
                 onUiAttached(ui);
+                populateUi(ui);
             }
-            populateUis();
         }
     }
 
@@ -101,7 +103,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
     protected void onUiDetached(U ui) {
     }
 
-    protected synchronized void populateUis() {
+    protected synchronized final void populateUis() {
         if (Constants.DEBUG) {
             mLogger.d(getClass().getSimpleName(), "populateUis");
         }
@@ -126,6 +128,15 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
             }
         }
         return null;
+    }
+
+    protected final void populateUiFromEvent(BaseState.UiCausedEvent event) {
+        Preconditions.checkNotNull(event, "event cannot be null");
+
+        final U ui = findUi(event.callingId);
+        if (ui != null) {
+            populateUi(ui);
+        }
     }
 
 }

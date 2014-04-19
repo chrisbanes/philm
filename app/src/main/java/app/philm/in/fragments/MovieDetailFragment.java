@@ -768,7 +768,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             checkinButton.setOnClickListener(MovieDetailFragment.this);
             checkinButton.setVisibility(mCheckinButtonVisible ? View.VISIBLE : View.GONE);
             CheatSheet.setup(checkinButton);
-            if (checkinButton.getDrawable() == null) {
+            if (mCheckinButtonVisible && checkinButton.getDrawable() == null) {
                 checkinButton.setImageDrawable(
                         TintingBitmapDrawable.createFromStateList(getResources(),
                                 R.drawable.ic_btn_checkin, R.color.default_button));
@@ -780,11 +780,10 @@ public class MovieDetailFragment extends BaseDetailFragment
             cancelCheckinButton.setVisibility(mCancelCheckinButtonVisible
                     ? View.VISIBLE : View.GONE);
             CheatSheet.setup(cancelCheckinButton);
-            if (cancelCheckinButton.getDrawable() == null) {
+            if (mCancelCheckinButtonVisible && cancelCheckinButton.getDrawable() == null) {
                 cancelCheckinButton.setImageDrawable(
                         TintingBitmapDrawable.createFromColorResource(getResources(),
-                                R.drawable.ic_btn_checkin, android.R.color.holo_red_dark)
-                );
+                                R.drawable.ic_btn_checkin, android.R.color.holo_red_dark));
             }
         }
 

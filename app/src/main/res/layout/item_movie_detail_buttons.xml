@@ -13,7 +13,6 @@
           android:layout_width="0px"
           android:layout_height="match_parent"
           android:layout_weight="1"
-          android:src="@drawable/ic_btn_checkin"
           android:contentDescription="@string/movie_checkin"
           android:visibility="gone"
           style="?android:attr/borderlessButtonStyle" />
@@ -23,7 +22,6 @@
           android:layout_width="0px"
           android:layout_height="match_parent"
           android:layout_weight="1"
-          android:src="@drawable/ic_btn_cancel_checkin"
           android:contentDescription="@string/movie_checkin_cancel"
           android:visibility="gone"
           style="?android:attr/borderlessButtonStyle" />
@@ -33,7 +31,6 @@
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/ic_btn_seen"
         style="?android:attr/borderlessButtonStyle" />
 
     <app.philm.in.view.CheckableImageButton
@@ -41,7 +38,6 @@
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/ic_btn_collection"
         style="?android:attr/borderlessButtonStyle" />
 
     <app.philm.in.view.CheckableImageButton
@@ -49,7 +45,6 @@
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/ic_btn_watchlist"
         style="?android:attr/borderlessButtonStyle" />
 
 </LinearLayout>

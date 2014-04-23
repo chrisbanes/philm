@@ -6,18 +6,19 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.util.TextUtils;
 
-public class FloatLabelEditText extends LinearLayout implements TextWatcher {
+public class FloatLabelEditText extends FrameLayout implements TextWatcher {
 
-    private static final float PADDING_LEFT_RIGHT_DP = 8f;
+    private static final float PADDING_LEFT_RIGHT_DP = 12f;
 
     private EditText mEditText;
     private TextView mLabel;
@@ -33,8 +34,6 @@ public class FloatLabelEditText extends LinearLayout implements TextWatcher {
     public FloatLabelEditText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        setOrientation(VERTICAL);
-
         final TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FloatLabelEditText);
 
         final int padding = (int) TypedValue.applyDimension(
@@ -42,7 +41,7 @@ public class FloatLabelEditText extends LinearLayout implements TextWatcher {
                 PADDING_LEFT_RIGHT_DP,
                 getResources().getDisplayMetrics());
 
-        mLabel = new FontTextView(context);
+        mLabel = new TextView(context);
         mLabel.setPadding(padding, 0, padding, 0);
         mLabel.setVisibility(INVISIBLE);
 
@@ -62,7 +61,14 @@ public class FloatLabelEditText extends LinearLayout implements TextWatcher {
             super.addView(child, index, params);
         } else if (getChildCount() == 1) {
             if (child instanceof EditText) {
-                super.addView(child, index, params);
+                final LayoutParams lp = new LayoutParams(params);
+                lp.gravity = Gravity.BOTTOM;
+                lp.topMargin = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        PADDING_LEFT_RIGHT_DP,
+                        getResources().getDisplayMetrics());
+
+                super.addView(child, index, lp);
                 setEditText((EditText) child);
             } else {
                 throw new IllegalArgumentException("Child must be a EditText");
@@ -89,7 +95,7 @@ public class FloatLabelEditText extends LinearLayout implements TextWatcher {
 
     @Override
     public final void afterTextChanged(Editable s) {
-        if (!TextUtils.isEmpty(s)) {
+        if (!TextUtils.isEmpty(mEditText.getText())) {
             if (mLabel.getVisibility() != View.VISIBLE) {
                 mLabel.setVisibility(View.VISIBLE);
                 mLabel.setAlpha(0f);
@@ -97,7 +103,9 @@ public class FloatLabelEditText extends LinearLayout implements TextWatcher {
                 mLabel.animate().alpha(1).translationY(0).setDuration(100).start();
             }
         } else {
-            mLabel.setVisibility(View.INVISIBLE);
+            if (mLabel.getVisibility() == View.VISIBLE) {
+                mLabel.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

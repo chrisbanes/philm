@@ -200,10 +200,9 @@
     </style>
 
     <style name="TextAppearance.Philm.FloatLabel" parent="android:Widget">
-
+        <item name="android:textColor">?android:attr/textColorTertiary</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
-
     </style>
 
 </resources>

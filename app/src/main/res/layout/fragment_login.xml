@@ -26,10 +26,11 @@
                   android:text="@string/login_prompt"
                   android:padding="@dimen/spacing_major"
                   style="@style/Widget.Philm.Movie.Login.Title" />
-            
+
             <app.philm.in.view.FloatLabelEditText
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/spacing_minor"
                   philm:floatLabelTextAppearance="@style/TextAppearance.Philm.FloatLabel">
 
                 <EditText
@@ -38,7 +39,6 @@
                       android:layout_height="wrap_content"
                       android:hint="@string/account_username_hint"
                       android:maxLines="1"
-                      android:layout_marginTop="@dimen/spacing_major"
                       android:singleLine="true"
                       android:inputType="textNoSuggestions"
                       android:imeOptions="actionNext"
@@ -46,24 +46,38 @@
 
             </app.philm.in.view.FloatLabelEditText>
 
-            <EditText
-                  android:id="@+id/edit_password"
+            <app.philm.in.view.FloatLabelEditText
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:hint="@string/account_password_hint"
-                  android:inputType="textPassword"
-                  android:singleLine="true"
-                  android:imeOptions="actionDone"
-                  android:layout_marginTop="@dimen/spacing_major" />
+                  android:layout_marginTop="@dimen/spacing_minor"
+                  philm:floatLabelTextAppearance="@style/TextAppearance.Philm.FloatLabel">
 
-            <AutoCompleteTextView
-                  android:id="@+id/actv_email"
+                <EditText
+                      android:id="@+id/edit_password"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:hint="@string/account_password_hint"
+                      android:inputType="textPassword"
+                      android:singleLine="true"
+                      android:imeOptions="actionDone" />
+
+            </app.philm.in.view.FloatLabelEditText>
+
+            <app.philm.in.view.FloatLabelEditText
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginTop="@dimen/spacing_major"
-                  android:hint="@string/account_email_hint"
-                  android:inputType="textEmailAddress"
-                  android:selectAllOnFocus="true" />
+                  android:layout_marginTop="@dimen/spacing_minor"
+                  philm:floatLabelTextAppearance="@style/TextAppearance.Philm.FloatLabel">
+
+                <AutoCompleteTextView
+                      android:id="@+id/actv_email"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:hint="@string/account_email_hint"
+                      android:inputType="textEmailAddress"
+                      android:selectAllOnFocus="true" />
+
+            </app.philm.in.view.FloatLabelEditText>
 
             <RadioGroup
                   android:id="@+id/rg_type"

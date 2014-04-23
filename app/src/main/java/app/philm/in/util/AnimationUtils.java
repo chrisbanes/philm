@@ -16,6 +16,8 @@ package app.philm.in.util;
  * limitations under the License.
  */
 
+import com.google.common.base.Objects;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -209,7 +211,8 @@ public class AnimationUtils {
         // We skip the cross-fade when those two Drawables are equal, or they are BitmapDrawables
         // pointing to the same Bitmap.
         if (drawableEquals(from, to)) {
-            //return;
+            imageView.setImageDrawable(to);
+            return;
         }
 
         CrossFadeDrawable crossFadeDrawable = new CrossFadeDrawable(from, to);
@@ -252,11 +255,10 @@ public class AnimationUtils {
 
     private static boolean drawableEquals(Drawable first, Drawable second) {
         return first.equals(second) ||
-                (
-                        (first instanceof BitmapDrawable) &&
-                        (first instanceof BitmapDrawable) &&
-                        ((BitmapDrawable) second).getBitmap()
-                                .equals(((BitmapDrawable) second).getBitmap())
-                );
+                (first instanceof BitmapDrawable &&
+                second instanceof BitmapDrawable &&
+                Objects.equal(
+                        ((BitmapDrawable) first).getBitmap(),
+                        ((BitmapDrawable) second).getBitmap()));
     }
 }

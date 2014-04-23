@@ -22,7 +22,11 @@
     <color name="translucent_black_dark">#BB000000</color>
     <color name="translucent_black_light">#70000000</color>
 
-    <color name="enabled">#99333333</color>
-    <color name="disabled">#4C333333</color>
+    <color name="enabled">@color/grey_60</color>
+    <color name="disabled">@color/grey_30</color>
+
+    <color name="grey_60">#99333333</color>
+    <color name="grey_45">#73333333</color>
+    <color name="grey_30">#4C333333</color>
 
 </resources>

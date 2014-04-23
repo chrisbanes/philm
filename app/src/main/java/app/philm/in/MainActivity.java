@@ -2,7 +2,7 @@ package app.philm.in;
 
 import android.view.Menu;
 
-import app.philm.in.lib.controllers.MainController;
+import app.philm.in.controllers.MainController;
 
 public class MainActivity extends BasePhilmActivity implements MainController.MainUi {
 

@@ -8,8 +8,8 @@ import com.github.johnpersano.supertoasts.util.Style;
 import android.graphics.Rect;
 
 import app.philm.in.PhilmApplication;
-import app.philm.in.lib.controllers.MovieController;
-import app.philm.in.lib.network.NetworkError;
+import app.philm.in.controllers.MovieController;
+import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;
 
 

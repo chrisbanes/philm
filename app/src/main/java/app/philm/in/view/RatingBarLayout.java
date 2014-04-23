@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.drawable.PercentageDrawable;
-import app.philm.in.lib.model.ColorScheme;
-import app.philm.in.lib.util.ColorUtils;
-import app.philm.in.lib.util.TextUtils;
+import app.philm.in.model.ColorScheme;
+import app.philm.in.util.ColorUtils;
+import app.philm.in.util.TextUtils;
 
 public class RatingBarLayout extends FrameLayout implements ColorSchemable {
 

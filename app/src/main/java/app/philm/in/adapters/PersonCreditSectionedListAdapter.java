@@ -11,9 +11,9 @@ import javax.inject.Inject;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.lib.model.ListItem;
-import app.philm.in.lib.model.PhilmPersonCredit;
-import app.philm.in.lib.util.TextUtils;
+import app.philm.in.model.ListItem;
+import app.philm.in.model.PhilmPersonCredit;
+import app.philm.in.util.TextUtils;
 import app.philm.in.view.PhilmImageView;
 
 public class PersonCreditSectionedListAdapter

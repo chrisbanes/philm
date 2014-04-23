@@ -2,7 +2,7 @@ package app.philm.in.modules.library;
 
 import com.google.common.base.Preconditions;
 
-import app.philm.in.lib.util.Injector;
+import app.philm.in.util.Injector;
 import dagger.Module;
 import dagger.Provides;
 

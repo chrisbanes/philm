@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import app.philm.in.lib.model.ListItem;
+import app.philm.in.model.ListItem;
 import app.philm.in.view.PinnedSectionListView;
 
 abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter

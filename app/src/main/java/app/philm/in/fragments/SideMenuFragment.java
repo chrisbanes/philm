@@ -19,20 +19,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.EnumMap;
-
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
+import app.philm.in.controllers.MainController;
+import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
+import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.drawable.RoundedAvatarDrawable;
 import app.philm.in.drawable.TintingBitmapDrawable;
 import app.philm.in.fragments.base.InsetAwareFragment;
-import app.philm.in.lib.controllers.MainController;
-import app.philm.in.lib.controllers.MainController.MainControllerUiCallbacks;
-import app.philm.in.lib.controllers.MainController.SideMenuItem;
-import app.philm.in.lib.model.PhilmMovie;
-import app.philm.in.lib.model.PhilmUserProfile;
-import app.philm.in.lib.model.WatchingMovie;
-import app.philm.in.lib.util.TextUtils;
+import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmUserProfile;
+import app.philm.in.model.WatchingMovie;
+import app.philm.in.util.TextUtils;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.StringManager;
 

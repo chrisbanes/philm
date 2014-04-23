@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 
 import android.content.Context;
 
-import app.philm.in.lib.util.StringFetcher;
+import app.philm.in.util.StringFetcher;
 
 public class AndroidStringFetcher implements StringFetcher {
 

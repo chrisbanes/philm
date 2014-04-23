@@ -15,10 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import app.philm.in.R;
-import app.philm.in.lib.controllers.MovieController;
-import app.philm.in.lib.model.ListItem;
-import app.philm.in.lib.model.PhilmMovie;
-import app.philm.in.lib.util.PhilmCollections;
+import app.philm.in.controllers.MovieController;
+import app.philm.in.model.ListItem;
+import app.philm.in.model.PhilmMovie;
+import app.philm.in.util.PhilmCollections;
 
 
 public abstract class BasePhilmMovieListFragment<E extends AbsListView>

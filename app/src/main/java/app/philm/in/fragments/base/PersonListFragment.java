@@ -11,8 +11,8 @@ import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.adapters.PersonSectionedListAdapter;
-import app.philm.in.lib.model.ListItem;
-import app.philm.in.lib.model.PhilmPerson;
+import app.philm.in.model.ListItem;
+import app.philm.in.model.PhilmPerson;
 
 public abstract class PersonListFragment
         extends BaseMovieControllerListFragment<ListView, PhilmPerson> {

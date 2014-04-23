@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import java.util.List;
 
 import app.philm.in.BasePhilmActivity;
-import app.philm.in.lib.util.PhilmCollections;
+import app.philm.in.util.PhilmCollections;
 
 public abstract class InsetAwareFragment extends Fragment
         implements BasePhilmActivity.OnActivityInsetsCallback {

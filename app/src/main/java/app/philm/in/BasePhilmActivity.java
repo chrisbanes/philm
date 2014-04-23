@@ -19,10 +19,9 @@ import android.view.Window;
 
 import java.util.HashSet;
 
-import app.philm.in.lib.Display;
-import app.philm.in.lib.controllers.MainController;
-import app.philm.in.lib.util.IntUtils;
-import app.philm.in.lib.util.PhilmCollections;
+import app.philm.in.controllers.MainController;
+import app.philm.in.util.IntUtils;
+import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.InsetFrameLayout;
 
 public abstract class BasePhilmActivity extends FragmentActivity

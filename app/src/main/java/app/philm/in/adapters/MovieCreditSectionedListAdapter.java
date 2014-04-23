@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import app.philm.in.R;
-import app.philm.in.lib.model.ListItem;
-import app.philm.in.lib.model.PhilmMovieCredit;
+import app.philm.in.model.ListItem;
+import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.view.PhilmImageView;
 
 public class MovieCreditSectionedListAdapter extends BasePhilmSectionedListAdapter<PhilmMovieCredit> {

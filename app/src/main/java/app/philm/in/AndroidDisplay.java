@@ -37,8 +37,7 @@ import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
-import app.philm.in.lib.Display;
-import app.philm.in.lib.util.PhilmTypefaceSpan;
+import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.view.FontTextView;
 
 public class AndroidDisplay implements Display {

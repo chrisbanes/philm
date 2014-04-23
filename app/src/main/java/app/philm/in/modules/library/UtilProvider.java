@@ -9,17 +9,17 @@ import java.util.concurrent.Executors;
 import javax.inject.Singleton;
 
 import app.philm.in.AndroidStringFetcher;
-import app.philm.in.lib.qualifiers.ApplicationContext;
-import app.philm.in.lib.qualifiers.ForDatabase;
-import app.philm.in.lib.qualifiers.GeneralPurpose;
-import app.philm.in.lib.util.AndroidCountryProvider;
-import app.philm.in.lib.util.AndroidLogger;
-import app.philm.in.lib.util.BackgroundExecutor;
-import app.philm.in.lib.util.CountryProvider;
-import app.philm.in.lib.util.ImageHelper;
-import app.philm.in.lib.util.Logger;
-import app.philm.in.lib.util.PhilmBackgroundExecutor;
-import app.philm.in.lib.util.StringFetcher;
+import app.philm.in.qualifiers.ApplicationContext;
+import app.philm.in.qualifiers.ForDatabase;
+import app.philm.in.qualifiers.GeneralPurpose;
+import app.philm.in.util.AndroidCountryProvider;
+import app.philm.in.util.AndroidLogger;
+import app.philm.in.util.BackgroundExecutor;
+import app.philm.in.util.CountryProvider;
+import app.philm.in.util.ImageHelper;
+import app.philm.in.util.Logger;
+import app.philm.in.util.PhilmBackgroundExecutor;
+import app.philm.in.util.StringFetcher;
 import dagger.Module;
 import dagger.Provides;
 

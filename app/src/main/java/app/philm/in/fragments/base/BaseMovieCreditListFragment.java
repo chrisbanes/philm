@@ -10,9 +10,9 @@ import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.adapters.MovieCreditSectionedListAdapter;
-import app.philm.in.lib.controllers.MovieController;
-import app.philm.in.lib.model.ListItem;
-import app.philm.in.lib.model.PhilmMovieCredit;
+import app.philm.in.controllers.MovieController;
+import app.philm.in.model.ListItem;
+import app.philm.in.model.PhilmMovieCredit;
 
 
 public abstract class BaseMovieCreditListFragment

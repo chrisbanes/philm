@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.lib.model.ListItem;
-import app.philm.in.lib.model.PhilmMovie;
+import app.philm.in.model.ListItem;
+import app.philm.in.model.PhilmMovie;
 import app.philm.in.view.PhilmImageView;
 
 public class MovieSectionedListAdapter extends BasePhilmSectionedListAdapter<PhilmMovie> {

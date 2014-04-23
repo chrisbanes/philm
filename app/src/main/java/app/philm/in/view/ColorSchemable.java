@@ -1,6 +1,6 @@
 package app.philm.in.view;
 
-import app.philm.in.lib.model.ColorScheme;
+import app.philm.in.model.ColorScheme;
 
 public interface ColorSchemable {
 

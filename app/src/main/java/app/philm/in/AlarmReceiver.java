@@ -8,7 +8,7 @@ import android.content.Intent;
 
 import javax.inject.Inject;
 
-import app.philm.in.lib.util.AndroidPhilmAlarmManager;
+import app.philm.in.util.AndroidPhilmAlarmManager;
 
 public class AlarmReceiver extends BroadcastReceiver {
 

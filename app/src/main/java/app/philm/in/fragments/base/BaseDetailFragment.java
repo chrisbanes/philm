@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import app.philm.in.Constants;
 import app.philm.in.R;
-import app.philm.in.lib.Constants;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.ViewRecycler;

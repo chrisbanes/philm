@@ -26,10 +26,19 @@ public interface BaseState {
 
     public void unregisterForEvents(Object receiver);
 
-    static class BaseArgumentEvent<T> {
+    public static class UiCausedEvent {
+        public final int callingId;
+
+        public UiCausedEvent(int callingId) {
+            this.callingId = callingId;
+        }
+    }
+
+    static class BaseArgumentEvent<T> extends UiCausedEvent {
         public final T item;
 
-        public BaseArgumentEvent(T item) {
+        public BaseArgumentEvent(int callingId, T item) {
+            super(callingId);
             this.item = Preconditions.checkNotNull(item, "item cannot be null");
         }
     }

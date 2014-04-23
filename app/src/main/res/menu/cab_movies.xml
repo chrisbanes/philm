@@ -5,21 +5,21 @@
     <item
           android:id="@+id/menu_mark_seen"
           android:showAsAction="ifRoom"
-          android:icon="@drawable/ic_btn_seen"
+          android:icon="@drawable/ic_action_seen"
           android:title="@string/action_mark_seen"
           android:visible="false"/>
 
     <item
           android:id="@+id/menu_add_collection"
           android:showAsAction="ifRoom"
-          android:icon="@drawable/ic_btn_collection"
+          android:icon="@drawable/ic_action_collection"
           android:title="@string/action_add_collection"
           android:visible="false"/>
 
     <item
           android:id="@+id/menu_add_watchlist"
           android:showAsAction="ifRoom"
-          android:icon="@drawable/ic_btn_watchlist"
+          android:icon="@drawable/ic_action_watchlist"
           android:title="@string/action_add_watchlist"
           android:visible="false"/>
 

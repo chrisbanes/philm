@@ -9,6 +9,7 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.EnumMap;
+
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.drawable.RoundedAvatarDrawable;
+import app.philm.in.drawable.TintingBitmapDrawable;
 import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.lib.controllers.MainController;
 import app.philm.in.lib.controllers.MainController.MainControllerUiCallbacks;
@@ -58,6 +62,8 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
     private PhilmUserProfile mUserProfile;
 
     private LightingColorFilter mColorFilter;
+
+    private final ArrayMap<SideMenuItem, Drawable> mIcons = new ArrayMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedState) {
@@ -226,13 +232,15 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = getActivity().getLayoutInflater()
-                        .inflate(android.R.layout.simple_list_item_activated_1, viewGroup, false);
+                view = getLayoutInflater(null)
+                        .inflate(R.layout.simple_list_item_activated, viewGroup, false);
             }
 
             final SideMenuItem item = getItem(position);
             final TextView textView = (TextView) view.findViewById(android.R.id.text1);
             textView.setText(StringManager.getStringResId(item));
+
+            textView.setCompoundDrawablesWithIntrinsicBounds(getIcon(item), null, null, null);
 
             return view;
         }
@@ -263,5 +271,35 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         public void onPrepareLoad(Drawable placeHolderDrawable) {
         }
     };
+
+    Drawable getIcon(SideMenuItem item) {
+        Drawable d = mIcons.get(item);
+
+        if (d != null) {
+            return d;
+        }
+
+        switch (item) {
+            case DISCOVER:
+                d = TintingBitmapDrawable.createFromColorResource(
+                        getResources(), R.drawable.ic_btn_movie, R.color.enabled);
+                break;
+            case LIBRARY:
+                d = TintingBitmapDrawable.createFromColorResource(
+                        getResources(), R.drawable.ic_btn_collection, R.color.enabled);
+                break;
+            case WATCHLIST:
+                d = TintingBitmapDrawable.createFromColorResource(
+                        getResources(), R.drawable.ic_btn_watchlist, R.color.enabled);
+                break;
+            case SEARCH:
+                d = TintingBitmapDrawable.createFromColorResource(
+                        getResources(), R.drawable.ic_btn_search, R.color.enabled);
+                break;
+        }
+
+        mIcons.put(item, d);
+        return d;
+    }
 
 }

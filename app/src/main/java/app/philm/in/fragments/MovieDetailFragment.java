@@ -7,6 +7,7 @@ import com.squareup.picasso.Picasso;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -33,6 +34,7 @@ import javax.inject.Inject;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
+import app.philm.in.drawable.TintingBitmapDrawable;
 import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.lib.Constants;
 import app.philm.in.lib.controllers.MovieController;
@@ -729,6 +731,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             CheatSheet.setup(seenButton);
             updateButtonState(seenButton, mMovie.isWatched(), R.string.action_mark_seen,
                     R.string.action_mark_unseen);
+            if (seenButton.getDrawable() == null) {
+                seenButton.setImageDrawable(
+                        TintingBitmapDrawable.createFromStateList(getResources(),
+                                R.drawable.ic_btn_seen, R.color.default_button));
+            }
 
             CheckableImageButton watchlistButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
@@ -737,6 +744,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             CheatSheet.setup(watchlistButton);
             updateButtonState(watchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
                     R.string.action_remove_watchlist);
+            if (watchlistButton.getDrawable() == null) {
+                watchlistButton.setImageDrawable(
+                        TintingBitmapDrawable.createFromStateList(getResources(),
+                                R.drawable.ic_btn_watchlist, R.color.default_button));
+            }
 
             CheckableImageButton collectionButton =
                     (CheckableImageButton) view.findViewById(R.id.btn_collection);
@@ -746,11 +758,21 @@ public class MovieDetailFragment extends BaseDetailFragment
             updateButtonState(collectionButton, mMovie.inCollection(),
                     R.string.action_add_collection,
                     R.string.action_remove_collection);
+            if (collectionButton.getDrawable() == null) {
+                collectionButton.setImageDrawable(
+                        TintingBitmapDrawable.createFromStateList(getResources(),
+                                R.drawable.ic_btn_collection, R.color.default_button));
+            }
 
             ImageButton checkinButton = (ImageButton) view.findViewById(R.id.btn_checkin);
             checkinButton.setOnClickListener(MovieDetailFragment.this);
             checkinButton.setVisibility(mCheckinButtonVisible ? View.VISIBLE : View.GONE);
             CheatSheet.setup(checkinButton);
+            if (mCheckinButtonVisible && checkinButton.getDrawable() == null) {
+                checkinButton.setImageDrawable(
+                        TintingBitmapDrawable.createFromStateList(getResources(),
+                                R.drawable.ic_btn_checkin, R.color.default_button));
+            }
 
             ImageButton cancelCheckinButton = (ImageButton) view
                     .findViewById(R.id.btn_cancel_checkin);
@@ -758,6 +780,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             cancelCheckinButton.setVisibility(mCancelCheckinButtonVisible
                     ? View.VISIBLE : View.GONE);
             CheatSheet.setup(cancelCheckinButton);
+            if (mCancelCheckinButtonVisible && cancelCheckinButton.getDrawable() == null) {
+                cancelCheckinButton.setImageDrawable(
+                        TintingBitmapDrawable.createFromColorResource(getResources(),
+                                R.drawable.ic_btn_checkin, android.R.color.holo_red_dark));
+            }
         }
 
         private void bindCast(View view) {

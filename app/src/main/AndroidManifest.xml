@@ -111,6 +111,26 @@
 
         <receiver android:name=".AlarmReceiver" />
 
+        <provider
+              android:name=".StubContentProvider"
+              android:authorities="app.philm.in.sync.provider"
+              android:exported="false"
+              android:syncable="true" />
+
+        <service
+              android:name=".SyncService"
+              android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                  android:name="android.content.SyncAdapter"
+                  android:resource="@xml/sync" />
+
+        </service>
+
         <meta-data
                 android:name="com.crashlytics.ApiKey"
                 android:value="0c0bf3d0b7b5aeff1ce7c8ca71710cc3b836ff47"/>

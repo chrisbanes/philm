@@ -23,6 +23,9 @@ abstract class BaseController {
         mInited = false;
     }
 
+    public void onSync() {
+    }
+
     public final boolean isInited() {
         return mInited;
     }

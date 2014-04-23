@@ -199,4 +199,11 @@
         <item name="android:background">@drawable/philmcolor_edit_text_holo_light</item>
     </style>
 
+    <style name="TextAppearance.Philm.FloatLabel" parent="android:Widget">
+
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
 </resources>

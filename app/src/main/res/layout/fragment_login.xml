@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:philm="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
@@ -25,18 +26,25 @@
                   android:text="@string/login_prompt"
                   android:padding="@dimen/spacing_major"
                   style="@style/Widget.Philm.Movie.Login.Title" />
-
-            <EditText
-                  android:id="@+id/edit_login"
+            
+            <app.philm.in.view.FloatLabelEditText
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:hint="@string/account_username_hint"
-                  android:maxLines="1"
-                  android:layout_marginTop="@dimen/spacing_major"
-                  android:singleLine="true"
-                  android:inputType="textNoSuggestions"
-                  android:imeOptions="actionNext"
-                  android:nextFocusDown="@+id/edit_password" />
+                  philm:floatLabelTextAppearance="@style/TextAppearance.Philm.FloatLabel">
+
+                <EditText
+                      android:id="@+id/edit_login"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:hint="@string/account_username_hint"
+                      android:maxLines="1"
+                      android:layout_marginTop="@dimen/spacing_major"
+                      android:singleLine="true"
+                      android:inputType="textNoSuggestions"
+                      android:imeOptions="actionNext"
+                      android:nextFocusDown="@+id/edit_password" />
+
+            </app.philm.in.view.FloatLabelEditText>
 
             <EditText
                   android:id="@+id/edit_password"

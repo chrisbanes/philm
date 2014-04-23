@@ -9,6 +9,7 @@ import com.squareup.picasso.Target;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -159,6 +160,10 @@ public class PhilmImageView extends ImageView {
             Picasso.with(getContext()).cancelRequest(mPicassoTarget);
         }
 
+        if (handler != null && Objects.equal(handler, mPicassoHandler)) {
+            handler.setDisplayPlaceholder(false);
+        }
+
         mPicassoHandler = handler;
 
         if (handler != null && canLoadImage()) {
@@ -171,6 +176,7 @@ public class PhilmImageView extends ImageView {
         private final T mObject;
         private final Listener mCallback;
         private boolean mIsStarted, mIsFinished;
+        private boolean mDisplayPlaceholder = true;
 
         PicassoHandler(T object, Listener callback) {
             mObject = Preconditions.checkNotNull(object, "object cannot be null");
@@ -201,6 +207,14 @@ public class PhilmImageView extends ImageView {
 
         int getPlaceholderDrawable() {
             return 0;
+        }
+
+        public void setDisplayPlaceholder(boolean displayPlaceholder) {
+            mDisplayPlaceholder = displayPlaceholder;
+        }
+
+        public boolean shouldDisplayPlaceholder() {
+            return mDisplayPlaceholder;
         }
 
         @Override
@@ -313,8 +327,11 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onPrepareLoad(Drawable drawable) {
-            setImageDrawable(drawable);
+            if (mPicassoHandler == null || mPicassoHandler.shouldDisplayPlaceholder()) {
+                setImageDrawable(drawable);
+            }
         }
+
     };
 
     void setImageBitmapFromNetwork(final Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
@@ -322,9 +339,15 @@ public class PhilmImageView extends ImageView {
         final Drawable currentDrawable = getDrawable();
 
         if (fade) {
-            setVisibility(View.INVISIBLE);
-            setImageBitmap(bitmap);
-            AnimationUtils.Fade.show(this);
+            if (currentDrawable == null || mPicassoHandler.getPlaceholderDrawable() != 0) {
+                // If we have no current drawable, or it is a placeholder drawable. Just fade in
+                setVisibility(View.INVISIBLE);
+                setImageBitmap(bitmap);
+                AnimationUtils.Fade.show(this);
+            } else {
+                AnimationUtils.startCrossFade(this, currentDrawable,
+                        new BitmapDrawable(getResources(), bitmap));
+            }
         } else {
             setImageBitmap(bitmap);
         }

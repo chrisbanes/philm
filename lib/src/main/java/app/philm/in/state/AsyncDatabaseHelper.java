@@ -30,6 +30,8 @@ public interface AsyncDatabaseHelper {
 
     public void close();
 
+    public void deleteAllPhilmMovies();
+
     public interface Callback<T> {
         public void onFinished(T result);
     }

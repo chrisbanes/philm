@@ -161,7 +161,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState.getTmdbIdMovies().clear();
         mMoviesState.setWatchingMovie(null);
 
-        // TODO: Clear Database Too
+        if (mDbHelper != null) {
+            mDbHelper.deleteAllPhilmMovies();
+        }
 
         // If we have a new account, pre-fetch library & watchlist
         if (isLoggedIn()) {

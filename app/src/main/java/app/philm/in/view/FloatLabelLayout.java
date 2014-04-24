@@ -18,11 +18,18 @@ import android.widget.TextView;
 
 import app.philm.in.R;
 
-public class FloatLabelLayout extends FrameLayout {
+/**
+ * Layout which an {@link android.widget.EditText} to show a floating label when the hint is hidden
+ * due to the user inputting text.
+ *
+ * @see <a href="https://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction">Matt D. Smith on Dribble</a>
+ * @see <a href="http://bradfrostweb.com/blog/post/float-label-pattern/">Brad Frost's blog post</a>
+ */
+public final class FloatLabelLayout extends FrameLayout {
 
     private static final long ANIMATION_DURATION = 150;
 
-    private static final float PADDING_LEFT_RIGHT_DP = 12f;
+    private static final float DEFAULT_PADDING_LEFT_RIGHT_DP = 12f;
 
     private EditText mEditText;
     private TextView mLabel;
@@ -38,46 +45,80 @@ public class FloatLabelLayout extends FrameLayout {
     public FloatLabelLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        final TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FloatLabelLayout);
+        final TypedArray array = context
+                .obtainStyledAttributes(attrs, R.styleable.FloatLabelLayout);
 
-        final int padding = dipsToPix(PADDING_LEFT_RIGHT_DP);
+        final int sidePadding = array.getDimensionPixelSize(
+                R.styleable.FloatLabelLayout_floatLabelSidePadding,
+                dipsToPix(DEFAULT_PADDING_LEFT_RIGHT_DP));
         mLabel = new TextView(context);
-        mLabel.setPadding(padding, 0, padding, 0);
+        mLabel.setPadding(sidePadding, 0, sidePadding, 0);
         mLabel.setVisibility(INVISIBLE);
 
-        final int labelStyle = array.getResourceId(R.styleable.FloatLabelLayout_floatLabelTextAppearance, 0);
-        if (labelStyle != 0) {
-            mLabel.setTextAppearance(context, labelStyle);
-        }
+        mLabel.setTextAppearance(context,
+                array.getResourceId(R.styleable.FloatLabelLayout_floatLabelTextAppearance,
+                        android.R.style.TextAppearance_Small));
 
-        addView(mLabel, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addView(mLabel, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         array.recycle();
     }
 
     @Override
-    public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        if (getChildCount() == 0) {
-            super.addView(child, index, params);
-        } else if (getChildCount() == 1) {
-            if (child instanceof EditText) {
-                final LayoutParams lp = new LayoutParams(params);
-                lp.gravity = Gravity.BOTTOM;
-                lp.topMargin = (int) mLabel.getTextSize();
-
-                super.addView(child, index, lp);
-                setEditText((EditText) child);
-            } else {
-                throw new IllegalArgumentException("Child must be a EditText");
+    public final void addView(View child, int index, ViewGroup.LayoutParams params) {
+        if (child instanceof EditText) {
+            // If we already have an EditText, throw an exception
+            if (mEditText != null) {
+                throw new IllegalArgumentException("We already have an EditText, can only have one");
             }
-        } else {
-            throw new IllegalArgumentException("Can not have more than 1 child");
+
+            // Update the layout params so that the EditText is at the bottom, with enough top
+            // margin to show the label
+            final LayoutParams lp = new LayoutParams(params);
+            lp.gravity = Gravity.BOTTOM;
+            lp.topMargin = (int) mLabel.getTextSize();
+            params = lp;
+
+            setEditText((EditText) child);
         }
+
+        // Carry on adding the View...
+        super.addView(child, index, params);
     }
 
     private void setEditText(EditText editText) {
         mEditText = editText;
-        mEditText.addTextChangedListener(mTextWatcher);
+
+        // Add a TextWatcher so that we know when the text input has changed
+        mEditText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    // The text is empty, so hide the label if it is visible
+                    if (mLabel.getVisibility() == View.VISIBLE) {
+                        hideLabel();
+                    }
+                } else {
+                    // The text is not empty, so show the label if it is not visible
+                    if (mLabel.getVisibility() != View.VISIBLE) {
+                        showLabel();
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+        });
+
+        // Add focus listener to the EditText so that we can notify the label that it is activated.
+        // Allows the use of a ColorStateList for the text color on the label
         mEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean focused) {
@@ -88,61 +129,57 @@ public class FloatLabelLayout extends FrameLayout {
         mLabel.setText(mEditText.getHint());
     }
 
+    /**
+     * @return the {@link android.widget.EditText} text input
+     */
     public EditText getEditText() {
         return mEditText;
     }
 
+    /**
+     * @return the {@link android.widget.TextView} label
+     */
     public TextView getLabel() {
         return mLabel;
     }
 
-    private final TextWatcher mTextWatcher = new TextWatcher() {
+    /**
+     * Show the label using an animation
+     */
+    private void showLabel() {
+        mLabel.setVisibility(View.VISIBLE);
+        mLabel.setAlpha(0f);
+        mLabel.setTranslationY(mLabel.getHeight());
+        mLabel.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setDuration(ANIMATION_DURATION)
+                .setListener(null).start();
+    }
 
-        @Override
-        public final void afterTextChanged(Editable s) {
-            if (!TextUtils.isEmpty(s)) {
-                if (mLabel.getVisibility() != View.VISIBLE) {
-                    mLabel.setVisibility(View.VISIBLE);
-                    mLabel.setAlpha(0f);
-                    mLabel.setTranslationY(mLabel.getHeight());
-                    mLabel.animate()
-                            .alpha(1f)
-                            .translationY(0f)
-                            .setDuration(ANIMATION_DURATION)
-                            .setListener(null).start();
-                }
-            } else {
-                if (mLabel.getVisibility() == View.VISIBLE) {
-                    mLabel.setAlpha(1f);
-                    mLabel.setTranslationY(0f);
-                    mLabel.animate()
-                            .alpha(0f)
-                            .translationY(mLabel.getHeight())
-                            .setDuration(ANIMATION_DURATION)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    mLabel.setVisibility(View.GONE);
-                                }
-                            }).start();
-                }
-            }
-        }
+    /**
+     * Hide the label using an animation
+     */
+    private void hideLabel() {
+        mLabel.setAlpha(1f);
+        mLabel.setTranslationY(0f);
+        mLabel.animate()
+                .alpha(0f)
+                .translationY(mLabel.getHeight())
+                .setDuration(ANIMATION_DURATION)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mLabel.setVisibility(View.GONE);
+                    }
+                }).start();
+    }
 
-        @Override
-        public final void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            // NO-OP
-        }
-
-        @Override
-        public final void onTextChanged(CharSequence s, int start, int before, int count) {
-            // NO-OP
-        }
-
-    };
-
-    private int dipsToPix(float dips) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dips,
+    /**
+     * Helper method to convert dips to pixels.
+     */
+    private int dipsToPix(float dps) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dps,
                 getResources().getDisplayMetrics());
     }
 }

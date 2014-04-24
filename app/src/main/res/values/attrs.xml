@@ -57,7 +57,7 @@
         <attr name="sizeToFit" format="boolean|reference" />
     </declare-styleable>
 
-    <declare-styleable name="FloatLabelEditText">
+    <declare-styleable name="FloatLabelLayout">
         <attr name="floatLabelTextAppearance" format="reference" />
     </declare-styleable>
 

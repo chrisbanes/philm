@@ -27,7 +27,7 @@
                   android:padding="@dimen/spacing_major"
                   style="@style/Widget.Philm.Movie.Login.Title" />
 
-            <app.philm.in.view.FloatLabelEditText
+            <app.philm.in.view.FloatLabelLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_marginTop="@dimen/spacing_minor"
@@ -44,9 +44,9 @@
                       android:imeOptions="actionNext"
                       android:nextFocusDown="@+id/edit_password" />
 
-            </app.philm.in.view.FloatLabelEditText>
+            </app.philm.in.view.FloatLabelLayout>
 
-            <app.philm.in.view.FloatLabelEditText
+            <app.philm.in.view.FloatLabelLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_marginTop="@dimen/spacing_minor"
@@ -61,9 +61,9 @@
                       android:singleLine="true"
                       android:imeOptions="actionDone" />
 
-            </app.philm.in.view.FloatLabelEditText>
+            </app.philm.in.view.FloatLabelLayout>
 
-            <app.philm.in.view.FloatLabelEditText
+            <app.philm.in.view.FloatLabelLayout
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_marginTop="@dimen/spacing_minor"
@@ -77,7 +77,7 @@
                       android:inputType="textEmailAddress"
                       android:selectAllOnFocus="true" />
 
-            </app.philm.in.view.FloatLabelEditText>
+            </app.philm.in.view.FloatLabelLayout>
 
             <RadioGroup
                   android:id="@+id/rg_type"

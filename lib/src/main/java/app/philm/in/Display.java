@@ -1,5 +1,7 @@
 package app.philm.in;
 
+import app.philm.in.model.ColorScheme;
+
 public interface Display {
 
     public static final String FRAGMENT_TAG_RATE_MOVIE = "rate_movie";
@@ -50,11 +52,7 @@ public interface Display {
 
     public void setActionBarTitle(String title);
 
-    public void setActionBarTitle(String title, int color);
-
     public void setActionBarSubtitle(String title);
-
-    public void setActionBarSubtitle(String title, int color);
 
     public boolean popEntireFragmentBackStack();
 
@@ -85,5 +83,7 @@ public interface Display {
     public void showCredentialsChanged();
 
     public void playYoutubeVideo(String id);
+
+    public void setColorScheme(ColorScheme colorScheme);
 
 }

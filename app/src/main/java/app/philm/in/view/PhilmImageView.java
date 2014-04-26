@@ -9,12 +9,11 @@ import com.squareup.picasso.Target;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import javax.inject.Inject;
@@ -27,12 +26,11 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
 import app.philm.in.model.PhilmTrailer;
+import app.philm.in.util.AnimationUtils;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
 
 public class PhilmImageView extends ImageView {
-
-    private static final int TRANSITION_DURATION = 175;
 
     public interface Listener {
 
@@ -44,17 +42,12 @@ public class PhilmImageView extends ImageView {
 
     @Inject ImageHelper mImageHelper;
     private PicassoHandler mPicassoHandler;
-
-    private final Drawable mTransparentDrawable;
-
     private boolean mAutoFade = true;
     private boolean mAvatarMode = false;
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         PhilmApplication.from(context).inject(this);
-
-        mTransparentDrawable = new ColorDrawable(Color.TRANSPARENT);
     }
 
     public void setAvatarMode(boolean avatarMode) {
@@ -173,6 +166,10 @@ public class PhilmImageView extends ImageView {
             Picasso.with(getContext()).cancelRequest(mPicassoTarget);
         }
 
+        if (handler != null && Objects.equal(handler, mPicassoHandler)) {
+            handler.setDisplayPlaceholder(false);
+        }
+
         mPicassoHandler = handler;
 
         if (handler != null && canLoadImage()) {
@@ -180,16 +177,23 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    private static abstract class PicassoHandler {
+    private static abstract class PicassoHandler<T> {
 
+        private final T mObject;
         private final Listener mCallback;
         private boolean mIsStarted, mIsFinished;
+        private boolean mDisplayPlaceholder = true;
 
-        PicassoHandler(Listener callback) {
+        PicassoHandler(T object, Listener callback) {
+            mObject = Preconditions.checkNotNull(object, "object cannot be null");
             mCallback = callback;
         }
 
-        public abstract String getUrl(ImageHelper helper, ImageView imageView);
+        public final String getUrl(ImageHelper helper, ImageView imageView) {
+            return buildUrl(mObject, helper, imageView);
+        }
+
+        protected abstract String buildUrl(T object, ImageHelper helper, ImageView imageView);
 
         void markAsStarted() {
             mIsStarted = true;
@@ -210,122 +214,78 @@ public class PhilmImageView extends ImageView {
         int getPlaceholderDrawable() {
             return 0;
         }
-    }
 
-    private class MovieBackdropHandler extends PicassoHandler {
-
-        private final PhilmMovie mMovie;
-
-        MovieBackdropHandler(PhilmMovie movie, Listener callback) {
-            super(callback);
-            mMovie = Preconditions.checkNotNull(movie, "movie cannot be null");
+        public void setDisplayPlaceholder(boolean displayPlaceholder) {
+            mDisplayPlaceholder = displayPlaceholder;
         }
 
-        @Override
-        public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getFanartUrl(mMovie, imageView.getWidth(), imageView.getHeight());
+        public boolean shouldDisplayPlaceholder() {
+            return mDisplayPlaceholder;
         }
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
-            MovieBackdropHandler that = (MovieBackdropHandler) o;
-            return Objects.equal(mMovie, that.mMovie);
+            PicassoHandler that = (PicassoHandler) o;
+            return Objects.equal(mObject, that.mObject);
         }
 
         @Override
         public int hashCode() {
-            return mMovie != null ? mMovie.hashCode() : 0;
+            return mObject != null ? mObject.hashCode() : 0;
         }
     }
 
-    private class MoviePosterHandler extends PicassoHandler {
+    private class MovieBackdropHandler extends PicassoHandler<PhilmMovie> {
 
-        private final PhilmMovie mMovie;
+        MovieBackdropHandler(PhilmMovie movie, Listener callback) {
+            super(movie, callback);
+        }
+
+        @Override
+        protected String buildUrl(PhilmMovie movie, ImageHelper helper, ImageView imageView) {
+            return helper.getFanartUrl(movie, imageView.getWidth(), imageView.getHeight());
+        }
+
+    }
+
+    private class MoviePosterHandler extends PicassoHandler<PhilmMovie> {
 
         MoviePosterHandler(PhilmMovie movie, Listener callback) {
-            super(callback);
-            mMovie = Preconditions.checkNotNull(movie, "movie cannot be null");
+            super(movie, callback);
         }
 
         @Override
-        public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getPosterUrl(mMovie, imageView.getWidth(), imageView.getHeight());
+        protected String buildUrl(PhilmMovie movie, ImageHelper helper, ImageView imageView) {
+            return helper.getPosterUrl(movie, imageView.getWidth(), imageView.getHeight());
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            MoviePosterHandler that = (MoviePosterHandler) o;
-            return Objects.equal(mMovie, that.mMovie);
-        }
     }
 
-    private class MovieTrailerHandler extends PicassoHandler {
+    private class MovieTrailerHandler extends PicassoHandler<PhilmTrailer> {
 
-        private final PhilmTrailer mTrailer;
-
-        MovieTrailerHandler(PhilmTrailer movie, Listener callback) {
-            super(callback);
-            mTrailer = Preconditions.checkNotNull(movie, "movie cannot be null");
+        MovieTrailerHandler(PhilmTrailer trailer, Listener callback) {
+            super(trailer, callback);
         }
 
         @Override
-        public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getTrailerUrl(mTrailer, imageView.getWidth(), imageView.getHeight());
+        protected String buildUrl(PhilmTrailer trailer, ImageHelper helper, ImageView imageView) {
+            return helper.getTrailerUrl(trailer, imageView.getWidth(), imageView.getHeight());
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            MovieTrailerHandler that = (MovieTrailerHandler) o;
-            return Objects.equal(mTrailer, that.mTrailer);
-        }
     }
 
-    private class CastProfileHandler extends PicassoHandler {
+    private class CastProfileHandler extends PicassoHandler<PhilmPerson> {
 
-        private final PhilmPerson mPerson;
-
-        CastProfileHandler(PhilmPerson cast, Listener callback) {
-            super(callback);
-            mPerson = Preconditions.checkNotNull(cast, "cast cannot be null");
+        CastProfileHandler(PhilmPerson person, Listener callback) {
+            super(person, callback);
         }
 
         @Override
-        public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getProfileUrl(mPerson, imageView.getWidth(), imageView.getHeight());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            CastProfileHandler that = (CastProfileHandler) o;
-            return Objects.equal(mPerson, that.mPerson);
+        protected String buildUrl(PhilmPerson person, ImageHelper helper, ImageView imageView) {
+            return helper.getProfileUrl(person, imageView.getWidth(), imageView.getHeight());
         }
 
         @Override
@@ -334,32 +294,17 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    private class PersonCreditHandler extends PicassoHandler {
-
-        private final PhilmPersonCredit mCredit;
+    private class PersonCreditHandler extends PicassoHandler<PhilmPersonCredit> {
 
         PersonCreditHandler(PhilmPersonCredit credit, Listener callback) {
-            super(callback);
-            mCredit = Preconditions.checkNotNull(credit, "credit cannot be null");
+            super(credit, callback);
         }
 
         @Override
-        public String getUrl(ImageHelper helper, ImageView imageView) {
-            return helper.getPosterUrl(mCredit, imageView.getWidth(), imageView.getHeight());
+        protected String buildUrl(PhilmPersonCredit credit, ImageHelper helper, ImageView imageView) {
+            return helper.getPosterUrl(credit, imageView.getWidth(), imageView.getHeight());
         }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            PersonCreditHandler that = (PersonCreditHandler) o;
-            return Objects.equal(mCredit, that.mCredit);
-        }
     }
 
     private final Target mPicassoTarget = new Target() {
@@ -388,17 +333,27 @@ public class PhilmImageView extends ImageView {
 
         @Override
         public void onPrepareLoad(Drawable drawable) {
-            setImageDrawableImpl(drawable);
+            if (mPicassoHandler == null || mPicassoHandler.shouldDisplayPlaceholder()) {
+                setImageDrawableImpl(drawable);
+            }
         }
+
     };
 
     void setImageBitmapFromNetwork(final Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
         final boolean fade = mAutoFade && loadedFrom != Picasso.LoadedFrom.MEMORY;
+        final Drawable currentDrawable = getDrawable();
 
         if (fade) {
-            setAlpha(0f);
-            setImageBitmapImpl(bitmap);
-            animate().alpha(1f).setDuration(TRANSITION_DURATION);
+            if (currentDrawable == null || mPicassoHandler.getPlaceholderDrawable() != 0) {
+                // If we have no current drawable, or it is a placeholder drawable. Just fade in
+                setVisibility(View.INVISIBLE);
+                setImageBitmapImpl(bitmap);
+                AnimationUtils.Fade.show(this);
+            } else {
+                AnimationUtils.startCrossFade(this, currentDrawable,
+                        new BitmapDrawable(getResources(), bitmap));
+            }
         } else {
             setImageBitmapImpl(bitmap);
         }

@@ -280,19 +280,19 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         switch (item) {
             case DISCOVER:
                 d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_movie, R.color.enabled);
+                        getResources(), R.drawable.ic_btn_movie, R.color.grey_45);
                 break;
             case LIBRARY:
                 d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_collection, R.color.enabled);
+                        getResources(), R.drawable.ic_btn_collection, R.color.grey_45);
                 break;
             case WATCHLIST:
                 d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_watchlist, R.color.enabled);
+                        getResources(), R.drawable.ic_btn_watchlist, R.color.grey_45);
                 break;
             case SEARCH:
                 d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_search, R.color.enabled);
+                        getResources(), R.drawable.ic_btn_search, R.color.grey_45);
                 break;
         }
 

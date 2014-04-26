@@ -1,5 +1,6 @@
 package app.philm.in;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 
 public class AboutActivity extends BasePhilmActivity {
@@ -8,8 +9,11 @@ public class AboutActivity extends BasePhilmActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        final ActionBar ab = getActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+        }
     }
 
     @Override

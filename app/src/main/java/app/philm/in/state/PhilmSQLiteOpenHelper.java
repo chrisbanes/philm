@@ -227,7 +227,10 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
     public void deleteAllPhilmMovies(SQLiteDatabase db) {
         assetNotClosed();
         try {
-            cupboard().withDatabase(db).delete(PhilmMovie.class, null);
+            final int numDeleted = cupboard().withDatabase(db).delete(PhilmMovie.class, null);
+            if (Constants.DEBUG) {
+                Log.d(LOG_TAG, "deleteAllPhilmMovies. Deleted " + numDeleted + " rows.");
+            }
         } catch (Exception e) {
             Crashlytics.logException(e);
         }

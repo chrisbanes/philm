@@ -53,13 +53,17 @@ public class AccountActivity extends BasePhilmActivity {
      */
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.activity_account);
 
-        mAccountAuthenticatorResponse =
-                getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+        mAccountAuthenticatorResponse = getIntent().getParcelableExtra(
+                AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 
         if (mAccountAuthenticatorResponse != null) {
             mAccountAuthenticatorResponse.onRequestContinued();
         }
+    }
+
+    @Override
+    protected int getContentViewLayoutId() {
+        return R.layout.activity_account;
     }
 }

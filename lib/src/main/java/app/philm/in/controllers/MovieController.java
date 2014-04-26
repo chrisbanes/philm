@@ -24,6 +24,7 @@ import javax.inject.Singleton;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.lib.R;
+import app.philm.in.model.ColorScheme;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
@@ -161,7 +162,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         mMoviesState.getTmdbIdMovies().clear();
         mMoviesState.setWatchingMovie(null);
 
-        // TODO: Clear Database Too
+        if (mDbHelper != null) {
+            mDbHelper.deleteAllPhilmMovies();
+        }
 
         // If we have a new account, pre-fetch library & watchlist
         if (isLoggedIn()) {
@@ -276,23 +279,23 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     protected MovieUiCallbacks createUiCallbacks(final MovieUi ui) {
         return new MovieUiCallbacks() {
 
-            private int mTitleTextColor;
-            private boolean mTitleTextColorSet;
-
             @Override
-            public void onTitleChanged() {
-                if (mTitleTextColorSet) {
-                    updateDisplayTitle(ui.getUiTitle(), mTitleTextColor);
-                } else {
-                    updateDisplayTitle(ui.getUiTitle());
+            public void updateColorScheme(ColorScheme colorScheme) {
+                // First make sure that the color scheme is recorded
+                recordColorSchemeFromUi(ui, colorScheme);
+
+                Display display = getDisplay();
+                if (display != null) {
+                    display.setColorScheme(colorScheme);
                 }
+                onTitleChanged();
+
+                ui.setColorScheme(colorScheme);
             }
 
             @Override
-            public void setTitleTextColor(int textColor) {
-                mTitleTextColor = textColor;
-                mTitleTextColorSet = true;
-                onTitleChanged();
+            public void onTitleChanged() {
+                updateDisplayTitle(ui.getUiTitle());
             }
 
             @Override
@@ -735,6 +738,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         if (display != null) {
             display.setActionBarSubtitle(subtitle);
+            display.setColorScheme(getColorSchemeForUi(ui));
         }
 
     }
@@ -782,6 +786,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (Constants.DEBUG) {
             mLogger.d(LOG_TAG, "populateUi: " + ui.getClass().getSimpleName());
         }
+
+        // Set the color scheme
+        ui.setColorScheme(getColorSchemeForUi(ui));
 
         if (ui instanceof SearchMovieUi) {
             populateSearchMovieUi((SearchMovieUi) ui);
@@ -1698,6 +1705,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieQueryType getMovieQueryType();
 
         String getRequestParameter();
+
+        void setColorScheme(ColorScheme colorScheme);
+
     }
 
     public interface BaseMovieListUi<E> extends MovieUi {
@@ -1778,9 +1788,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     public interface MovieUiCallbacks {
 
-        void onTitleChanged();
+        void updateColorScheme(ColorScheme colorScheme);
 
-        void setTitleTextColor(int textColor);
+        void onTitleChanged();
 
         void addFilter(MovieFilter filter);
 
@@ -1892,6 +1902,36 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             if (list.contains(ui.getMovieQueryType())) {
                 populateUi(ui);
             }
+        }
+    }
+
+    private ColorScheme getColorSchemeForUi(MovieUi ui) {
+        switch (ui.getMovieQueryType()) {
+            case DETAIL:
+            case MOVIE_CAST:
+            case MOVIE_CREW:
+            case RELATED:
+                PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+                if (movie != null) {
+                    return movie.getColorScheme();
+                }
+                break;
+        }
+
+        return null;
+    }
+
+    private void recordColorSchemeFromUi(MovieUi ui, ColorScheme scheme) {
+        switch (ui.getMovieQueryType()) {
+            case DETAIL:
+            case MOVIE_CAST:
+            case MOVIE_CREW:
+            case RELATED:
+                PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+                if (movie != null) {
+                    movie.setColorScheme(scheme);
+                }
+                break;
         }
     }
 }

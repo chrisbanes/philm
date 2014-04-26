@@ -37,22 +37,29 @@ import app.philm.in.fragments.RelatedMoviesFragment;
 import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
+import app.philm.in.model.ColorScheme;
 import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.view.FontTextView;
+import app.philm.in.view.InsetFrameLayout;
 
 public class AndroidDisplay implements Display {
 
     private final FragmentActivity mActivity;
     private final ActionBarDrawerToggle mActionBarDrawerToggle;
     private final DrawerLayout mDrawerLayout;
+    private final InsetFrameLayout mInsetFrameLayout;
     private final PhilmTypefaceSpan mDefaultTitleSpan;
 
+    private ColorScheme mColorScheme;
+
     public AndroidDisplay(FragmentActivity activity,
-                          ActionBarDrawerToggle actionBarDrawerToggle,
-                          DrawerLayout drawerLayout) {
+            ActionBarDrawerToggle actionBarDrawerToggle,
+            DrawerLayout drawerLayout,
+            InsetFrameLayout insetFrameLayout) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mActionBarDrawerToggle = actionBarDrawerToggle;
         mDrawerLayout = drawerLayout;
+        mInsetFrameLayout = insetFrameLayout;
         mDefaultTitleSpan = new PhilmTypefaceSpan(activity, FontTextView.FONT_ROBOTO_CONDENSED);
     }
 
@@ -169,15 +176,11 @@ public class AndroidDisplay implements Display {
     public void setActionBarTitle(String title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            ab.setTitle(convertToCondensed(title));
-        }
-    }
-
-    @Override
-    public void setActionBarTitle(String title, int color) {
-        ActionBar ab = mActivity.getActionBar();
-        if (ab != null) {
-            ab.setTitle(convertToCondensed(title, color));
+            if (mColorScheme != null) {
+                ab.setTitle(convertToCondensed(title, mColorScheme.secondaryText));
+            } else {
+                ab.setTitle(convertToCondensed(title));
+            }
         }
     }
 
@@ -185,15 +188,11 @@ public class AndroidDisplay implements Display {
     public void setActionBarSubtitle(String title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            ab.setSubtitle(convertToCondensed(title));
-        }
-    }
-
-    @Override
-    public void setActionBarSubtitle(String title, int color) {
-        ActionBar ab = mActivity.getActionBar();
-        if (ab != null) {
-            ab.setSubtitle(convertToCondensed(title, color));
+            if (mColorScheme != null) {
+                ab.setSubtitle(convertToCondensed(title, mColorScheme.secondaryText));
+            } else {
+                ab.setSubtitle(convertToCondensed(title));
+            }
         }
     }
 
@@ -281,6 +280,19 @@ public class AndroidDisplay implements Display {
         intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + id));
 
         mActivity.startActivity(intent);
+    }
+
+    @Override
+    public void setColorScheme(ColorScheme colorScheme) {
+        mColorScheme = colorScheme;
+
+        if (mInsetFrameLayout != null) {
+            if (colorScheme != null) {
+                mInsetFrameLayout.setInsetBackgroundColor(colorScheme.primaryAccent);
+            } else {
+                mInsetFrameLayout.resetInsetBackground();
+            }
+        }
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {

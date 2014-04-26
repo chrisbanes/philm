@@ -41,7 +41,7 @@ public abstract class InsetAwareFragment extends Fragment
     protected void populateInsets(Rect insets) {
     }
 
-    public void setTopInsetAlpha(float alpha) {
+    public void setInsetTopAlpha(float alpha) {
         if (getActivity() instanceof BasePhilmActivity) {
             ((BasePhilmActivity) getActivity()).setInsetTopAlpha(alpha);
         }

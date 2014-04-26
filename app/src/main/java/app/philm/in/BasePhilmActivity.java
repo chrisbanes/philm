@@ -93,7 +93,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
-        mDisplay = new AndroidDisplay(this, getDrawerToggle(), getDrawerLayout());
+        mDisplay = new AndroidDisplay(this, getDrawerToggle(), getDrawerLayout(), mInsetFrameLayout);
     }
 
     @Override

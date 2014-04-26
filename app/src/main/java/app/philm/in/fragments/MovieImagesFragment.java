@@ -84,11 +84,6 @@ public class MovieImagesFragment extends BasePhilmMovieFragment
     }
 
     @Override
-    public String getUiTitle() {
-        return null;
-    }
-
-    @Override
     public boolean isModal() {
         return false;
     }

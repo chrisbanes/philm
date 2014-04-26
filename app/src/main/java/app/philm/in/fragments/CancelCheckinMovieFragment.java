@@ -26,11 +26,6 @@ public class CancelCheckinMovieFragment extends BasePhilmMovieDialogFragment
     }
 
     @Override
-    public String getUiTitle() {
-        return null;
-    }
-
-    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View layout = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_cancel_checkin_movie, null);

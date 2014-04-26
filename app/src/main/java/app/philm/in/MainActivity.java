@@ -35,11 +35,6 @@ public class MainActivity extends BasePhilmActivity implements MainController.Ma
     }
 
     @Override
-    public String getUiTitle() {
-        return null;
-    }
-
-    @Override
     public void setCallbacks(MainController.MainControllerUiCallbacks callbacks) {
         mUiCallbacks = callbacks;
     }

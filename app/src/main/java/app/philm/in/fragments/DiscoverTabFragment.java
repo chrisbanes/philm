@@ -18,17 +18,12 @@ public class DiscoverTabFragment extends BasePhilmTabFragment
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        return MovieController.MovieQueryType.NONE;
+        return MovieController.MovieQueryType.DISCOVER;
     }
 
     @Override
     public String getRequestParameter() {
         return null;
-    }
-
-    @Override
-    public String getUiTitle() {
-        return getString(R.string.discover_title);
     }
 
     @Override

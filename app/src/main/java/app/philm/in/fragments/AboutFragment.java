@@ -71,11 +71,6 @@ public class AboutFragment extends ListFragment<ListView>
     }
 
     @Override
-    public String getUiTitle() {
-        return getString(R.string.about_title);
-    }
-
-    @Override
     public void setItems(List<AboutController.AboutItem> items) {
         mAboutListAdapter.setItems(items);
     }

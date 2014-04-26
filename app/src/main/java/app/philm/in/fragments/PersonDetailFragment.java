@@ -100,14 +100,6 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
     }
 
     @Override
-    public String getUiTitle() {
-        if (mPerson != null) {
-            return mPerson.getName();
-        }
-        return null;
-    }
-
-    @Override
     public boolean isModal() {
         return false;
     }
@@ -115,12 +107,7 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
     @Override
     public void setPerson(PhilmPerson person) {
         mPerson = person;
-
         populateUi();
-
-        if (hasCallbacks()) {
-            getCallbacks().onTitleChanged();
-        }
     }
 
     private void populateUi() {

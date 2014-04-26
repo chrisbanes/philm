@@ -20,6 +20,7 @@ import javax.inject.Singleton;
 import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.accounts.PhilmAccountManager;
+import app.philm.in.lib.R;
 import app.philm.in.model.PhilmAccount;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.network.NetworkCallRunnable;
@@ -32,6 +33,7 @@ import app.philm.in.util.BackgroundExecutor;
 import app.philm.in.util.Logger;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.Sha1;
+import app.philm.in.util.StringFetcher;
 import app.philm.in.util.TextUtils;
 import app.philm.in.util.TimeUtils;
 import retrofit.RetrofitError;
@@ -82,6 +84,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
     private final PhilmAccountManager mPhilmAccountManager;
     private final AsyncDatabaseHelper mDbHelper;
     private final Logger mLogger;
+    private StringFetcher mStringFetcher;
 
     private ControllerCallbacks mControllerCallbacks;
 
@@ -92,6 +95,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
             @GeneralPurpose BackgroundExecutor executor,
             PhilmAccountManager accountFetcher,
             AsyncDatabaseHelper dbHelper,
+            StringFetcher stringFetcher,
             Logger logger) {
         super();
         mUserState = Preconditions.checkNotNull(userState, "userState cannot be null");
@@ -100,6 +104,7 @@ public class UserController extends BaseUiController<UserController.UserUi,
         mPhilmAccountManager = Preconditions.checkNotNull(accountFetcher,
                 "accountFetcher cannot be null");
         mDbHelper = Preconditions.checkNotNull(dbHelper, "dbHelper cannot be null");
+        mStringFetcher = Preconditions.checkNotNull(stringFetcher, "stringFetcher cannot be null");
         mLogger = Preconditions.checkNotNull(logger, "logger cannot be null");
     }
 
@@ -167,6 +172,14 @@ public class UserController extends BaseUiController<UserController.UserUi,
                 display.showCredentialsChanged();
             }
         }
+    }
+
+    @Override
+    protected String getUiTitle(UserUi ui) {
+        if (ui instanceof UserUi) {
+            return mStringFetcher.getString(R.string.account_login);
+        }
+        return null;
     }
 
     @Override

@@ -166,10 +166,6 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
-
-        if (movie != null && hasCallbacks()) {
-            getCallbacks().onTitleChanged();
-        }
     }
 
     @Override
@@ -215,14 +211,6 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
     @Override
     protected DetailAdapter getListAdapter() {
         return (DetailAdapter) super.getListAdapter();
-    }
-
-    @Override
-    public String getUiTitle() {
-        if (mMovie != null) {
-            return mMovie.getTitle();
-        }
-        return null;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package app.philm.in.controllers;
 
 
+import com.google.common.base.Preconditions;
+
 import android.content.Intent;
 
 import java.util.Arrays;
@@ -10,6 +12,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import app.philm.in.Display;
+import app.philm.in.lib.R;
+import app.philm.in.util.StringFetcher;
 
 @Singleton
 public class AboutController extends BaseUiController<AboutController.AboutUi,
@@ -34,8 +38,11 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
         void onItemClick(AboutItem item);
     }
 
+    private final StringFetcher mStringFetcher;
+
     @Inject
-    public AboutController() {
+    public AboutController(StringFetcher stringFetcher) {
+        mStringFetcher = Preconditions.checkNotNull(stringFetcher, "stringFetcher cannot be null");
     }
 
     @Override
@@ -85,5 +92,15 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
         } else if (ui instanceof AboutOpenSourcesUi) {
             ((AboutOpenSourcesUi) ui).showLicences("file:///android_asset/licences.html");
         }
+    }
+
+    @Override
+    protected String getUiTitle(AboutUi ui) {
+        if (ui instanceof AboutListUi) {
+            return mStringFetcher.getString(R.string.about_title);
+        } else if (ui instanceof AboutOpenSourcesUi) {
+            return mStringFetcher.getString(R.string.about_open_source_title);
+        }
+        return null;
     }
 }

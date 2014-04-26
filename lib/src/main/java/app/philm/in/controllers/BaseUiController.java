@@ -19,8 +19,6 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
     public interface Ui<UC> {
 
-        String getUiTitle();
-
         void setCallbacks(UC callbacks);
 
         boolean isModal();
@@ -49,9 +47,9 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
         if (isInited()) {
             if (!ui.isModal() && !(ui instanceof SubUi)) {
-                final String uiTitle = ui.getUiTitle();
+                final String uiTitle = getUiTitle(ui);
                 if (!TextUtils.isEmpty(uiTitle)) {
-                    updateDisplayTitle(ui.getUiTitle());
+                    updateDisplayTitle(uiTitle);
                 }
             }
 
@@ -60,11 +58,19 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         }
     }
 
-    protected void updateDisplayTitle(String title) {
+    protected final void updateDisplayTitle(String title) {
         Display display = getDisplay();
         if (display != null) {
             display.setActionBarTitle(title);
         }
+    }
+
+    protected final void updateDisplayTitle(U ui) {
+        updateDisplayTitle(getUiTitle(ui));
+    }
+
+    protected String getUiTitle(U ui) {
+        return null;
     }
 
     public synchronized final void detachUi(U ui) {

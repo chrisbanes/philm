@@ -84,6 +84,18 @@ public class PhilmImageView extends ImageView {
         }
     }
 
+    public void loadBackdrop(PhilmMovie.BackdropImage image) {
+        loadBackdrop(image, null);
+    }
+
+    public void loadBackdrop(PhilmMovie.BackdropImage image, Listener listener) {
+        if (!TextUtils.isEmpty(image.url)) {
+            setPicassoHandler(new MovieBackdropImageHandler(image, listener));
+        } else {
+            reset();
+        }
+    }
+
     public void loadProfile(PhilmPerson person) {
         loadProfile(person, null);
     }
@@ -141,7 +153,12 @@ public class PhilmImageView extends ImageView {
             if (mPicassoHandler.getPlaceholderDrawable() != 0) {
                 request = request.placeholder(mPicassoHandler.getPlaceholderDrawable());
             }
-            request.resize(getWidth(), getHeight()).centerCrop().into(mPicassoTarget);
+            if (mPicassoHandler.centerCrop()) {
+                request = request.resize(getWidth(), getHeight()).centerCrop();
+            } else {
+                request = request.resize(getWidth(), getHeight()).centerInside();
+            }
+            request.into(mPicassoTarget);
 
             if (Constants.DEBUG) {
                 Log.d("PhilmImageView", "Loading " + url);
@@ -226,6 +243,10 @@ public class PhilmImageView extends ImageView {
             return Objects.equal(mObject, that.mObject);
         }
 
+        public boolean centerCrop() {
+            return true;
+        }
+
         @Override
         public int hashCode() {
             return mObject != null ? mObject.hashCode() : 0;
@@ -269,6 +290,24 @@ public class PhilmImageView extends ImageView {
             return helper.getTrailerUrl(trailer, imageView.getWidth(), imageView.getHeight());
         }
 
+    }
+
+    private class MovieBackdropImageHandler extends PicassoHandler<PhilmMovie.BackdropImage> {
+
+        MovieBackdropImageHandler(PhilmMovie.BackdropImage backdrop, Listener callback) {
+            super(backdrop, callback);
+        }
+
+        @Override
+        protected String buildUrl(PhilmMovie.BackdropImage backdrop, ImageHelper helper,
+                ImageView imageView) {
+            return helper.getFanartUrl(backdrop, imageView.getWidth(), imageView.getHeight());
+        }
+
+        @Override
+        public boolean centerCrop() {
+            return false;
+        }
     }
 
     private class CastProfileHandler extends PicassoHandler<PhilmPerson> {

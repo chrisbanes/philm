@@ -27,6 +27,7 @@ import app.philm.in.fragments.LoginFragment;
 import app.philm.in.fragments.MovieCastListFragment;
 import app.philm.in.fragments.MovieCrewListFragment;
 import app.philm.in.fragments.MovieDetailFragment;
+import app.philm.in.fragments.MovieImagesFragment;
 import app.philm.in.fragments.MovieSearchListFragment;
 import app.philm.in.fragments.PersonCastListFragment;
 import app.philm.in.fragments.PersonCrewListFragment;
@@ -102,6 +103,11 @@ public class AndroidDisplay implements Display {
     @Override
     public void showMovieDetailFragment(String movieId) {
         showFragmentFromDrawer(MovieDetailFragment.create(movieId));
+    }
+
+    @Override
+    public void showMovieImages(String movieId) {
+        showFragment(MovieImagesFragment.create(movieId));
     }
 
     @Override

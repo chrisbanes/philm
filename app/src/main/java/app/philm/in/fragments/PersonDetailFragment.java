@@ -73,6 +73,11 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
                     return ordinal();
             }
         }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
     }
 
     private PhilmPerson mPerson;

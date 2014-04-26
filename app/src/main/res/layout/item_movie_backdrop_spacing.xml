@@ -2,5 +2,4 @@
 
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/movie_detail_fanart_height"
-    android:visibility="invisible" />
+    android:layout_height="@dimen/movie_detail_fanart_height" />

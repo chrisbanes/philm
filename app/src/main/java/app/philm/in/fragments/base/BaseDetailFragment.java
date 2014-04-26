@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -21,7 +22,8 @@ import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.ViewRecycler;
 
-public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
+public abstract class BaseDetailFragment extends BasePhilmMovieFragment
+        implements AdapterView.OnItemClickListener{
 
     private ListView mListView;
     private ListAdapter mAdapter;
@@ -43,6 +45,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
         mListView = (ListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
         mEmptyView = (TextView) view.findViewById(android.R.id.empty);
         mListView.setEmptyView(mEmptyView);
@@ -70,6 +73,10 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
     }
 
     @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+    }
+
+    @Override
     public void populateInsets(Rect insets) {
         getListView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
     }
@@ -93,6 +100,8 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
         public int getLayoutId();
 
         public int getViewType();
+
+        public boolean isEnabled();
 
     }
 
@@ -135,7 +144,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment {
 
         @Override
         public boolean isEnabled(int position) {
-            return false;
+            return getItem(position).isEnabled();
         }
 
         @Override

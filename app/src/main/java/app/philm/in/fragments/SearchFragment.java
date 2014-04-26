@@ -201,6 +201,11 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
             // Both items use the same type
             return 0;
         }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
     }
 
     protected class SearchCategoryAdapter extends BaseDetailAdapter<SearchCategoryItems> {

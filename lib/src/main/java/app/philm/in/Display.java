@@ -30,6 +30,8 @@ public interface Display {
 
     public void showMovieDetailFragment(String movieId);
 
+    public void showMovieImages(String movieId);
+
     public void showSearchFragment();
 
     public void showSearchMoviesFragment();

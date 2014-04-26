@@ -48,6 +48,7 @@ import app.philm.in.tasks.CheckinTraktRunnable;
 import app.philm.in.tasks.FetchTmdbConfigurationRunnable;
 import app.philm.in.tasks.FetchTmdbDetailMovieRunnable;
 import app.philm.in.tasks.FetchTmdbMovieCreditsRunnable;
+import app.philm.in.tasks.FetchTmdbMovieImagesRunnable;
 import app.philm.in.tasks.FetchTmdbMovieTrailersRunnable;
 import app.philm.in.tasks.FetchTmdbMoviesReleasesRunnable;
 import app.philm.in.tasks.FetchTmdbNowPlayingRunnable;
@@ -232,6 +233,11 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
         }
         populateUiFromQueryType(MovieQueryType.DETAIL);
+    }
+
+    @Subscribe
+    public void onMovieImagesChanged(MoviesState.MovieImagesUpdatedEvent event) {
+        populateUiFromEvent(event);
     }
 
     @Subscribe
@@ -660,6 +666,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 }
             }
 
+            @Override
+            public void showMovieImages(PhilmMovie movie) {
+                Preconditions.checkNotNull(movie, "movie cannot be null");
+
+                final Display display = getDisplay();
+                if (display != null) {
+                    display.showMovieImages(String.valueOf(movie.getTmdbId()));
+                }
+            }
+
             private boolean canFetchNextPage(MoviesState.PaginatedResult<?> paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -722,6 +738,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case MOVIE_CREW:
                 fetchMovieCrewIfNeeded(callingId, ui.getRequestParameter());
                 subtitle = mStringFetcher.getString(R.string.crew_movies);
+                break;
+            case MOVIE_IMAGES:
+                fetchMovieImagesIfNeeded(callingId, ui.getRequestParameter());
                 break;
             case PERSON_DETAIL:
                 fetchPersonIfNeeded(callingId, ui.getRequestParameter());
@@ -816,6 +835,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             populateSearchPersonUi((SearchPersonUi) ui);
         } else if (ui instanceof PersonListUi) {
             populatePersonListUi((PersonListUi) ui);
+        } else if (ui instanceof MovieImagesUi) {
+            populateMovieImagesUi((MovieImagesUi) ui);
         }
     }
 
@@ -1068,6 +1089,24 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MoviesState.MoviePaginatedResult popular = mMoviesState.getPopular();
         if (popular == null || PhilmCollections.isEmpty(popular.items)) {
             fetchPopular(callingId, TMDB_FIRST_PAGE);
+        }
+    }
+
+    private void fetchMovieImagesIfNeeded(final int callingId, String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null && PhilmCollections.isEmpty(movie.getBackdropImages())) {
+            fetchMovieImages(callingId, id);
+        }
+    }
+
+    private void fetchMovieImages(final int callingId, String id) {
+        Preconditions.checkNotNull(id, "id cannot be null");
+
+        PhilmMovie movie = mMoviesState.getMovie(id);
+        if (movie != null && movie.getTmdbId() != null) {
+            executeTask(new FetchTmdbMovieImagesRunnable(callingId, movie.getTmdbId()));
         }
     }
 
@@ -1422,6 +1461,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
+    private void populateMovieImagesUi(MovieImagesUi ui) {
+        final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
+
+        if (movie != null && !PhilmCollections.isEmpty(movie.getBackdropImages())) {
+            ui.setItems(Collections.unmodifiableList(movie.getBackdropImages()));
+        }
+    }
+
     private void populatePersonCreditListUi(PersonCreditListUi ui) {
         final PhilmPerson person = mMoviesState.getPerson(ui.getRequestParameter());
 
@@ -1637,9 +1684,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     public static enum MovieQueryType {
-        TRENDING, POPULAR, LIBRARY, WATCHLIST, DETAIL, NOW_PLAYING, UPCOMING, RECOMMENDED,
+        TRENDING, POPULAR, LIBRARY, WATCHLIST, NOW_PLAYING, UPCOMING, RECOMMENDED,
         SEARCH, SEARCH_MOVIES, SEARCH_PEOPLE,
-        RELATED, MOVIE_CAST, MOVIE_CREW,
+        DETAIL, RELATED, MOVIE_CAST, MOVIE_CREW, MOVIE_IMAGES,
         PERSON_DETAIL, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW,
         NONE;
 
@@ -1670,6 +1717,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 case RELATED:
                 case MOVIE_CAST:
                 case MOVIE_CREW:
+                case MOVIE_IMAGES:
                 case PERSON_DETAIL:
                 case PERSON_CREDITS_CAST:
                 case PERSON_CREDITS_CREW:
@@ -1786,6 +1834,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void setMovie(PhilmMovie movie);
     }
 
+    public interface MovieImagesUi extends MovieUi {
+        void setItems(List<PhilmMovie.BackdropImage> images);
+    }
+
     public interface MovieUiCallbacks {
 
         void updateColorScheme(ColorScheme colorScheme);
@@ -1850,6 +1902,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void showPeopleSearchResults();
 
         void showMovieSearchResults();
+
+        void showMovieImages(PhilmMovie movie);
 
         void playTrailer(PhilmTrailer trailer);
     }

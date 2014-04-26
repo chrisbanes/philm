@@ -99,6 +99,8 @@ public class PhilmMovie implements PhilmModel {
     int plays;
     int year;
 
+    int budget;
+
     long releasedTime;
     String releasedCountryCode;
     int releasedSourceType;
@@ -281,6 +283,8 @@ public class PhilmMovie implements PhilmModel {
             year = CALENDAR.get(Calendar.YEAR);
         }
 
+        budget = unbox(budget, movie.budget);
+
         tmdbRatingPercent = unbox(tmdbRatingPercent, movie.vote_average);
         tmdbRatingVotes = unbox(tmdbRatingVotes, movie.vote_count);
 
@@ -441,6 +445,10 @@ public class PhilmMovie implements PhilmModel {
 
     public int getYear() {
         return year;
+    }
+
+    public int getBudget() {
+        return budget;
     }
 
     public int getTraktRatingPercent() {

@@ -3,6 +3,7 @@ package app.philm.in.fragments;
 import com.google.common.base.Preconditions;
 
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -101,6 +102,11 @@ public class MovieImagesFragment extends BasePhilmMovieFragment
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(BUNDLE_CURRENT_ITEM, mViewPager.getCurrentItem());
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void populateInsets(Rect insets) {
+        mViewPager.setPadding(insets.left, 0, insets.right, 0);
     }
 
     private class ImageAdapter extends PagerAdapter {

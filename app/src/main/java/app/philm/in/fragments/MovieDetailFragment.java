@@ -855,6 +855,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                     .findViewById(R.id.layout_info_genres);
             MovieDetailInfoLayout releasedInfoLayout = (MovieDetailInfoLayout) view
                     .findViewById(R.id.layout_info_released);
+            MovieDetailInfoLayout budgetInfoLayout = (MovieDetailInfoLayout) view
+                    .findViewById(R.id.layout_info_budget);
             MovieDetailInfoLayout languageLayout = (MovieDetailInfoLayout) view
                     .findViewById(R.id.layout_info_language);
 
@@ -891,6 +893,14 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 }
             } else {
                 releasedInfoLayout.setVisibility(View.GONE);
+            }
+
+            if (mMovie.getBudget() > 0) {
+                budgetInfoLayout.setContentText(
+                        getString(R.string.movie_details_budget_content, mMovie.getBudget()));
+                budgetInfoLayout.setVisibility(View.VISIBLE);
+            } else {
+                budgetInfoLayout.setVisibility(View.GONE);
             }
 
             if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {

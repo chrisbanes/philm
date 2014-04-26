@@ -41,6 +41,14 @@
         internal:title="@string/movie_details_genres" />
 
     <app.philm.in.view.MovieDetailInfoLayout
+            android:id="@+id/layout_info_budget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_micro"
+            android:visibility="gone"
+            internal:title="@string/movie_details_genres" />
+
+    <app.philm.in.view.MovieDetailInfoLayout
         android:id="@+id/layout_info_language"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

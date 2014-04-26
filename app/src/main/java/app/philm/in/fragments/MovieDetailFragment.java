@@ -72,7 +72,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {
             imageView.setVisibility(View.VISIBLE);
 
-            if (mMovie.getColorScheme() == null) {
+            if (getColorScheme() == null) {
                 new ColorCalculatorTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
             }
         }
@@ -164,10 +164,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
-
-        if (mMovie != null && mMovie.getColorScheme() != null) {
-            onColorSchemeChanged();
-        }
 
         if (movie != null && hasCallbacks()) {
             getCallbacks().onTitleChanged();
@@ -295,7 +291,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             final float percent = y / (float) firstView.getHeight();
 
             if (mFadeActionBar) {
-                setTopInsetAlpha(percent);
+                setInsetTopAlpha(percent);
                 setActionBarTitleEnabled(percent >= 0.8f);
             }
 
@@ -305,7 +301,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             }
         } else {
             if (mFadeActionBar) {
-                setTopInsetAlpha(1f);
+                setInsetTopAlpha(1f);
             }
 
             if (mBackdropImageView != null) {
@@ -319,8 +315,12 @@ public class MovieDetailFragment extends BaseDetailFragment
         return new DetailAdapter();
     }
 
-    void onColorSchemeChanged() {
-        getListAdapter().onColorSchemeChanged();
+    @Override
+    protected void onColorSchemeChanged(ColorScheme colorScheme) {
+        DetailAdapter adapter = getListAdapter();
+        if (adapter != null) {
+            adapter.onColorSchemeChanged();
+        }
     }
 
     private void populateUi() {
@@ -662,12 +662,8 @@ public class MovieDetailFragment extends BaseDetailFragment
         protected void onPostExecute(DominantColorCalculator colorCalculator) {
             if (colorCalculator != null) {
                 final ColorScheme scheme = colorCalculator.getColorScheme();
-                if (scheme != null && mMovie != null) {
-                    mMovie.setColorScheme(scheme);
-
-                    if (getActivity() != null) {
-                        onColorSchemeChanged();
-                    }
+                if (scheme != null && hasCallbacks()) {
+                    getCallbacks().updateColorScheme(scheme);
                 }
             }
         }
@@ -906,8 +902,9 @@ public class MovieDetailFragment extends BaseDetailFragment
             ratingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
             ratingBarLayout.setRatingCircleClickListener(MovieDetailFragment.this);
 
-            if (mMovie.getColorScheme() != null) {
-                ratingBarLayout.setColorScheme(mMovie.getColorScheme());
+            final ColorScheme scheme = getColorScheme();
+            if (scheme != null) {
+                ratingBarLayout.setColorScheme(scheme);
             }
         }
 
@@ -962,7 +959,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                 posterImageView.loadPoster(mMovie, mPosterListener);
             }
 
-            final ColorScheme scheme = mMovie.getColorScheme();
+            final ColorScheme scheme = getColorScheme();
             if (scheme != null) {
 
                 final int bgColor = (view.getBackground() instanceof ColorDrawable)

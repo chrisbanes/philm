@@ -9,6 +9,7 @@ import android.graphics.Rect;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.ColorScheme;
 import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;
 
@@ -17,6 +18,7 @@ public abstract class BasePhilmMovieFragment extends InsetAwareFragment
         implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
+    private ColorScheme mColorScheme;
 
     private SuperCardToast mToast;
 
@@ -82,5 +84,21 @@ public abstract class BasePhilmMovieFragment extends InsetAwareFragment
 
     @Override
     public void populateInsets(Rect insets) {
+    }
+
+    @Override
+    public void setColorScheme(ColorScheme colorScheme) {
+        if (mColorScheme != colorScheme) {
+            mColorScheme = colorScheme;
+
+            onColorSchemeChanged(colorScheme);
+        }
+    }
+
+    protected ColorScheme getColorScheme() {
+        return mColorScheme;
+    }
+
+    protected void onColorSchemeChanged(ColorScheme colorScheme) {
     }
 }

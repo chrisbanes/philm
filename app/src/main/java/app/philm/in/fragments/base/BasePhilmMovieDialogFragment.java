@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.model.ColorScheme;
 import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;
 
@@ -92,4 +93,8 @@ public abstract class BasePhilmMovieDialogFragment extends DialogFragment
         return PhilmApplication.from(getActivity()).getMainController().getMovieController();
     }
 
+    @Override
+    public void setColorScheme(ColorScheme colorScheme) {
+        // NO-OP
+    }
 }

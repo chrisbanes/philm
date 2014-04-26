@@ -1,8 +1,10 @@
 package app.philm.in.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -98,6 +100,19 @@ public class InsetFrameLayout extends FrameLayout {
     }
 
     public void setInsetBackgroundColor(int color) {
+        Resources r = getResources();
+
+        setInsetBackgroundColorRaw(
+                Color.argb(
+                        Color.alpha(r.getColor(R.color.chrome_custom_background_alpha)),
+                        Color.red(color),
+                        Color.green(color),
+                        Color.blue(color)
+                )
+        );
+    }
+
+    void setInsetBackgroundColorRaw(int color) {
         setInsetBackground(new ColorDrawable(color));
     }
 

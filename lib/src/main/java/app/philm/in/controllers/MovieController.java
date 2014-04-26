@@ -741,6 +741,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case MOVIE_IMAGES:
                 fetchMovieImagesIfNeeded(callingId, ui.getRequestParameter());
+                subtitle = mStringFetcher.getString(R.string.images_movies);
                 break;
             case PERSON_DETAIL:
                 fetchPersonIfNeeded(callingId, ui.getRequestParameter());
@@ -1965,6 +1966,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case MOVIE_CAST:
             case MOVIE_CREW:
             case RELATED:
+            case MOVIE_IMAGES:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
                     return movie.getColorScheme();
@@ -1981,6 +1983,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case MOVIE_CAST:
             case MOVIE_CREW:
             case RELATED:
+            case MOVIE_IMAGES:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
                     movie.setColorScheme(scheme);

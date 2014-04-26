@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -55,7 +56,7 @@ import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 
-public class MovieDetailFragment extends BaseDetailFragment
+public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
         implements MovieController.MovieDetailUi, View.OnClickListener,
         AbsListView.OnScrollListener {
 
@@ -131,6 +132,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         mBackdropImageView = (BackdropImageView) view.findViewById(R.id.imageview_fanart);
         if (mBackdropImageView != null) {
             mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
+            mBackdropImageView.setOnClickListener(this);
         }
 
         getListView().setOnScrollListener(this);
@@ -164,10 +166,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
-
-        if (movie != null && hasCallbacks()) {
-            getCallbacks().onTitleChanged();
-        }
     }
 
     @Override
@@ -216,14 +214,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    public String getUiTitle() {
-        if (mMovie != null) {
-            return mMovie.getTitle();
-        }
-        return null;
-    }
-
-    @Override
     public boolean isModal() {
         return false;
     }
@@ -237,6 +227,17 @@ public class MovieDetailFragment extends BaseDetailFragment
             if (mBackdropImageView.getLayoutParams().height != targetBackdropHeight) {
                 mBackdropImageView.getLayoutParams().height = targetBackdropHeight;
                 mBackdropImageView.requestLayout();
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        Log.d(LOG_TAG, "onItemClick. Pos: " + position);
+
+        if (getListAdapter().getItem(position) == DetailItemType.BACKDROP_SPACING) {
+            if (hasCallbacks()) {
+                getCallbacks().showMovieImages(mMovie);
             }
         }
     }
@@ -272,6 +273,12 @@ public class MovieDetailFragment extends BaseDetailFragment
             case R.id.rcv_rating:
                 if (hasCallbacks()) {
                     getCallbacks().showRateMovie(mMovie);
+                }
+                break;
+            case R.id.imageview_fanart:
+                Log.d(LOG_TAG, "onClick Fanart");
+                if (hasCallbacks()) {
+                    getCallbacks().showMovieImages(mMovie);
                 }
                 break;
         }
@@ -416,6 +423,11 @@ public class MovieDetailFragment extends BaseDetailFragment
                 default:
                     return ordinal();
             }
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return this == BACKDROP_SPACING;
         }
     }
 

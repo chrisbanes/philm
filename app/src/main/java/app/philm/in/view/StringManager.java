@@ -12,34 +12,6 @@ import app.philm.in.util.AppUtils;
 
 public class StringManager {
 
-    public static int getStringResId(MovieController.MovieQueryType movieQueryType) {
-        switch (movieQueryType) {
-            case POPULAR:
-                return R.string.popular_title;
-            case TRENDING:
-                return R.string.trending_title;
-            case LIBRARY:
-                return R.string.library_title;
-            case WATCHLIST:
-                return R.string.watchlist_title;
-            case SEARCH:
-                return R.string.search_title;
-            case UPCOMING:
-                return R.string.upcoming_title;
-            case RECOMMENDED:
-                return R.string.recommended_title;
-            case NOW_PLAYING:
-                return R.string.in_theatres_title;
-            case RELATED:
-                return R.string.related_movies;
-            case MOVIE_CAST:
-                return R.string.cast_movies;
-            case MOVIE_CREW:
-                return R.string.crew_movies;
-        }
-        return R.string.app_name;
-    }
-
     public static int getStringResId(MovieController.DiscoverTab tab) {
         switch (tab) {
             case POPULAR:

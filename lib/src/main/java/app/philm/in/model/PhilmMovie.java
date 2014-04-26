@@ -8,6 +8,7 @@ import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.uwetrottmann.tmdb.entities.CountryRelease;
 import com.uwetrottmann.tmdb.entities.Genre;
+import com.uwetrottmann.tmdb.entities.Image;
 import com.uwetrottmann.tmdb.entities.Releases;
 import com.uwetrottmann.tmdb.entities.SpokenLanguage;
 import com.uwetrottmann.tmdb.entities.Trailer;
@@ -134,6 +135,7 @@ public class PhilmMovie implements PhilmModel {
     transient List<PhilmMovieCredit> crew;
     transient List<PhilmTrailer> trailers;
     transient List<CountryRelease> releases;
+    transient List<BackdropImage> mBackdropImages;
 
     transient ColorScheme colorScheme;
 
@@ -206,7 +208,7 @@ public class PhilmMovie implements PhilmModel {
 
         Images images = movie.images;
         if (images != null) {
-            // Prefer images from tmdb over trakt
+            // Prefer mBackdropImages from tmdb over trakt
             if (backdropSourceType != TYPE_TMDB && !TextUtils.isEmpty(images.fanart)) {
                 backdropUrl = images.fanart;
                 backdropSourceType = TYPE_TRAKT;
@@ -616,6 +618,14 @@ public class PhilmMovie implements PhilmModel {
         this.colorScheme = colorScheme;
     }
 
+    public List<BackdropImage> getBackdropImages() {
+        return mBackdropImages;
+    }
+
+    public void setBackdropImages(List<BackdropImage> backdropImages) {
+        this.mBackdropImages = backdropImages;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -705,5 +715,20 @@ public class PhilmMovie implements PhilmModel {
                 .add("year", year)
                 .add("runtime", runtime)
                 .toString();
+    }
+
+    public static class BackdropImage {
+        public final String url;
+        public final int sourceType;
+
+        public BackdropImage(String url, int sourceType) {
+            this.url = Preconditions.checkNotNull(url, "url cannot be null");
+            this.sourceType = sourceType;
+        }
+
+        public BackdropImage(Image image) {
+            this.url = image.file_path;
+            this.sourceType = TYPE_TMDB;
+        }
     }
 }

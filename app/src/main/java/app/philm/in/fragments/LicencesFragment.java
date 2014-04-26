@@ -39,11 +39,6 @@ public class LicencesFragment extends Fragment implements AboutController.AboutO
     }
 
     @Override
-    public String getUiTitle() {
-        return getString(R.string.about_open_source_title);
-    }
-
-    @Override
     public boolean isModal() {
         return false;
     }

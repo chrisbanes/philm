@@ -167,11 +167,6 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
     }
 
     @Override
-    public String getUiTitle() {
-        return mSearchResult != null ? mSearchResult.query : null;
-    }
-
-    @Override
     public boolean isModal() {
         return false;
     }
@@ -200,6 +195,11 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
         public int getViewType() {
             // Both items use the same type
             return 0;
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return false;
         }
     }
 

@@ -97,11 +97,6 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
     }
 
     @Override
-    public String getUiTitle() {
-        return null;
-    }
-
-    @Override
     public boolean isModal() {
         return false;
     }

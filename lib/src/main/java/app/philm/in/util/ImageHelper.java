@@ -84,6 +84,25 @@ public class ImageHelper {
         return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
     }
 
+    public String getFanartUrl(final PhilmMovie.BackdropImage image,
+            final int width, final int height) {
+
+        final String imageUrl = image.url;
+        Preconditions.checkNotNull(imageUrl, "image must have backdrop url");
+
+        String url = null;
+        switch (image.sourceType) {
+            case PhilmMovie.TYPE_TMDB:
+                url = buildTmdbBackdropUrl(imageUrl, width, RESIZE_ALL);
+                break;
+            case PhilmMovie.TYPE_TRAKT:
+                url = buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES, RESIZE_ALL));
+                break;
+        }
+
+        return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
+    }
+
     public String getProfileUrl(final PhilmPerson person, final int width, final int height) {
         final String imageUrl = person.getPictureUrl();
         Preconditions.checkNotNull(imageUrl, "movie must have picture url");

@@ -63,11 +63,6 @@ public class CredentialsChangedFragment extends DialogFragment
     }
 
     @Override
-    public String getUiTitle() {
-        return null;
-    }
-
-    @Override
     public void setCallbacks(UserController.UserUiCallbacks callbacks) {
         mCallbacks = callbacks;
     }

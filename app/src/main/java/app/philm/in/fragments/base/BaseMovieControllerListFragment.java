@@ -42,11 +42,6 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     }
 
     @Override
-    public String getUiTitle() {
-        return getString(StringManager.getStringResId(getMovieQueryType()));
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         getController().attachUi(this);
@@ -105,6 +100,7 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     @Override
     public void showError(NetworkError error) {
         setListShown(true);
+
         switch (error) {
             case UNAUTHORIZED_TRAKT:
                 setEmptyText(getString(R.string.empty_missing_account, getTitle()));
@@ -155,8 +151,8 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     protected final void showToast(int text, Style style) {
         cancelToast();
 
-        mToast = SuperCardToast.create(
-                getActivity(), getText(text), SuperToast.Duration.MEDIUM, style);
+        mToast = SuperCardToast.create(getActivity(), getText(text),
+                SuperToast.Duration.MEDIUM, style);
         mToast.setIcon(SuperToast.Icon.Dark.INFO, SuperToast.IconPosition.LEFT);
         mToast.show();
     }
@@ -179,9 +175,8 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
     }
 
     private String getTitle() {
-        MovieController.MovieQueryType queryType = getMovieQueryType();
-        if (queryType != null) {
-            return getString(StringManager.getStringResId(queryType));
+        if (hasCallbacks()) {
+            return getCallbacks().getUiTitle();
         }
         return null;
     }

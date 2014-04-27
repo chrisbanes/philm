@@ -746,13 +746,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             return;
         }
 
-        final Display display = getDisplay();
-        if (display != null) {
-            if (!ui.isModal()) {
-                display.showUpNavigation(queryType != null && queryType.showUpNavigation());
-            }
-        }
-
         String title = null;
         String subtitle = null;
 
@@ -818,11 +811,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
         }
 
+        final Display display = getDisplay();
         if (display != null) {
+            if (!ui.isModal()) {
+                display.showUpNavigation(queryType != null && queryType.showUpNavigation());
+                display.setColorScheme(getColorSchemeForUi(ui));
+            }
             display.setActionBarSubtitle(subtitle);
-            display.setColorScheme(getColorSchemeForUi(ui));
         }
-
     }
 
     @Override

@@ -11,8 +11,10 @@ import app.philm.in.util.PhilmCollections;
 public abstract class InsetAwareFragment extends Fragment
         implements BasePhilmActivity.OnActivityInsetsCallback {
 
-    private final Rect mInsets = new Rect();
+    private final Rect mBaseInsets = new Rect();
     private Rect mAdditionalInsets;
+
+    private final Rect mPopulatedInsets = new Rect();
 
     @Override
     public void onResume() {
@@ -34,7 +36,7 @@ public abstract class InsetAwareFragment extends Fragment
 
     @Override
     public final void onInsetsChanged(Rect insets) {
-        mInsets.set(insets);
+        mBaseInsets.set(insets);
         doPopulateInsets();
     }
 
@@ -64,22 +66,22 @@ public abstract class InsetAwareFragment extends Fragment
     }
 
     private void doPopulateInsets() {
-        Rect insetsToPopulate;
+        mPopulatedInsets.set(mBaseInsets);
 
-        if (mAdditionalInsets == null) {
-            insetsToPopulate = mInsets;
-        } else {
-            final Rect tempRect = new Rect(mInsets);
-            tempRect.left += mAdditionalInsets.left;
-            tempRect.top += mAdditionalInsets.top;
-            tempRect.right += mAdditionalInsets.right;
-            tempRect.bottom += mAdditionalInsets.bottom;
-
-            insetsToPopulate = tempRect;
+        if (mAdditionalInsets != null) {
+            mPopulatedInsets.left += mAdditionalInsets.left;
+            mPopulatedInsets.top += mAdditionalInsets.top;
+            mPopulatedInsets.right += mAdditionalInsets.right;
+            mPopulatedInsets.bottom += mAdditionalInsets.bottom;
         }
+
 
         if (getView() != null) {
-            populateInsets(insetsToPopulate);
+            populateInsets(mPopulatedInsets);
         }
+    }
+
+    protected Rect getInsets() {
+        return mPopulatedInsets;
     }
 }

@@ -723,7 +723,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
                 final Display display = getDisplay();
                 if (display != null) {
-                    display.showMovieImages(String.valueOf(movie.getTmdbId()));
+                    display.startMovieImagesActivity(String.valueOf(movie.getTmdbId()));
                 }
             }
 
@@ -848,6 +848,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     return true;
                 }
                 break;
+
+            case Display.PHILM_ACTION_VIEW_MOVIE_IMAGES:
+                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
+                    display.showMovieImagesFragment(id);
+                    return true;
+                }
         }
 
         return super.handleIntent(intent);

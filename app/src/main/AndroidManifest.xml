@@ -100,6 +100,23 @@
 
         </activity>
 
+        <activity
+                android:name=".MovieImagesActivity"
+                android:theme="@style/Theme.Philm.Images"
+                android:exported="false"
+                android:parentActivityName=".MovieActivity">
+
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MovieActivity" />
+
+            <intent-filter>
+                <action android:name="philm.intent.action.VIEW_MOVIE_IMAGES"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+        </activity>
+
         <service android:name=".account.PhilmAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>

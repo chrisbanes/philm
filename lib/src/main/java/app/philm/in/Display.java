@@ -12,6 +12,7 @@ public interface Display {
     public static final String PHILM_ACTION_ABOUT = "philm.intent.action.ABOUT";
     public static final String PHILM_ACTION_LOGIN = "philm.intent.action.LOGIN";
     public static final String PHILM_ACTION_VIEW_MOVIE = "philm.intent.action.VIEW_MOVIE";
+    public static final String PHILM_ACTION_VIEW_MOVIE_IMAGES = "philm.intent.action.VIEW_MOVIE_IMAGES";
     public static final String PHILM_ACTION_VIEW_PERSON = "philm.intent.action.VIEW_PERSON";
 
     public static final String PARAM_ID = "_id";
@@ -30,7 +31,9 @@ public interface Display {
 
     public void showMovieDetailFragment(String movieId);
 
-    public void showMovieImages(String movieId);
+    public void startMovieImagesActivity(String movieId);
+
+    public void showMovieImagesFragment(String movieId);
 
     public void showSearchFragment();
 

@@ -106,8 +106,15 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void showMovieImages(String movieId) {
-        showFragment(MovieImagesFragment.create(movieId));
+    public void startMovieImagesActivity(String movieId) {
+        Intent intent = new Intent(PHILM_ACTION_VIEW_MOVIE_IMAGES);
+        intent.putExtra(PARAM_ID, movieId);
+        mActivity.startActivity(intent);
+    }
+
+    @Override
+    public void showMovieImagesFragment(String movieId) {
+        showFragmentFromDrawer(MovieImagesFragment.create(movieId));
     }
 
     @Override

@@ -133,10 +133,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
                 if (getMainController().onHomeButtonPressed()) {
                     return true;
                 }
-
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    // Call NavUtils for pre-JB functionality
-                    NavUtils.navigateUpFromSameTask(this);
+                if (navigateUp()) {
                     return true;
                 }
                 break;
@@ -177,6 +174,19 @@ public abstract class BasePhilmActivity extends FragmentActivity
         mMainController.setHostCallbacks(null);
         mMainController.detachDisplay(mDisplay);
         super.onPause();
+    }
+
+    protected boolean navigateUp() {
+        final Intent intent = getParentIntent();
+        if (intent != null) {
+            NavUtils.navigateUpTo(this, intent);
+            return true;
+        }
+        return false;
+    }
+
+    protected Intent getParentIntent() {
+        return NavUtils.getParentActivityIntent(this);
     }
 
     @Override
@@ -245,6 +255,10 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     protected int getContentViewLayoutId() {
         return R.layout.activity_main;
+    }
+
+    protected Display getDisplay() {
+        return mDisplay;
     }
 
 }

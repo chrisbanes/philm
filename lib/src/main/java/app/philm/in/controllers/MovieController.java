@@ -830,7 +830,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         final String id = intent.getStringExtra(Display.PARAM_ID);
         final Display display = getDisplay();
 
-        if (display == null) {
+        if (display == null || TextUtils.isEmpty(intent.getAction())) {
             return false;
         }
 

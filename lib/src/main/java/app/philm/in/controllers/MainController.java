@@ -131,13 +131,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     public boolean handleIntent(Intent intent) {
         mLogger.d(LOG_TAG, "handleIntent: " + intent);
 
-        if (Display.ANDROID_ACTION_MAIN.equals(intent.getAction())) {
-            Display display = getDisplay();
-            if (display != null && !display.hasMainFragment()) {
-                showUiItem(display, SideMenuItem.DISCOVER);
-            }
-            return true;
-        }
+
 
         return mUserController.handleIntent(intent)
                 || mMovieController.handleIntent(intent)
@@ -226,6 +220,11 @@ public class MainController extends BaseUiController<MainController.MainControll
         };
     }
 
+    public void setSelectedSideMenuItem(SideMenuItem item) {
+        mState.setSelectedSideMenuItem(item);
+        populateUis();
+    }
+
     private void showUiItem(Display display, SideMenuItem item) {
         Preconditions.checkNotNull(display, "display cannot be null");
         Preconditions.checkNotNull(item, "item cannot be null");
@@ -250,8 +249,7 @@ public class MainController extends BaseUiController<MainController.MainControll
                 break;
         }
 
-        mState.setSelectedSideMenuItem(item);
-        populateUis();
+        setSelectedSideMenuItem(item);
     }
 
     @Override

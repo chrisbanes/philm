@@ -8,13 +8,6 @@ public interface Display {
     public static final String FRAGMENT_TAG_CHECKIN_MOVIE = "checkin_movie";
     public static final String FRAGMENT_TAG_TRAKT_CREDENTIALS_WRONG = "trakt_credentials_wrong";
 
-    public static final String ANDROID_ACTION_MAIN = "android.intent.action.MAIN";
-    public static final String PHILM_ACTION_ABOUT = "philm.intent.action.ABOUT";
-    public static final String PHILM_ACTION_LOGIN = "philm.intent.action.LOGIN";
-    public static final String PHILM_ACTION_VIEW_MOVIE = "philm.intent.action.VIEW_MOVIE";
-    public static final String PHILM_ACTION_VIEW_MOVIE_IMAGES = "philm.intent.action.VIEW_MOVIE_IMAGES";
-    public static final String PHILM_ACTION_VIEW_PERSON = "philm.intent.action.VIEW_PERSON";
-
     public static final String PARAM_ID = "_id";
 
     public void showLibrary();
@@ -55,9 +48,9 @@ public interface Display {
 
     public void startAboutActivity();
 
-    public void setActionBarTitle(String title);
+    public void setActionBarTitle(CharSequence title);
 
-    public void setActionBarSubtitle(String title);
+    public void setActionBarSubtitle(CharSequence title);
 
     public boolean popEntireFragmentBackStack();
 

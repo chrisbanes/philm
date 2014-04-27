@@ -182,17 +182,6 @@ public class UserController extends BaseUiController<UserController.UserUi,
         return null;
     }
 
-    @Override
-    public boolean handleIntent(Intent intent) {
-        final Display display = getDisplay();
-        if (display != null && Display.PHILM_ACTION_LOGIN.equals(intent.getAction())) {
-            display.showLogin();
-            return true;
-        }
-
-        return super.handleIntent(intent);
-    }
-
     void setControllerCallbacks(ControllerCallbacks controllerCallbacks) {
         mControllerCallbacks = controllerCallbacks;
     }

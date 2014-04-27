@@ -96,7 +96,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void startMovieDetailActivity(String movieId) {
-        Intent intent = new Intent(PHILM_ACTION_VIEW_MOVIE);
+        Intent intent = new Intent(mActivity, MovieActivity.class);
         intent.putExtra(PARAM_ID, movieId);
         mActivity.startActivity(intent);
     }
@@ -108,7 +108,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void startMovieImagesActivity(String movieId) {
-        Intent intent = new Intent(PHILM_ACTION_VIEW_MOVIE_IMAGES);
+        Intent intent = new Intent(mActivity, MovieImagesActivity.class);
         intent.putExtra(PARAM_ID, movieId);
         mActivity.startActivity(intent);
     }
@@ -166,13 +166,13 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void startAddAccountActivity() {
-        Intent intent = new Intent(PHILM_ACTION_LOGIN);
+        Intent intent = new Intent(mActivity, AccountActivity.class);
         mActivity.startActivity(intent);
     }
 
     @Override
     public void startAboutActivity() {
-        Intent intent = new Intent(PHILM_ACTION_ABOUT);
+        Intent intent = new Intent(mActivity, AboutActivity.class);
         mActivity.startActivity(intent);
     }
 
@@ -187,7 +187,7 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setActionBarTitle(String title) {
+    public void setActionBarTitle(CharSequence title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
             if (mColorScheme != null) {
@@ -199,7 +199,7 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setActionBarSubtitle(String title) {
+    public void setActionBarSubtitle(CharSequence title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
             if (mColorScheme != null) {
@@ -266,7 +266,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void startPersonDetailActivity(String id) {
-        Intent intent = new Intent(PHILM_ACTION_VIEW_PERSON);
+        Intent intent = new Intent(mActivity, PersonActivity.class);
         intent.putExtra(PARAM_ID, id);
         mActivity.startActivity(intent);
     }
@@ -317,12 +317,12 @@ public class AndroidDisplay implements Display {
         if (ab != null) {
             CharSequence title = ab.getTitle();
             if (!TextUtils.isEmpty(title)) {
-                setActionBarTitle(title.toString());
+                setActionBarTitle(title);
             }
 
             CharSequence subtitle = ab.getSubtitle();
             if (!TextUtils.isEmpty(subtitle)) {
-                setActionBarSubtitle(subtitle.toString());
+                setActionBarSubtitle(subtitle);
             }
         }
     }
@@ -343,30 +343,25 @@ public class AndroidDisplay implements Display {
                 .commit();
     }
 
-    private CharSequence convertToCondensed(final String string) {
-        if (!TextUtils.isEmpty(string)) {
-            SpannableString s = new SpannableString(string);
-            s.setSpan(
-                    new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED),
-                    0,
-                    s.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return s;
+    private CharSequence convertToCondensed(final CharSequence string) {
+        if (TextUtils.isEmpty(string)) {
+            return string;
         }
-        return string;
+
+        SpannableString s = new SpannableString(string);
+        s.setSpan(mDefaultTitleSpan, 0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return s;
     }
 
-    private CharSequence convertToCondensed(final String string, int color) {
-        if (!TextUtils.isEmpty(string)) {
-            SpannableString s = new SpannableString(string);
-            s.setSpan(
-                    new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
-                    0,
-                    s.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return s;
+    private CharSequence convertToCondensed(final CharSequence string, int color) {
+        if (TextUtils.isEmpty(string)) {
+            return string;
         }
-        return string;
+
+        SpannableString s = new SpannableString(string);
+        s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
+                0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return s;
     }
 
 }

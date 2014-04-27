@@ -9,10 +9,16 @@ public class MovieImagesActivity extends BasePhilmActivity {
         final Intent thisIntent = getIntent();
 
         final Intent intent = super.getParentIntent();
-        intent.setAction(Display.PHILM_ACTION_VIEW_MOVIE);
         intent.putExtra(Display.PARAM_ID, thisIntent.getStringExtra(Display.PARAM_ID));
 
         return intent;
+    }
+
+    @Override
+    protected void handleIntent(Intent intent, Display display) {
+        if (!display.hasMainFragment()) {
+            display.showMovieImagesFragment(intent.getStringExtra(Display.PARAM_ID));
+        }
     }
 
     @Override

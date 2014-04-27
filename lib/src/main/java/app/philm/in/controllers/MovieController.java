@@ -826,40 +826,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     }
 
     @Override
-    public boolean handleIntent(Intent intent) {
-        final String id = intent.getStringExtra(Display.PARAM_ID);
-        final Display display = getDisplay();
-
-        if (display == null || TextUtils.isEmpty(intent.getAction())) {
-            return false;
-        }
-
-        switch (intent.getAction()) {
-            case Display.PHILM_ACTION_VIEW_MOVIE:
-                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
-                    display.showMovieDetailFragment(id);
-                    return true;
-                }
-                break;
-
-            case Display.PHILM_ACTION_VIEW_PERSON:
-                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
-                    display.showPersonDetail(id);
-                    return true;
-                }
-                break;
-
-            case Display.PHILM_ACTION_VIEW_MOVIE_IMAGES:
-                if (!TextUtils.isEmpty(id) && display.hasMainFragment() == false) {
-                    display.showMovieImagesFragment(id);
-                    return true;
-                }
-        }
-
-        return super.handleIntent(intent);
-    }
-
-    @Override
     protected void populateUi(final MovieUi ui) {
         if (!isLoggedIn() && ui.getMovieQueryType().requireLogin()) {
             ui.showError(NetworkError.UNAUTHORIZED_TRAKT);

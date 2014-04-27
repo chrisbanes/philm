@@ -1,6 +1,7 @@
 package app.philm.in;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class AboutActivity extends BasePhilmActivity {
@@ -19,5 +20,12 @@ public class AboutActivity extends BasePhilmActivity {
     @Override
     protected int getContentViewLayoutId() {
         return R.layout.activity_about;
+    }
+
+    @Override
+    protected void handleIntent(Intent intent, Display display) {
+        if (!display.hasMainFragment()) {
+            display.showAboutFragment();
+        }
     }
 }

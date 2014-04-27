@@ -276,11 +276,17 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 }
                 break;
             case R.id.imageview_fanart:
-                Log.d(LOG_TAG, "onClick Fanart");
                 if (hasCallbacks()) {
                     getCallbacks().showMovieImages(mMovie);
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onBigPosterClicked() {
+        if (hasCallbacks()) {
+            getCallbacks().showMovieImages(mMovie);
         }
     }
 

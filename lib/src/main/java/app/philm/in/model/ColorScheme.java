@@ -17,4 +17,44 @@ public class ColorScheme {
         this.primaryText = primaryText;
         this.secondaryText = secondaryText;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ColorScheme that = (ColorScheme) o;
+
+        if (primaryAccent != that.primaryAccent) {
+            return false;
+        }
+        if (primaryText != that.primaryText) {
+            return false;
+        }
+        if (secondaryAccent != that.secondaryAccent) {
+            return false;
+        }
+        if (secondaryText != that.secondaryText) {
+            return false;
+        }
+        if (tertiaryAccent != that.tertiaryAccent) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = primaryAccent;
+        result = 31 * result + secondaryAccent;
+        result = 31 * result + tertiaryAccent;
+        result = 31 * result + primaryText;
+        result = 31 * result + secondaryText;
+        return result;
+    }
 }

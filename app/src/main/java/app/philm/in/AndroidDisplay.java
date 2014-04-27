@@ -1,5 +1,6 @@
 package app.philm.in;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import android.app.ActionBar;
@@ -190,7 +191,7 @@ public class AndroidDisplay implements Display {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
             if (mColorScheme != null) {
-                ab.setTitle(convertToCondensed(title, mColorScheme.secondaryText));
+                ab.setTitle(convertToCondensed(title, mColorScheme.primaryText));
             } else {
                 ab.setTitle(convertToCondensed(title));
             }
@@ -297,6 +298,11 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void setColorScheme(ColorScheme colorScheme) {
+        if (Objects.equal(mColorScheme, colorScheme)) {
+            // ColorScheme hasn't changed, ignore
+            return;
+        }
+
         mColorScheme = colorScheme;
 
         if (mInsetFrameLayout != null) {
@@ -304,6 +310,19 @@ public class AndroidDisplay implements Display {
                 mInsetFrameLayout.setInsetBackgroundColor(colorScheme.primaryAccent);
             } else {
                 mInsetFrameLayout.resetInsetBackground();
+            }
+        }
+
+        final ActionBar ab = mActivity.getActionBar();
+        if (ab != null) {
+            CharSequence title = ab.getTitle();
+            if (!TextUtils.isEmpty(title)) {
+                setActionBarTitle(title.toString());
+            }
+
+            CharSequence subtitle = ab.getSubtitle();
+            if (!TextUtils.isEmpty(subtitle)) {
+                setActionBarSubtitle(subtitle.toString());
             }
         }
     }

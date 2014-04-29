@@ -41,7 +41,7 @@ import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
-import app.philm.in.model.PhilmTrailer;
+import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.util.ColorValueAnimator;
 import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
@@ -616,7 +616,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
             mOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PhilmTrailer trailer = (PhilmTrailer) view.getTag();
+                    PhilmMovieVideo trailer = (PhilmMovieVideo) view.getTag();
                     if (trailer != null && hasCallbacks()) {
                         getCallbacks().playTrailer(trailer);
                     }
@@ -634,7 +634,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
         }
 
         @Override
-        public PhilmTrailer getItem(int position) {
+        public PhilmMovieVideo getItem(int position) {
             return mMovie.getTrailers().get(position);
         }
 
@@ -649,7 +649,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 view = mInflater.inflate(R.layout.item_movie_trailer, viewGroup, false);
             }
 
-            final PhilmTrailer trailer = getItem(position);
+            final PhilmMovieVideo trailer = getItem(position);
 
             final PhilmImageView imageView = (PhilmImageView)
                     view.findViewById(R.id.imageview_thumbnail);

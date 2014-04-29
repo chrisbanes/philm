@@ -28,7 +28,7 @@ public class FetchTmdbDetailMovieRunnable extends BaseMovieRunnable<Movie> {
                 new AppendToResponse(
                         AppendToResponseItem.CREDITS,
                         AppendToResponseItem.RELEASES,
-                        AppendToResponseItem.TRAILERS,
+                        AppendToResponseItem.VIDEOS,
                         AppendToResponseItem.SIMILAR
                 )
         );

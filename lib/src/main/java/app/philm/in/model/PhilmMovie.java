@@ -11,8 +11,8 @@ import com.uwetrottmann.tmdb.entities.Genre;
 import com.uwetrottmann.tmdb.entities.Image;
 import com.uwetrottmann.tmdb.entities.Releases;
 import com.uwetrottmann.tmdb.entities.SpokenLanguage;
-import com.uwetrottmann.tmdb.entities.Trailer;
-import com.uwetrottmann.tmdb.entities.Trailers;
+import com.uwetrottmann.tmdb.entities.Video;
+import com.uwetrottmann.tmdb.entities.Videos;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -135,7 +135,7 @@ public class PhilmMovie implements PhilmModel {
     transient List<PhilmMovie> related;
     transient List<PhilmMovieCredit> cast;
     transient List<PhilmMovieCredit> crew;
-    transient List<PhilmTrailer> trailers;
+    transient List<PhilmMovieVideo> trailers;
     transient List<CountryRelease> releases;
     transient List<BackdropImage> mBackdropImages;
 
@@ -314,27 +314,26 @@ public class PhilmMovie implements PhilmModel {
             runtimeSourceType = TYPE_TMDB;
         }
 
-        if (movie.trailers != null) {
-            updateWithTrailers(movie.trailers);
+        if (movie.videos != null) {
+            updateWithVideos(movie.videos);
         }
     }
 
-    public void updateWithTrailers(final Trailers trailers) {
-        Preconditions.checkNotNull(trailers, "trailers cannot be null");
+    public void updateWithVideos(final Videos videos) {
+        Preconditions.checkNotNull(videos, "videos cannot be null");
 
-        if (!PhilmCollections.isEmpty(trailers.youtube)) {
-            final ArrayList<PhilmTrailer> philmTrailers = new ArrayList<>();
+        if (!PhilmCollections.isEmpty(videos.results)) {
+            final ArrayList<PhilmMovieVideo> philmMovieVideos = new ArrayList<>();
 
-            for (Trailer trailer : trailers.youtube) {
-                if (!TextUtils.isEmpty(trailer.source)) {
-                    // If the trailer has an id...
-                    final PhilmTrailer philmTrailer = new PhilmTrailer();
-                    philmTrailer.setFromTmdb(PhilmTrailer.Source.YOUTUBE, trailer);
-                    philmTrailers.add(philmTrailer);
+            for (Video video : videos.results) {
+                if (PhilmMovieVideo.isValid(video)) {
+                    final PhilmMovieVideo philmMovieVideo = new PhilmMovieVideo();
+                    philmMovieVideo.setFromTmdb(video);
+                    philmMovieVideos.add(philmMovieVideo);
                 }
             }
 
-            setTrailers(philmTrailers);
+            setTrailers(philmMovieVideos);
         }
     }
 
@@ -610,11 +609,11 @@ public class PhilmMovie implements PhilmModel {
         this.crew = crew;
     }
 
-    public List<PhilmTrailer> getTrailers() {
+    public List<PhilmMovieVideo> getTrailers() {
         return trailers;
     }
 
-    public void setTrailers(List<PhilmTrailer> trailers) {
+    public void setTrailers(List<PhilmMovieVideo> trailers) {
         this.trailers = trailers;
     }
 

@@ -110,8 +110,8 @@ public interface MoviesState extends BaseState {
         }
     }
 
-    public static class MovieTrailersItemsUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
-        public MovieTrailersItemsUpdatedEvent(int callingId, PhilmMovie item) {
+    public static class MovieVideosItemsUpdatedEvent extends BaseArgumentEvent<PhilmMovie> {
+        public MovieVideosItemsUpdatedEvent(int callingId, PhilmMovie item) {
             super(callingId, item);
         }
     }

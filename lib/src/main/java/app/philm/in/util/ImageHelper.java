@@ -5,9 +5,9 @@ import com.google.common.base.Preconditions;
 import java.net.URLEncoder;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
-import app.philm.in.model.PhilmTrailer;
 
 public class ImageHelper {
 
@@ -211,11 +211,11 @@ public class ImageHelper {
         return url.toString();
     }
 
-    public String getTrailerUrl(PhilmTrailer trailer, final int width, final int height) {
-        switch (trailer.getSource()) {
+    public String getVideoSnapshotUrl(PhilmMovieVideo video, final int width, final int height) {
+        switch (video.getSource()) {
             case YOUTUBE:
                 StringBuilder url = new StringBuilder(YOUTUBE_URL_BASE);
-                url.append(trailer.getId()).append("/");
+                url.append(video.getId()).append("/");
 
                 final int size = selectSize(width,
                         new int[] { YOUTUBE_MEDIUM_Q_WIDTH, YOUTUBE_HIGH_Q_WIDTH }, false);

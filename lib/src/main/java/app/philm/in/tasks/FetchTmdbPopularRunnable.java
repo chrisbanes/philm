@@ -13,7 +13,9 @@ public class FetchTmdbPopularRunnable extends BaseTmdbPaginatedMovieRunnable {
 
     @Override
     public ResultsPage doBackgroundCall() throws RetrofitError {
-        return getTmdbClient().moviesService().popular(getPage(), null);
+        return getTmdbClient().moviesService().popular(
+                getPage(),
+                getCountryProvider().getTwoLetterLanguageCode());
     }
 
     @Override

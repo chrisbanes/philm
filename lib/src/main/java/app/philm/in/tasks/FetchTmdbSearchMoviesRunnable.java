@@ -18,8 +18,14 @@ public class FetchTmdbSearchMoviesRunnable extends BaseTmdbPaginatedMovieRunnabl
 
     @Override
     public ResultsPage doBackgroundCall() throws RetrofitError {
-        return getTmdbClient().searchService()
-                .movie(mQuery, getPage(), null, null, null, null, null);
+        return getTmdbClient().searchService().movie(
+                mQuery,
+                getPage(),
+                getCountryProvider().getTwoLetterLanguageCode(),
+                null,
+                null,
+                null,
+                null);
     }
 
     @Override

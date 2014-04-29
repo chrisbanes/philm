@@ -19,7 +19,9 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
 
     @Override
     public ResultsPage doBackgroundCall() throws RetrofitError {
-        return getTmdbClient().moviesService().similarMovies(mId);
+        return getTmdbClient().moviesService().similarMovies(mId,
+                null,
+                getCountryProvider().getTwoLetterLanguageCode());
     }
 
     @Override

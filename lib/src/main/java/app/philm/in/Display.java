@@ -1,5 +1,7 @@
 package app.philm.in;
 
+import android.os.Bundle;
+
 import app.philm.in.model.ColorScheme;
 
 public interface Display {
@@ -20,7 +22,7 @@ public interface Display {
 
     public void showLogin();
 
-    public void startMovieDetailActivity(String movieId);
+    public void startMovieDetailActivity(String movieId, Bundle bundle);
 
     public void showMovieDetailFragment(String movieId);
 
@@ -70,7 +72,7 @@ public interface Display {
 
     public void showCancelCheckin();
 
-    public void startPersonDetailActivity(String id);
+    public void startPersonDetailActivity(String id, Bundle bundle);
 
     public void showPersonDetail(String id);
 

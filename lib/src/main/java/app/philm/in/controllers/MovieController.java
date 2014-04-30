@@ -7,6 +7,7 @@ import com.jakewharton.trakt.enumerations.Rating;
 import com.squareup.otto.Subscribe;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 
 import java.util.ArrayList;
@@ -409,25 +410,25 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showMovieDetail(PhilmMovie movie) {
+            public void showMovieDetail(PhilmMovie movie, Bundle bundle) {
                 Preconditions.checkNotNull(movie, "movie cannot be null");
 
                 Display display = getDisplay();
                 if (display != null) {
                     if (!TextUtils.isEmpty(movie.getTraktId())) {
-                        display.startMovieDetailActivity(movie.getTraktId());
+                        display.startMovieDetailActivity(movie.getTraktId(), bundle);
                     }
                     // TODO: Handle the else case
                 }
             }
 
             @Override
-            public void showMovieDetail(PhilmPersonCredit credit) {
+            public void showMovieDetail(PhilmPersonCredit credit, Bundle bundle) {
                 Preconditions.checkNotNull(credit, "credit cannot be null");
 
                 Display display = getDisplay();
                 if (display != null) {
-                    display.startMovieDetailActivity(String.valueOf(credit.getId()));
+                    display.startMovieDetailActivity(String.valueOf(credit.getId()), bundle);
                 }
             }
 
@@ -653,13 +654,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void showPersonDetail(PhilmPerson person) {
+            public void showPersonDetail(PhilmPerson person, Bundle bundle) {
                 Preconditions.checkNotNull(person, "person cannot be null");
                 Preconditions.checkNotNull(person.getTmdbId(), "person id cannot be null");
 
                 Display display = getDisplay();
                 if (display != null) {
-                    display.startPersonDetailActivity(String.valueOf(person.getTmdbId()));
+                    display.startPersonDetailActivity(String.valueOf(person.getTmdbId()), bundle);
                 }
             }
 
@@ -1881,9 +1882,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void refresh();
 
-        void showMovieDetail(PhilmMovie movie);
+        void showMovieDetail(PhilmMovie movie, Bundle bundle);
 
-        void showMovieDetail(PhilmPersonCredit credit);
+        void showMovieDetail(PhilmPersonCredit credit, Bundle bundle);
 
         void toggleMovieSeen(PhilmMovie movie);
 
@@ -1922,7 +1923,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void requestCheckin(PhilmMovie movie);
 
-        void showPersonDetail(PhilmPerson person);
+        void showPersonDetail(PhilmPerson person, Bundle bundle);
 
         void showPersonCastCredits(PhilmPerson person);
 

@@ -42,6 +42,7 @@ import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.model.PhilmTrailer;
+import app.philm.in.util.ActivityTransitions;
 import app.philm.in.util.ColorValueAnimator;
 import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
@@ -449,7 +450,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 @Override
                 public void onClick(View view) {
                     if (hasCallbacks()) {
-                        getCallbacks().showMovieDetail((PhilmMovie) view.getTag());
+                        getCallbacks().showMovieDetail((PhilmMovie) view.getTag(),
+                                ActivityTransitions.scaleUpAnimation(view));
                     }
                 }
             };
@@ -508,7 +510,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                     if (hasCallbacks()) {
                         PhilmMovieCredit cast = (PhilmMovieCredit) view.getTag();
                         if (cast != null && cast.getPerson() != null) {
-                            getCallbacks().showPersonDetail(cast.getPerson());
+                            getCallbacks().showPersonDetail(cast.getPerson(),
+                                    ActivityTransitions.scaleUpAnimation(view));
                         }
                     }
                 }
@@ -534,7 +537,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                     if (hasCallbacks()) {
                         PhilmMovieCredit cast = (PhilmMovieCredit) view.getTag();
                         if (cast != null && cast.getPerson() != null) {
-                            getCallbacks().showPersonDetail(cast.getPerson());
+                            getCallbacks().showPersonDetail(cast.getPerson(),
+                                    ActivityTransitions.scaleUpAnimation(view));
                         }
                     }
                 }

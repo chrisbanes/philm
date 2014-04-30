@@ -6,7 +6,9 @@ import com.google.common.base.Preconditions;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -95,10 +97,10 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void startMovieDetailActivity(String movieId) {
+    public void startMovieDetailActivity(String movieId, Bundle bundle) {
         Intent intent = new Intent(mActivity, MovieActivity.class);
         intent.putExtra(PARAM_ID, movieId);
-        mActivity.startActivity(intent);
+        startActivity(intent, bundle);
     }
 
     @Override
@@ -265,10 +267,10 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void startPersonDetailActivity(String id) {
+    public void startPersonDetailActivity(String id, Bundle bundle) {
         Intent intent = new Intent(mActivity, PersonActivity.class);
         intent.putExtra(PARAM_ID, id);
-        mActivity.startActivity(intent);
+        startActivity(intent, bundle);
     }
 
     @Override
@@ -341,6 +343,10 @@ public class AndroidDisplay implements Display {
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit();
+    }
+
+    private void startActivity(Intent intent, Bundle options) {
+        ActivityCompat.startActivity(mActivity, intent, options);
     }
 
     private CharSequence convertToCondensed(final CharSequence string) {

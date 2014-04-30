@@ -209,7 +209,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
                 if (display != null && checkin != null) {
                     display.closeDrawerLayout();
-                    display.startMovieDetailActivity(checkin.movie.getImdbId());
+                    display.startMovieDetailActivity(checkin.movie.getImdbId(), null);
                 }
             }
 

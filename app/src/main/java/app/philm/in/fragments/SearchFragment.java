@@ -393,7 +393,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
             final PhilmMovie item = getItem(position);
 
             final TextView title = (TextView) view.findViewById(R.id.textview_title);
-            title.setText(item.getName());
+            title.setText(item.getTitle());
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);

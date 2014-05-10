@@ -9,4 +9,9 @@ public interface CountryProvider {
      */
     public String getTwoLetterCountryCode();
 
+    /**
+     * @return ISO 639-1 language code
+     */
+    public String getTwoLetterLanguageCode();
+
 }

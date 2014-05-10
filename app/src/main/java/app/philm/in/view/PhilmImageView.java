@@ -22,9 +22,9 @@ import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
-import app.philm.in.model.PhilmTrailer;
 import app.philm.in.util.AnimationUtils;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.TextUtils;
@@ -53,7 +53,7 @@ public class PhilmImageView extends ImageView {
     }
 
     public void loadPoster(PhilmMovie movie, Listener listener) {
-        if (!TextUtils.isEmpty(movie.getPosterUrl())) {
+        if (movie.hasPosterUrl()) {
             setPicassoHandler(new MoviePosterHandler(movie, listener));
         } else {
             reset();
@@ -77,7 +77,7 @@ public class PhilmImageView extends ImageView {
     }
 
     public void loadBackdrop(PhilmMovie movie, Listener listener) {
-        if (!TextUtils.isEmpty(movie.getBackdropUrl())) {
+        if (movie.hasBackdropUrl()) {
             setPicassoHandler(new MovieBackdropHandler(movie, listener));
         } else {
             reset();
@@ -109,11 +109,11 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    public void loadTrailer(PhilmTrailer trailer) {
+    public void loadTrailer(PhilmMovieVideo trailer) {
         loadTrailer(trailer, null);
     }
 
-    public void loadTrailer(PhilmTrailer trailer, Listener listener) {
+    public void loadTrailer(PhilmMovieVideo trailer, Listener listener) {
         setPicassoHandler(new MovieTrailerHandler(trailer, listener));
     }
 
@@ -279,15 +279,15 @@ public class PhilmImageView extends ImageView {
 
     }
 
-    private class MovieTrailerHandler extends PicassoHandler<PhilmTrailer> {
+    private class MovieTrailerHandler extends PicassoHandler<PhilmMovieVideo> {
 
-        MovieTrailerHandler(PhilmTrailer trailer, Listener callback) {
+        MovieTrailerHandler(PhilmMovieVideo trailer, Listener callback) {
             super(trailer, callback);
         }
 
         @Override
-        protected String buildUrl(PhilmTrailer trailer, ImageHelper helper, ImageView imageView) {
-            return helper.getTrailerUrl(trailer, imageView.getWidth(), imageView.getHeight());
+        protected String buildUrl(PhilmMovieVideo trailer, ImageHelper helper, ImageView imageView) {
+            return helper.getVideoSnapshotUrl(trailer, imageView.getWidth(), imageView.getHeight());
         }
 
     }

@@ -94,8 +94,8 @@ public interface BaseState {
         }
     }
 
-    public static class ShowTrailersLoadingProgressEvent extends ShowLoadingProgressEvent {
-        public ShowTrailersLoadingProgressEvent(int callingId, boolean show) {
+    public static class ShowVideosLoadingProgressEvent extends ShowLoadingProgressEvent {
+        public ShowVideosLoadingProgressEvent(int callingId, boolean show) {
             super(callingId, show);
         }
     }

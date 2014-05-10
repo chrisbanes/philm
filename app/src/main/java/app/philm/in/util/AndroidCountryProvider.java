@@ -17,6 +17,7 @@ public class AndroidCountryProvider implements CountryProvider {
     private final Context mContext;
 
     private String mCountryCode;
+    private String mLanguageCode;
 
     public AndroidCountryProvider(Context context) {
         mContext = Preconditions.checkNotNull(context, "context cannot be null");
@@ -72,5 +73,14 @@ public class AndroidCountryProvider implements CountryProvider {
         }
 
         return null;
+    }
+
+    @Override
+    public String getTwoLetterLanguageCode() {
+        if (mLanguageCode == null) {
+            final Locale locale = Locale.getDefault();
+            mLanguageCode = locale.getLanguage();
+        }
+        return mLanguageCode;
     }
 }

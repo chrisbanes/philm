@@ -6,7 +6,6 @@ import com.google.common.base.Preconditions;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.squareup.otto.Subscribe;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
 
@@ -30,9 +29,9 @@ import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmModel;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
+import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
-import app.philm.in.model.PhilmTrailer;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.WatchingMovie;
 import app.philm.in.network.NetworkError;
@@ -704,7 +703,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void playTrailer(PhilmTrailer trailer) {
+            public void playTrailer(PhilmMovieVideo trailer) {
                 Preconditions.checkNotNull(trailer, "trailer cannot be null");
                 Preconditions.checkNotNull(trailer.getId(), "trailer id cannot be null");
 
@@ -902,7 +901,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         Preconditions.checkNotNull(items, "items cannot be null");
         ArrayList<ListItem<T>> listItems = new ArrayList<>(items.size());
         for (T item : items) {
-            listItems.add(new ListItem<>(item));
+            listItems.add(new ListItem<T>(item));
         }
         return listItems;
     }
@@ -938,7 +937,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                         String title = mStringFetcher.getString(filter.getSectionTitle());
                         sectionItems.add(new ListItem<T>(title));
                     }
-                    sectionItems.add(new ListItem<>(movie));
+                    sectionItems.add(new ListItem<T>(movie));
                     i.remove();
                 }
             }
@@ -1935,13 +1934,12 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void showMovieImages(PhilmMovie movie);
 
-        void playTrailer(PhilmTrailer trailer);
+        void playTrailer(PhilmMovieVideo trailer);
 
         String getUiTitle();
     }
 
-    private class LibraryDbLoadCallback
-            implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
+    private class LibraryDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
 
         @Override
         public void onFinished(List<PhilmMovie> result) {

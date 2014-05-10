@@ -1,13 +1,14 @@
 package app.philm.in.util;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Verify;
 
 import java.net.URLEncoder;
 
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
-import app.philm.in.model.PhilmTrailer;
 
 public class ImageHelper {
 
@@ -51,35 +52,32 @@ public class ImageHelper {
     }
 
     public String getPosterUrl(final PhilmMovie movie, final int width, final int height) {
-        final String imageUrl = movie.getPosterUrl();
-        Preconditions.checkNotNull(imageUrl, "movie must have poster url");
-
         String url = null;
-        switch (movie.getPosterSourceType()) {
-            case PhilmMovie.TYPE_TMDB:
-                url = buildTmdbPosterUrl(imageUrl, width, RESIZE_ALL);
-                break;
-            case PhilmMovie.TYPE_TRAKT:
-                url = buildTraktUrl(imageUrl, selectSize(width, TRAKT_POSTER_SIZES, RESIZE_ALL));
-                break;
+
+        if (!TextUtils.isEmpty(movie.getTmdbPosterUrl())) {
+            url = buildTmdbPosterUrl(movie.getTmdbPosterUrl(),
+                    width, RESIZE_ALL);
+        } else if (!TextUtils.isEmpty(movie.getTraktPosterUrl())) {
+            url = buildTraktUrl(movie.getTraktPosterUrl(),
+                    selectSize(width, TRAKT_POSTER_SIZES, RESIZE_ALL));
         }
+
+        Verify.verifyNotNull(url);
 
         return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
     }
 
     public String getFanartUrl(final PhilmMovie movie, final int width, final int height) {
-        final String imageUrl = movie.getBackdropUrl();
-        Preconditions.checkNotNull(imageUrl, "movie must have backdrop url");
-
         String url = null;
-        switch (movie.getBackdropSourceType()) {
-            case PhilmMovie.TYPE_TMDB:
-                url = buildTmdbBackdropUrl(imageUrl, width, RESIZE_ALL);
-                break;
-            case PhilmMovie.TYPE_TRAKT:
-                url = buildTraktUrl(imageUrl, selectSize(width, TRAKT_BACKDROP_SIZES, RESIZE_ALL));
-                break;
+
+        if (!TextUtils.isEmpty(movie.getTmdbBackdropUrl())) {
+            url = buildTmdbBackdropUrl(movie.getTmdbBackdropUrl(), width, RESIZE_ALL);
+        } else if (!TextUtils.isEmpty(movie.getTraktBackdropUrl())) {
+            url = buildTraktUrl(movie.getTraktBackdropUrl(),
+                    selectSize(width, TRAKT_BACKDROP_SIZES, RESIZE_ALL));
         }
+
+        Verify.verifyNotNull(url);
 
         return RESIZE_ALL ? getResizedUrl(url, width, height) : url;
     }
@@ -211,11 +209,11 @@ public class ImageHelper {
         return url.toString();
     }
 
-    public String getTrailerUrl(PhilmTrailer trailer, final int width, final int height) {
-        switch (trailer.getSource()) {
+    public String getVideoSnapshotUrl(PhilmMovieVideo video, final int width, final int height) {
+        switch (video.getSource()) {
             case YOUTUBE:
                 StringBuilder url = new StringBuilder(YOUTUBE_URL_BASE);
-                url.append(trailer.getId()).append("/");
+                url.append(video.getId()).append("/");
 
                 final int size = selectSize(width,
                         new int[] { YOUTUBE_MEDIUM_Q_WIDTH, YOUTUBE_HIGH_Q_WIDTH }, false);

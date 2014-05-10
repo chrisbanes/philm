@@ -25,8 +25,8 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
     private static final String DATABASE_NAME = "philm.db";
-    private static final int DATABASE_VERSION = 26;
-    private static final int LAST_DATABASE_NUKE_VERSION = 24;
+    private static final int DATABASE_VERSION = 28;
+    private static final int LAST_DATABASE_NUKE_VERSION = 28;
 
     private static final Class[] ENTITIES = new Class[]{PhilmMovie.class, PhilmUserProfile.class};
 
@@ -57,7 +57,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
             if (Constants.DEBUG) {
                 Log.d(LOG_TAG, "Nuking Database. Old Version: " + oldVersion);
             }
-            deleteAllTables(db);
+            cupboard().withDatabase(db).dropAllTables();
             onCreate(db);
         } else {
             // this will upgrade tables, adding columns and new tables.
@@ -75,8 +75,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
 
         try {
             itr = cupboard().withDatabase(getReadableDatabase()).query(PhilmMovie.class)
-                    .withSelection("inCollection = ? OR watched = ?", "1", "1")
-                    .orderBy("sortTitle")
+                    .withSelection("traktInCollection = ? OR traktWatched = ?", "1", "1")
                     .query();
 
             movies = new ArrayList<>();
@@ -101,8 +100,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
 
         try {
             itr = cupboard().withDatabase(getReadableDatabase()).query(PhilmMovie.class)
-                    .withSelection("inWatchlist = ?", "1")
-                    .orderBy("releasedTime")
+                    .withSelection("traktInWatchlist = ?", "1")
                     .query();
 
             movies = new ArrayList<>();
@@ -233,15 +231,6 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
             }
         } catch (Exception e) {
             Crashlytics.logException(e);
-        }
-    }
-
-    private void deleteAllTables(SQLiteDatabase db) {
-        for (Class clazz : ENTITIES) {
-            final String tableName = cupboard().getTable(clazz);
-            if (tableName != null) {
-                db.execSQL("DROP TABLE IF EXISTS " + tableName);
-            }
         }
     }
 

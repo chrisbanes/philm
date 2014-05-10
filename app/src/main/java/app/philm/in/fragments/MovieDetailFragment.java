@@ -57,7 +57,7 @@ import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 
-public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
+public class MovieDetailFragment extends BaseDetailFragment
         implements MovieController.MovieDetailUi, View.OnClickListener,
         AbsListView.OnScrollListener {
 

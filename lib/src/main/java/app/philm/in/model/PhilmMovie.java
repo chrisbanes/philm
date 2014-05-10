@@ -278,7 +278,7 @@ public class PhilmMovie extends PhilmModel {
             tmdbReleasedTime = unbox(tmdbReleasedTime, movie.release_date);
         }
 
-        if (tmdbYear == 0 && tmdbReleasedTime > 0) {
+        if (tmdbYear == 0 && tmdbReleasedTime != 0) {
             CALENDAR.setTimeInMillis(tmdbReleasedTime);
             tmdbYear = CALENDAR.get(Calendar.YEAR);
         }
@@ -359,6 +359,11 @@ public class PhilmMovie extends PhilmModel {
                 if (countryRelease.release_date != null) {
                     tmdbReleasedTime = countryRelease.release_date.getTime();
                     tmdbReleasedCountryCode = countryRelease.iso_3166_1;
+
+                    if (tmdbYear == 0 && tmdbReleasedTime != 0) {
+                        CALENDAR.setTimeInMillis(tmdbReleasedTime);
+                        tmdbYear = CALENDAR.get(Calendar.YEAR);
+                    }
                 }
             }
         }

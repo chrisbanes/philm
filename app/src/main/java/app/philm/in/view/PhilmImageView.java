@@ -53,7 +53,7 @@ public class PhilmImageView extends ImageView {
     }
 
     public void loadPoster(PhilmMovie movie, Listener listener) {
-        if (!TextUtils.isEmpty(movie.getPosterUrl())) {
+        if (movie.hasPosterUrl()) {
             setPicassoHandler(new MoviePosterHandler(movie, listener));
         } else {
             reset();
@@ -77,7 +77,7 @@ public class PhilmImageView extends ImageView {
     }
 
     public void loadBackdrop(PhilmMovie movie, Listener listener) {
-        if (!TextUtils.isEmpty(movie.getBackdropUrl())) {
+        if (movie.hasBackdropUrl()) {
             setPicassoHandler(new MovieBackdropHandler(movie, listener));
         } else {
             reset();

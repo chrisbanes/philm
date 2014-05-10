@@ -29,7 +29,7 @@ import app.philm.in.util.TextUtils;
 
 import static app.philm.in.util.TimeUtils.isPastThreshold;
 
-public class PhilmMovie implements PhilmModel {
+public class PhilmMovie extends PhilmModel {
 
     public static final int NOT_SET = 0;
 
@@ -79,50 +79,62 @@ public class PhilmMovie implements PhilmModel {
     // tmdbId
     Long _id;
     int idType;
-
     String imdbId;
     Integer tmdbId;
-    String title;
-    String sortTitle;
-    String overview;
-    String tagline;
 
-    String posterUrl;
-    int posterSourceType;
-    String backdropUrl;
-    int backdropSourceType;
+    String traktTitle;
+    String tmdbTitle;
 
-    boolean inWatchlist;
-    boolean inCollection;
-    boolean watched;
+    String traktSortTitle;
+    String tmdbSortTitle;
 
-    int plays;
-    int year;
+    String traktOverview;
+    String tmdbOverview;
 
-    int budget;
+    String traktTagline;
+    String tmdbTagline;
 
-    long releasedTime;
-    String releasedCountryCode;
-    int releasedSourceType;
+    String traktPosterUrl;
+    String tmdbPosterUrl;
 
-    int userRating;
-    int userRatingAdvanced;
+    String traktBackdropUrl;
+    String tmdbBackdropUrl;
+
+    boolean traktInWatchlist;
+    boolean traktInCollection;
+    boolean traktWatched;
+
+    int traktPlays;
+
+    int traktYear;
+    int tmdbYear;
+
+    int tmdbBudget;
+
+    long traktReleasedTime;
+    String traktReleasedCountryCode;
+    long tmdbReleasedTime;
+    String tmdbReleasedCountryCode;
+
+    int traktUserRating;
+    int traktUserRatingAdvanced;
 
     int tmdbRatingPercent;
     int tmdbRatingVotes;
     int traktRatingPercent;
     int traktRatingVotes;
 
-    int runtime;
-    int runtimeSourceType;
+    int traktRuntime;
+    int tmdbRuntime;
 
-    String certification;
-    int certificationSourceType;
+    String traktCertification;
+    String tmdbCertification;
 
-    String genres;
-    int genresSourceType;
+    String traktGenres;
+    String tmdbGenres;
 
-    String mainLanguageTitle;
+    String traktMainLanguage;
+    String tmdbMainLanguage;
 
     transient long lastFullFetchFromTraktStarted;
     transient long lastFullFetchFromTmdbStarted;
@@ -176,28 +188,27 @@ public class PhilmMovie implements PhilmModel {
             }
         }
 
-        title = movie.title;
-        if (!TextUtils.isEmpty(title)) {
-            sortTitle = getSortTitle(title);
+        traktTitle = movie.title;
+
+        if (!TextUtils.isEmpty(traktTitle)) {
+            traktSortTitle = getSortTitle(traktTitle);
         }
 
         if (!TextUtils.isEmpty(movie.overview)) {
-            overview = movie.overview;
+            traktOverview = movie.overview;
         }
 
         if (!TextUtils.isEmpty(movie.tagline)) {
-            tagline = movie.tagline;
+            traktTagline = movie.tagline;
         }
 
-        year = unbox(year, movie.year);
-        inCollection = unbox(inCollection, movie.inCollection);
-        inWatchlist = unbox(inWatchlist, movie.inWatchlist);
-        watched = unbox(watched, movie.watched);
-        plays = unbox(plays, movie.plays);
-
-        if (releasedSourceType != TYPE_TMDB) {
-            releasedTime = unbox(releasedTime, movie.released);
-        }
+        traktYear = unbox(traktYear, movie.year);
+        traktInCollection = unbox(traktInCollection, movie.inCollection);
+        traktInWatchlist = unbox(traktInWatchlist, movie.inWatchlist);
+        traktWatched = unbox(traktWatched, movie.watched);
+        traktPlays = unbox(traktPlays, movie.plays);
+        traktReleasedTime = unbox(traktReleasedTime, movie.released);
+        traktRuntime = unbox(traktRuntime, movie.runtime);
 
         Ratings ratings = movie.ratings;
         if (ratings != null) {
@@ -205,35 +216,25 @@ public class PhilmMovie implements PhilmModel {
             traktRatingVotes = unbox(traktRatingVotes, ratings.votes);
         }
 
-        userRating = unbox(userRating, movie.rating);
-        userRatingAdvanced = unbox(userRatingAdvanced, movie.rating_advanced);
+        traktUserRating = unbox(traktUserRating, movie.rating);
+        traktUserRatingAdvanced = unbox(traktUserRatingAdvanced, movie.rating_advanced);
 
         Images images = movie.images;
         if (images != null) {
-            // Prefer mBackdropImages from tmdb over trakt
-            if (backdropSourceType != TYPE_TMDB && !TextUtils.isEmpty(images.fanart)) {
-                backdropUrl = images.fanart;
-                backdropSourceType = TYPE_TRAKT;
+            if (!TextUtils.isEmpty(images.fanart)) {
+                traktBackdropUrl = images.fanart;
             }
-            if (posterSourceType != TYPE_TMDB && !TextUtils.isEmpty(images.poster)) {
-                posterUrl = images.poster;
-                posterSourceType = TYPE_TRAKT;
+            if (!TextUtils.isEmpty(images.poster)) {
+                traktPosterUrl = images.poster;
             }
         }
 
-        if (genresSourceType != TYPE_TMDB && movie.genres != null) {
-            genres = getTraktGenreFormatStringList(movie.genres);
-            genresSourceType = TYPE_TRAKT;
+        if (movie.genres != null) {
+            traktGenres = getTraktGenreFormatStringList(movie.genres);
         }
 
-        if (runtimeSourceType != TYPE_TMDB) {
-            runtime = unbox(runtime, movie.runtime);
-            runtimeSourceType = TYPE_TRAKT;
-        }
-
-        if (certificationSourceType != TYPE_TMDB && !TextUtils.isEmpty(movie.certification)) {
-            certification = movie.certification;
-            certificationSourceType = TYPE_TRAKT;
+        if (!TextUtils.isEmpty(movie.certification)) {
+            traktCertification = movie.certification;
         }
     }
 
@@ -259,60 +260,53 @@ public class PhilmMovie implements PhilmModel {
             }
         }
 
-        title = movie.title;
-        if (!TextUtils.isEmpty(title)) {
-            sortTitle = getSortTitle(title);
+        if (!TextUtils.isEmpty(movie.title)) {
+            tmdbTitle = movie.title;
+            tmdbSortTitle = getSortTitle(movie.title);
         }
 
         if (!TextUtils.isEmpty(movie.overview)) {
-            overview = movie.overview;
+            tmdbOverview = movie.overview;
         }
 
         if (!TextUtils.isEmpty(movie.tagline)) {
-            tagline = movie.tagline;
+            tmdbTagline = movie.tagline;
         }
 
         // Only update from here if we do not have a country code
-        if (movie.release_date != null && releasedCountryCode == null) {
-            releasedTime = unbox(releasedTime, movie.release_date);
-            releasedSourceType = TYPE_TMDB;
+        if (movie.release_date != null && tmdbReleasedCountryCode == null) {
+            tmdbReleasedTime = unbox(tmdbReleasedTime, movie.release_date);
         }
 
-        if (year == 0 && releasedTime > 0) {
-            CALENDAR.setTimeInMillis(releasedTime);
-            year = CALENDAR.get(Calendar.YEAR);
+        if (tmdbYear == 0 && tmdbReleasedTime > 0) {
+            CALENDAR.setTimeInMillis(tmdbReleasedTime);
+            tmdbYear = CALENDAR.get(Calendar.YEAR);
         }
 
-        budget = unbox(budget, movie.budget);
+        tmdbBudget = unbox(tmdbBudget, movie.budget);
 
         tmdbRatingPercent = unbox(tmdbRatingPercent, movie.vote_average);
         tmdbRatingVotes = unbox(tmdbRatingVotes, movie.vote_count);
 
         if (!TextUtils.isEmpty(movie.backdrop_path)) {
-            backdropUrl = movie.backdrop_path;
-            backdropSourceType = TYPE_TMDB;
+            tmdbBackdropUrl = movie.backdrop_path;
         }
         if (!TextUtils.isEmpty(movie.poster_path)) {
-            posterUrl = movie.poster_path;
-            posterSourceType = TYPE_TMDB;
+            tmdbPosterUrl = movie.poster_path;
         }
 
         if (movie.genres != null) {
-            genres = getTmdbGenreFormatStringList(movie.genres);
-            genresSourceType = TYPE_TMDB;
+            tmdbGenres = getTmdbGenreFormatStringList(movie.genres);
         }
 
         if (!PhilmCollections.isEmpty(movie.spoken_languages)) {
-            SpokenLanguage mainLanguage = movie.spoken_languages.get(0);
-            if (mainLanguage != null) {
-                mainLanguageTitle = mainLanguage.name;
+            SpokenLanguage mainLang = movie.spoken_languages.get(0);
+            if (mainLang != null) {
+                tmdbMainLanguage = mainLang.name;
             }
         }
 
-        if (movie.runtime != null) {
-            runtime = unbox(runtime, movie.runtime);
-            runtimeSourceType = TYPE_TMDB;
-        }
+        tmdbRuntime = unbox(tmdbRuntime, movie.runtime);
 
         if (movie.videos != null) {
             updateWithVideos(movie.videos);
@@ -360,25 +354,22 @@ public class PhilmMovie implements PhilmModel {
 
             if (countryRelease != null) {
                 if (!TextUtils.isEmpty(countryRelease.certification)) {
-                    certification = countryRelease.certification;
-                    certificationSourceType = TYPE_TMDB;
+                    tmdbCertification = countryRelease.certification;
                 }
                 if (countryRelease.release_date != null) {
-                    releasedTime = countryRelease.release_date.getTime();
-                    releasedCountryCode = countryRelease.iso_3166_1;
-                    releasedSourceType = TYPE_TMDB;
+                    tmdbReleasedTime = countryRelease.release_date.getTime();
+                    tmdbReleasedCountryCode = countryRelease.iso_3166_1;
                 }
             }
         }
     }
 
     public boolean isWatched() {
-        return watched || plays > 0;
+        return traktWatched || traktPlays > 0;
     }
 
     public void setWatched(boolean watched) {
-        this.watched = watched;
-        plays = watched ? 1 : 0;
+        traktWatched = watched;
     }
 
     public long getDbId() {
@@ -394,60 +385,71 @@ public class PhilmMovie implements PhilmModel {
     }
 
     public boolean inCollection() {
-        return inCollection;
+        return traktInCollection;
     }
 
     public void setInCollection(boolean inCollection) {
-        this.inCollection = inCollection;
+        traktInCollection = inCollection;
     }
 
     public boolean inWatchlist() {
-        return inWatchlist;
+        return traktInWatchlist;
     }
 
     public void setInWatched(boolean inWatchlist) {
-        this.inWatchlist = inWatchlist;
+        this.traktInWatchlist = inWatchlist;
     }
 
     public String getTitle() {
-        return title;
+        return select(tmdbTitle, traktTitle);
     }
 
     public String getTagline() {
-        return tagline;
-    }
-
-    @Override
-    public String getName() {
-        return getTitle();
+        return select(tmdbTagline, traktTagline);
     }
 
     public String getSortTitle() {
-        return sortTitle;
+        return select(tmdbSortTitle, traktSortTitle);
     }
 
-    public String getPosterUrl() {
-        return posterUrl;
+    public String getTraktPosterUrl() {
+        return traktPosterUrl;
     }
 
-    public String getBackdropUrl() {
-        return backdropUrl;
+    public String getTraktBackdropUrl() {
+        return traktBackdropUrl;
+    }
+
+    public String getTmdbPosterUrl() {
+        return tmdbPosterUrl;
+    }
+
+    public String getTmdbBackdropUrl() {
+        return tmdbBackdropUrl;
+    }
+
+    public boolean hasPosterUrl() {
+        return !TextUtils.isEmpty(tmdbPosterUrl) || !TextUtils.isEmpty(traktPosterUrl);
+    }
+
+    public boolean hasBackdropUrl() {
+        return !TextUtils.isEmpty(tmdbBackdropUrl) || !TextUtils.isEmpty(traktBackdropUrl);
     }
 
     public long getReleasedTime() {
-        return releasedTime;
+        return select(tmdbReleasedTime, traktReleasedTime);
     }
 
     public int getPlays() {
-        return plays;
+        return traktPlays;
     }
 
     public int getYear() {
-        return year;
+        return select(tmdbYear, traktYear);
     }
 
     public int getBudget() {
-        return budget;
+        return tmdbBudget;
     }
 
     public int getTraktRatingPercent() {
@@ -481,19 +483,19 @@ public class PhilmMovie implements PhilmModel {
     }
 
     public int getUserRating() {
-        return userRating;
+        return traktUserRating;
     }
 
     public int getUserRatingAdvanced() {
-        return userRatingAdvanced;
+        return traktUserRatingAdvanced;
     }
 
     public void setUserRatingAdvanced(Rating rating) {
-        userRatingAdvanced = unbox(userRatingAdvanced, rating);
+        traktUserRatingAdvanced = unbox(traktUserRatingAdvanced, rating);
     }
 
     public String getOverview() {
-        return overview;
+        return select(tmdbOverview, traktOverview);
     }
 
     public List<PhilmMovie> getRelated() {
@@ -505,27 +507,19 @@ public class PhilmMovie implements PhilmModel {
     }
 
     public int getRuntime() {
-        return runtime;
+        return select(tmdbRuntime, traktRuntime);
     }
 
     public String getCertification() {
-        return certification;
+        return select(tmdbCertification, traktCertification);
     }
 
     public String getGenres() {
-        return genres;
+        return select(tmdbGenres, traktGenres);
     }
 
     public String getReleasedCountryCode() {
-        return releasedCountryCode;
-    }
-
-    public int getBackdropSourceType() {
-        return backdropSourceType;
-    }
-
-    public int getPosterSourceType() {
-        return posterSourceType;
+        return select(tmdbReleasedCountryCode, traktReleasedCountryCode);
     }
 
     public String getTraktId() {
@@ -539,7 +533,7 @@ public class PhilmMovie implements PhilmModel {
     }
 
     public String getMainLanguageTitle() {
-        return mainLanguageTitle;
+        return select(tmdbMainLanguage, traktMainLanguage);
     }
 
     private boolean needFullFetch() {
@@ -650,9 +644,6 @@ public class PhilmMovie implements PhilmModel {
         if (tmdbId != null && that.tmdbId != null) {
             return tmdbId.equals(that.tmdbId);
         }
-        if (title != null && that.title != null) {
-            return title.equals(that.title);
-        }
 
         return false;
     }
@@ -718,9 +709,9 @@ public class PhilmMovie implements PhilmModel {
         return Objects.toStringHelper(this)
                 .add("tmdbId", tmdbId)
                 .add("imdbId", imdbId)
-                .add("title", title)
-                .add("year", year)
-                .add("runtime", runtime)
+                .add("title", getTitle())
+                .add("year", getYear())
+                .add("runtime", getRuntime())
                 .toString();
     }
 

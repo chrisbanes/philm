@@ -344,7 +344,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
         mItems.clear();
 
         if (!hasBigPosterView() && mBackdropImageView != null) {
-            if (!TextUtils.isEmpty(mMovie.getBackdropUrl())) {
+            if (mMovie.hasBackdropUrl()) {
                 mItems.add(DetailItemType.BACKDROP_SPACING);
                 mBackdropImageView.setVisibility(View.VISIBLE);
                 mBackdropImageView.loadBackdrop(mMovie);

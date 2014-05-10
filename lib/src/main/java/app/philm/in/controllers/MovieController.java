@@ -1938,8 +1938,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         String getUiTitle();
     }
 
-    private class LibraryDbLoadCallback
-            implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
+    private class LibraryDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
 
         @Override
         public void onFinished(List<PhilmMovie> result) {

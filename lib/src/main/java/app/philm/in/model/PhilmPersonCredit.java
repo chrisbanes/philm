@@ -4,7 +4,7 @@ import com.uwetrottmann.tmdb.entities.PersonCredits;
 
 import java.util.Comparator;
 
-public class PhilmPersonCredit {
+public class PhilmPersonCredit extends PhilmModel {
 
     public static final Comparator<PhilmPersonCredit> COMPARATOR_SORT_DATE
             = new Comparator<PhilmPersonCredit>() {

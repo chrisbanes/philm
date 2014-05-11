@@ -4,6 +4,7 @@ import com.google.common.base.Objects;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -21,10 +22,13 @@ public class MovieGridAdapter extends BaseAdapter {
     private static final String LOG_TAG = MovieGridAdapter.class.getSimpleName();
 
     private final Activity mActivity;
+    private final LayoutInflater mLayoutInflater;
+
     private List<ListItem<PhilmMovie>> mItems;
 
     public MovieGridAdapter(Activity activity) {
         mActivity = activity;
+        mLayoutInflater = mActivity.getLayoutInflater();
     }
 
     public void setItems(List<ListItem<PhilmMovie>> items) {
@@ -53,7 +57,7 @@ public class MovieGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         View view = convertView;
         if (view == null) {
-            view = mActivity.getLayoutInflater().inflate(R.layout.item_grid_movie, viewGroup, false);
+            view = mLayoutInflater.inflate(R.layout.item_grid_movie, viewGroup, false);
         }
 
         final PhilmMovie movie = getItem(position).getItem();
@@ -63,6 +67,7 @@ public class MovieGridAdapter extends BaseAdapter {
         title.setVisibility(View.VISIBLE);
 
         final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
+        imageView.setAutoFade(false);
         imageView.loadPoster(movie, new PhilmImageView.Listener() {
             @Override
             public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {

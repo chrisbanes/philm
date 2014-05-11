@@ -3,6 +3,7 @@ package app.philm.in.adapters;
 import com.google.common.base.Objects;
 
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,6 +18,8 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
         implements PinnedSectionListView.PinnedSectionListAdapter {
 
     protected final Activity mActivity;
+    private final LayoutInflater mLayoutInflater;
+
     private final int mViewLayoutId;
     private final int mPinnedViewLayoutId;
 
@@ -25,6 +28,7 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
     public BasePhilmSectionedListAdapter(Activity activity, int viewLayoutId,
             int pinnedViewLayoutId) {
         mActivity = activity;
+        mLayoutInflater = activity.getLayoutInflater();
         mViewLayoutId = viewLayoutId;
         mPinnedViewLayoutId = pinnedViewLayoutId;
     }
@@ -60,7 +64,7 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
             final int layout = item.getType() == ListItem.TYPE_ITEM
                     ? mViewLayoutId
                     : mPinnedViewLayoutId;
-            view = mActivity.getLayoutInflater().inflate(layout, viewGroup, false);
+            view = mLayoutInflater.inflate(layout, viewGroup, false);
         }
 
         switch (item.getType()) {

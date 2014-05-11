@@ -51,6 +51,14 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
         mListView.setEmptyView(mEmptyView);
 
         mBigPosterImageView = (PhilmImageView) view.findViewById(R.id.imageview_poster);
+        if (mBigPosterImageView != null) {
+            mBigPosterImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onBigPosterClicked();
+                }
+            });
+        }
     }
 
     protected void setEmptyText(int stringId) {
@@ -65,6 +73,10 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
 
     protected boolean hasBigPosterView() {
         return mBigPosterImageView != null;
+    }
+
+    protected void onBigPosterClicked() {
+
     }
 
     @Override

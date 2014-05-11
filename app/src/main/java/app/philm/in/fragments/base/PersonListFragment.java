@@ -13,6 +13,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.PersonSectionedListAdapter;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmPerson;
+import app.philm.in.util.ActivityTransitions;
 
 public abstract class PersonListFragment
         extends BaseMovieControllerListFragment<ListView, PhilmPerson> {
@@ -32,7 +33,8 @@ public abstract class PersonListFragment
         if (hasCallbacks()) {
             ListItem<PhilmPerson> item = (ListItem<PhilmPerson>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
-                getCallbacks().showPersonDetail(item.getItem());
+                getCallbacks().showPersonDetail(item.getItem(),
+                        ActivityTransitions.scaleUpAnimation(v));
             }
         }
     }

@@ -1,5 +1,7 @@
 package app.philm.in;
 
+import android.os.Bundle;
+
 import app.philm.in.model.ColorScheme;
 
 public interface Display {
@@ -7,12 +9,6 @@ public interface Display {
     public static final String FRAGMENT_TAG_RATE_MOVIE = "rate_movie";
     public static final String FRAGMENT_TAG_CHECKIN_MOVIE = "checkin_movie";
     public static final String FRAGMENT_TAG_TRAKT_CREDENTIALS_WRONG = "trakt_credentials_wrong";
-
-    public static final String ANDROID_ACTION_MAIN = "android.intent.action.MAIN";
-    public static final String PHILM_ACTION_ABOUT = "philm.intent.action.ABOUT";
-    public static final String PHILM_ACTION_LOGIN = "philm.intent.action.LOGIN";
-    public static final String PHILM_ACTION_VIEW_MOVIE = "philm.intent.action.VIEW_MOVIE";
-    public static final String PHILM_ACTION_VIEW_PERSON = "philm.intent.action.VIEW_PERSON";
 
     public static final String PARAM_ID = "_id";
 
@@ -26,11 +22,13 @@ public interface Display {
 
     public void showLogin();
 
-    public void startMovieDetailActivity(String movieId);
+    public void startMovieDetailActivity(String movieId, Bundle bundle);
 
     public void showMovieDetailFragment(String movieId);
 
-    public void showMovieImages(String movieId);
+    public void startMovieImagesActivity(String movieId);
+
+    public void showMovieImagesFragment(String movieId);
 
     public void showSearchFragment();
 
@@ -52,9 +50,9 @@ public interface Display {
 
     public void startAboutActivity();
 
-    public void setActionBarTitle(String title);
+    public void setActionBarTitle(CharSequence title);
 
-    public void setActionBarSubtitle(String title);
+    public void setActionBarSubtitle(CharSequence title);
 
     public boolean popEntireFragmentBackStack();
 
@@ -74,7 +72,7 @@ public interface Display {
 
     public void showCancelCheckin();
 
-    public void startPersonDetailActivity(String id);
+    public void startPersonDetailActivity(String id, Bundle bundle);
 
     public void showPersonDetail(String id);
 

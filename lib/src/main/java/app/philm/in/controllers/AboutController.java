@@ -46,19 +46,6 @@ public class AboutController extends BaseUiController<AboutController.AboutUi,
     }
 
     @Override
-    public boolean handleIntent(Intent intent) {
-        if (Display.PHILM_ACTION_ABOUT.equals(intent.getAction())) {
-            final Display display = getDisplay();
-            if (display != null && !display.hasMainFragment()) {
-                display.showAboutFragment();
-            }
-            return true;
-        }
-
-        return super.handleIntent(intent);
-    }
-
-    @Override
     protected AboutUiCallbacks createUiCallbacks(AboutUi ui) {
         return new AboutUiCallbacks() {
             @Override

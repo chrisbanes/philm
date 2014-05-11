@@ -22,6 +22,8 @@
     <string name="movie_details_runtime_content">%1$d mins</string>
     <string name="movie_details_certification">Certification</string>
     <string name="movie_details_genres">Genres</string>
+    <string name="movie_details_budget">Budget</string>
+    <string name="movie_details_budget_content">$%,d</string>
     <string name="movie_details_language">Language</string>
 
     <string name="related_movies">Related</string>

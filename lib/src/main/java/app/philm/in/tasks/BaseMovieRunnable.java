@@ -20,6 +20,7 @@ import app.philm.in.state.mappers.TmdbCrewEntityMapper;
 import app.philm.in.state.mappers.TmdbMovieEntityMapper;
 import app.philm.in.state.mappers.TmdbPersonEntityMapper;
 import app.philm.in.state.mappers.TraktMovieEntityMapper;
+import app.philm.in.util.CountryProvider;
 import app.philm.in.util.PhilmCollections;
 import dagger.Lazy;
 import retrofit.RetrofitError;
@@ -40,6 +41,7 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
     @Inject Lazy<TmdbCrewEntityMapper> mLazyTmdbCrewEntityMapper;
     @Inject Lazy<TmdbPersonEntityMapper> mLazyTmdbPersonEntityMapper;
     @Inject Lazy<Bus> mEventBus;
+    @Inject Lazy<CountryProvider> mCountryProvider;
 
     private final int mCallingId;
 
@@ -129,6 +131,10 @@ public abstract class BaseMovieRunnable<R> extends NetworkCallRunnable<R> {
 
     protected Bus getEventBus() {
         return mEventBus.get();
+    }
+
+    protected CountryProvider getCountryProvider() {
+        return mCountryProvider.get();
     }
 
     protected int getCallingId() {

@@ -20,6 +20,7 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.view.PhilmImageView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MovieImagesFragment extends BasePhilmMovieFragment
         implements MovieController.MovieImagesUi {
@@ -122,27 +123,40 @@ public class MovieImagesFragment extends BasePhilmMovieFragment
 
             final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_backdrop);
             imageView.setAutoFade(false);
+
+            final Rect insets = getInsets();
+            if (insets != null) {
+                imageView.setPadding(0, insets.top, 0, insets.bottom);
+            }
+
+            final PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
+
             imageView.loadBackdrop(image, new PhilmImageView.Listener() {
                 @Override
                 public void onSuccess(PhilmImageView imageView, Bitmap bitmap) {
                     progressBar.setVisibility(View.GONE);
+                    attacher.update();
                 }
 
                 @Override
                 public void onError(PhilmImageView imageView) {
                     progressBar.setVisibility(View.GONE);
+                    attacher.update();
                 }
             });
 
             container.addView(view, ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
 
-            return view;
+            return new PagerItem(view, attacher);
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
+            final PagerItem pagerItem = (PagerItem) object;
+            pagerItem.photoViewAttacher.cleanup();
+            container.removeView(pagerItem.view);
+            pagerItem.clear();
         }
 
         @Override
@@ -152,7 +166,22 @@ public class MovieImagesFragment extends BasePhilmMovieFragment
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
-            return view == object;
+            return view == ((PagerItem) object).view;
+        }
+    }
+
+    private static class PagerItem {
+        View view;
+        PhotoViewAttacher photoViewAttacher;
+
+        PagerItem(View view, PhotoViewAttacher photoViewAttacher) {
+            this.view = view;
+            this.photoViewAttacher = photoViewAttacher;
+        }
+
+        void clear() {
+            view = null;
+            photoViewAttacher = null;
         }
     }
 

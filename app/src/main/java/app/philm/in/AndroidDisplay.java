@@ -1,11 +1,14 @@
 package app.philm.in;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -94,10 +97,10 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void startMovieDetailActivity(String movieId) {
-        Intent intent = new Intent(PHILM_ACTION_VIEW_MOVIE);
+    public void startMovieDetailActivity(String movieId, Bundle bundle) {
+        Intent intent = new Intent(mActivity, MovieActivity.class);
         intent.putExtra(PARAM_ID, movieId);
-        mActivity.startActivity(intent);
+        startActivity(intent, bundle);
     }
 
     @Override
@@ -106,8 +109,15 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void showMovieImages(String movieId) {
-        showFragment(MovieImagesFragment.create(movieId));
+    public void startMovieImagesActivity(String movieId) {
+        Intent intent = new Intent(mActivity, MovieImagesActivity.class);
+        intent.putExtra(PARAM_ID, movieId);
+        mActivity.startActivity(intent);
+    }
+
+    @Override
+    public void showMovieImagesFragment(String movieId) {
+        showFragmentFromDrawer(MovieImagesFragment.create(movieId));
     }
 
     @Override
@@ -158,13 +168,13 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void startAddAccountActivity() {
-        Intent intent = new Intent(PHILM_ACTION_LOGIN);
+        Intent intent = new Intent(mActivity, AccountActivity.class);
         mActivity.startActivity(intent);
     }
 
     @Override
     public void startAboutActivity() {
-        Intent intent = new Intent(PHILM_ACTION_ABOUT);
+        Intent intent = new Intent(mActivity, AboutActivity.class);
         mActivity.startActivity(intent);
     }
 
@@ -179,11 +189,11 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setActionBarTitle(String title) {
+    public void setActionBarTitle(CharSequence title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
             if (mColorScheme != null) {
-                ab.setTitle(convertToCondensed(title, mColorScheme.secondaryText));
+                ab.setTitle(convertToCondensed(title, mColorScheme.primaryText));
             } else {
                 ab.setTitle(convertToCondensed(title));
             }
@@ -191,7 +201,7 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setActionBarSubtitle(String title) {
+    public void setActionBarSubtitle(CharSequence title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
             if (mColorScheme != null) {
@@ -257,10 +267,10 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void startPersonDetailActivity(String id) {
-        Intent intent = new Intent(PHILM_ACTION_VIEW_PERSON);
+    public void startPersonDetailActivity(String id, Bundle bundle) {
+        Intent intent = new Intent(mActivity, PersonActivity.class);
         intent.putExtra(PARAM_ID, id);
-        mActivity.startActivity(intent);
+        startActivity(intent, bundle);
     }
 
     @Override
@@ -290,6 +300,11 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void setColorScheme(ColorScheme colorScheme) {
+        if (Objects.equal(mColorScheme, colorScheme)) {
+            // ColorScheme hasn't changed, ignore
+            return;
+        }
+
         mColorScheme = colorScheme;
 
         if (mInsetFrameLayout != null) {
@@ -297,6 +312,19 @@ public class AndroidDisplay implements Display {
                 mInsetFrameLayout.setInsetBackgroundColor(colorScheme.primaryAccent);
             } else {
                 mInsetFrameLayout.resetInsetBackground();
+            }
+        }
+
+        final ActionBar ab = mActivity.getActionBar();
+        if (ab != null) {
+            CharSequence title = ab.getTitle();
+            if (!TextUtils.isEmpty(title)) {
+                setActionBarTitle(title);
+            }
+
+            CharSequence subtitle = ab.getSubtitle();
+            if (!TextUtils.isEmpty(subtitle)) {
+                setActionBarSubtitle(subtitle);
             }
         }
     }
@@ -317,30 +345,29 @@ public class AndroidDisplay implements Display {
                 .commit();
     }
 
-    private CharSequence convertToCondensed(final String string) {
-        if (!TextUtils.isEmpty(string)) {
-            SpannableString s = new SpannableString(string);
-            s.setSpan(
-                    new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED),
-                    0,
-                    s.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return s;
-        }
-        return string;
+    private void startActivity(Intent intent, Bundle options) {
+        ActivityCompat.startActivity(mActivity, intent, options);
     }
 
-    private CharSequence convertToCondensed(final String string, int color) {
-        if (!TextUtils.isEmpty(string)) {
-            SpannableString s = new SpannableString(string);
-            s.setSpan(
-                    new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
-                    0,
-                    s.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return s;
+    private CharSequence convertToCondensed(final CharSequence string) {
+        if (TextUtils.isEmpty(string)) {
+            return string;
         }
-        return string;
+
+        SpannableString s = new SpannableString(string);
+        s.setSpan(mDefaultTitleSpan, 0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return s;
+    }
+
+    private CharSequence convertToCondensed(final CharSequence string, int color) {
+        if (TextUtils.isEmpty(string)) {
+            return string;
+        }
+
+        SpannableString s = new SpannableString(string);
+        s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
+                0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        return s;
     }
 
 }

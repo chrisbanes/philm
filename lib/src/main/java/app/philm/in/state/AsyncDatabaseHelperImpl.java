@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import android.support.v4.util.ArrayMap;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,11 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<List<PhilmMovie>>() {
             @Override
             public List<PhilmMovie> doDatabaseCall(DatabaseHelper dbHelper) {
-                return dbHelper.getLibrary();
+                List<PhilmMovie> library = dbHelper.getLibrary();
+                if (library != null) {
+                    Collections.sort(library, PhilmMovie.COMPARATOR_SORT_TITLE);
+                }
+                return library;
             }
 
             @Override
@@ -174,7 +179,8 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<List<PhilmMovie>>() {
             @Override
             public List<PhilmMovie> doDatabaseCall(DatabaseHelper dbHelper) {
-                return dbHelper.getWatchlist();
+                List<PhilmMovie> watchlist = dbHelper.getWatchlist();
+                return watchlist;
             }
 
             @Override

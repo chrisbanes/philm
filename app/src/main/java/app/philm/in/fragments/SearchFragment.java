@@ -28,6 +28,7 @@ import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.state.MoviesState;
+import app.philm.in.util.ActivityTransitions;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
@@ -292,7 +293,8 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
                 @Override
                 public void onClick(View v) {
                     if (hasCallbacks()) {
-                        getCallbacks().showPersonDetail((PhilmPerson) v.getTag());
+                        getCallbacks().showPersonDetail((PhilmPerson) v.getTag(),
+                                ActivityTransitions.scaleUpAnimation(v));
                     }
                 }
             };
@@ -355,7 +357,8 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
                 @Override
                 public void onClick(View v) {
                     if (hasCallbacks()) {
-                        getCallbacks().showMovieDetail((PhilmMovie) v.getTag());
+                        getCallbacks().showMovieDetail((PhilmMovie) v.getTag(),
+                                ActivityTransitions.scaleUpAnimation(v));
                     }
                 }
             };
@@ -390,7 +393,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
             final PhilmMovie item = getItem(position);
 
             final TextView title = (TextView) view.findViewById(R.id.textview_title);
-            title.setText(item.getName());
+            title.setText(item.getTitle());
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);

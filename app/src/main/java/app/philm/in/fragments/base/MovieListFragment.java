@@ -13,6 +13,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.MovieSectionedListAdapter;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.util.ActivityTransitions;
 
 public abstract class MovieListFragment extends BasePhilmMovieListFragment<ListView> {
 
@@ -31,7 +32,8 @@ public abstract class MovieListFragment extends BasePhilmMovieListFragment<ListV
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
-                getCallbacks().showMovieDetail(item.getItem());
+                getCallbacks().showMovieDetail(item.getItem(),
+                        ActivityTransitions.scaleUpAnimation(v));
             }
         }
     }

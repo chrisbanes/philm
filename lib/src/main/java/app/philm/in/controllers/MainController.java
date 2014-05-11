@@ -131,13 +131,7 @@ public class MainController extends BaseUiController<MainController.MainControll
     public boolean handleIntent(Intent intent) {
         mLogger.d(LOG_TAG, "handleIntent: " + intent);
 
-        if (Display.ANDROID_ACTION_MAIN.equals(intent.getAction())) {
-            Display display = getDisplay();
-            if (display != null && !display.hasMainFragment()) {
-                showUiItem(display, SideMenuItem.DISCOVER);
-            }
-            return true;
-        }
+
 
         return mUserController.handleIntent(intent)
                 || mMovieController.handleIntent(intent)
@@ -215,7 +209,7 @@ public class MainController extends BaseUiController<MainController.MainControll
 
                 if (display != null && checkin != null) {
                     display.closeDrawerLayout();
-                    display.startMovieDetailActivity(checkin.movie.getImdbId());
+                    display.startMovieDetailActivity(checkin.movie.getImdbId(), null);
                 }
             }
 
@@ -224,6 +218,11 @@ public class MainController extends BaseUiController<MainController.MainControll
                 mPreferences.setShownTraktLoginPrompt();
             }
         };
+    }
+
+    public void setSelectedSideMenuItem(SideMenuItem item) {
+        mState.setSelectedSideMenuItem(item);
+        populateUis();
     }
 
     private void showUiItem(Display display, SideMenuItem item) {
@@ -250,8 +249,7 @@ public class MainController extends BaseUiController<MainController.MainControll
                 break;
         }
 
-        mState.setSelectedSideMenuItem(item);
-        populateUis();
+        setSelectedSideMenuItem(item);
     }
 
     @Override
@@ -304,10 +302,8 @@ public class MainController extends BaseUiController<MainController.MainControll
 
     public boolean onHomeButtonPressed() {
         Display display = getDisplay();
-        if (display != null) {
-            if (display.popEntireFragmentBackStack()) {
-                return true;
-            }
+        if (display != null && display.popEntireFragmentBackStack()) {
+            return true;
         }
         return false;
     }

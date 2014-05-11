@@ -24,6 +24,7 @@ import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.model.PhilmPerson;
 import app.philm.in.model.PhilmPersonCredit;
+import app.philm.in.util.ActivityTransitions;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
@@ -296,7 +297,8 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
                     if (hasCallbacks()) {
                         PhilmPersonCredit credit = (PhilmPersonCredit) view.getTag();
                         if (credit != null && credit != null) {
-                            getCallbacks().showMovieDetail(credit);
+                            getCallbacks().showMovieDetail(credit,
+                                    ActivityTransitions.scaleUpAnimation(view));
                         }
                     }
                 }
@@ -322,7 +324,8 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
                     if (hasCallbacks()) {
                         PhilmPersonCredit credit = (PhilmPersonCredit) view.getTag();
                         if (credit != null && credit != null) {
-                            getCallbacks().showMovieDetail(credit);
+                            getCallbacks().showMovieDetail(credit,
+                                    ActivityTransitions.scaleUpAnimation(view));
                         }
                     }
                 }

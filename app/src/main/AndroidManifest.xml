@@ -30,11 +30,6 @@
                 android:name=".MovieActivity"
                 android:parentActivityName=".MainActivity">
 
-            <intent-filter>
-                <action android:name="philm.intent.action.VIEW_MOVIE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
             <meta-data
                   android:name="android.support.PARENT_ACTIVITY"
                   android:value=".MainActivity" />
@@ -59,14 +54,7 @@
         <activity
                 android:name=".AccountActivity"
                 android:theme="@style/Theme.Philm.Framed"
-                android:launchMode="singleTask">
-
-            <intent-filter>
-                <action android:name="philm.intent.action.LOGIN"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
-        </activity>
+                android:launchMode="singleTask" />
 
         <activity
                 android:name=".AboutActivity"
@@ -74,11 +62,6 @@
                 android:theme="@style/Theme.Philm.Framed"
                 android:launchMode="singleTask"
                 android:parentActivityName=".MainActivity">
-
-            <intent-filter>
-                <action android:name="philm.intent.action.ABOUT"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
 
             <meta-data
                   android:name="android.support.PARENT_ACTIVITY"
@@ -97,6 +80,18 @@
             <meta-data
                   android:name="android.support.PARENT_ACTIVITY"
                   android:value=".MainActivity" />
+
+        </activity>
+
+        <activity
+                android:name=".MovieImagesActivity"
+                android:theme="@style/Theme.Philm.Images"
+                android:exported="false"
+                android:parentActivityName=".MovieActivity">
+
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".MovieActivity" />
 
         </activity>
 

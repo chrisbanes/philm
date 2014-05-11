@@ -3,6 +3,7 @@ package app.philm.in.fragments.base;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
@@ -13,6 +14,7 @@ import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
+import app.philm.in.util.ActivityTransitions;
 
 public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridView> {
 
@@ -31,7 +33,8 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
             if (item.getType() == ListItem.TYPE_ITEM) {
-                getCallbacks().showMovieDetail(item.getItem());
+                getCallbacks().showMovieDetail(item.getItem(),
+                        ActivityTransitions.scaleUpAnimation(v));
             }
         }
     }

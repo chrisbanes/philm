@@ -28,7 +28,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
         implements MainController.HostCallbacks, InsetFrameLayout.OnInsetsCallback {
 
     private MainController mMainController;
-    private Intent mLaunchIntent;
     private Display mDisplay;
 
     private ActionBarDrawerToggle mDrawerToggle;
@@ -73,13 +72,14 @@ public abstract class BasePhilmActivity extends FragmentActivity
             }
         }
 
-        // Record launch intent
-        mLaunchIntent = getIntent();
-
         // Let SuperCardToast restore itself
         SuperCardToast.onRestoreState(savedInstanceState, this);
 
         mMainController = PhilmApplication.from(this).getMainController();
+
+        mDisplay = new AndroidDisplay(this, mDrawerToggle, mDrawerLayout, mInsetFrameLayout);
+
+        handleIntent(getIntent(), getDisplay());
     }
 
     @Override
@@ -91,29 +91,20 @@ public abstract class BasePhilmActivity extends FragmentActivity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        mDisplay = new AndroidDisplay(this, getDrawerToggle(), getDrawerLayout(), mInsetFrameLayout);
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mLaunchIntent = intent;
+        handleIntent(intent, getDisplay());
+    }
+
+    protected void handleIntent(Intent intent, Display display) {
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         mMainController.attachDisplay(mDisplay);
         mMainController.setHostCallbacks(this);
         mMainController.init();
-
-        if (mLaunchIntent != null) {
-            mMainController.handleIntent(mLaunchIntent);
-            mLaunchIntent = null;
-        }
     }
 
     @Override
@@ -133,10 +124,7 @@ public abstract class BasePhilmActivity extends FragmentActivity
                 if (getMainController().onHomeButtonPressed()) {
                     return true;
                 }
-
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    // Call NavUtils for pre-JB functionality
-                    NavUtils.navigateUpFromSameTask(this);
+                if (navigateUp()) {
                     return true;
                 }
                 break;
@@ -177,6 +165,19 @@ public abstract class BasePhilmActivity extends FragmentActivity
         mMainController.setHostCallbacks(null);
         mMainController.detachDisplay(mDisplay);
         super.onPause();
+    }
+
+    protected boolean navigateUp() {
+        final Intent intent = getParentIntent();
+        if (intent != null) {
+            NavUtils.navigateUpTo(this, intent);
+            return true;
+        }
+        return false;
+    }
+
+    protected Intent getParentIntent() {
+        return NavUtils.getParentActivityIntent(this);
     }
 
     @Override
@@ -245,6 +246,10 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     protected int getContentViewLayoutId() {
         return R.layout.activity_main;
+    }
+
+    protected Display getDisplay() {
+        return mDisplay;
     }
 
 }

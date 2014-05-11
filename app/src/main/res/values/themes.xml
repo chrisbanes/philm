@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.Base.Philm" parent="android:Theme.Holo.Light">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="Theme.Base.Dark.Philm" parent="android:Theme.Holo">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="Theme.Philm" parent="Theme.Base.Philm">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowContentOverlay">@null</item>
         <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
 
         <item name="android:editTextBackground">@drawable/philmcolor_edit_text_holo_light</item>
-        
+
         <item name="android:autoCompleteTextViewStyle">
             @style/Widget.Philm.AutoCompleteTextView
         </item>
@@ -55,6 +59,11 @@
     <style name="Theme.Philm.Framed" parent="Theme.Philm">
         <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar.Solid</item>
         <item name="android:windowActionBarOverlay">false</item>
+    </style>
+
+    <style name="Theme.Philm.Images" parent="Theme.Base.Dark.Philm">
+        <item name="android:actionBarStyle">@style/Widget.Philm.Dark.ActionBar</item>
+        <item name="default_inset_color">@color/translucent_black_dark</item>
     </style>
 
 </resources>

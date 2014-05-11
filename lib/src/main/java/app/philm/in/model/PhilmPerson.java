@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class PhilmPerson implements PhilmModel {
+public class PhilmPerson extends PhilmModel {
 
     Integer tmdbId;
     String name;

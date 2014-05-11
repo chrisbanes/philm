@@ -13,7 +13,8 @@ public class FetchTmdbUpcomingRunnable extends BaseTmdbPaginatedMovieRunnable {
 
     @Override
     public ResultsPage doBackgroundCall() throws RetrofitError {
-        return getTmdbClient().moviesService().upcoming(getPage(), null);
+        return getTmdbClient().moviesService().upcoming(getPage(),
+                getCountryProvider().getTwoLetterLanguageCode());
     }
 
     @Override

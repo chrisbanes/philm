@@ -41,7 +41,8 @@ import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
-import app.philm.in.model.PhilmTrailer;
+import app.philm.in.util.ActivityTransitions;
+import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.util.ColorValueAnimator;
 import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
@@ -56,7 +57,7 @@ import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.RatingBarLayout;
 
-public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
+public class MovieDetailFragment extends BaseDetailFragment
         implements MovieController.MovieDetailUi, View.OnClickListener,
         AbsListView.OnScrollListener {
 
@@ -276,11 +277,17 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 }
                 break;
             case R.id.imageview_fanart:
-                Log.d(LOG_TAG, "onClick Fanart");
                 if (hasCallbacks()) {
                     getCallbacks().showMovieImages(mMovie);
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onBigPosterClicked() {
+        if (hasCallbacks()) {
+            getCallbacks().showMovieImages(mMovie);
         }
     }
 
@@ -338,7 +345,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
         mItems.clear();
 
         if (!hasBigPosterView() && mBackdropImageView != null) {
-            if (!TextUtils.isEmpty(mMovie.getBackdropUrl())) {
+            if (mMovie.hasBackdropUrl()) {
                 mItems.add(DetailItemType.BACKDROP_SPACING);
                 mBackdropImageView.setVisibility(View.VISIBLE);
                 mBackdropImageView.loadBackdrop(mMovie);
@@ -443,7 +450,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 @Override
                 public void onClick(View view) {
                     if (hasCallbacks()) {
-                        getCallbacks().showMovieDetail((PhilmMovie) view.getTag());
+                        getCallbacks().showMovieDetail((PhilmMovie) view.getTag(),
+                                ActivityTransitions.scaleUpAnimation(view));
                     }
                 }
             };
@@ -502,7 +510,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                     if (hasCallbacks()) {
                         PhilmMovieCredit cast = (PhilmMovieCredit) view.getTag();
                         if (cast != null && cast.getPerson() != null) {
-                            getCallbacks().showPersonDetail(cast.getPerson());
+                            getCallbacks().showPersonDetail(cast.getPerson(),
+                                    ActivityTransitions.scaleUpAnimation(view));
                         }
                     }
                 }
@@ -528,7 +537,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                     if (hasCallbacks()) {
                         PhilmMovieCredit cast = (PhilmMovieCredit) view.getTag();
                         if (cast != null && cast.getPerson() != null) {
-                            getCallbacks().showPersonDetail(cast.getPerson());
+                            getCallbacks().showPersonDetail(cast.getPerson(),
+                                    ActivityTransitions.scaleUpAnimation(view));
                         }
                     }
                 }
@@ -610,7 +620,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
             mOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PhilmTrailer trailer = (PhilmTrailer) view.getTag();
+                    PhilmMovieVideo trailer = (PhilmMovieVideo) view.getTag();
                     if (trailer != null && hasCallbacks()) {
                         getCallbacks().playTrailer(trailer);
                     }
@@ -628,7 +638,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
         }
 
         @Override
-        public PhilmTrailer getItem(int position) {
+        public PhilmMovieVideo getItem(int position) {
             return mMovie.getTrailers().get(position);
         }
 
@@ -643,7 +653,7 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 view = mInflater.inflate(R.layout.item_movie_trailer, viewGroup, false);
             }
 
-            final PhilmTrailer trailer = getItem(position);
+            final PhilmMovieVideo trailer = getItem(position);
 
             final PhilmImageView imageView = (PhilmImageView)
                     view.findViewById(R.id.imageview_thumbnail);
@@ -855,6 +865,8 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                     .findViewById(R.id.layout_info_genres);
             MovieDetailInfoLayout releasedInfoLayout = (MovieDetailInfoLayout) view
                     .findViewById(R.id.layout_info_released);
+            MovieDetailInfoLayout budgetInfoLayout = (MovieDetailInfoLayout) view
+                    .findViewById(R.id.layout_info_budget);
             MovieDetailInfoLayout languageLayout = (MovieDetailInfoLayout) view
                     .findViewById(R.id.layout_info_language);
 
@@ -891,6 +903,14 @@ public class MovieDetailFragment<DetailIt> extends BaseDetailFragment
                 }
             } else {
                 releasedInfoLayout.setVisibility(View.GONE);
+            }
+
+            if (mMovie.getBudget() > 0) {
+                budgetInfoLayout.setContentText(
+                        getString(R.string.movie_details_budget_content, mMovie.getBudget()));
+                budgetInfoLayout.setVisibility(View.VISIBLE);
+            } else {
+                budgetInfoLayout.setVisibility(View.GONE);
             }
 
             if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {

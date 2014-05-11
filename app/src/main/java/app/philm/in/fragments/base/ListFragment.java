@@ -13,7 +13,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,7 +23,7 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
 public abstract class ListFragment<E extends AbsListView> extends InsetAwareFragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
-    static final int INTERNAL_PROGRESS_CONTAINER_ID = 0x00ff0002;
+    static final int INTERNAL_PROGRESS_ID = 0x00ff0002;
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
     static final int INTERNAL_SECONDARY_PROGRESS_ID = 0x00ff0004;
 
@@ -47,7 +46,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
     E mList;
     View mEmptyView;
     TextView mStandardEmptyView;
-    View mProgressContainer;
+    View mProgressView;
     View mListContainer;
     View mSecondaryProgressView;
     CharSequence mEmptyText;
@@ -81,19 +80,15 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
 
         // ------------------------------------------------------------------
 
-        LinearLayout pframe = new LinearLayout(context);
-        pframe.setId(INTERNAL_PROGRESS_CONTAINER_ID);
-        pframe.setOrientation(LinearLayout.VERTICAL);
-        pframe.setVisibility(View.GONE);
-        pframe.setGravity(Gravity.CENTER);
-
         ProgressBar progress = new ProgressBar(context, null,
                 android.R.attr.progressBarStyleLarge);
-        pframe.addView(progress, new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        progress.setId(INTERNAL_PROGRESS_ID);
+        progress.setVisibility(View.GONE);
 
-        root.addView(pframe, new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.gravity = Gravity.CENTER;
+        root.addView(progress, lp);
 
         // ------------------------------------------------------------------
 
@@ -151,7 +146,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
         mHandler.removeCallbacks(mRequestFocus);
         mList = null;
         mListShown = false;
-        mEmptyView = mProgressContainer = mListContainer = null;
+        mEmptyView = mProgressView = mListContainer = null;
         mStandardEmptyView = null;
         super.onDestroyView();
     }
@@ -276,7 +271,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
      */
     private void setListShown(boolean shown, boolean animate) {
         ensureList();
-        if (mProgressContainer == null) {
+        if (mProgressView == null) {
             throw new IllegalStateException("Can't be used with a custom content view");
         }
         if (mListShown == shown) {
@@ -285,27 +280,27 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
         mListShown = shown;
         if (shown) {
             if (animate) {
-                mProgressContainer.startAnimation(AnimationUtils.loadAnimation(
+                mProgressView.startAnimation(AnimationUtils.loadAnimation(
                         getActivity(), android.R.anim.fade_out));
                 mListContainer.startAnimation(AnimationUtils.loadAnimation(
                         getActivity(), android.R.anim.fade_in));
             } else {
-                mProgressContainer.clearAnimation();
+                mProgressView.clearAnimation();
                 mListContainer.clearAnimation();
             }
-            mProgressContainer.setVisibility(View.GONE);
+            mProgressView.setVisibility(View.GONE);
             mListContainer.setVisibility(View.VISIBLE);
         } else {
             if (animate) {
-                mProgressContainer.startAnimation(AnimationUtils.loadAnimation(
+                mProgressView.startAnimation(AnimationUtils.loadAnimation(
                         getActivity(), android.R.anim.fade_in));
                 mListContainer.startAnimation(AnimationUtils.loadAnimation(
                         getActivity(), android.R.anim.fade_out));
             } else {
-                mProgressContainer.clearAnimation();
+                mProgressView.clearAnimation();
                 mListContainer.clearAnimation();
             }
-            mProgressContainer.setVisibility(View.VISIBLE);
+            mProgressView.setVisibility(View.VISIBLE);
             mListContainer.setVisibility(View.GONE);
         }
     }
@@ -374,7 +369,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
             } else {
                 mStandardEmptyView.setVisibility(View.GONE);
             }
-            mProgressContainer = root.findViewById(INTERNAL_PROGRESS_CONTAINER_ID);
+            mProgressView = root.findViewById(INTERNAL_PROGRESS_ID);
             mSecondaryProgressView = root.findViewById(INTERNAL_SECONDARY_PROGRESS_ID);
             mListContainer = root.findViewById(INTERNAL_LIST_CONTAINER_ID);
             View rawListView = root.findViewById(android.R.id.list);
@@ -405,7 +400,7 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
         } else {
             // We are starting without an adapter, so assume we won't
             // have our data right away and start with the progress indicator.
-            if (mProgressContainer != null) {
+            if (mProgressView != null) {
                 setListShown(false, false);
             }
         }

@@ -13,6 +13,7 @@ import app.philm.in.adapters.MovieCreditSectionedListAdapter;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovieCredit;
+import app.philm.in.util.ActivityTransitions;
 
 
 public abstract class BaseMovieCreditListFragment
@@ -36,7 +37,8 @@ public abstract class BaseMovieCreditListFragment
             if (item.getType() == ListItem.TYPE_ITEM) {
                 PhilmMovieCredit cast = item.getItem();
                 if (cast != null && cast.getPerson() != null) {
-                    getCallbacks().showPersonDetail(cast.getPerson());
+                    getCallbacks().showPersonDetail(cast.getPerson(),
+                            ActivityTransitions.scaleUpAnimation(v));
                 }
             }
         }

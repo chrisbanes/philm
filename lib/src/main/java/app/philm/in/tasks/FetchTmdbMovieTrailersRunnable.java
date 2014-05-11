@@ -1,7 +1,7 @@
 package app.philm.in.tasks;
 
 
-import com.uwetrottmann.tmdb.entities.Trailers;
+import com.uwetrottmann.tmdb.entities.Videos;
 
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
@@ -9,7 +9,7 @@ import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
-public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> {
+public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Videos> {
 
     private final int mId;
 
@@ -19,18 +19,18 @@ public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> 
     }
 
     @Override
-    public Trailers doBackgroundCall() throws RetrofitError {
-        return getTmdbClient().moviesService().trailers(mId);
+    public Videos doBackgroundCall() throws RetrofitError {
+        return getTmdbClient().moviesService().videos(mId, getCountryProvider().getTwoLetterLanguageCode());
     }
 
     @Override
-    public void onSuccess(Trailers result) {
+    public void onSuccess(Videos result) {
         PhilmMovie movie = mMoviesState.getMovie(mId);
 
         if (movie != null) {
-            movie.updateWithTrailers(result);
+            movie.updateWithVideos(result);
 
-            getEventBus().post(new MoviesState.MovieTrailersItemsUpdatedEvent(getCallingId(), movie));
+            getEventBus().post(new MoviesState.MovieVideosItemsUpdatedEvent(getCallingId(), movie));
         }
     }
 
@@ -40,8 +40,7 @@ public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> 
 
         PhilmMovie movie = mMoviesState.getMovie(mId);
         if (movie != null) {
-            getEventBus().post(new MoviesState.MovieTrailersItemsUpdatedEvent(
-                    getCallingId(), movie));
+            getEventBus().post(new MoviesState.MovieVideosItemsUpdatedEvent(getCallingId(), movie));
         }
     }
 
@@ -52,6 +51,6 @@ public class FetchTmdbMovieTrailersRunnable extends BaseMovieRunnable<Trailers> 
 
     @Override
     protected Object createLoadingProgressEvent(boolean show) {
-        return new BaseState.ShowTrailersLoadingProgressEvent(getCallingId(), show);
+        return new BaseState.ShowVideosLoadingProgressEvent(getCallingId(), show);
     }
 }

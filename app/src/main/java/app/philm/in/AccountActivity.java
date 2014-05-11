@@ -2,6 +2,7 @@ package app.philm.in;
 
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class AccountActivity extends BasePhilmActivity {
@@ -59,6 +60,13 @@ public class AccountActivity extends BasePhilmActivity {
 
         if (mAccountAuthenticatorResponse != null) {
             mAccountAuthenticatorResponse.onRequestContinued();
+        }
+    }
+
+    @Override
+    protected void handleIntent(Intent intent, Display display) {
+        if (!display.hasMainFragment()) {
+            display.showLogin();
         }
     }
 

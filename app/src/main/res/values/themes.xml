@@ -64,6 +64,7 @@
     <style name="Theme.Philm.Images" parent="Theme.Base.Dark.Philm">
         <item name="android:actionBarStyle">@style/Widget.Philm.Dark.ActionBar</item>
         <item name="default_inset_color">@color/translucent_black_dark</item>
+        <item name="android:windowBackground">@android:color/black</item>
     </style>
 
 </resources>

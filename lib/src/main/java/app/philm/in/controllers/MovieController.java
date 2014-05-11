@@ -1345,11 +1345,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (movie != null) {
             final boolean canUpdateTrakt = isLoggedIn() && movie.isLoadedFromTrakt();
             ui.setRateCircleEnabled(canUpdateTrakt);
-            ui.setCollectionButtonEnabled(canUpdateTrakt);
-            ui.setWatchlistButtonEnabled(canUpdateTrakt);
-            ui.setToggleWatchedButtonEnabled(canUpdateTrakt);
-            ui.setCheckinVisible(canUpdateTrakt && canCheckin(movie));
-            ui.setCancelCheckinVisible(canUpdateTrakt && canCancelCheckin(movie));
+            ui.setButtonsEnabled(canUpdateTrakt, canUpdateTrakt, canUpdateTrakt,
+                    canUpdateTrakt && canCheckin(movie), canUpdateTrakt && canCancelCheckin(movie));
             ui.setMovie(movie);
         }
     }
@@ -1823,17 +1820,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void setMovie(PhilmMovie movie);
 
-        void setToggleWatchedButtonEnabled(boolean enabled);
-
-        void setCollectionButtonEnabled(boolean enabled);
-
-        void setWatchlistButtonEnabled(boolean enabled);
+        void setButtonsEnabled(boolean watched, boolean collection, boolean watchlist,
+                boolean checkin, boolean cancelCheckin);
 
         void setRateCircleEnabled(boolean enabled);
-
-        void setCheckinVisible(boolean visible);
-
-        void setCancelCheckinVisible(boolean visible);
 
     }
 

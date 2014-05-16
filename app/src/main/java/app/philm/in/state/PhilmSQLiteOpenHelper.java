@@ -25,7 +25,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
     private static String LOG_TAG = PhilmSQLiteOpenHelper.class.getSimpleName();
 
     private static final String DATABASE_NAME = "philm.db";
-    private static final int DATABASE_VERSION = 28;
+    private static final int DATABASE_VERSION = 29;
     private static final int LAST_DATABASE_NUKE_VERSION = 28;
 
     private static final Class[] ENTITIES = new Class[]{PhilmMovie.class, PhilmUserProfile.class};

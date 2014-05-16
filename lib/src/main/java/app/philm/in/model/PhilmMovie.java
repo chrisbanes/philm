@@ -109,6 +109,8 @@ public class PhilmMovie extends PhilmModel {
     int traktYear;
     int tmdbYear;
 
+    boolean tmdbIsAdult;
+
     int tmdbBudget;
 
     long traktReleasedTime;
@@ -282,6 +284,8 @@ public class PhilmMovie extends PhilmModel {
             CALENDAR.setTimeInMillis(tmdbReleasedTime);
             tmdbYear = CALENDAR.get(Calendar.YEAR);
         }
+
+        tmdbIsAdult = unbox(tmdbIsAdult, movie.adult);
 
         tmdbBudget = unbox(tmdbBudget, movie.budget);
 
@@ -535,6 +539,10 @@ public class PhilmMovie extends PhilmModel {
         }
         // TODO return the slugs
         return null;
+    }
+
+    public boolean isAdult() {
+        return tmdbIsAdult;
     }
 
     public String getMainLanguageTitle() {

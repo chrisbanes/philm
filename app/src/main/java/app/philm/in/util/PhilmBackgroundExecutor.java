@@ -115,7 +115,7 @@ public class PhilmBackgroundExecutor implements BackgroundExecutor {
             } catch (RetrofitError re) {
                 retrofitError = re;
                 if (Constants.DEBUG) {
-                    Log.d(getClass().getSimpleName(), "Error while completing network call", re);
+                  Log.d(((Object) this).getClass().getSimpleName(), "Error while completing network call", re);
                 }
             }
 

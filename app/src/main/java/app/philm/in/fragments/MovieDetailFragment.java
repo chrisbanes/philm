@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Chris Banes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app.philm.in.fragments;
 
 import com.google.common.base.Preconditions;
@@ -170,33 +186,14 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    public void setCheckinVisible(boolean visible) {
-        getListAdapter().setCheckinButtonVisible(visible);
-    }
-
-    @Override
-    public void setCancelCheckinVisible(boolean visible) {
-        getListAdapter().setCancelCheckinButtonVisible(visible);
+    public void setButtonsEnabled(boolean watched, boolean collection, boolean watchlist,
+            boolean checkin, boolean cancelCheckin) {
+        getListAdapter().setButtonsEnabled(watched, collection, watchlist, checkin, cancelCheckin);
     }
 
     @Override
     public void setRateCircleEnabled(final boolean enabled) {
         getListAdapter().setRateCircleEnabled(enabled);
-    }
-
-    @Override
-    public void setCollectionButtonEnabled(final boolean enabled) {
-        getListAdapter().setCollectionButtonEnabled(enabled);
-    }
-
-    @Override
-    public void setWatchlistButtonEnabled(final boolean enabled) {
-        getListAdapter().setWatchlistButtonEnabled(enabled);
-    }
-
-    @Override
-    public void setToggleWatchedButtonEnabled(final boolean enabled) {
-        getListAdapter().setToggleWatchedButtonEnabled(enabled);
     }
 
     @Override
@@ -705,34 +702,19 @@ public class MovieDetailFragment extends BaseDetailFragment
             return DetailItemType.values().length;
         }
 
-        public void setCheckinButtonVisible(boolean visible) {
-            mCheckinButtonVisible = visible;
-            rebindView(DetailItemType.BUTTONS);
+        void setButtonsEnabled(boolean watched, boolean collection, boolean watchlist,
+                boolean checkin, boolean cancelCheckin) {
+            mWatchedButtonEnabled = watched;
+            mCollectionButtonEnabled = collection;
+            mWatchlistButtonEnabled = watchlist;
+            mCheckinButtonVisible = checkin;
+            mCancelCheckinButtonVisible = cancelCheckin;
+            // No need to rebind here as setMovie will be called after
         }
 
-        public void setCancelCheckinButtonVisible(boolean visible) {
-            mCancelCheckinButtonVisible = visible;
-            rebindView(DetailItemType.BUTTONS);
-        }
-
-        public void setRateCircleEnabled(boolean enabled) {
+        void setRateCircleEnabled(boolean enabled) {
             mRatingCircleEnabled = enabled;
-            rebindView(DetailItemType.RATING);
-        }
-
-        public void setCollectionButtonEnabled(boolean enabled) {
-            mCollectionButtonEnabled = enabled;
-            rebindView(DetailItemType.BUTTONS);
-        }
-
-        public void setWatchlistButtonEnabled(boolean enabled) {
-            mWatchlistButtonEnabled = enabled;
-            rebindView(DetailItemType.BUTTONS);
-        }
-
-        public void setToggleWatchedButtonEnabled(boolean enabled) {
-            mWatchedButtonEnabled = enabled;
-            rebindView(DetailItemType.BUTTONS);
+            // No need to rebind here as setMovie will be called after
         }
 
         public void onColorSchemeChanged() {
@@ -993,7 +975,6 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             final ColorScheme scheme = getColorScheme();
             if (scheme != null) {
-
                 final int bgColor = (view.getBackground() instanceof ColorDrawable)
                         ? ((ColorDrawable) view.getBackground()).getColor()
                         : Color.WHITE;

@@ -6,7 +6,7 @@ buildscript {
 
     }
     dependencies {
-      classpath 'com.android.tools.build:gradle:0.11.0'
+        classpath 'com.android.tools.build:gradle:0.11.0'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.+'
     }

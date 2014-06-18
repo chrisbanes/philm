@@ -16,12 +16,12 @@
 
 package app.philm.in.util;
 
-import com.google.common.base.Preconditions;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
+
+import com.google.common.base.Preconditions;
 
 import java.util.concurrent.ExecutorService;
 
@@ -115,7 +115,7 @@ public class PhilmBackgroundExecutor implements BackgroundExecutor {
             } catch (RetrofitError re) {
                 retrofitError = re;
                 if (Constants.DEBUG) {
-                  Log.d(((Object) this).getClass().getSimpleName(), "Error while completing network call", re);
+                    Log.d(((Object) this).getClass().getSimpleName(), "Error while completing network call", re);
                 }
             }
 

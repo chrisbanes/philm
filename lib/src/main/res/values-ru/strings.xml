@@ -1,85 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 Chris Banes
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <resources>
 
     <string name="app_name">Philm</string>
-    <string name="title_film_detail">Film Detail</string>
+    <string name="title_film_detail">Подробности</string>
 
     <string name="discover_title">Discover (testing)</string>
-    <string name="popular_title">Popular</string>
-    <string name="trending_title">Trending</string>
-    <string name="library_title">Library</string>
-    <string name="watchlist_title">Watchlist</string>
-    <string name="search_title">Search</string>
-    <string name="about_title">About</string>
-    <string name="in_theatres_title">In theatres</string>
+    <string name="popular_title">Популярные</string>
+    <string name="trending_title">Набирающие популярность</string>
+    <string name="library_title">Библиотека</string>
+    <string name="watchlist_title">Что посмотреть</string>
+    <string name="search_title">Поиск</string>
+    <string name="about_title">О приложении</string>
+    <string name="in_theatres_title">В кино</string>
+    <string name="upcoming_title">Скоро</string>
+    <string name="recommended_title">Рекомендованные</string>
 
-    <string name="details">Details</string>
+    <string name="details">Подробности</string>
 
-    <string name="movie_details_released">Released</string>
-    <string name="movie_details_runtime">Runtime</string>
-    <string name="movie_details_runtime_content">%1$d mins</string>
-    <string name="movie_details_certification">Certification</string>
-    <string name="movie_details_genres">Genres</string>
+    <string name="movie_details_released">Вышел в прокат</string>
+    <string name="movie_details_runtime">Продолжительность</string>
+    <string name="movie_details_runtime_content">%1$d мин</string>
+    <string name="movie_details_certification">Ограничения</string>
+    <string name="movie_details_genres">Жанр</string>
+    <string name="movie_details_budget">Бюджет</string>
+    <string name="movie_details_language">Язык</string>
 
-    <string name="related_movies">Related</string>
+    <string name="related_movies">Похожие</string>
+    <string name="cast_movies">В ролях</string>
+    <string name="crew_movies">Команда</string>
+    <string name="images_movies">Постеры</string>
+    <string name="trailers_movies">Трейлеры</string>
 
-    <string name="button_add_account">Add Account</string>
+    <string name="button_add_account">Добавить аккаунт</string>
 
-    <string name="login_prompt">Login to trakt.tv</string>
+    <string name="login_prompt">Войти в trakt.tv</string>
 
-    <string name="drawer_open_content_desc">Drawer open</string>
-    <string name="drawer_closed_content_desc">Drawer closed</string>
+    <string name="drawer_open_content_desc">Меню открыто</string>
+    <string name="drawer_closed_content_desc">Меню закрыто</string>
 
-    <string name="account_username_hint">Username</string>
-    <string name="account_password_hint">Password</string>
-    <string name="account_login">Login</string>
+    <string name="account_username_hint">Имя пользователя</string>
+    <string name="account_password_hint">Пароль</string>
+    <string name="account_login">Войти</string>
+    <string name="account_email_hint">E-mail адресс</string>
+    <string name="account_register">Регистрация</string>
 
-    <string name="menu_refresh">Refresh</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_about">About</string>
+    <string name="menu_refresh">Обновить</string>
+    <string name="menu_search">Поиск</string>
+    <string name="menu_about">О приложении</string>
 
-    <string name="menu_filter">Filter</string>
-    <string name="menu_filter_clear">Clear</string>
+    <string name="menu_filter">Фильтровать</string>
+    <string name="menu_filter_clear">Сбросить</string>
 
-    <string name="empty_missing_account">%1$s could not be retrieved as you are not logged in.</string>
-    <string name="empty_network_error">%1$s could not be retrieved due to an network error. Check your internet connection and try again.</string>
-    <string name="empty_unknown_error">%1$s could not be retrieved due to an unknown error.</string>
+    <string name="empty_missing_account">%1$s невозможно выполнить, так как вы не вошли в аккаунт.</string>
+    <string name="empty_network_error">%1$s невозможно выполнить из-за ошибки сети. Проверьте подключение к Интернету и попробуйте ещё раз.</string>
+    <string name="empty_unknown_error">%1$s невозможно выполнить из-за неизвестной ошибки.</string>
 
-    <string name="login_username_empty">Username is empty.</string>
-    <string name="login_password_empty">Password is empty.</string>
+    <string name="login_username_empty">Имя пользователя пусто.</string>
+    <string name="login_password_empty">Пароль пуст.</string>
+    <string name="login_email_invalid">E-mail адресс неверный.</string>
 
-    <string name="login_authorization_error">The username or password were incorrect. Please try again.</string>
+    <string name="login_authorization_error">Неверное имя пользователя или пароль. Попробуйте ещё раз.</string>
+    <string name="create_user_authorization_error">Имя пользователя или e-mail в данный момент используются на Trakt. Пожалуйста, попробуйте ещё раз.</string>
 
-    <string name="error_unauthorized">Unauthorized</string>
-    <string name="error_network">Network error</string>
-    <string name="error_unknown">Unknown error :(</string>
+    <string name="error_unauthorized">Неавторизован</string>
+    <string name="error_network">Ошибка сети</string>
+    <string name="error_unknown">Неизвестная ошибка :(</string>
+    <string name="error_movie_not_found_trakt">Фильм не найден на trakt</string>
+    <string name="error_movie_not_found_tmdb">Фильм не найден в TMDb</string>
+
+    <string name="search_hint">Поиск</string>
+
+    <string name="category_movies">Фильмы</string>
+    <string name="category_people">Люди</string>
 
     <string name="movie_title_year">%1$s (%2$d)</string>
-    <string name="movie_rating_votes">%1$d%% - %2$d votes</string>
-    <string name="movie_release_date">Release date: %1$s</string>
+    <string name="movie_rating_votes">%1$d%% - %2$d голосов</string>
+    <string name="movie_release_date">Дата выхода: %1$s</string>
 
-    <string name="filter_collection">In collection</string>
-    <string name="filter_seen">Seen</string>
-    <string name="filter_unseen">Unseen</string>
-    <string name="filter_upcoming">Upcoming</string>
-    <string name="filter_soon">Soon</string>
-    <string name="filter_released">Released</string>
-    <string name="filter_highly_rated">Highly Rated</string>
+    <string name="filter_collection">В коллекции</string>
+    <string name="filter_seen">Просмотренные</string>
+    <string name="filter_unseen">Непросмотренные</string>
+    <string name="filter_upcoming">Предстоящие</string>
+    <string name="filter_soon">Скоро выходят</string>
+    <string name="filter_released">Вышедшие</string>
+    <string name="filter_highly_rated">С высокой оценкой</string>
 
-    <string name="action_add_watchlist">Add to watchlist</string>
-    <string name="action_remove_watchlist">Remove from watchlist</string>
-    <string name="action_add_collection">Add to collection</string>
-    <string name="action_remove_collection">Remove from collection</string>
-    <string name="action_mark_seen">Mark as seen</string>
-    <string name="action_mark_unseen">Mark as unseen</string>
+    <string name="action_add_watchlist">Хочу посмотреть</string>
+    <string name="action_remove_watchlist">Удалить из списка желаний</string>
+    <string name="action_add_collection">Добавить в коллекцию</string>
+    <string name="action_remove_collection">Удалить из коллекции</string>
+    <string name="action_mark_seen">Отметить как просмотренный</string>
+    <string name="action_mark_unseen">Отметить как непросмотренный</string>
 
-    <string name="search_hint_movies">Search movies</string>
+    <string name="search_hint_movies">Искать фильмы</string>
 
-    <string name="search_empty">Search for movies by entering text above</string>
+    <string name="search_empty">Ищите фильмы, вводя текст в верхем поле</string>
+    <string name="search_empty_no_results">Ничего не найдено</string>
 
-    <string name="movie_detail_votes">Votes</string>
-    <string name="movie_detail_global">Global</string>
-    <string name="movie_detail_rate">Rate</string>
+    <string name="movie_detail_votes">Голоса</string>
+    <string name="movie_detail_global">Общий</string>
+    <string name="movie_detail_rate">Рейтинг</string>
 
     <string-array name="movie_rating_descriptions">
         <item>Unrated</item>
@@ -95,15 +131,35 @@
         <item>Totally Ninja</item>
     </string-array>
 
-    <string name="about_build_version_title">Build Version</string>
-    <string name="about_build_time_title">Build Time</string>
-    <string name="about_open_source_title">Open-source licences</string>
-    <string name="about_open_source_content">Licence details for used open-source software</string>
+    <string name="about_build_version_title">Версия сборки</string>
+    <string name="about_build_time_title">Время сборки</string>
+    <string name="about_open_source_title">Лицензии с открытым исходным кодом</string>
+    <string name="about_open_source_content">Лицензионные данные используемого программного обеспечения с открытым исходным кодом</string>
     <string name="about_powered_tmdb_title">Powered by TMDb</string>
-    <string name="about_powered_tmdb_content">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+    <string name="about_powered_tmdb_content">Данный продукт использует TMDb API, но не является одобренным или сертифитированным TMDb.</string>
     <string name="about_powered_trakt_title">Powered by trakt.tv</string>
-    <string name="about_powered_trakt_content">This product uses the trakt.tv API but is not endorsed or certified by trakt.tv.</string>
+    <string name="about_powered_trakt_content">Данный продукт использует trakt.tv API, но не является одобренным или сертифитированным trakt.tv.</string>
 
-    <string name="movie_rate_mark_watched">Mark Watched</string>
+    <string name="movie_rate_mark_watched">Отметить как просмотренный</string>
 
+    <string name="pref_remove_watchlist_on_watched_title">Удаление из списка желаний</string>
+    <string name="pref_remove_watchlist_on_watched_summary">Удалять просмотренные из списка желаний</string>
+    <string name="settings_title">Настройки</string>
+    <string name="see_more">Ещё</string>
+    <string name="checkin_facebook">Facebook</string>
+    <string name="checkin_twitter">Twitter</string>
+    <string name="checkin_path">Path</string>
+    <string name="checkin_tumblr">Tumblr</string>
+    <string name="movie_checkin_social_help">Ваши настройки из trakt.tv определяют, что размещать в выбранные Вами социальные сети</string>
+
+    <string name="movie_checkin">Checkin</string>
+    <string name="movie_checkin_header">Смотрю</string>
+    <string name="movie_checkin_message_hint">Сообщение</string>
+    <string name="movie_checkin_cancel">Cancel checkin</string>
+    <string name="movie_checkin_cancel_message">Are you sure you want to cancel your checkin to \"%1$s\"?</string>
+
+    <string name="trakt_wrong_credentials_title">Пароль изменён</string>
+    <string name="trakt_wrong_credentials_text">Ваш пароль для Trakt.tv изменён. Пожалуйста, войдите ещё раз, используя новый пароль.</string>
+
+    <string name="trakt_login_prompt">Philm доставит вам больше удовольствия, если вы войдете в trakt.tv. Нажмите, чтобы войти или зарегистрироваться.</string>
 </resources>

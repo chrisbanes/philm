@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Chris Banes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package app.philm.in.controllers;
 
 import com.google.common.base.Objects;
@@ -89,6 +105,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         MovieController.MovieUiCallbacks> {
 
     private static final String LOG_TAG = MovieController.class.getSimpleName();
+
+    private static final boolean IGNORE_ADULT = true;
 
     private static final int TMDB_FIRST_PAGE = 1;
 
@@ -683,7 +701,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 if (display != null) {
                     display.showPersonCrewCredits(String.valueOf(person.getTmdbId()));
                 }
-
             }
 
             @Override
@@ -1257,23 +1274,27 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         executeTask(new FetchTraktWatchingRunnable(0, mMoviesState.getUsername()));
     }
 
-    private List<PhilmMovie> filterMovies(List<PhilmMovie> movies) {
+    private List<PhilmMovie> filterMovies(List<PhilmMovie> movies, Set<MovieFilter> filters) {
         Preconditions.checkNotNull(movies, "movies cannot be null");
 
-        final Set<MovieFilter> filters = mMoviesState.getFilters();
-        Preconditions.checkNotNull(filters, "filters cannot be null");
-        Preconditions.checkState(!filters.isEmpty(), "filters cannot be empty");
-
-        ArrayList<PhilmMovie> filteredMovies = new ArrayList<>();
+        ArrayList<PhilmMovie> filteredMovies = new ArrayList<>(movies.size());
         for (PhilmMovie movie : movies) {
-            boolean filtered = true;
-            for (MovieFilter filter : filters) {
-                if (movie == null || !filter.isFiltered(movie)) {
-                    filtered = false;
-                    break;
+            boolean included = true;
+
+            if (!PhilmCollections.isEmpty(filters)) {
+                for (MovieFilter filter : filters) {
+                    if (filter.isFiltered(movie)) {
+                        included = false;
+                        break;
+                    }
                 }
             }
-            if (filtered) {
+
+            if (included && IGNORE_ADULT && movie.isAdult()) {
+                included = false;
+            }
+
+            if (included) {
                 filteredMovies.add(movie);
             }
         }
@@ -1345,11 +1366,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (movie != null) {
             final boolean canUpdateTrakt = isLoggedIn() && movie.isLoadedFromTrakt();
             ui.setRateCircleEnabled(canUpdateTrakt);
-            ui.setCollectionButtonEnabled(canUpdateTrakt);
-            ui.setWatchlistButtonEnabled(canUpdateTrakt);
-            ui.setToggleWatchedButtonEnabled(canUpdateTrakt);
-            ui.setCheckinVisible(canUpdateTrakt && canCheckin(movie));
-            ui.setCancelCheckinVisible(canUpdateTrakt && canCancelCheckin(movie));
+            ui.setButtonsEnabled(canUpdateTrakt, canUpdateTrakt, canUpdateTrakt,
+                    canUpdateTrakt && canCheckin(movie), canUpdateTrakt && canCancelCheckin(movie));
             ui.setMovie(movie);
         }
     }
@@ -1371,14 +1389,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     private void populateMovieListUi(MovieListUi ui) {
         final MovieQueryType queryType = ui.getMovieQueryType();
 
-        boolean requireFiltering = false;
+        Set<MovieFilter> filters = null;
 
         if (isLoggedIn()) {
             if (queryType.supportFiltering()) {
                 ui.setFiltersVisibility(true);
-                final Set<MovieFilter> filters = mMoviesState.getFilters();
+                filters = mMoviesState.getFilters();
                 ui.showActiveFilters(filters);
-                requireFiltering = !PhilmCollections.isEmpty(filters);
             }
         } else {
             ui.setFiltersVisibility(false);
@@ -1438,8 +1455,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
         }
 
-        if (requireFiltering && !PhilmCollections.isEmpty(items)) {
-            items = filterMovies(items);
+        if (!PhilmCollections.isEmpty(items)) {
+            // Always filter movies (for adult)
+            items = filterMovies(items, filters);
         }
 
         if (items == null) {
@@ -1823,17 +1841,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         void setMovie(PhilmMovie movie);
 
-        void setToggleWatchedButtonEnabled(boolean enabled);
-
-        void setCollectionButtonEnabled(boolean enabled);
-
-        void setWatchlistButtonEnabled(boolean enabled);
+        void setButtonsEnabled(boolean watched, boolean collection, boolean watchlist,
+                boolean checkin, boolean cancelCheckin);
 
         void setRateCircleEnabled(boolean enabled);
-
-        void setCheckinVisible(boolean visible);
-
-        void setCancelCheckinVisible(boolean visible);
 
     }
 

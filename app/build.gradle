@@ -81,6 +81,8 @@ android {
 dependencies {
     compile project(':lib')
 
+    compile 'com.squareup.okhttp:okhttp:1.6.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:1.6.0'
     compile 'com.squareup.picasso:picasso:2.+'
     compile 'nl.qbusict:cupboard:2.+'
     compile 'com.crashlytics.android:crashlytics:1.+'

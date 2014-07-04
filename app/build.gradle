@@ -6,12 +6,12 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.0'
+        classpath 'com.android.tools.build:gradle:0.12.0'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.+'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 apply plugin: 'android-apt'
 
@@ -37,7 +37,7 @@ android {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 'L'
 
         buildConfigField "String", "BUILD_TIME", "\"${buildTime()}\""
     }

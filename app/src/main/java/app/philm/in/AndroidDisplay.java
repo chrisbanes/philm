@@ -21,7 +21,10 @@ import com.google.common.base.Preconditions;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
@@ -35,6 +38,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.view.Gravity;
 
+import app.philm.in.drawable.TintingBitmapDrawable;
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
 import app.philm.in.fragments.CheckinMovieFragment;
@@ -58,6 +62,7 @@ import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.model.ColorScheme;
+import app.philm.in.util.ActionBarUpIndicatorHelper;
 import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.view.FontTextView;
 import app.philm.in.view.InsetFrameLayout;
@@ -65,22 +70,34 @@ import app.philm.in.view.InsetFrameLayout;
 public class AndroidDisplay implements Display {
 
     private final FragmentActivity mActivity;
-    private final ActionBarDrawerToggle mActionBarDrawerToggle;
     private final DrawerLayout mDrawerLayout;
     private final InsetFrameLayout mInsetFrameLayout;
     private final PhilmTypefaceSpan mDefaultTitleSpan;
 
+    private final Drawable mUpIndicator;
+    private final Drawable mDrawerIndicator;
+
     private ColorScheme mColorScheme;
 
     public AndroidDisplay(FragmentActivity activity,
-            ActionBarDrawerToggle actionBarDrawerToggle,
             DrawerLayout drawerLayout,
             InsetFrameLayout insetFrameLayout) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
-        mActionBarDrawerToggle = actionBarDrawerToggle;
         mDrawerLayout = drawerLayout;
         mInsetFrameLayout = insetFrameLayout;
         mDefaultTitleSpan = new PhilmTypefaceSpan(activity, FontTextView.FONT_ROBOTO_CONDENSED);
+
+        mUpIndicator = ActionBarUpIndicatorHelper.getThemeUpIndicator(mActivity);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+            mDrawerIndicator = TintingBitmapDrawable.createFromColorResource(
+                    activity.getResources(),
+                    R.drawable.ic_drawer,
+                    R.color.dark_gray);
+        } else {
+            mDrawerIndicator = activity.getActionBar().getThemedContext()
+                    .getResources().getDrawable(R.drawable.ic_drawer_ab);
+        }
     }
 
     @Override
@@ -178,6 +195,19 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
+    public boolean toggleDrawer() {
+        if (mDrawerLayout != null) {
+            if (mDrawerLayout.isDrawerVisible(Gravity.LEFT)) {
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+            } else {
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean hasMainFragment() {
         return mActivity.getSupportFragmentManager().findFragmentById(R.id.fragment_main) != null;
     }
@@ -196,11 +226,13 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showUpNavigation(boolean show) {
-        if (mActionBarDrawerToggle != null) {
-            mActionBarDrawerToggle.setDrawerIndicatorEnabled(!show);
-        } else {
-            mActivity.getActionBar().setDisplayHomeAsUpEnabled(show);
-            mActivity.getActionBar().setHomeButtonEnabled(true);
+        final ActionBar ab = mActivity.getActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+
+            ActionBarUpIndicatorHelper.setActionBarUpIndicator(mActivity,
+                    show ? mUpIndicator : mDrawerIndicator);
         }
     }
 

@@ -102,4 +102,6 @@ public interface Display {
 
     public void setColorScheme(ColorScheme colorScheme);
 
+    public boolean toggleDrawer();
+
 }

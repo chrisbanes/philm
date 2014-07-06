@@ -19,11 +19,9 @@ package app.philm.in;
 import com.crashlytics.android.Crashlytics;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
@@ -45,8 +43,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     private MainController mMainController;
     private Display mDisplay;
-
-    private ActionBarDrawerToggle mDrawerToggle;
 
     private HashSet<OnActivityInsetsCallback> mInsetCallbacks;
 
@@ -76,34 +72,15 @@ public abstract class BasePhilmActivity extends FragmentActivity
         }
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (mDrawerLayout != null) {
-            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer,
-                    R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
-            mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-            final ActionBar ab = getActionBar();
-            if (ab != null) {
-                ab.setDisplayHomeAsUpEnabled(true);
-                ab.setHomeButtonEnabled(true);
-            }
-        }
 
         // Let SuperCardToast restore itself
         SuperCardToast.onRestoreState(savedInstanceState, this);
 
         mMainController = PhilmApplication.from(this).getMainController();
 
-        mDisplay = new AndroidDisplay(this, mDrawerToggle, mDrawerLayout, mInsetFrameLayout);
+        mDisplay = new AndroidDisplay(this, mDrawerLayout, mInsetFrameLayout);
 
         handleIntent(getIntent(), getDisplay());
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (mDrawerToggle != null) {
-            mDrawerToggle.syncState();
-        }
     }
 
     @Override
@@ -131,10 +108,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (getMainController().onHomeButtonPressed()) {
@@ -159,14 +132,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (mDrawerToggle != null) {
-            mDrawerToggle.onConfigurationChanged(newConfig);
-        }
     }
 
     @Override
@@ -246,10 +211,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     public static interface OnActivityInsetsCallback {
         public void onInsetsChanged(Rect insets);
-    }
-
-    protected ActionBarDrawerToggle getDrawerToggle() {
-        return mDrawerToggle;
     }
 
     protected DrawerLayout getDrawerLayout() {

@@ -26,8 +26,9 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.PaletteItem;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,7 +61,6 @@ import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.util.ActivityTransitions;
 import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.util.ColorValueAnimator;
-import app.philm.in.util.DominantColorCalculator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.IntUtils;
@@ -91,8 +91,41 @@ public class MovieDetailFragment extends BaseDetailFragment
             imageView.setVisibility(View.VISIBLE);
 
             if (getColorScheme() == null) {
-                new ColorCalculatorTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bitmap);
+                Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        if (!isComplete(palette)) {
+                            return;
+                        }
+
+                        /**
+                         * This is not optimal and does not lead to good text contrast. Needs
+                         * improving for final release.
+                         */
+                        ColorScheme scheme = new ColorScheme(
+                                unwrap(palette.getVibrantColor()),
+                                unwrap(palette.getDarkVibrantColor()),
+                                unwrap(palette.getLightVibrantColor()),
+                                unwrap(palette.getDarkMutedColor()),
+                                Color.BLACK);
+
+                        if (hasCallbacks()) {
+                            getCallbacks().updateColorScheme(scheme);
+                        }
+                    }
+                });
             }
+        }
+
+        private boolean isComplete(Palette palette) {
+            return palette.getVibrantColor() != null && palette.getVibrantColor() != null &&
+                    palette.getLightVibrantColor() != null && palette.getDarkMutedColor() != null;
+        }
+
+        private int unwrap(PaletteItem primary) {
+            return primary != null
+                    ? primary.getRgb()
+                    : Color.WHITE;
         }
 
         @Override
@@ -663,28 +696,6 @@ public class MovieDetailFragment extends BaseDetailFragment
             view.setTag(trailer);
 
             return view;
-        }
-    }
-
-    private class ColorCalculatorTask extends AsyncTask<Bitmap, Void, DominantColorCalculator> {
-
-        @Override
-        protected DominantColorCalculator doInBackground(Bitmap... params) {
-            final Bitmap bitmap = params[0];
-            if (bitmap != null && !bitmap.isRecycled()) {
-                return new DominantColorCalculator(bitmap);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(DominantColorCalculator colorCalculator) {
-            if (colorCalculator != null) {
-                final ColorScheme scheme = colorCalculator.getColorScheme();
-                if (scheme != null && hasCallbacks()) {
-                    getCallbacks().updateColorScheme(scheme);
-                }
-            }
         }
     }
 

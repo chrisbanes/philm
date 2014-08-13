@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 Chris Banes
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+
+    <string name="app_name">Philm</string>
+    <string name="title_film_detail">电影详情</string>
+
+    <string name="discover_title">发现</string>
+    <string name="popular_title">流行</string>
+    <string name="trending_title">趋势</string>
+    <string name="library_title">我的收藏夹</string>
+    <string name="watchlist_title">观看列表</string>
+    <string name="search_title">搜索</string>
+    <string name="about_title">关于</string>
+    <string name="in_theatres_title">上映中</string>
+    <string name="upcoming_title">即将上映</string>
+    <string name="recommended_title">推荐</string>
+
+    <string name="details">详情</string>
+
+    <string name="movie_details_released">发行日期</string>
+    <string name="movie_details_runtime">时长</string>
+    <string name="movie_details_runtime_content">%1$d 分钟</string>
+    <string name="movie_details_certification">评级</string>
+    <string name="movie_details_genres">类别</string>
+    <string name="movie_details_budget">预算</string>
+    <string name="movie_details_budget_content">$%,d</string>
+    <string name="movie_details_language">语言</string>
+
+    <string name="related_movies">相关电影</string>
+    <string name="cast_movies">演员</string>
+    <string name="crew_movies">工作人员</string>
+    <string name="images_movies">电影海报</string>
+    <string name="trailers_movies">预告片</string>
+
+    <string name="button_add_account">添加账户</string>
+
+    <string name="login_prompt">登录到 trakt.tv</string>
+
+    <string name="drawer_open_content_desc">Drawer open</string>
+    <string name="drawer_closed_content_desc">Drawer closed</string>
+
+    <string name="account_username_hint">用户名</string>
+    <string name="account_password_hint">密码</string>
+    <string name="account_email_hint">电子邮件</string>
+    <string name="account_login">登录</string>
+    <string name="account_register">注册</string>
+
+    <string name="menu_refresh">刷新</string>
+    <string name="menu_search">搜索</string>
+    <string name="menu_about">关于</string>
+
+    <string name="menu_filter">过滤</string>
+    <string name="menu_filter_clear">清除</string>
+
+    <string name="empty_missing_account">由于你未登录，%1$s 无法获取。</string>
+    <string name="empty_network_error">由于网络错误，%1$s 无法获取。 请检查你的网络连接并重试。</string>
+    <string name="empty_unknown_error">由于未知错误，%1$s 无法获取。</string>
+
+    <string name="login_username_empty">用户名为空。</string>
+    <string name="login_password_empty">密码为空。</string>
+    <string name="login_email_invalid">电子邮件格式有误。</string>
+
+    <string name="login_authorization_error">用户名或密码有误，请重试。</string>
+    <string name="create_user_authorization_error">该用户名或邮箱地址已被人占用，请重试。</string>
+
+    <string name="error_unauthorized">未授权</string>
+    <string name="error_network">网络错误</string>
+    <string name="error_movie_not_found_trakt">电影无法从trakt上面找到</string>
+    <string name="error_movie_not_found_tmdb">电影无法从TMDb上面找到</string>
+    <string name="error_unknown">未知错误：(</string>
+
+    <string name="movie_title_year">%1$s (%2$d)</string>
+    <string name="movie_rating_votes">%1$d%% - %2$d 票</string>
+    <string name="movie_release_date">发行日期: %1$s</string>
+
+    <string name="filter_collection">在收藏夹中</string>
+    <string name="filter_seen">已看</string>
+    <string name="filter_unseen">未看</string>
+    <string name="filter_upcoming">即将上映</string>
+    <string name="filter_soon">Soon</string>
+    <string name="filter_released">已发行</string>
+    <string name="filter_highly_rated">好评如潮</string>
+
+    <string name="action_add_watchlist">添加到我的观看列表</string>
+    <string name="action_remove_watchlist">从我的观看列表移除</string>
+    <string name="action_add_collection">添加到我的收藏夹</string>
+    <string name="action_remove_collection">从我的收藏夹移除</string>
+    <string name="action_mark_seen">标记为已看</string>
+    <string name="action_mark_unseen">标记为未看</string>
+
+    <string name="search_hint">搜索</string>
+
+    <string name="category_movies">电影</string>
+    <string name="category_people">影人</string>
+
+    <string name="search_empty">在上面输入文本进行搜索</string>
+    <string name="search_empty_no_results">找不到相关结果</string>
+
+    <string name="movie_detail_votes">票数</string>
+    <string name="movie_detail_global">好评率</string>
+    <string name="movie_detail_rate">评分</string>
+
+    <string name="person_born_date">出生日期: %1$s</string>
+    <string name="person_born_date_with_loc">出生于: %1$s ，出生地点：%2$s</string>
+    <string name="person_age">年龄: %1$s</string>
+    <string name="person_death_date">死于: %1$s, aged %2$s</string>
+
+    <string-array name="movie_rating_descriptions">
+        <item>懒得评分了</item>
+        <item>烂透了</item>
+        <item>太糟糕了</item>
+        <item>糟糕</item>
+        <item>难看</item>
+        <item>一般</item>
+        <item>过的去</item>
+        <item>不错</item>
+        <item>好看</item>
+        <item>精彩</item>
+        <item>大师级</item>
+    </string-array>
+
+    <string name="movie_checkin">正在观影中</string>
+    <string name="movie_checkin_header">当前正在观看</string>
+    <string name="movie_checkin_message_hint">消息</string>
+    <string name="movie_checkin_cancel">取消正在观影中</string>
+    <string name="movie_checkin_cancel_message">你是否取消标记正在观影中 \"%1$s\"?</string>
+
+    <string name="about_build_version_title">当前版本</string>
+    <string name="about_build_time_title">更新时间</string>
+    <string name="about_open_source_title">开源代码许可</string>
+    <string name="about_open_source_content">关于许可的法律信息</string>
+    <string name="about_powered_tmdb_title">Powered by TMDb</string>
+    <string name="about_powered_tmdb_content">此应用使用了TMDb的API，但这不是官方授权。</string>
+    <string name="about_powered_trakt_title">Powered by trakt.tv</string>
+    <string name="about_powered_trakt_content">此应用使用了trakt.tv，但这不是官方授权。</string>
+
+    <string name="movie_rate_mark_watched">标记为已看</string>
+
+    <string name="pref_remove_watchlist_on_watched_title">从我的观看列表移除</string>
+    <string name="pref_remove_watchlist_on_watched_summary">当我看完电影时将此电影从我的观看列表移除</string>
+    <string name="settings_title">设置</string>
+    <string name="see_more">更多</string>
+    <string name="checkin_facebook">Facebook</string>
+    <string name="checkin_twitter">Twitter</string>
+    <string name="checkin_path">Path</string>
+    <string name="checkin_tumblr">Tumblr</string>
+    <string name="movie_checkin_social_help">你在Trakt.tv上面的设置决定了你的分享会在你选择的社交平台上分享。</string>
+
+    <string name="trakt_wrong_credentials_title">密码已经更改</string>
+    <string name="trakt_wrong_credentials_text">你的Trakt.tv密码好像已经被更改，所以你被注销登录了。请使用你的新密码进行登录。</string>
+
+    <string name="trakt_login_prompt">登录trakt.tv后，Philm 将会带给你更多惊喜。点击此处进行登录或者注册。</string>
+
+</resources>

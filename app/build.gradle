@@ -31,7 +31,7 @@ def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 android {
     compileSdkVersion 'android-L'
-    buildToolsVersion "19.1.0"
+    buildToolsVersion "20.0"
 
     defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild

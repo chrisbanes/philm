@@ -209,6 +209,11 @@ public class MovieDetailFragment extends BaseDetailFragment
     @Override
     public void onPause() {
         setActionBarTitleEnabled(true);
+
+        if (hasCallbacks()) {
+            getCallbacks().setActionBarBackgroundAlpha(1f);
+        }
+
         super.onPause();
     }
 
@@ -331,26 +336,31 @@ public class MovieDetailFragment extends BaseDetailFragment
                          int totalItemCount) {
         if (visibleItemCount > 0 && firstVisibleItem == 0) {
             final View firstView = absListView.getChildAt(0);
-            final int y = absListView.getPaddingTop() - firstView.getTop();
-            final float percent = y / (float) firstView.getHeight();
 
-            if (mFadeActionBar) {
-                setInsetTopAlpha(percent);
-                setActionBarTitleEnabled(percent >= 0.8f);
-            }
+            if (firstView.getBottom() > absListView.getPaddingTop()) {
+                final int y = absListView.getPaddingTop() - firstView.getTop();
+                final float percent = y / (float) firstView.getHeight();
 
-            if (mBackdropImageView != null) {
-                mBackdropImageView.setVisibility(View.VISIBLE);
-                mBackdropImageView.offsetBackdrop(Math.round(-y * PARALLAX_FRICTION));
-            }
-        } else {
-            if (mFadeActionBar) {
-                setInsetTopAlpha(1f);
-            }
+                if (mFadeActionBar && hasCallbacks()) {
+                    getCallbacks().setActionBarBackgroundAlpha(percent);
+                    setActionBarTitleEnabled(percent >= 0.8f);
+                }
 
-            if (mBackdropImageView != null) {
-                mBackdropImageView.setVisibility(View.INVISIBLE);
+                if (mBackdropImageView != null) {
+                    mBackdropImageView.setVisibility(View.VISIBLE);
+                    mBackdropImageView.offsetBackdrop(Math.round(-y * PARALLAX_FRICTION));
+                }
+                return;
             }
+        }
+
+
+        if (mFadeActionBar && hasCallbacks()) {
+            getCallbacks().setActionBarBackgroundAlpha(1f);
+            setActionBarTitleEnabled(true);
+        }
+        if (mBackdropImageView != null) {
+            mBackdropImageView.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -36,126 +36,31 @@ import app.philm.in.R;
  */
 public class InsetFrameLayout extends FrameLayout {
 
-    private Drawable mDefaultInsetBackground;
-    private Drawable mInsetBackground;
-
-    private Rect mInsets;
-    private Rect mTempRect = new Rect();
     private OnInsetsCallback mOnInsetsCallback;
 
-    private int mTopAlpha = 255;
+    private Rect mInsets;
 
     public InsetFrameLayout(Context context) {
         super(context);
-        init(context, null, 0);
     }
 
     public InsetFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs, 0);
     }
 
     public InsetFrameLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context, attrs, defStyle);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyle) {
-        final TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.DrawInsetsFrameLayout, defStyle, 0);
-        if (a == null) {
-            return;
-        }
-        mDefaultInsetBackground = mInsetBackground
-                = a.getDrawable(R.styleable.DrawInsetsFrameLayout_insetBackground);
-        a.recycle();
-
-        setWillNotDraw(true);
     }
 
     @Override
     protected boolean fitSystemWindows(Rect insets) {
         mInsets = new Rect(insets);
-
-        setWillNotDraw(mInsetBackground == null);
         ViewCompat.postInvalidateOnAnimation(this);
 
         if (mOnInsetsCallback != null) {
-            mOnInsetsCallback.onInsetsChanged(insets);
+            mOnInsetsCallback.onInsetsChanged(mInsets);
         }
         return true; // consume insets
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        super.draw(canvas);
-
-        final int width = getWidth();
-        final int height = getHeight();
-        if (mInsets != null && mInsetBackground != null) {
-            // Top
-            mTempRect.set(0, 0, width, mInsets.top);
-            mInsetBackground.setBounds(mTempRect);
-            mInsetBackground.setAlpha(mTopAlpha);
-            mInsetBackground.draw(canvas);
-        }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (mInsetBackground != null) {
-            mInsetBackground.setCallback(this);
-        }
-    }
-
-    public void resetInsetBackground() {
-        if (mInsetBackground != mDefaultInsetBackground) {
-            setInsetBackground(mDefaultInsetBackground);
-        }
-    }
-
-    public void setInsetBackgroundColor(int color) {
-        Resources r = getResources();
-
-        setInsetBackgroundColorRaw(
-                Color.argb(
-                        Color.alpha(r.getColor(R.color.chrome_custom_background_alpha)),
-                        Color.red(color),
-                        Color.green(color),
-                        Color.blue(color)
-                )
-        );
-    }
-
-    void setInsetBackgroundColorRaw(int color) {
-        setInsetBackground(new ColorDrawable(color));
-    }
-
-    private void setInsetBackground(Drawable background) {
-        if (mInsetBackground != null) {
-            mInsetBackground.setCallback(null);
-        }
-
-        mInsetBackground = background;
-
-        if (mInsetBackground != null && getWindowToken() != null) {
-            mInsetBackground.setCallback(this);
-        }
-        ViewCompat.postInvalidateOnAnimation(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (mInsetBackground != null) {
-            mInsetBackground.setCallback(null);
-        }
-    }
-
-    public void setTopInsetAlpha(int alpha) {
-        mTopAlpha = alpha;
-        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     /**

@@ -749,6 +749,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 return MovieController.this.getUiTitle(ui);
             }
 
+            @Override
+            public void setActionBarBackgroundAlpha(float alpha) {
+                Display display = getDisplay();
+                if (display != null) {
+                    getDisplay().setActionBarBackgroundAlpha(alpha);
+                }
+            }
+
             private boolean canFetchNextPage(MoviesState.PaginatedResult<?> paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -1948,6 +1956,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void playTrailer(PhilmMovieVideo trailer);
 
         String getUiTitle();
+
+        void setActionBarBackgroundAlpha(float alpha);
     }
 
     private class LibraryDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {

@@ -199,16 +199,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
         }
     }
 
-    public void setInsetTopAlpha(float alpha) {
-        if (mInsetFrameLayout != null) {
-            mInsetFrameLayout.setTopInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
-        }
-    }
-
-    public void resetInsets() {
-        setInsetTopAlpha(255);
-    }
-
     public static interface OnActivityInsetsCallback {
         public void onInsetsChanged(Rect insets);
     }

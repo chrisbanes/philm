@@ -32,10 +32,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 
 import app.philm.in.drawable.TintingBitmapDrawable;
@@ -69,6 +71,8 @@ import app.philm.in.view.InsetFrameLayout;
 
 public class AndroidDisplay implements Display {
 
+    private static int[] android_styleable_ActionBar = { android.R.attr.background };
+
     private final FragmentActivity mActivity;
     private final DrawerLayout mDrawerLayout;
     private final InsetFrameLayout mInsetFrameLayout;
@@ -76,6 +80,7 @@ public class AndroidDisplay implements Display {
 
     private final Drawable mUpIndicator;
     private final Drawable mDrawerIndicator;
+    private final Drawable mActionBarBackground;
 
     private ColorScheme mColorScheme;
 
@@ -89,15 +94,24 @@ public class AndroidDisplay implements Display {
 
         mUpIndicator = ActionBarUpIndicatorHelper.getThemeUpIndicator(mActivity);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.L) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.L ||
+                Objects.equal("L", Build.VERSION.CODENAME)) {
+            mDrawerIndicator = activity.getDrawable(R.drawable.ic_drawer_ab);
+        } else {
             mDrawerIndicator = TintingBitmapDrawable.createFromColorResource(
                     activity.getResources(),
                     R.drawable.ic_drawer,
                     R.color.dark_gray);
-        } else {
-            mDrawerIndicator = activity.getActionBar().getThemedContext()
-                    .getResources().getDrawable(R.drawable.ic_drawer_ab);
         }
+
+        final TypedValue outValue = new TypedValue();
+        mActivity.getTheme().resolveAttribute(android.R.attr.actionBarStyle, outValue, true);
+        TypedArray abStyle = mActivity.obtainStyledAttributes(outValue.resourceId,
+                android_styleable_ActionBar);
+        mActionBarBackground = abStyle.getDrawable(0).mutate();
+        abStyle.recycle();
+
+        mActivity.getActionBar().setBackgroundDrawable(mActionBarBackground);
     }
 
     @Override
@@ -197,10 +211,10 @@ public class AndroidDisplay implements Display {
     @Override
     public boolean toggleDrawer() {
         if (mDrawerLayout != null) {
-            if (mDrawerLayout.isDrawerVisible(Gravity.LEFT)) {
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
+            if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             } else {
-                mDrawerLayout.openDrawer(Gravity.LEFT);
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
             return true;
         }
@@ -240,11 +254,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarTitle(CharSequence title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            if (mColorScheme != null) {
-                ab.setTitle(convertToCondensed(title, mColorScheme.primaryText));
-            } else {
-                ab.setTitle(convertToCondensed(title));
-            }
+            ab.setTitle(convertToCondensed(title));
         }
     }
 
@@ -252,11 +262,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarSubtitle(CharSequence title) {
         ActionBar ab = mActivity.getActionBar();
         if (ab != null) {
-            if (mColorScheme != null) {
-                ab.setSubtitle(convertToCondensed(title, mColorScheme.secondaryText));
-            } else {
-                ab.setSubtitle(convertToCondensed(title));
-            }
+            ab.setSubtitle(convertToCondensed(title));
         }
     }
 
@@ -356,11 +362,7 @@ public class AndroidDisplay implements Display {
         mColorScheme = colorScheme;
 
         if (mInsetFrameLayout != null) {
-            if (colorScheme != null) {
-                mInsetFrameLayout.setInsetBackgroundColor(colorScheme.primaryAccent);
-            } else {
-                mInsetFrameLayout.resetInsetBackground();
-            }
+            // TODO:
         }
 
         final ActionBar ab = mActivity.getActionBar();
@@ -407,15 +409,13 @@ public class AndroidDisplay implements Display {
         return s;
     }
 
-    private CharSequence convertToCondensed(final CharSequence string, int color) {
-        if (TextUtils.isEmpty(string)) {
-            return string;
-        }
+    @Override
+    public void setActionBarBackgroundAlpha(float alpha) {
+        mActionBarBackground.setAlpha(Math.round(255 * alpha));
 
-        SpannableString s = new SpannableString(string);
-        s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
-                0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        return s;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mActivity.getActionBar().setBackgroundDrawable(mActionBarBackground);
+        }
     }
 
 }

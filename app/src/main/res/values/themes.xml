@@ -72,11 +72,6 @@
         <item name="default_inset_color">@color/chrome_background</item>
     </style>
 
-    <style name="Theme.Philm.Framed" parent="Theme.Philm">
-        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar.Solid</item>
-        <item name="android:windowActionBarOverlay">false</item>
-    </style>
-
     <style name="Theme.Philm.Images" parent="Theme.Base.Dark.Philm">
         <item name="android:actionBarStyle">@style/Widget.Philm.Dark.ActionBar</item>
         <item name="default_inset_color">@color/translucent_black_dark</item>

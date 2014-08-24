@@ -19,24 +19,21 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Theme.Philm" parent="Theme.Base.Philm">
-        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
         <item name="grey_shade">@color/light_gray</item>
-        <item name="default_inset_color">@color/chrome_background</item>
+        <item name="default_inset_color">?android:attr/colorPrimary</item>
     </style>
 
-    <style name="Theme.Base.Philm" parent="android:Theme.Material.Light">
-        <item name="android:windowTranslucentStatus">true</item>
+    <style name="Theme.Base.Philm" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        
+
         <item name="android:colorPrimary">@color/primary_accent_color</item>
         <item name="android:colorPrimaryDark">@color/primary_accent_color_dark_20</item>
         <item name="android:colorAccent">@color/primary_accent_color</item>
     </style>
 
     <style name="Theme.Base.Dark.Philm" parent="android:Theme.Material">
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>

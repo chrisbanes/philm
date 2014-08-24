@@ -45,7 +45,6 @@ public abstract class InsetAwareFragment extends Fragment
         if (getActivity() instanceof BasePhilmActivity) {
             BasePhilmActivity activity = ((BasePhilmActivity) getActivity());
             activity.removeInsetChangedCallback(this);
-            activity.resetInsets();
         }
         super.onPause();
     }
@@ -57,12 +56,6 @@ public abstract class InsetAwareFragment extends Fragment
     }
 
     protected void populateInsets(Rect insets) {
-    }
-
-    public void setInsetTopAlpha(float alpha) {
-        if (getActivity() instanceof BasePhilmActivity) {
-            ((BasePhilmActivity) getActivity()).setInsetTopAlpha(alpha);
-        }
     }
 
     public void setAdditionalInsets(final Rect rect) {

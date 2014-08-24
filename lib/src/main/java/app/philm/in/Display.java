@@ -104,4 +104,6 @@ public interface Display {
 
     public boolean toggleDrawer();
 
+    public void setActionBarBackgroundAlpha(float alpha);
+
 }

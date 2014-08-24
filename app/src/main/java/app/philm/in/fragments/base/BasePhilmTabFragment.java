@@ -72,13 +72,10 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
             }
         });
 
-        mSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.primary_accent_color));
-        mSlidingTabStrip.setDividerColors(getResources().getColor(R.color.primary_accent_color_dark_10));
-
         mSlidingTabStrip.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 final int h = bottom - top;
                 mChildrenInsets.top = h;
                 propogateAdditionalInsetsToChildren(mChildrenInsets);

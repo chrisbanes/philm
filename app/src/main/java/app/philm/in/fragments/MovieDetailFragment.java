@@ -107,7 +107,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                                     secondary.getRgb(),
                                     tertiary.getRgb(),
                                     primary.getTitleTextColor(),
-                                    secondary.getTitleTextColor());
+                                    primary.getBodyTextColor());
 
                             getCallbacks().updateColorScheme(scheme);
                         }
@@ -201,10 +201,8 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     @Override
     public void onPause() {
-        setActionBarTitleEnabled(true);
-
         if (hasCallbacks()) {
-            getCallbacks().setActionBarBackgroundAlpha(1f);
+            getCallbacks().setHeaderScrollValue(1f);
         }
 
         super.onPause();
@@ -335,8 +333,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                 final float percent = y / (float) firstView.getHeight();
 
                 if (mFadeActionBar && hasCallbacks()) {
-                    getCallbacks().setActionBarBackgroundAlpha(percent);
-                    setActionBarTitleEnabled(percent >= 0.8f);
+                    getCallbacks().setHeaderScrollValue(percent);
                 }
 
                 if (mBackdropImageView != null) {
@@ -349,8 +346,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
 
         if (mFadeActionBar && hasCallbacks()) {
-            getCallbacks().setActionBarBackgroundAlpha(1f);
-            setActionBarTitleEnabled(true);
+            getCallbacks().setHeaderScrollValue(1f);
         }
         if (mBackdropImageView != null) {
             mBackdropImageView.setVisibility(View.INVISIBLE);
@@ -418,16 +414,6 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         getListAdapter().setItems(mItems);
-    }
-
-    private void setActionBarTitleEnabled(boolean enabled) {
-        ActionBarActivity activity = (ActionBarActivity) getActivity();
-        if (activity != null) {
-            final ActionBar ab = activity.getSupportActionBar();
-            if (ab != null) {
-                ab.setDisplayShowTitleEnabled(enabled);
-            }
-        }
     }
 
     private enum DetailItemType implements DetailType {

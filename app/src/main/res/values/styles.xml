@@ -18,10 +18,12 @@
 
     <style name="Widget.Philm.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
         <item name="indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
+        <item name="elevation">0dp</item>
     </style>
 
     <style name="Widget.Philm.Dark.ActionBar" parent="Widget.AppCompat.ActionBar">
         <item name="indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
+        <item name="elevation">0dp</item>
     </style>
 
     <style name="Widget.Philm.ActionBar.Progress" parent="Widget.AppCompat.ProgressBar">
@@ -74,11 +76,12 @@
     </style>
 
     <style name="Widget.Philm.Movie.List.SectionHeader" parent="android:Widget">
-        <item name="font">roboto_condensed_bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">@dimen/spacing_major</item>
-        <item name="android:background">?attr/colorPrimaryDark</item>
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="Widget.Philm.Movie.Login.Title" parent="android:Widget">
@@ -201,6 +204,11 @@
     <style name="TextAppearance.Philm.FloatLabel" parent="android:Widget">
         <item name="android:textColor">@color/float_label</item>
         <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Philm.Tab" parent="TextAppearance.AppCompat.Medium.Inverse">
+        <item name="android:textSize">12sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

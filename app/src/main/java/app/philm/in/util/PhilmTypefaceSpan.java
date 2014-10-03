@@ -61,6 +61,15 @@ public class PhilmTypefaceSpan extends MetricAffectingSpan {
         }
     }
 
+    public int getTextColor() {
+        return mTextColor;
+    }
+
+    public void setTextColor(int textColor) {
+        mTextColor = textColor;
+        mUpdateColor = true;
+    }
+
     @Override
     public void updateMeasureState(TextPaint paint) {
         paint.setTypeface(mTypeface);

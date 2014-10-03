@@ -23,6 +23,5 @@
           android:columnWidth="@dimen/movie_grid_item_width"
           android:verticalSpacing="@dimen/movie_grid_spacing"
           android:horizontalSpacing="@dimen/movie_grid_spacing"
-          android:fastScrollAlwaysVisible="true"
           android:drawSelectorOnTop="true"
           android:clipToPadding="false" />

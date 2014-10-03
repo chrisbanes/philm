@@ -750,10 +750,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
 
             @Override
-            public void setActionBarBackgroundAlpha(float alpha) {
+            public void setHeaderScrollValue(float scrollPercentage) {
                 Display display = getDisplay();
                 if (display != null) {
-                    getDisplay().setActionBarBackgroundAlpha(alpha);
+                    getDisplay().setActionBarAlpha(scrollPercentage);
                 }
             }
 
@@ -1957,7 +1957,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         String getUiTitle();
 
-        void setActionBarBackgroundAlpha(float alpha);
+        void setHeaderScrollValue(float alpha);
     }
 
     private class LibraryDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {

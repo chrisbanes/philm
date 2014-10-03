@@ -212,7 +212,7 @@ public class PinnedSectionListView extends ListView {
     private void initView() {
         setOnScrollListener(mOnScrollListener);
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        initShadow(false);
+        initShadow(true);
 
         mPinnedPaint = new Paint();
         mPinnedPaint.setColor(getThemeBackgroundColor());

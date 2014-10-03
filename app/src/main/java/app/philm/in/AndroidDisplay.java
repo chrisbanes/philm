@@ -74,7 +74,6 @@ public class AndroidDisplay implements Display {
     private final ActionBarActivity mActivity;
     private final DrawerLayout mDrawerLayout;
     private final InsetFrameLayout mInsetFrameLayout;
-    private final PhilmTypefaceSpan mDefaultTitleSpan;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private final Drawable mActionBarBackground;
@@ -88,7 +87,6 @@ public class AndroidDisplay implements Display {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mDrawerLayout = drawerLayout;
         mInsetFrameLayout = insetFrameLayout;
-        mDefaultTitleSpan = new PhilmTypefaceSpan(activity, FontTextView.FONT_ROBOTO_CONDENSED);
         mDrawerToggle = drawerToggle;
 
         final TypedValue outValue = new TypedValue();
@@ -239,7 +237,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarTitle(CharSequence title) {
         ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
-            ab.setTitle(convertToCondensed(title));
+            ab.setTitle(title);
         }
     }
 
@@ -247,7 +245,7 @@ public class AndroidDisplay implements Display {
     public void setActionBarSubtitle(CharSequence title) {
         ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
-            ab.setSubtitle(convertToCondensed(title));
+            ab.setSubtitle(title);
         }
     }
 
@@ -346,10 +344,6 @@ public class AndroidDisplay implements Display {
 
         mColorScheme = colorScheme;
 
-        if (mInsetFrameLayout != null) {
-            // TODO:
-        }
-
         final ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
             CharSequence title = ab.getTitle();
@@ -384,23 +378,10 @@ public class AndroidDisplay implements Display {
         ActivityCompat.startActivity(mActivity, intent, options);
     }
 
-    private CharSequence convertToCondensed(final CharSequence string) {
-        if (TextUtils.isEmpty(string)) {
-            return string;
-        }
-
-        SpannableString s = new SpannableString(string);
-        s.setSpan(mDefaultTitleSpan, 0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        return s;
-    }
-
     @Override
-    public void setActionBarBackgroundAlpha(float alpha) {
-        mActionBarBackground.setAlpha(Math.round(255 * alpha));
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mActivity.getActionBar().setBackgroundDrawable(mActionBarBackground);
-        }
+    public void setActionBarAlpha(float alpha) {
+        final int alphaInt = Math.round(255 * alpha);
+        mActionBarBackground.setAlpha(alphaInt);
     }
 
 }

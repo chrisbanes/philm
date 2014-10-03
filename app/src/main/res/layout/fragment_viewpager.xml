@@ -30,9 +30,10 @@
         android:id="@+id/viewpager_tabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/movie_discover_tab_height"
-        android:background="?attr/default_inset_color"
-        app:dividerColor="#60FFFFFF"
-        app:indicatorHeight="4dp"
-        app:selectedColor="?android:attr/colorBackground" />
+        android:background="?attr/colorPrimary"
+        android:textAppearance="@style/TextAppearance.Philm.Tab"
+        app:dividerColor="#30FFFFFF"
+        app:indicatorHeight="2dp"
+        app:selectedColor="?attr/colorAccent" />
 
 </FrameLayout>

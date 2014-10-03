@@ -30,14 +30,14 @@ def versionPatch = 1
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 android {
-    compileSdkVersion 'android-L'
-    buildToolsVersion "20.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.0"
 
     defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         minSdkVersion 14
-        targetSdkVersion 'L'
+        targetSdkVersion 21
 
         buildConfigField "String", "BUILD_TIME", "\"${buildTime()}\""
     }
@@ -81,18 +81,17 @@ android {
 dependencies {
     compile project(':lib')
 
-    compile 'com.android.support:palette-v7:21.+'
+    compile 'com.android.support:appcompat-v7:21.0.+'
+    compile 'com.android.support:palette-v7:21.0.+'
 
-    compile 'com.squareup.okhttp:okhttp:1.6.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:1.6.0'
-    compile 'com.squareup.picasso:picasso:2.+'
-    compile 'nl.qbusict:cupboard:2.+'
+    compile 'com.squareup.picasso:picasso:2.3.+'
+    compile 'nl.qbusict:cupboard:2.0.+'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.github.johnpersano:supertoasts:1.3.+@aar'
     compile 'com.github.castorflex.smoothprogressbar:library:0.4.+'
     compile 'com.github.chrisbanes.photoview:library:1.2.+'
 
-    apt 'com.squareup.dagger:dagger-compiler:1.+'
+    apt 'com.squareup.dagger:dagger-compiler:1.2.+'
 
     compile fileTree(dir: 'libs', include: '*.jar')
 }

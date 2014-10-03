@@ -16,26 +16,13 @@
 
 <resources>
 
-    <style name="Widget.Philm.ActionBar" parent="@android:style/Widget.Material.Light.ActionBar.Solid">
-    </style>
-
-    <style name="Widget.Philm.Dark.ActionBar" parent="@android:style/Widget.Material.ActionBar.Solid">
-    </style>
-
-    <style name="Widget.Philm.ActionBar.Progress" parent="@android:style/Widget.Material.Light.ProgressBar">
-    </style>
+    <style name="Widget.Philm.ActionBar.Progress" parent="@android:style/Widget.Material.Light.ProgressBar" />
 
     <style name="Widget.Philm.ProgressBar" parent="android:Widget.Material.Light.ProgressBar.Horizontal">
-        <item name="spb_color">@color/primary_accent_color</item>
         <item name="android:minHeight">4dp</item>
         <item name="android:maxHeight">4dp</item>
     </style>
 
-    <style name="Widget.Philm.RatingBar" parent="android:Widget.Material.Light.RatingBar">
-    </style>
-
-    <style name="Widget.Philm.AutoCompleteTextView"
-           parent="android:Widget.Material.Light.AutoCompleteTextView">
-    </style>
+    <style name="Widget.Philm.RatingBar" parent="android:Widget.Material.Light.RatingBar" />
 
 </resources>

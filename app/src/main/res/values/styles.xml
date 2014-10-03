@@ -16,17 +16,15 @@
 
 <resources>
 
-    <style name="Widget.Philm.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">?attr/default_inset_color</item>
-        <item name="android:indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
+    <style name="Widget.Philm.ActionBar" parent="Widget.AppCompat.ActionBar.Solid">
+        <item name="indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
     </style>
 
-    <style name="Widget.Philm.Dark.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">@null</item>
-        <item name="android:indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
+    <style name="Widget.Philm.Dark.ActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
     </style>
 
-    <style name="Widget.Philm.ActionBar.Progress" parent="@android:style/Widget.Holo.Light.ProgressBar">
+    <style name="Widget.Philm.ActionBar.Progress" parent="Widget.AppCompat.ProgressBar">
         <item name="android:minHeight">36dip</item>
         <item name="android:maxHeight">36dip</item>
     </style>
@@ -79,7 +77,7 @@
         <item name="font">roboto_condensed_bold</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">@dimen/spacing_major</item>
-        <item name="android:background">@color/primary_accent_color_dark_20</item>
+        <item name="android:background">?attr/colorPrimaryDark</item>
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
@@ -189,15 +187,8 @@
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
-    <style name="Widget.Philm.Spinner" parent="android:Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/philmcolor_spinner_background_holo_light</item>
-        <item name="android:dropDownSelector">
-            @drawable/philmcolor_list_selector_holo_light
-        </item>
-    </style>
-
     <style name="Widget.Philm.ProgressBar" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
-        <item name="spb_color">@color/primary_accent_color</item>
+        <item name="spb_color">?attr/colorPrimary</item>
         <item name="android:minHeight">4dp</item>
         <item name="android:maxHeight">4dp</item>
     </style>
@@ -205,12 +196,6 @@
     <style name="Widget.Philm.RatingBar" parent="android:Widget.Holo.Light.RatingBar">
         <item name="android:progressDrawable">@drawable/philmcolor_ratingbar_full_holo_light</item>
         <item name="android:indeterminateDrawable">@drawable/philmcolor_ratingbar_full_holo_light</item>
-    </style>
-
-    <style name="Widget.Philm.AutoCompleteTextView"
-           parent="android:Widget.Holo.Light.AutoCompleteTextView">
-        <item name="android:dropDownSelector">@drawable/philmcolor_list_selector_holo_light</item>
-        <item name="android:background">@drawable/philmcolor_edit_text_holo_light</item>
     </style>
 
     <style name="TextAppearance.Philm.FloatLabel" parent="android:Widget">

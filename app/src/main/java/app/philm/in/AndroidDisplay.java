@@ -19,28 +19,27 @@ package app.philm.in;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 
-import app.philm.in.drawable.TintingBitmapDrawable;
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
 import app.philm.in.fragments.CheckinMovieFragment;
@@ -64,54 +63,43 @@ import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.model.ColorScheme;
-import app.philm.in.util.ActionBarUpIndicatorHelper;
 import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.view.FontTextView;
 import app.philm.in.view.InsetFrameLayout;
 
 public class AndroidDisplay implements Display {
 
-    private static int[] android_styleable_ActionBar = { android.R.attr.background };
+    private static int[] android_styleable_ActionBar = { R.attr.background };
 
-    private final FragmentActivity mActivity;
+    private final ActionBarActivity mActivity;
     private final DrawerLayout mDrawerLayout;
     private final InsetFrameLayout mInsetFrameLayout;
     private final PhilmTypefaceSpan mDefaultTitleSpan;
 
-    private final Drawable mUpIndicator;
-    private final Drawable mDrawerIndicator;
+    private ActionBarDrawerToggle mDrawerToggle;
     private final Drawable mActionBarBackground;
 
     private ColorScheme mColorScheme;
 
-    public AndroidDisplay(FragmentActivity activity,
+    public AndroidDisplay(ActionBarActivity activity,
+            ActionBarDrawerToggle drawerToggle,
             DrawerLayout drawerLayout,
             InsetFrameLayout insetFrameLayout) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mDrawerLayout = drawerLayout;
         mInsetFrameLayout = insetFrameLayout;
         mDefaultTitleSpan = new PhilmTypefaceSpan(activity, FontTextView.FONT_ROBOTO_CONDENSED);
-
-        mUpIndicator = ActionBarUpIndicatorHelper.getThemeUpIndicator(mActivity);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.L ||
-                Objects.equal("L", Build.VERSION.CODENAME)) {
-            mDrawerIndicator = activity.getDrawable(R.drawable.ic_drawer_ab);
-        } else {
-            mDrawerIndicator = TintingBitmapDrawable.createFromColorResource(
-                    activity.getResources(),
-                    R.drawable.ic_drawer,
-                    R.color.dark_gray);
-        }
+        mDrawerToggle = drawerToggle;
 
         final TypedValue outValue = new TypedValue();
-        mActivity.getTheme().resolveAttribute(android.R.attr.actionBarStyle, outValue, true);
+        mActivity.getTheme().resolveAttribute(R.attr.actionBarStyle, outValue, true);
         TypedArray abStyle = mActivity.obtainStyledAttributes(outValue.resourceId,
                 android_styleable_ActionBar);
-        mActionBarBackground = abStyle.getDrawable(0).mutate();
+        Drawable bg = abStyle.getDrawable(0);
+        mActionBarBackground = bg != null ? bg.mutate() : null;
         abStyle.recycle();
 
-        mActivity.getActionBar().setBackgroundDrawable(mActionBarBackground);
+        mActivity.getSupportActionBar().setBackgroundDrawable(mActionBarBackground);
     }
 
     @Override
@@ -240,19 +228,16 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showUpNavigation(boolean show) {
-        final ActionBar ab = mActivity.getActionBar();
+        final ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
-
-            ActionBarUpIndicatorHelper.setActionBarUpIndicator(mActivity,
-                    show ? mUpIndicator : mDrawerIndicator);
         }
     }
 
     @Override
     public void setActionBarTitle(CharSequence title) {
-        ActionBar ab = mActivity.getActionBar();
+        ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
             ab.setTitle(convertToCondensed(title));
         }
@@ -260,7 +245,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void setActionBarSubtitle(CharSequence title) {
-        ActionBar ab = mActivity.getActionBar();
+        ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
             ab.setSubtitle(convertToCondensed(title));
         }
@@ -365,7 +350,7 @@ public class AndroidDisplay implements Display {
             // TODO:
         }
 
-        final ActionBar ab = mActivity.getActionBar();
+        final ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
             CharSequence title = ab.getTitle();
             if (!TextUtils.isEmpty(title)) {

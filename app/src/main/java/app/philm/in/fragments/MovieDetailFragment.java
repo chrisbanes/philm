@@ -20,15 +20,14 @@ import com.google.common.base.Preconditions;
 
 import com.squareup.picasso.Picasso;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.graphics.Palette;
-import android.support.v7.graphics.PaletteItem;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,18 +97,18 @@ public class MovieDetailFragment extends BaseDetailFragment
                             return;
                         }
 
-                        /**
-                         * This is not optimal and does not lead to good text contrast. Needs
-                         * improving for final release.
-                         */
-                        ColorScheme scheme = new ColorScheme(
-                                unwrap(palette.getVibrantColor()),
-                                unwrap(palette.getDarkVibrantColor()),
-                                unwrap(palette.getLightVibrantColor()),
-                                unwrap(palette.getDarkMutedColor()),
-                                Color.BLACK);
+                        Palette.Swatch primary = palette.getVibrantSwatch();
+                        Palette.Swatch secondary = palette.getDarkVibrantSwatch();
+                        Palette.Swatch tertiary = palette.getLightVibrantSwatch();
 
                         if (hasCallbacks()) {
+                            final ColorScheme scheme = new ColorScheme(
+                                    primary.getRgb(),
+                                    secondary.getRgb(),
+                                    tertiary.getRgb(),
+                                    primary.getTitleTextColor(),
+                                    secondary.getTitleTextColor());
+
                             getCallbacks().updateColorScheme(scheme);
                         }
                     }
@@ -118,14 +117,8 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         private boolean isComplete(Palette palette) {
-            return palette.getVibrantColor() != null && palette.getVibrantColor() != null &&
-                    palette.getLightVibrantColor() != null && palette.getDarkMutedColor() != null;
-        }
-
-        private int unwrap(PaletteItem primary) {
-            return primary != null
-                    ? primary.getRgb()
-                    : Color.WHITE;
+            return palette.getVibrantSwatch() != null && palette.getVibrantSwatch() != null &&
+                    palette.getLightVibrantSwatch() != null && palette.getDarkMutedSwatch() != null;
         }
 
         @Override
@@ -428,9 +421,9 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     private void setActionBarTitleEnabled(boolean enabled) {
-        Activity activity = getActivity();
+        ActionBarActivity activity = (ActionBarActivity) getActivity();
         if (activity != null) {
-            final ActionBar ab = activity.getActionBar();
+            final ActionBar ab = activity.getSupportActionBar();
             if (ab != null) {
                 ab.setDisplayShowTitleEnabled(enabled);
             }

@@ -22,7 +22,7 @@
     <item
           android:id="@+id/menu_mark_seen"
           app:showAsAction="ifRoom"
-          android:icon="@drawable/ic_action_seen"
+          android:icon="@drawable/ic_btn_seen"
           android:title="@string/action_mark_seen"
           android:visible="false"/>
 

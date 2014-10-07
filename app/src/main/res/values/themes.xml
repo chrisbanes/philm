@@ -19,9 +19,11 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Platform.Theme.Philm" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowActionModeOverlay">true</item>
     </style>
 
     <style name="Platform.Theme.Philm.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowActionModeOverlay">true</item>
     </style>
 
     <style name="Base.Theme.Philm" parent="Platform.Theme.Philm">
@@ -39,6 +41,8 @@
         <item name="android:ratingBarStyle">@style/Widget.Philm.RatingBar</item>
 
         <item name="grey_shade">@color/light_gray</item>
+
+        <item name="windowActionModeOverlay">true</item>
 
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_color_dark</item>

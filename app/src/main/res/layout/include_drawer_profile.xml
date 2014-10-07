@@ -20,7 +20,7 @@
              android:id="@+id/layout_profile"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:background="?attr/colorPrimaryDark">
+             android:background="?attr/colorAccent">
 
     <app.philm.in.view.PhilmImageView
           android:id="@+id/imageview_checkin_movie"

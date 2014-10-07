@@ -22,6 +22,7 @@ import com.github.johnpersano.supertoasts.SuperToast;
 import com.github.johnpersano.supertoasts.util.Style;
 
 import android.graphics.Rect;
+import android.support.v4.app.Fragment;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.controllers.MovieController;
@@ -30,7 +31,7 @@ import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;
 
 
-public abstract class BasePhilmMovieFragment extends InsetAwareFragment
+public abstract class BasePhilmMovieFragment extends Fragment
         implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
@@ -96,10 +97,6 @@ public abstract class BasePhilmMovieFragment extends InsetAwareFragment
 
     private MovieController getController() {
         return PhilmApplication.from(getActivity()).getMainController().getMovieController();
-    }
-
-    @Override
-    public void populateInsets(Rect insets) {
     }
 
     @Override

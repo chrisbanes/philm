@@ -35,14 +35,10 @@
     <style name="Theme.Philm" parent="Base.Theme.Philm">
         <item name="android:textColorHighlight">@color/primary_color_translucent</item>
 
-        <item name="android:fastScrollThumbDrawable">@drawable/philmcolor_fastscroll_thumb_holo</item>
-
         <item name="android:progressBarStyleHorizontal">@style/Widget.Philm.ProgressBar</item>
-
         <item name="android:ratingBarStyle">@style/Widget.Philm.RatingBar</item>
 
         <item name="grey_shade">@color/light_gray</item>
-        <item name="default_inset_color">@color/chrome_background</item>
 
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_color_dark</item>
@@ -51,8 +47,6 @@
 
     <style name="Theme.Philm.Images" parent="Base.Theme.Philm.Dark">
         <item name="android:windowBackground">@android:color/black</item>
-
-        <item name="default_inset_color">@color/translucent_black_dark</item>
     </style>
 
     <style name="Theme.Philm.Framed" parent="Theme.Philm">

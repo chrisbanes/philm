@@ -16,55 +16,29 @@
   ~ limitations under the License.
   -->
 
-<app.philm.in.view.InsetFrameLayout
+<android.support.v4.widget.DrawerLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/fl_insets"
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:insetBackground="?attr/default_inset_color">
+        android:fitsSystemWindows="true">
 
-    <android.support.v4.widget.DrawerLayout
-            android:id="@+id/drawer_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <include layout="@layout/activity_no_drawer"/>
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:minHeight="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-            <FrameLayout
-                    android:id="@+id/fragment_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="0px"
-                    android:layout_weight="1"
-                    />
-
-        </LinearLayout>
+    <app.philm.in.view.DrawInsetsFrameLayout
+            android:layout_height="match_parent"
+            android:layout_width="@dimen/drawer_side_menu_width"
+            android:layout_gravity="left"
+            android:fitsSystemWindows="true"
+            app:insetBackground="?attr/colorAccent">
 
         <fragment
                 android:id="@+id/fragment_side_menu"
                 android:name="app.philm.in.fragments.SideMenuFragment"
-                android:layout_width="@dimen/drawer_side_menu_width"
-                android:layout_height="match_parent"
-                android:layout_gravity="left"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    </android.support.v4.widget.DrawerLayout>
+    </app.philm.in.view.DrawInsetsFrameLayout>
 
-    <LinearLayout
-            android:id="@+id/card_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"/>
-
-</app.philm.in.view.InsetFrameLayout>
+</android.support.v4.widget.DrawerLayout>

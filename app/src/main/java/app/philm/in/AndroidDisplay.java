@@ -20,8 +20,6 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,51 +60,35 @@ import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.util.ColorUtils;
-import app.philm.in.util.PhilmTypefaceSpan;
-import app.philm.in.view.FontTextView;
-import app.philm.in.view.InsetFrameLayout;
 
 public class AndroidDisplay implements Display {
 
-    private static int[] android_styleable_ActionBar = { R.attr.background };
+    private static final TypedValue sTypedValue = new TypedValue();
 
     private final ActionBarActivity mActivity;
     private final DrawerLayout mDrawerLayout;
-    private final InsetFrameLayout mInsetFrameLayout;
-
-    private ActionBarDrawerToggle mDrawerToggle;
-    private final Drawable mActionBarBackground;
+    private final ActionBarDrawerToggle mDrawerToggle;
 
     private ColorScheme mColorScheme;
 
-    private int mOriginalStatusBarColor;
+    private final int mColorPrimaryDark;
 
     private Toolbar mToolbar;
 
     public AndroidDisplay(ActionBarActivity activity,
             Toolbar toolbar,
             ActionBarDrawerToggle drawerToggle,
-            DrawerLayout drawerLayout,
-            InsetFrameLayout insetFrameLayout) {
+            DrawerLayout drawerLayout) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mDrawerLayout = drawerLayout;
-        mInsetFrameLayout = insetFrameLayout;
         mDrawerToggle = drawerToggle;
-
         mToolbar = toolbar;
 
-        final TypedValue outValue = new TypedValue();
-        mActivity.getTheme().resolveAttribute(R.attr.actionBarStyle, outValue, true);
-        TypedArray abStyle = mActivity.obtainStyledAttributes(outValue.resourceId,
-                android_styleable_ActionBar);
-        Drawable bg = abStyle.getDrawable(0);
-        mActionBarBackground = bg != null ? bg.mutate() : null;
-        abStyle.recycle();
+        mActivity.getTheme().resolveAttribute(R.attr.colorPrimaryDark, sTypedValue, true);
+        mColorPrimaryDark = sTypedValue.data;
 
-        mActivity.getSupportActionBar().setBackgroundDrawable(mActionBarBackground);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            mOriginalStatusBarColor = mActivity.getWindow().getStatusBarColor();
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setStatusBarBackgroundColor(mColorPrimaryDark);
         }
     }
 
@@ -378,11 +360,13 @@ public class AndroidDisplay implements Display {
     @Override
     public void setActionBarAlpha(float alpha) {
         final int alphaInt = Math.round(255 * alpha);
-        mActionBarBackground.setAlpha(alphaInt);
+        mToolbar.getBackground().mutate().setAlpha(alphaInt);
 
-        if (Build.VERSION.SDK_INT >= 21) {
-            mActivity.getWindow()
-                    .setStatusBarColor(ColorUtils.blendColors(mOriginalStatusBarColor, 0, alpha));
+        final int statusBarColor = ColorUtils.blendColors(mColorPrimaryDark, 0, alpha);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setStatusBarBackgroundColor(statusBarColor);
+        } else if (Build.VERSION.SDK_INT >= 21) {
+            mActivity.getWindow().setStatusBarColor(statusBarColor);
         }
     }
 

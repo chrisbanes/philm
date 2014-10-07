@@ -121,11 +121,6 @@ public class MovieImagesFragment extends BasePhilmMovieFragment
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    public void populateInsets(Rect insets) {
-        mViewPager.setPadding(insets.left, 0, insets.right, 0);
-    }
-
     private class ImageAdapter extends PagerAdapter {
 
         @Override
@@ -139,11 +134,6 @@ public class MovieImagesFragment extends BasePhilmMovieFragment
 
             final PhilmImageView imageView = (PhilmImageView) view.findViewById(R.id.imageview_backdrop);
             imageView.setAutoFade(false);
-
-            final Rect insets = getInsets();
-            if (insets != null) {
-                imageView.setPadding(0, insets.top, 0, insets.bottom);
-            }
 
             final PhotoViewAttacher attacher = new PhotoViewAttacher(imageView);
 

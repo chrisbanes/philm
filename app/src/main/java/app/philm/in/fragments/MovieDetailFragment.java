@@ -246,19 +246,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    public void populateInsets(Rect insets) {
-        super.populateInsets(insets);
-
-        if (mBackdropImageView != null) {
-            final int targetBackdropHeight = mBackdropOriginalHeight + insets.top;
-            if (mBackdropImageView.getLayoutParams().height != targetBackdropHeight) {
-                mBackdropImageView.getLayoutParams().height = targetBackdropHeight;
-                mBackdropImageView.requestLayout();
-            }
-        }
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Log.d(LOG_TAG, "onItemClick. Pos: " + position);
 

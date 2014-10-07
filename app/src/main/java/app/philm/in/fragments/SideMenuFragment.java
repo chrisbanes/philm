@@ -26,6 +26,7 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +44,6 @@ import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.drawable.RoundedAvatarDrawable;
 import app.philm.in.drawable.TintingBitmapDrawable;
-import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.WatchingMovie;
@@ -51,7 +51,7 @@ import app.philm.in.util.TextUtils;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.StringManager;
 
-public class SideMenuFragment extends InsetAwareFragment implements MainController.SideMenuUi,
+public class SideMenuFragment extends Fragment implements MainController.SideMenuUi,
         View.OnClickListener, AdapterView.OnItemClickListener {
 
     private static final float CHECKIN_BACKDROP_DARKEN = 0.65f;
@@ -214,12 +214,6 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         if (mCallbacks != null) {
             mCallbacks.onSideMenuItemSelected((SideMenuItem) parent.getItemAtPosition(position));
         }
-    }
-
-    @Override
-    public void populateInsets(Rect insets) {
-        getView().setPadding(insets.left, insets.top, 0, 0);
-        mListView.setPadding(0, 0, 0, insets.bottom);
     }
 
     private class SideMenuItemAdapter extends BaseAdapter {

@@ -59,7 +59,6 @@
 
     <declare-styleable name="PhilmTheme">
         <attr name="grey_shade" format="color|reference" />
-        <attr name="default_inset_color" format="color|reference" />
     </declare-styleable>
 
     <declare-styleable name="ExpandingTextView">

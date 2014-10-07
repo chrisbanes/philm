@@ -36,27 +36,18 @@ import android.view.Window;
 import java.util.HashSet;
 
 import app.philm.in.controllers.MainController;
-import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.view.InsetFrameLayout;
 
 public abstract class BasePhilmActivity extends ActionBarActivity
-        implements MainController.HostCallbacks, InsetFrameLayout.OnInsetsCallback {
+        implements MainController.HostCallbacks {
 
     private MainController mMainController;
     private Display mDisplay;
 
     private ActionBarDrawerToggle mDrawerToggle;
-
-    private HashSet<OnActivityInsetsCallback> mInsetCallbacks;
-
-    private Rect mInsets;
-
     private View mCardContainer;
-
     private Toolbar mToolbar;
 
-    private InsetFrameLayout mInsetFrameLayout;
     private DrawerLayout mDrawerLayout;
 
     @Override
@@ -72,11 +63,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
 
         mCardContainer = findViewById(R.id.card_container);
 
-        mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.fl_insets);
-        if (mInsetFrameLayout != null) {
-            mInsetFrameLayout.setOnInsetsCallback(this);
-        }
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
@@ -87,6 +73,10 @@ public abstract class BasePhilmActivity extends ActionBarActivity
             mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                     R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
             mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+            if (mToolbar != null) {
+                mDrawerLayout.setStatusBarBackgroundColor(0xff00ff00);
+            }
 
             final ActionBar ab = getSupportActionBar();
             if (ab != null) {
@@ -99,9 +89,7 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         SuperCardToast.onRestoreState(savedInstanceState, this);
 
         mMainController = PhilmApplication.from(this).getMainController();
-
-        mDisplay = new AndroidDisplay(this, mToolbar, mDrawerToggle,
-                mDrawerLayout, mInsetFrameLayout);
+        mDisplay = new AndroidDisplay(this, mToolbar, mDrawerToggle, mDrawerLayout);
 
         handleIntent(getIntent(), getDisplay());
     }
@@ -208,38 +196,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
     protected void onDestroy() {
         super.onDestroy();
         mDisplay = null;
-    }
-
-    public void addInsetChangedCallback(OnActivityInsetsCallback callback) {
-        if (mInsetCallbacks == null) {
-            mInsetCallbacks = new HashSet<>();
-        }
-        mInsetCallbacks.add(callback);
-
-        if (mInsets != null) {
-            callback.onInsetsChanged(mInsets);
-        }
-    }
-
-    public void removeInsetChangedCallback(OnActivityInsetsCallback callback) {
-        if (mInsetCallbacks != null) {
-            mInsetCallbacks.remove(callback);
-        }
-    }
-
-    @Override
-    public void onInsetsChanged(Rect insets) {
-        mInsets = insets;
-
-        if (mCardContainer != null) {
-            mCardContainer.setPadding(0, insets.top, 0, 0);
-        }
-
-        if (!PhilmCollections.isEmpty(mInsetCallbacks)) {
-            for (OnActivityInsetsCallback callback : mInsetCallbacks) {
-                callback.onInsetsChanged(insets);
-            }
-        }
     }
 
     public static interface OnActivityInsetsCallback {

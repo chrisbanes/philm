@@ -15,7 +15,16 @@
   ~ limitations under the License.
   -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_pressed="true" android:drawable="@drawable/philmcolor_fastscroll_thumb_pressed_holo" />
-    <item android:drawable="@drawable/philmcolor_fastscroll_thumb_default_holo" />
-</selector>
+<resources>
+
+    <style name="Platform.Theme.Philm" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+    </style>
+
+    <style name="Platform.Theme.Philm.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+    </style>
+
+</resources>

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ import app.philm.in.R;
 import app.philm.in.view.FontTextView;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
-public abstract class ListFragment<E extends AbsListView> extends InsetAwareFragment {
+public abstract class ListFragment<E extends AbsListView> extends Fragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
     static final int INTERNAL_PROGRESS_ID = 0x00ff0002;
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
@@ -346,24 +347,6 @@ public abstract class ListFragment<E extends AbsListView> extends InsetAwareFrag
      */
     public ListAdapter getListAdapter() {
         return mAdapter;
-    }
-
-    @Override
-    public void populateInsets(Rect insets) {
-        mInsets = insets;
-        updateInsets(insets);
-    }
-
-    private void updateInsets(Rect insets) {
-        mSecondaryProgressView.setPadding(0, 0, 0, insets.bottom);
-
-        final E view = getListView();
-        view.setClipToPadding(false);
-        view.setPadding(
-                insets.left,
-                insets.top,
-                insets.right,
-                insets.bottom);
     }
 
     protected abstract E createListView(Context context, LayoutInflater inflater);

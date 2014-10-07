@@ -104,11 +104,6 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
     }
 
-    @Override
-    public void populateInsets(Rect insets) {
-        getListView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
-    }
-
     protected abstract ListAdapter createListAdapter();
 
     protected ListView getListView() {

@@ -25,8 +25,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.graphics.Palette;
 import android.text.TextUtils;
 import android.util.Log;
@@ -93,15 +91,22 @@ public class MovieDetailFragment extends BaseDetailFragment
                 Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(Palette palette) {
-                        if (!isComplete(palette)) {
-                            return;
-                        }
-
                         Palette.Swatch primary = palette.getVibrantSwatch();
                         Palette.Swatch secondary = palette.getDarkVibrantSwatch();
                         Palette.Swatch tertiary = palette.getLightVibrantSwatch();
 
-                        if (hasCallbacks()) {
+                        if (primary == null) {
+                            primary = palette.getMutedSwatch();
+                        }
+                        if (secondary == null) {
+                            secondary = palette.getDarkMutedSwatch();
+                        }
+                        if (tertiary == null) {
+                            tertiary = palette.getLightMutedSwatch();
+                        }
+
+                        if (hasCallbacks() && primary != null && secondary != null &&
+                                tertiary != null) {
                             final ColorScheme scheme = new ColorScheme(
                                     primary.getRgb(),
                                     secondary.getRgb(),
@@ -114,11 +119,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                     }
                 });
             }
-        }
-
-        private boolean isComplete(Palette palette) {
-            return palette.getVibrantSwatch() != null && palette.getVibrantSwatch() != null &&
-                    palette.getLightVibrantSwatch() != null && palette.getDarkMutedSwatch() != null;
         }
 
         @Override
@@ -325,7 +325,8 @@ public class MovieDetailFragment extends BaseDetailFragment
     @Override
     public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount,
                          int totalItemCount) {
-        if (visibleItemCount > 0 && firstVisibleItem == 0) {
+        if (visibleItemCount > 0 && firstVisibleItem == 0 &&
+                absListView.getItemAtPosition(0) == DetailItemType.BACKDROP_SPACING) {
             final View firstView = absListView.getChildAt(0);
 
             if (firstView.getBottom() > absListView.getPaddingTop()) {
@@ -732,7 +733,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     R.string.action_mark_unseen);
             if (seenButton.getDrawable() == null) {
                 seenButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateList(getResources(),
+                        TintingBitmapDrawable.createFromStateListResource(getResources(),
                                 R.drawable.ic_btn_seen, R.color.default_button));
             }
 
@@ -745,7 +746,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     R.string.action_remove_watchlist);
             if (watchlistButton.getDrawable() == null) {
                 watchlistButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateList(getResources(),
+                        TintingBitmapDrawable.createFromStateListResource(getResources(),
                                 R.drawable.ic_btn_watchlist, R.color.default_button));
             }
 
@@ -759,7 +760,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     R.string.action_remove_collection);
             if (collectionButton.getDrawable() == null) {
                 collectionButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateList(getResources(),
+                        TintingBitmapDrawable.createFromStateListResource(getResources(),
                                 R.drawable.ic_btn_collection, R.color.default_button));
             }
 
@@ -769,7 +770,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             CheatSheet.setup(checkinButton);
             if (mCheckinButtonVisible && checkinButton.getDrawable() == null) {
                 checkinButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateList(getResources(),
+                        TintingBitmapDrawable.createFromStateListResource(getResources(),
                                 R.drawable.ic_btn_checkin, R.color.default_button));
             }
 

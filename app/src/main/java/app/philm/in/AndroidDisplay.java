@@ -63,6 +63,7 @@ import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.model.ColorScheme;
+import app.philm.in.util.ColorUtils;
 import app.philm.in.util.PhilmTypefaceSpan;
 import app.philm.in.view.FontTextView;
 import app.philm.in.view.InsetFrameLayout;
@@ -79,6 +80,8 @@ public class AndroidDisplay implements Display {
     private final Drawable mActionBarBackground;
 
     private ColorScheme mColorScheme;
+
+    private int mOriginalStatusBarColor;
 
     public AndroidDisplay(ActionBarActivity activity,
             ActionBarDrawerToggle drawerToggle,
@@ -98,6 +101,10 @@ public class AndroidDisplay implements Display {
         abStyle.recycle();
 
         mActivity.getSupportActionBar().setBackgroundDrawable(mActionBarBackground);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            mOriginalStatusBarColor = mActivity.getWindow().getStatusBarColor();
+        }
     }
 
     @Override
@@ -343,19 +350,6 @@ public class AndroidDisplay implements Display {
         }
 
         mColorScheme = colorScheme;
-
-        final ActionBar ab = mActivity.getSupportActionBar();
-        if (ab != null) {
-            CharSequence title = ab.getTitle();
-            if (!TextUtils.isEmpty(title)) {
-                setActionBarTitle(title);
-            }
-
-            CharSequence subtitle = ab.getSubtitle();
-            if (!TextUtils.isEmpty(subtitle)) {
-                setActionBarSubtitle(subtitle);
-            }
-        }
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {
@@ -382,6 +376,11 @@ public class AndroidDisplay implements Display {
     public void setActionBarAlpha(float alpha) {
         final int alphaInt = Math.round(255 * alpha);
         mActionBarBackground.setAlpha(alphaInt);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            mActivity.getWindow()
+                    .setStatusBarColor(ColorUtils.blendColors(mOriginalStatusBarColor, 0, alpha));
+        }
     }
 
 }

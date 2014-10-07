@@ -129,7 +129,7 @@
         <item name="android:textSize">@dimen/movie_detail_summary_textsize</item>
         <item name="android:padding">@dimen/spacing_minor</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
         <item name="collapsed_maxLines">@integer/default_summary_maxlines</item>
     </style>
 

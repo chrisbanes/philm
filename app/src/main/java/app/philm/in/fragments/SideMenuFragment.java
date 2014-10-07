@@ -19,6 +19,7 @@ package app.philm.in.fragments;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
@@ -241,15 +242,15 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = getLayoutInflater(null)
-                        .inflate(R.layout.simple_list_item_activated, viewGroup, false);
+                view = getLayoutInflater(null).inflate(R.layout.item_drawer, viewGroup, false);
             }
 
             final SideMenuItem item = getItem(position);
-            final TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            final TextView textView = (TextView) view.findViewById(R.id.imageview_drawer_title);
             textView.setText(StringManager.getStringResId(item));
 
-            textView.setCompoundDrawablesWithIntrinsicBounds(getIcon(item), null, null, null);
+            final ImageView iconView = (ImageView) view.findViewById(R.id.imageview_drawer_icon);
+            iconView.setImageDrawable(getIcon(item, textView.getTextColors()));
 
             return view;
         }
@@ -281,7 +282,7 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         }
     };
 
-    Drawable getIcon(SideMenuItem item) {
+    Drawable getIcon(SideMenuItem item, ColorStateList colorStateList) {
         Drawable d = mIcons.get(item);
 
         if (d != null) {
@@ -290,20 +291,20 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
 
         switch (item) {
             case DISCOVER:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_movie, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_movie, colorStateList);
                 break;
             case LIBRARY:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_collection, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_collection, colorStateList);
                 break;
             case WATCHLIST:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_watchlist, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_watchlist, colorStateList);
                 break;
             case SEARCH:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_search, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_search, colorStateList);
                 break;
         }
 

@@ -27,8 +27,8 @@
     <dimen name="drawer_movie_checkin_poster_width">56dp</dimen>
     <!-- Should be movie_detail_poster_width * 1.6 -->
     <dimen name="drawer_movie_checkin_poster_height">90dp</dimen>
-    <dimen name="drawer_account_avatar_width">44dp</dimen>
-    <dimen name="drawer_account_avatar_height">44dp</dimen>
+    <dimen name="drawer_account_avatar_width">56dp</dimen>
+    <dimen name="drawer_account_avatar_height">56dp</dimen>
 
     <dimen name="movie_detail_login_title_textsize">26dp</dimen>
 

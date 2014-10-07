@@ -58,10 +58,6 @@
 
         <item name="actionBarStyle">@style/Widget.Philm.Dark.ActionBar</item>
         <item name="default_inset_color">@color/translucent_black_dark</item>
-
-        <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/primary_color_dark</item>
-        <item name="colorAccent">@color/accent_color</item>
     </style>
 
     <style name="Theme.Philm.Framed" parent="Theme.Philm">

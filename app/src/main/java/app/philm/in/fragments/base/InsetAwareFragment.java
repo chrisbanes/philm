@@ -28,8 +28,6 @@ public abstract class InsetAwareFragment extends Fragment
         implements BasePhilmActivity.OnActivityInsetsCallback {
 
     private final Rect mBaseInsets = new Rect();
-    private Rect mAdditionalInsets;
-
     private final Rect mPopulatedInsets = new Rect();
 
     @Override
@@ -58,32 +56,8 @@ public abstract class InsetAwareFragment extends Fragment
     protected void populateInsets(Rect insets) {
     }
 
-    public void setAdditionalInsets(final Rect rect) {
-        mAdditionalInsets = rect;
-        doPopulateInsets();
-    }
-
-    protected void propogateAdditionalInsetsToChildren(final Rect rect) {
-        final List<Fragment> children = getChildFragmentManager().getFragments();
-        if (!PhilmCollections.isEmpty(children)) {
-            for (final Fragment fragment : children) {
-                if (fragment instanceof InsetAwareFragment) {
-                    ((InsetAwareFragment) fragment).setAdditionalInsets(rect);
-                }
-            }
-        }
-    }
-
     private void doPopulateInsets() {
         mPopulatedInsets.set(mBaseInsets);
-
-        if (mAdditionalInsets != null) {
-            mPopulatedInsets.left += mAdditionalInsets.left;
-            mPopulatedInsets.top += mAdditionalInsets.top;
-            mPopulatedInsets.right += mAdditionalInsets.right;
-            mPopulatedInsets.bottom += mAdditionalInsets.bottom;
-        }
-
 
         if (getView() != null) {
             populateInsets(mPopulatedInsets);

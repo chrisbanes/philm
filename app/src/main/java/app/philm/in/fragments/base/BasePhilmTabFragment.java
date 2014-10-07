@@ -40,8 +40,6 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
     private TabPagerAdapter mAdapter;
     private SlidingTabLayout mSlidingTabStrip;
 
-    private final Rect mChildrenInsets = new Rect();
-
     private int mCurrentItem;
 
     @Override
@@ -68,20 +66,6 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
                 final Fragment fragment = mAdapter.getItem(pos);
                 if (fragment instanceof ListFragment) {
                     ((ListFragment) fragment).smoothScrollTo(0);
-                }
-            }
-        });
-
-        mSlidingTabStrip.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                final int h = bottom - top;
-                mChildrenInsets.top = h;
-                propogateAdditionalInsetsToChildren(mChildrenInsets);
-
-                if (h > 0) {
-                    v.removeOnLayoutChangeListener(this);
                 }
             }
         });
@@ -158,13 +142,7 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
 
         @Override
         public final Fragment getItem(int position) {
-            final Fragment fragment = mFragments.get(position);
-
-            if (fragment instanceof InsetAwareFragment) {
-                ((InsetAwareFragment) fragment).setAdditionalInsets(mChildrenInsets);
-            }
-
-            return fragment;
+            return mFragments.get(position);
         }
 
         @Override

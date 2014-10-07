@@ -29,10 +29,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <FrameLayout
-                android:id="@+id/fragment_main"
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:minHeight="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <FrameLayout
+                    android:id="@+id/fragment_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="0px"
+                    android:layout_weight="1"
+                    />
+
+        </LinearLayout>
 
         <fragment
                 android:id="@+id/fragment_side_menu"

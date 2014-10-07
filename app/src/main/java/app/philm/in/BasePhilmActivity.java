@@ -19,15 +19,16 @@ package app.philm.in;
 import com.crashlytics.android.Crashlytics;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -53,6 +54,8 @@ public abstract class BasePhilmActivity extends ActionBarActivity
 
     private View mCardContainer;
 
+    private Toolbar mToolbar;
+
     private InsetFrameLayout mInsetFrameLayout;
     private DrawerLayout mDrawerLayout;
 
@@ -74,13 +77,18 @@ public abstract class BasePhilmActivity extends ActionBarActivity
             mInsetFrameLayout.setOnInsetsCallback(this);
         }
 
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+        }
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
-            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                     R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
             mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-            final ActionBar ab = getActionBar();
+            final ActionBar ab = getSupportActionBar();
             if (ab != null) {
                 ab.setDisplayHomeAsUpEnabled(true);
                 ab.setHomeButtonEnabled(true);
@@ -92,7 +100,8 @@ public abstract class BasePhilmActivity extends ActionBarActivity
 
         mMainController = PhilmApplication.from(this).getMainController();
 
-        mDisplay = new AndroidDisplay(this, mDrawerToggle, mDrawerLayout, mInsetFrameLayout);
+        mDisplay = new AndroidDisplay(this, mToolbar, mDrawerToggle,
+                mDrawerLayout, mInsetFrameLayout);
 
         handleIntent(getIntent(), getDisplay());
     }

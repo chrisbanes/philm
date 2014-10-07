@@ -34,9 +34,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextUtils;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
 
@@ -83,7 +81,10 @@ public class AndroidDisplay implements Display {
 
     private int mOriginalStatusBarColor;
 
+    private Toolbar mToolbar;
+
     public AndroidDisplay(ActionBarActivity activity,
+            Toolbar toolbar,
             ActionBarDrawerToggle drawerToggle,
             DrawerLayout drawerLayout,
             InsetFrameLayout insetFrameLayout) {
@@ -91,6 +92,8 @@ public class AndroidDisplay implements Display {
         mDrawerLayout = drawerLayout;
         mInsetFrameLayout = insetFrameLayout;
         mDrawerToggle = drawerToggle;
+
+        mToolbar = toolbar;
 
         final TypedValue outValue = new TypedValue();
         mActivity.getTheme().resolveAttribute(R.attr.actionBarStyle, outValue, true);

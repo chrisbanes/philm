@@ -18,25 +18,21 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Platform.Theme.Philm" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Platform.Theme.Philm" parent="Theme.AppCompat.Light.NoActionBar">
     </style>
 
-    <style name="Platform.Theme.Philm.Dark" parent="Theme.AppCompat">
+    <style name="Platform.Theme.Philm.Dark" parent="Theme.AppCompat.NoActionBar">
     </style>
 
     <style name="Base.Theme.Philm" parent="Platform.Theme.Philm">
-        <item name="windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="Base.Theme.Philm.Dark" parent="Platform.Theme.Philm.Dark">
-        <item name="windowActionBarOverlay">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="Theme.Philm" parent="Base.Theme.Philm">
-        <item name="actionBarStyle">@style/Widget.Philm.ActionBar</item>
-
         <item name="android:textColorHighlight">@color/primary_color_translucent</item>
 
         <item name="android:fastScrollThumbDrawable">@drawable/philmcolor_fastscroll_thumb_holo</item>
@@ -56,7 +52,6 @@
     <style name="Theme.Philm.Images" parent="Base.Theme.Philm.Dark">
         <item name="android:windowBackground">@android:color/black</item>
 
-        <item name="actionBarStyle">@style/Widget.Philm.Dark.ActionBar</item>
         <item name="default_inset_color">@color/translucent_black_dark</item>
     </style>
 

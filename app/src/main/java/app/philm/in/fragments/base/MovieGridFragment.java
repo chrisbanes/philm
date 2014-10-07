@@ -45,6 +45,14 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final int spacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
+        getListView().setPadding(spacing, spacing, spacing, spacing);
+    }
+
+    @Override
     public void onListItemClick(GridView l, View v, int position, long id) {
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);

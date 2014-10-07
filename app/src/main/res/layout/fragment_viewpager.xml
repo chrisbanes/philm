@@ -16,24 +16,26 @@
   ~ limitations under the License.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <app.philm.in.view.SlidingTabLayout
+            android:id="@+id/viewpager_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/movie_discover_tab_height"
+            android:background="?attr/colorPrimary"
+            android:textAppearance="@style/TextAppearance.Philm.Tab"
+            app:dividerColor="#30FFFFFF"
+            app:indicatorHeight="2dp"
+            app:selectedColor="?attr/colorAccent" />
 
     <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="0px"
+            android:layout_weight="1"/>
 
-    <app.philm.in.view.SlidingTabLayout
-        android:id="@+id/viewpager_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/movie_discover_tab_height"
-        android:background="?attr/colorPrimary"
-        android:textAppearance="@style/TextAppearance.Philm.Tab"
-        app:dividerColor="#30FFFFFF"
-        app:indicatorHeight="2dp"
-        app:selectedColor="?attr/colorAccent" />
-
-</FrameLayout>
+</LinearLayout>

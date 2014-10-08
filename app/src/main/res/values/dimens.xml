@@ -42,7 +42,7 @@
 
     <dimen name="movie_detail_ratingbar_height">120dp</dimen>
 
-    <dimen name="movie_detail_fanart_height">160dp</dimen>
+    <dimen name="movie_detail_fanart_height">224dp</dimen>
 
     <dimen name="movie_detail_title_textsize">26dp</dimen>
     <dimen name="movie_detail_tagline_textsize">16dp</dimen>

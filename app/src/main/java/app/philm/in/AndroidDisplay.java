@@ -360,7 +360,9 @@ public class AndroidDisplay implements Display {
     @Override
     public void setActionBarAlpha(float alpha) {
         final int alphaInt = Math.round(255 * alpha);
-        mToolbar.getBackground().mutate().setAlpha(alphaInt);
+        if (mToolbar != null) {
+            mToolbar.getBackground().mutate().setAlpha(alphaInt);
+        }
 
         final int statusBarColor = ColorUtils.blendColors(mColorPrimaryDark, 0, alpha);
         if (mDrawerLayout != null) {
@@ -370,4 +372,8 @@ public class AndroidDisplay implements Display {
         }
     }
 
+    @Override
+    public void setSupportActionBar(Object toolbar) {
+        mToolbar = (Toolbar) toolbar;
+    }
 }

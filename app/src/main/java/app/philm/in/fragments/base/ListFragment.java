@@ -30,6 +30,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ import app.philm.in.R;
 import app.philm.in.view.FontTextView;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 
-public abstract class ListFragment<E extends AbsListView> extends Fragment {
+public abstract class ListFragment<E extends AbsListView> extends BasePhilmFragment {
     static final int INTERNAL_EMPTY_ID = 0x00ff0001;
     static final int INTERNAL_PROGRESS_ID = 0x00ff0002;
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
@@ -93,7 +94,7 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
             Bundle savedInstanceState) {
         final Context context = getActivity();
 
-        FrameLayout root = new FrameLayout(context);
+        FrameLayout contentRoot = new FrameLayout(context);
 
         // ------------------------------------------------------------------
 
@@ -105,7 +106,7 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.gravity = Gravity.CENTER;
-        root.addView(progress, lp);
+        contentRoot.addView(progress, lp);
 
         // ------------------------------------------------------------------
 
@@ -126,8 +127,8 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
         lframe.addView(lv, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
 
-        root.addView(lframe, new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        contentRoot.addView(lframe, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.FILL_PARENT));
 
         // ------------------------------------------------------------------
 
@@ -136,12 +137,28 @@ public abstract class ListFragment<E extends AbsListView> extends Fragment {
         secondaryProgress.setId(INTERNAL_SECONDARY_PROGRESS_ID);
         secondaryProgress.setVisibility(View.GONE);
         secondaryProgress.setIndeterminate(true);
-        root.addView(secondaryProgress, new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.BOTTOM));
+        contentRoot.addView(secondaryProgress,
+                new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM));
 
-        root.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+        View root;
+
+        if (getParentFragment() == null) {
+            final LinearLayout toolbarRoot = new LinearLayout(context);
+            toolbarRoot.setOrientation(LinearLayout.VERTICAL);
+
+            // Finally, add the Toolbar
+            inflater.inflate(R.layout.include_toolbar, toolbarRoot, true);
+
+            toolbarRoot.addView(contentRoot, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+            root = toolbarRoot;
+        } else {
+            root = contentRoot;
+        }
+
+        root.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         return root;
     }

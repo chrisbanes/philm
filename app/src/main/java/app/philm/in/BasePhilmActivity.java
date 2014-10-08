@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -222,4 +223,9 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         return mDisplay;
     }
 
+    @Override
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        getDisplay().setSupportActionBar(toolbar);
+        super.setSupportActionBar(toolbar);
+    }
 }

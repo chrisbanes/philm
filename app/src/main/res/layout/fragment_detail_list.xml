@@ -22,4 +22,6 @@
 
     <include layout="@layout/include_fragment_detail_list" />
 
+    <include layout="@layout/include_toolbar" />
+
 </FrameLayout>

@@ -106,4 +106,6 @@ public interface Display {
 
     public void setActionBarAlpha(float alpha);
 
+    public void setSupportActionBar(Object toolbar);
+
 }

@@ -22,6 +22,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+    <include layout="@layout/include_toolbar" />
+
     <app.philm.in.view.SlidingTabLayout
             android:id="@+id/viewpager_tabs"
             android:layout_width="match_parent"

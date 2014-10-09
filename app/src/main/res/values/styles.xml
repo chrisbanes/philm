@@ -94,30 +94,25 @@
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Title" parent="android:Widget">
-        <item name="font">roboto_condensed</item>
-        <item name="android:textSize">@dimen/movie_detail_title_textsize</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Tagline" parent="android:Widget">
-        <item name="font">roboto_condensed</item>
-        <item name="android:textSize">@dimen/movie_detail_tagline_textsize</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.SectionHeader" parent="android:Widget">
-        <item name="font">roboto_condensed</item>
         <item name="android:textSize">18dp</item>
         <item name="android:padding">@dimen/spacing_micro</item>
         <item name="android:paddingLeft">@dimen/spacing_major</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Summary" parent="android:Widget">
-        <item name="font">roboto_slab</item>
-        <item name="android:textSize">@dimen/movie_detail_summary_textsize</item>
-        <item name="android:padding">@dimen/spacing_minor</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="collapsed_maxLines">@integer/default_summary_maxlines</item>
@@ -134,8 +129,7 @@
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Rating.Description" parent="android:Widget">
-        <item name="font">roboto_condensed_bold</item>
-        <item name="android:textSize">22dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
     </style>
 
     <style name="Widget.Philm.Movie.Drawer.Checkin.Header" parent="android:Widget">

@@ -236,7 +236,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
-        populateUiFromQueryType(MovieQueryType.DETAIL);
+        populateUiFromQueryType(MovieQueryType.MOVIE_DETAIL);
     }
 
     @Subscribe
@@ -250,7 +250,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (watching != null && watching.movie != null) {
             fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
         }
-        populateUiFromQueryType(MovieQueryType.DETAIL);
+        populateUiFromQueryType(MovieQueryType.MOVIE_DETAIL);
     }
 
     @Subscribe
@@ -329,7 +329,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             }
 
-            case DETAIL:
+            //case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
             case RELATED:
@@ -408,7 +408,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     case WATCHLIST:
                         fetchWatchlist(getId(ui));
                         break;
-                    case DETAIL:
+                    case MOVIE_DETAIL:
                         fetchDetailMovie(getId(ui), ui.getRequestParameter());
                         break;
                     case POPULAR:
@@ -789,7 +789,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case WATCHLIST:
                 fetchWatchlistIfNeeded(callingId);
                 break;
-            case DETAIL:
+            case MOVIE_DETAIL:
                 fetchDetailMovieIfNeeded(callingId, ui.getRequestParameter());
                 break;
             case NOW_PLAYING:
@@ -1743,7 +1743,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, NOW_PLAYING, UPCOMING, RECOMMENDED, DISCOVER,
         SEARCH, SEARCH_MOVIES, SEARCH_PEOPLE,
-        DETAIL, RELATED, MOVIE_CAST, MOVIE_CREW, MOVIE_IMAGES,
+        MOVIE_DETAIL, RELATED, MOVIE_CAST, MOVIE_CREW, MOVIE_IMAGES,
         PERSON_DETAIL, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW,
         NONE;
 
@@ -1770,7 +1770,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         public boolean showUpNavigation() {
             switch (this) {
-                case DETAIL:
+                case MOVIE_DETAIL:
                 case RELATED:
                 case MOVIE_CAST:
                 case MOVIE_CREW:
@@ -2012,7 +2012,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private ColorScheme getColorSchemeForUi(MovieUi ui) {
         switch (ui.getMovieQueryType()) {
-            case DETAIL:
+            case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
             case RELATED:
@@ -2029,7 +2029,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void recordColorSchemeFromUi(MovieUi ui, ColorScheme scheme) {
         switch (ui.getMovieQueryType()) {
-            case DETAIL:
+            case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
             case RELATED:

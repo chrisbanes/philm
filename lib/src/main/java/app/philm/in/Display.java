@@ -16,7 +16,9 @@
 
 package app.philm.in;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import app.philm.in.model.ColorScheme;
 
@@ -107,5 +109,11 @@ public interface Display {
     public void setActionBarAlpha(float alpha);
 
     public void setSupportActionBar(Object toolbar);
+
+    public boolean onOptionsItemSelected(MenuItem item);
+
+    public void onPostCreate();
+
+    public void onConfigurationChanged(Configuration configuration);
 
 }

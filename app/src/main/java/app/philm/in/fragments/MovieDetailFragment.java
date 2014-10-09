@@ -22,7 +22,6 @@ import com.squareup.picasso.Picasso;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
@@ -227,7 +226,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        return MovieController.MovieQueryType.DETAIL;
+        return MovieController.MovieQueryType.MOVIE_DETAIL;
     }
 
     @Override
@@ -677,7 +676,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     private class DetailAdapter extends BaseDetailAdapter<DetailItemType> {
-
         private boolean mRatingCircleEnabled;
         private boolean mCollectionButtonEnabled;
         private boolean mWatchlistButtonEnabled;
@@ -1000,6 +998,12 @@ public class MovieDetailFragment extends BaseDetailFragment
                     adapter);
         }
 
+        private void bindBackdropSpacing(View view) {
+            final int backdropHeight = getResources()
+                    .getDimensionPixelSize(R.dimen.movie_detail_fanart_height);
+            view.getLayoutParams().height = backdropHeight - getListView().getPaddingTop();
+        }
+
         @Override
         protected void bindView(final DetailItemType item, final View view) {
             if (Constants.DEBUG) {
@@ -1034,6 +1038,9 @@ public class MovieDetailFragment extends BaseDetailFragment
                 case CREW:
                     bindCrew(view);
                     break;
+                case BACKDROP_SPACING:
+                    bindBackdropSpacing(view);
+                    break;
             }
 
             view.setTag(item);
@@ -1061,6 +1068,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             } else {
                 button.setContentDescription(getString(toCheckDesc));
             }
+        }
+
+        @Override
+        public boolean isItemViewTypePinned(int viewType) {
+            return viewType == DetailItemType.TITLE.getViewType();
         }
     }
 }

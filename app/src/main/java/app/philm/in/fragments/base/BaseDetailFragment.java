@@ -17,8 +17,8 @@
 package app.philm.in.fragments.base;
 
 
-import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,12 +36,13 @@ import app.philm.in.Constants;
 import app.philm.in.R;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
+import app.philm.in.view.PinnedSectionListView;
 import app.philm.in.view.ViewRecycler;
 
 public abstract class BaseDetailFragment extends BasePhilmMovieFragment
         implements AdapterView.OnItemClickListener{
 
-    private ListView mListView;
+    private PinnedSectionListView mListView;
     private ListAdapter mAdapter;
 
     private TextView mEmptyView;
@@ -59,7 +60,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
 
         mAdapter = createListAdapter();
 
-        mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView = (PinnedSectionListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
@@ -92,7 +93,6 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
     }
 
     protected void onBigPosterClicked() {
-
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
 
     protected abstract ListAdapter createListAdapter();
 
-    protected ListView getListView() {
+    protected PinnedSectionListView getListView() {
         return mListView;
     }
 
@@ -128,7 +128,8 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
 
     }
 
-    protected abstract class BaseDetailAdapter<E extends DetailType> extends BaseAdapter {
+    protected abstract class BaseDetailAdapter<E extends DetailType> extends BaseAdapter
+            implements PinnedSectionListView.PinnedSectionListAdapter {
 
         private List<E> mListItems;
 
@@ -260,6 +261,11 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
                     return;
                 }
             }
+        }
+
+        @Override
+        public boolean isItemViewTypePinned(int viewType) {
+            return false;
         }
     }
 

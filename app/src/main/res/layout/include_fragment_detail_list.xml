@@ -27,11 +27,12 @@
           android:padding="@dimen/spacing_minor"
           internal:font="roboto_condensed" />
 
-    <ListView
+    <app.philm.in.view.PinnedSectionListView
           android:id="@android:id/list"
           android:layout_height="match_parent"
           android:layout_width="match_parent"
           android:clipToPadding="false"
+          android:paddingTop="?attr/actionBarSize"
           android:drawSelectorOnTop="true"
           android:divider="@null"
           android:dividerHeight="0px" />

@@ -45,10 +45,7 @@ public abstract class BasePhilmActivity extends ActionBarActivity
     private MainController mMainController;
     private Display mDisplay;
 
-    private ActionBarDrawerToggle mDrawerToggle;
     private View mCardContainer;
-    private Toolbar mToolbar;
-
     private DrawerLayout mDrawerLayout;
 
     @Override
@@ -63,34 +60,13 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         setContentView(getContentViewLayoutId());
 
         mCardContainer = findViewById(R.id.card_container);
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (mToolbar != null) {
-            setSupportActionBar(mToolbar);
-        }
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (mDrawerLayout != null) {
-            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
-                    R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
-            mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-            if (mToolbar != null) {
-                mDrawerLayout.setStatusBarBackgroundColor(0xff00ff00);
-            }
-
-            final ActionBar ab = getSupportActionBar();
-            if (ab != null) {
-                ab.setDisplayHomeAsUpEnabled(true);
-                ab.setHomeButtonEnabled(true);
-            }
-        }
 
         // Let SuperCardToast restore itself
         SuperCardToast.onRestoreState(savedInstanceState, this);
 
         mMainController = PhilmApplication.from(this).getMainController();
-        mDisplay = new AndroidDisplay(this, mToolbar, mDrawerToggle, mDrawerLayout);
+        mDisplay = new AndroidDisplay(this, mDrawerLayout);
 
         handleIntent(getIntent(), getDisplay());
     }
@@ -98,8 +74,8 @@ public abstract class BasePhilmActivity extends ActionBarActivity
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if (mDrawerToggle != null) {
-            mDrawerToggle.syncState();
+        if (mDisplay != null) {
+            mDisplay.onPostCreate();
         }
     }
 
@@ -128,7 +104,7 @@ public abstract class BasePhilmActivity extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDisplay != null && mDisplay.onOptionsItemSelected(item)) {
             return true;
         }
 
@@ -161,8 +137,8 @@ public abstract class BasePhilmActivity extends ActionBarActivity
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mDrawerToggle != null) {
-            mDrawerToggle.onConfigurationChanged(newConfig);
+        if (mDisplay != null) {
+            mDisplay.onConfigurationChanged(newConfig);
         }
     }
 
@@ -203,10 +179,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         public void onInsetsChanged(Rect insets);
     }
 
-    protected ActionBarDrawerToggle getDrawerToggle() {
-        return mDrawerToggle;
-    }
-
     protected DrawerLayout getDrawerLayout() {
         return mDrawerLayout;
     }
@@ -225,7 +197,7 @@ public abstract class BasePhilmActivity extends ActionBarActivity
 
     @Override
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
-        getDisplay().setSupportActionBar(toolbar);
         super.setSupportActionBar(toolbar);
+        getDisplay().setSupportActionBar(toolbar);
     }
 }

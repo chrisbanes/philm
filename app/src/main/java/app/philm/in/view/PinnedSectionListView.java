@@ -19,6 +19,7 @@ package app.philm.in.view;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,6 +37,7 @@ import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.AbsListView;
 import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
@@ -272,7 +274,23 @@ public class PinnedSectionListView extends ListView {
             pinnedShadow = new PinnedSection();
         }
         // request new view using recycled view, if such
-        View pinnedView = getAdapter().getView(position, pinnedShadow.view, PinnedSectionListView.this);
+        View pinnedView;
+
+        final int childIndex = position - getFirstVisiblePosition();
+        final View sectionView = getChildAt(childIndex);
+
+        if (sectionView != null) {
+            Bitmap b = Bitmap.createBitmap(sectionView.getWidth(),
+                    sectionView.getHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            sectionView.draw(c);
+
+            pinnedView = new ImageView(getContext());
+            ((ImageView) pinnedView).setImageBitmap(b);
+        } else {
+            pinnedView = getAdapter().getView(position, pinnedShadow.view, PinnedSectionListView.this);
+        }
 
         // read layout parameters
         LayoutParams layoutParams = (LayoutParams) pinnedView.getLayoutParams();

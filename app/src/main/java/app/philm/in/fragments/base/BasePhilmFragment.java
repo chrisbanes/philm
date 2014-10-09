@@ -41,4 +41,8 @@ public abstract class BasePhilmFragment extends Fragment {
     protected void setSupportActionBar(Toolbar toolbar) {
         ((ActionBarActivity) getActivity()).setSupportActionBar(toolbar);
     }
+
+    protected Toolbar getToolbar() {
+        return mToolbar;
+    }
 }

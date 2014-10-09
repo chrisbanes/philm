@@ -20,6 +20,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
@@ -67,22 +69,17 @@ public class AndroidDisplay implements Display {
 
     private final ActionBarActivity mActivity;
     private final DrawerLayout mDrawerLayout;
-    private final ActionBarDrawerToggle mDrawerToggle;
 
     private ColorScheme mColorScheme;
-
     private final int mColorPrimaryDark;
 
     private Toolbar mToolbar;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     public AndroidDisplay(ActionBarActivity activity,
-            Toolbar toolbar,
-            ActionBarDrawerToggle drawerToggle,
             DrawerLayout drawerLayout) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
         mDrawerLayout = drawerLayout;
-        mDrawerToggle = drawerToggle;
-        mToolbar = toolbar;
 
         mActivity.getTheme().resolveAttribute(R.attr.colorPrimaryDark, sTypedValue, true);
         mColorPrimaryDark = sTypedValue.data;
@@ -334,6 +331,8 @@ public class AndroidDisplay implements Display {
             return;
         }
 
+        mToolbar.setBackgroundColor(colorScheme.primaryAccent);
+
         mColorScheme = colorScheme;
     }
 
@@ -375,5 +374,41 @@ public class AndroidDisplay implements Display {
     @Override
     public void setSupportActionBar(Object toolbar) {
         mToolbar = (Toolbar) toolbar;
+
+        if (mDrawerLayout != null) {
+            if (mToolbar != null) {
+                mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, mToolbar,
+                        R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
+                mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+                final ActionBar ab = mActivity.getSupportActionBar();
+                if (ab != null) {
+                    ab.setDisplayHomeAsUpEnabled(true);
+                    ab.setHomeButtonEnabled(true);
+                }
+            } else {
+                mDrawerToggle = null;
+                mDrawerLayout.setDrawerListener(null);
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPostCreate() {
+        if (mDrawerToggle != null) {
+            mDrawerToggle.syncState();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration configuration) {
+        if (mDrawerToggle != null) {
+            mDrawerToggle.onConfigurationChanged(configuration);
+        }
     }
 }

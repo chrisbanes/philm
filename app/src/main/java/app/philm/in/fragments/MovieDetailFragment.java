@@ -133,7 +133,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     private PhilmMovie mMovie;
 
     private BackdropImageView mBackdropImageView;
-    private int mBackdropOriginalHeight;
 
     private boolean mFadeActionBar;
 
@@ -173,7 +172,6 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         mBackdropImageView = (BackdropImageView) view.findViewById(R.id.imageview_fanart);
         if (mBackdropImageView != null) {
-            mBackdropOriginalHeight = mBackdropImageView.getLayoutParams().height;
             mBackdropImageView.setOnClickListener(this);
         }
 
@@ -961,25 +959,9 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             final ColorScheme scheme = getColorScheme();
             if (scheme != null) {
-                final int bgColor = (view.getBackground() instanceof ColorDrawable)
-                        ? ((ColorDrawable) view.getBackground()).getColor()
-                        : Color.WHITE;
-                final int titleColor = titleTextView.getCurrentTextColor();
-                final int taglineColor = taglineTextView.getCurrentTextColor();
-
-                ColorValueAnimator.start(view,
-                        IntUtils.toArray(bgColor, titleColor, taglineColor),
-                        IntUtils.toArray(scheme.primaryAccent, scheme.primaryText, scheme.secondaryText),
-                        175,
-                        new ColorValueAnimator.OnColorSetListener() {
-                            @Override
-                            public void onUpdateColor(int[] newColors) {
-                                view.setBackgroundColor(newColors[0]);
-                                titleTextView.setTextColor(newColors[1]);
-                                taglineTextView.setTextColor(newColors[2]);
-                            }
-                        }
-                );
+                view.setBackgroundColor(scheme.primaryAccent);
+                titleTextView.setTextColor(scheme.primaryText);
+                taglineTextView.setTextColor(scheme.primaryText);
             }
         }
 

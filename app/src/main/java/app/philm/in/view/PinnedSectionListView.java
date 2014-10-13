@@ -49,6 +49,8 @@ import app.philm.in.BuildConfig;
  */
 public class PinnedSectionListView extends ListView {
 
+    private static final TypedValue sTypedValue = new TypedValue();
+
     //-- inner classes
 
     /**
@@ -249,14 +251,12 @@ public class PinnedSectionListView extends ListView {
     }
 
     private int getThemeBackgroundColor() {
-        final TypedValue value = new TypedValue();
-        getContext().getTheme()
-                .resolveAttribute(android.R.attr.colorBackground,  value, true);
-        switch (value.type) {
+        getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, sTypedValue, true);
+        switch (sTypedValue.type) {
             case TypedValue.TYPE_REFERENCE:
-                return getResources().getColor(value.resourceId);
+                return getResources().getColor(sTypedValue.resourceId);
             default:
-                return value.data;
+                return sTypedValue.data;
         }
     }
 
@@ -264,7 +264,6 @@ public class PinnedSectionListView extends ListView {
      * Create shadow wrapper with a pinned view for a view at given position
      */
     void createPinnedShadow(int position) {
-
         // try to recycle shadow
         PinnedSection pinnedShadow = mRecycleSection;
         mRecycleSection = null;
@@ -284,12 +283,13 @@ public class PinnedSectionListView extends ListView {
                     sectionView.getHeight(),
                     Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(b);
+            c.drawColor(getThemeBackgroundColor());
             sectionView.draw(c);
 
             pinnedView = new ImageView(getContext());
             ((ImageView) pinnedView).setImageBitmap(b);
         } else {
-            pinnedView = getAdapter().getView(position, pinnedShadow.view, PinnedSectionListView.this);
+            pinnedView = getAdapter().getView(position, null, PinnedSectionListView.this);
         }
 
         // read layout parameters

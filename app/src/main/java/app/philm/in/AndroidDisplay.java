@@ -386,6 +386,7 @@ public class AndroidDisplay implements Display {
                 mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, mToolbar,
                         R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
                 mDrawerLayout.setDrawerListener(mDrawerToggle);
+                mDrawerToggle.syncState();
 
                 final ActionBar ab = mActivity.getSupportActionBar();
                 if (ab != null) {

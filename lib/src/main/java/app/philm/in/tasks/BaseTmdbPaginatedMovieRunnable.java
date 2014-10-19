@@ -16,13 +16,13 @@
 
 package app.philm.in.tasks;
 
-import com.uwetrottmann.tmdb.entities.ResultsPage;
+import com.uwetrottmann.tmdb.entities.MovieResultsPage;
 
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.state.MoviesState;
 
 abstract class BaseTmdbPaginatedMovieRunnable extends BaseTmdbPaginatedRunnable<
-        MoviesState.MoviePaginatedResult, PhilmMovie, ResultsPage> {
+        MoviesState.MoviePaginatedResult, PhilmMovie, MovieResultsPage> {
 
     BaseTmdbPaginatedMovieRunnable(int callingId, int page) {
         super(callingId, page);
@@ -31,7 +31,7 @@ abstract class BaseTmdbPaginatedMovieRunnable extends BaseTmdbPaginatedRunnable<
     @Override
     protected void updatePaginatedResult(
             MoviesState.MoviePaginatedResult result,
-            ResultsPage tmdbResult) {
+            MovieResultsPage tmdbResult) {
         result.items.addAll(getTmdbMovieEntityMapper().mapAll(tmdbResult.results));
 
         result.page = tmdbResult.page;

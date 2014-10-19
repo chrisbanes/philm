@@ -16,7 +16,7 @@
 
 package app.philm.in.tasks;
 
-import com.uwetrottmann.tmdb.entities.ResultsPage;
+import com.uwetrottmann.tmdb.entities.MovieResultsPage;
 
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
@@ -28,7 +28,7 @@ public class FetchTmdbUpcomingRunnable extends BaseTmdbPaginatedMovieRunnable {
     }
 
     @Override
-    public ResultsPage doBackgroundCall() throws RetrofitError {
+    public MovieResultsPage doBackgroundCall() throws RetrofitError {
         return getTmdbClient().moviesService().upcoming(getPage(),
                 getCountryProvider().getTwoLetterLanguageCode());
     }

@@ -16,7 +16,7 @@
 
 package app.philm.in.tasks;
 
-import com.uwetrottmann.tmdb.entities.ResultsPage;
+import com.uwetrottmann.tmdb.entities.MovieResultsPage;
 
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
@@ -24,7 +24,7 @@ import app.philm.in.state.BaseState;
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
 
-public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPage> {
+public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<MovieResultsPage> {
 
     private final int mId;
 
@@ -34,14 +34,14 @@ public class FetchTmdbRelatedMoviesRunnable extends BaseMovieRunnable<ResultsPag
     }
 
     @Override
-    public ResultsPage doBackgroundCall() throws RetrofitError {
+    public MovieResultsPage doBackgroundCall() throws RetrofitError {
         return getTmdbClient().moviesService().similarMovies(mId,
                 null,
                 getCountryProvider().getTwoLetterLanguageCode());
     }
 
     @Override
-    public void onSuccess(ResultsPage result) {
+    public void onSuccess(MovieResultsPage result) {
         PhilmMovie movie = mMoviesState.getMovie(String.valueOf(mId));
 
         if (movie != null) {

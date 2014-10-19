@@ -40,4 +40,7 @@ public class Constants {
 
     public static final String TRAKT_MESSAGE_ITEM_REPLACE = "[item]";
 
+    public static final int CONNECT_TIMEOUT_MILLIS = 15 * 1000; // 15s
+    public static final int READ_TIMEOUT_MILLIS = 20 * 1000; // 20s
+
 }

@@ -26,6 +26,7 @@ import java.io.File;
 import javax.inject.Singleton;
 
 import app.philm.in.qualifiers.ApplicationContext;
+import app.philm.in.qualifiers.FilesDirectory;
 import app.philm.in.qualifiers.ForDatabase;
 import app.philm.in.state.AsyncDatabaseHelper;
 import app.philm.in.state.AsyncDatabaseHelperImpl;
@@ -49,7 +50,7 @@ import dagger.Provides;
 public class PersistenceProvider {
 
     @Provides @Singleton
-    public FileManager provideFileManager(File file) {
+    public FileManager provideFileManager(@FilesDirectory File file) {
         return new AndroidFileManager(file);
     }
 

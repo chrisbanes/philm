@@ -36,8 +36,8 @@ public class TraktMovieEntityMapper extends MovieEntityMapper<Movie> {
     public PhilmMovie map(Movie entity) {
         PhilmMovie movie = getEntity(entity.imdb_id);
 
-        if (movie == null && entity.tmdbId != null) {
-            movie = getEntity(entity.tmdbId);
+        if (movie == null && entity.tmdbId != 0) {
+            movie = getEntity(String.valueOf(entity.tmdbId));
         }
 
         if (movie == null) {

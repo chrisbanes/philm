@@ -19,14 +19,13 @@ package app.philm.in.fragments;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import android.app.Fragment;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -218,6 +217,8 @@ public class SideMenuFragment extends Fragment implements MainController.SideMen
 
     private class SideMenuItemAdapter extends BaseAdapter {
 
+        private final LayoutInflater mInflater = LayoutInflater.from(getActivity());
+
         @Override
         public int getCount() {
             return mSideMenuItems != null ? mSideMenuItems.length : 0;
@@ -236,7 +237,7 @@ public class SideMenuFragment extends Fragment implements MainController.SideMen
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = getLayoutInflater(null).inflate(R.layout.item_drawer, viewGroup, false);
+                view = mInflater.inflate(R.layout.item_drawer, viewGroup, false);
             }
 
             final SideMenuItem item = getItem(position);

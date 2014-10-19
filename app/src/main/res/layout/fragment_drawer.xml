@@ -21,6 +21,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:clickable="true"
+              android:fitsSystemWindows="true"
               android:background="?android:attr/colorBackground">
 
     <include layout="@layout/include_drawer_add_account" />

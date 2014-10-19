@@ -189,16 +189,14 @@ public class PhilmMovie extends PhilmModel {
 
         loadedFromTrakt = true;
 
-        if (!TextUtils.isEmpty(movie.tmdbId)) {
-            tmdbId = Integer.parseInt(movie.tmdbId);
-        }
+        tmdbId = movie.tmdbId;
         imdbId = movie.imdb_id;
 
         if (_id == null || idType == NOT_SET) {
             if (!TextUtils.isEmpty(imdbId)) {
                 _id = new Long(imdbId.hashCode());
                 idType = TYPE_IMDB;
-            } else if (tmdbId != null) {
+            } else if (tmdbId != 0) {
                 _id = new Long(tmdbId);
                 idType = TYPE_TMDB;
             } else {

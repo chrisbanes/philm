@@ -331,7 +331,9 @@ public class AndroidDisplay implements Display {
             return;
         }
 
-        mToolbar.setBackgroundColor(colorScheme.primaryAccent);
+        if (mToolbar != null) {
+            mToolbar.setBackgroundColor(colorScheme.primaryAccent);
+        }
 
         mColorScheme = colorScheme;
     }
@@ -374,6 +376,10 @@ public class AndroidDisplay implements Display {
     @Override
     public void setSupportActionBar(Object toolbar) {
         mToolbar = (Toolbar) toolbar;
+
+        if (mColorScheme != null) {
+            mToolbar.setBackgroundColor(mColorScheme.primaryAccent);
+        }
 
         if (mDrawerLayout != null) {
             if (mToolbar != null) {

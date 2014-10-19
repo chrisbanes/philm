@@ -17,77 +17,70 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/layout_profile"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:background="?attr/colorAccent">
+    android:id="@+id/layout_profile"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorAccent">
 
     <app.philm.in.view.PhilmImageView
-          android:id="@+id/imageview_checkin_movie"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:adjustViewBounds="true"
-          android:visibility="invisible" />
+        android:id="@+id/imageview_checkin_movie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:visibility="invisible" />
 
     <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical"
-          android:gravity="bottom">
+        android:id="@+id/inner_layout_profile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/spacing_major"
+        android:paddingTop="@dimen/spacing_major"
+        android:paddingRight="@dimen/spacing_major"
+        android:paddingBottom="@dimen/spacing_minor">
+
+        <ImageView
+            android:id="@+id/imageview_account_avatar"
+            android:layout_width="@dimen/drawer_account_avatar_width"
+            android:layout_height="@dimen/drawer_account_avatar_height"
+            android:layout_marginBottom="@dimen/spacing_minor" />
+
+        <TextView
+            android:id="@+id/textview_fullname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/textview_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@android:color/white" />
 
         <app.philm.in.view.ForegroundLinearLayout
-                android:id="@+id/layout_profile_inner"
-                android:layout_width="match_parent"
+            android:id="@+id/layout_checkin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/spacing_minor"
+            android:paddingTop="@dimen/spacing_minor"
+            android:paddingBottom="@dimen/spacing_minor">
+
+            <app.philm.in.view.FontTextView
+                style="@style/Widget.Philm.Movie.Drawer.Checkin.Header"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/spacing_major"
-                android:paddingTop="@dimen/spacing_major"
-                android:paddingRight="@dimen/spacing_major"
-                android:paddingBottom="@dimen/spacing_minor"
-                android:foreground="?attr/selectableItemBackground"
-                android:orientation="vertical">
-
-            <ImageView
-                    android:id="@+id/imageview_account_avatar"
-                    android:layout_width="@dimen/drawer_account_avatar_width"
-                    android:layout_height="@dimen/drawer_account_avatar_height"
-                    android:layout_marginBottom="@dimen/spacing_minor"/>
-
-            <TextView
-                    android:id="@+id/textview_fullname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                    android:textColor="@android:color/white" />
-
-            <TextView
-                    android:id="@+id/textview_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="@android:color/white" />
-
-        </app.philm.in.view.ForegroundLinearLayout>
-
-        <app.philm.in.view.ForegroundLinearLayout
-              android:id="@+id/layout_checkin"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="@dimen/spacing_minor"
-              android:foreground="?android:attr/selectableItemBackground"
-              android:background="@color/translucent_black_light">
+                android:text="@string/movie_checkin_header" />
 
             <app.philm.in.view.FontTextView
-                  android:layout_height="wrap_content"
-                  android:layout_width="wrap_content"
-                  android:text="@string/movie_checkin_header"
-                  style="@style/Widget.Philm.Movie.Drawer.Checkin.Header" />
-
-            <app.philm.in.view.FontTextView
-                  android:id="@+id/textview_title"
-                  android:layout_height="wrap_content"
-                  android:layout_width="wrap_content"
-                  style="@style/Widget.Philm.Movie.Drawer.Checkin.Title" />
+                android:id="@+id/textview_title"
+                style="@style/Widget.Philm.Movie.Drawer.Checkin.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </app.philm.in.view.ForegroundLinearLayout>
 

@@ -48,10 +48,6 @@
         <attr name="title" />
     </declare-styleable>
 
-    <declare-styleable name="DrawInsetsFrameLayout">
-        <attr name="insetBackground" format="reference|color" />
-    </declare-styleable>
-
     <declare-styleable name="ForegroundLinearLayout">
         <attr name="android:foreground" />
         <attr name="android:foregroundGravity" />

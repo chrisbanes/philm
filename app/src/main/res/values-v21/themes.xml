@@ -19,12 +19,12 @@
 
     <style name="Platform.Theme.Philm" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Platform.Theme.Philm.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
 </resources>

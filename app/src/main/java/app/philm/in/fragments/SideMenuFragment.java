@@ -63,8 +63,8 @@ public class SideMenuFragment extends Fragment implements MainController.SideMen
     private SideMenuItemAdapter mAdapter;
 
     private View mAddAccountLayout;
+    private View mProfileLayout;
 
-    private View mProfileInfoLayout;
     private TextView mFullnameTextView;
     private TextView mUsernameTextView;
     private ImageView mAvatarImageView;
@@ -93,8 +93,8 @@ public class SideMenuFragment extends Fragment implements MainController.SideMen
         mAddAccountLayout = view.findViewById(R.id.layout_add_account);
         mAddAccountLayout.setOnClickListener(this);
 
-        mProfileInfoLayout = view.findViewById(R.id.layout_profile_inner);
-        mProfileInfoLayout.setOnClickListener(this);
+        mProfileLayout = view.findViewById(R.id.layout_profile);
+
         mUsernameTextView = (TextView) view.findViewById(R.id.textview_username);
         mFullnameTextView = (TextView) view.findViewById(R.id.textview_fullname);
         mAvatarImageView = (ImageView) view.findViewById(R.id.imageview_account_avatar);
@@ -149,14 +149,14 @@ public class SideMenuFragment extends Fragment implements MainController.SideMen
     public void showAddAccountButton() {
         mUserProfile = null;
         mAddAccountLayout.setVisibility(View.VISIBLE);
-        mProfileInfoLayout.setVisibility(View.GONE);
+        mProfileLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void showUserProfile(PhilmUserProfile profile) {
         mUserProfile = profile;
         mAddAccountLayout.setVisibility(View.GONE);
-        mProfileInfoLayout.setVisibility(View.VISIBLE);
+        mProfileLayout.setVisibility(View.VISIBLE);
 
         Picasso.with(getActivity())
                 .load(profile.getAvatarUrl())

@@ -113,8 +113,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                             mBackdropImageView.setScrimColor(scheme.secondaryAccent);
 
                             getCallbacks().updateColorScheme(scheme);
-
-                            getToolbar().setBackgroundDrawable(null);
                         }
                     }
                 });
@@ -1074,5 +1072,10 @@ public class MovieDetailFragment extends BaseDetailFragment
                 button.setContentDescription(getString(toCheckDesc));
             }
         }
+    }
+
+    @Override
+    protected void setSupportActionBar(Toolbar toolbar) {
+        setSupportActionBar(toolbar, false);
     }
 }

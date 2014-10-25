@@ -191,13 +191,17 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         return R.layout.activity_main;
     }
 
-    protected Display getDisplay() {
+    public Display getDisplay() {
         return mDisplay;
     }
 
     @Override
-    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+    public final void setSupportActionBar(@Nullable Toolbar toolbar) {
         super.setSupportActionBar(toolbar);
-        getDisplay().setSupportActionBar(toolbar);
+    }
+
+    public void setSupportActionBar(@Nullable Toolbar toolbar, boolean handleBackground) {
+        setSupportActionBar(toolbar);
+        getDisplay().setSupportActionBar(toolbar, handleBackground);
     }
 }

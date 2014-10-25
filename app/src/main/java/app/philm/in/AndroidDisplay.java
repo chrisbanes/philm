@@ -75,9 +75,8 @@ public class AndroidDisplay implements Display {
     private int mColorPrimaryDark;
 
     private Toolbar mToolbar;
+    private boolean mCanChangeToolbarBackground;
     private ActionBarDrawerToggle mDrawerToggle;
-
-    private int mToolbarBackgroundAlpha = 255;
 
     public AndroidDisplay(ActionBarActivity activity,
             DrawerLayout drawerLayout) {
@@ -361,17 +360,6 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setActionBarAlpha(float alpha) {
-        mToolbarBackgroundAlpha = Math.round(alpha * 255);
-        if (mToolbar != null) {
-            Drawable d = mToolbar.getBackground();
-            if (d != null) {
-                d.mutate().setAlpha(mToolbarBackgroundAlpha);
-            }
-        }
-    }
-
-    @Override
     public void setStatusBarColor(float scroll) {
         final int statusBarColor = ColorUtils.blendColors(mColorPrimaryDark, 0, scroll);
         if (mDrawerLayout != null) {
@@ -382,8 +370,9 @@ public class AndroidDisplay implements Display {
     }
 
     @Override
-    public void setSupportActionBar(Object toolbar) {
+    public void setSupportActionBar(Object toolbar, boolean handleBackground) {
         mToolbar = (Toolbar) toolbar;
+        mCanChangeToolbarBackground = handleBackground;
 
         if (mColorScheme != null) {
             setToolbarBackground(mColorScheme.primaryAccent);
@@ -409,12 +398,8 @@ public class AndroidDisplay implements Display {
     }
 
     private void setToolbarBackground(int color) {
-        if (mToolbar != null) {
-            mToolbar.setBackgroundColor(mColorScheme.primaryAccent);
-            Drawable drawable = mToolbar.getBackground();
-            if (drawable != null) {
-                drawable.mutate().setAlpha(mToolbarBackgroundAlpha);
-            }
+        if (mCanChangeToolbarBackground && mToolbar != null) {
+            mToolbar.setBackgroundColor(color);
         }
     }
 

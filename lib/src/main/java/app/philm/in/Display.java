@@ -106,11 +106,9 @@ public interface Display {
 
     public boolean toggleDrawer();
 
-    public void setActionBarAlpha(float alpha);
-
     public void setStatusBarColor(float scroll);
 
-    public void setSupportActionBar(Object toolbar);
+    public void setSupportActionBar(Object toolbar, boolean handleBackground);
 
     public boolean onOptionsItemSelected(MenuItem item);
 

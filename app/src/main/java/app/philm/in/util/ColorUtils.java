@@ -59,4 +59,8 @@ public class ColorUtils {
                 : lighten(color, fraction);
     }
 
+    public static int modifyAlpha(int color, int alpha) {
+        return (color & 0x00ffffff) | (alpha << 24);
+    }
+
 }

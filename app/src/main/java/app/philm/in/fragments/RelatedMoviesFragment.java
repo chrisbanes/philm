@@ -43,7 +43,7 @@ public class RelatedMoviesFragment extends MovieListFragment implements MovieCon
 
     @Override
     public MovieController.MovieQueryType getMovieQueryType() {
-        return MovieController.MovieQueryType.RELATED;
+        return MovieController.MovieQueryType.MOVIE_RELATED;
     }
 
     @Override

@@ -63,10 +63,7 @@ abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
 
         if (isInited()) {
             if (!ui.isModal() && !(ui instanceof SubUi)) {
-                final String uiTitle = getUiTitle(ui);
-                if (!TextUtils.isEmpty(uiTitle)) {
-                    updateDisplayTitle(uiTitle);
-                }
+                updateDisplayTitle(getUiTitle(ui));
             }
 
             onUiAttached(ui);

@@ -332,7 +332,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             //case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
-            case RELATED:
+            case MOVIE_RELATED:
             case MOVIE_IMAGES: {
                 final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
@@ -753,7 +753,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             public void setHeaderScrollValue(float scrollPercentage) {
                 Display display = getDisplay();
                 if (display != null) {
-                    getDisplay().setActionBarAlpha(scrollPercentage);
+                    getDisplay().setStatusBarColor(scrollPercentage);
                 }
             }
 
@@ -801,7 +801,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case RECOMMENDED:
                 fetchRecommendedIfNeeded(callingId);
                 break;
-            case RELATED:
+            case MOVIE_RELATED:
                 fetchRelatedIfNeeded(callingId, ui.getRequestParameter());
                 subtitle = mStringFetcher.getString(R.string.related_movies);
                 break;
@@ -1455,7 +1455,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case RECOMMENDED:
                 items = mMoviesState.getRecommended();
                 break;
-            case RELATED:
+            case MOVIE_RELATED:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
                     items = movie.getRelated();
@@ -1743,7 +1743,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, NOW_PLAYING, UPCOMING, RECOMMENDED, DISCOVER,
         SEARCH, SEARCH_MOVIES, SEARCH_PEOPLE,
-        MOVIE_DETAIL, RELATED, MOVIE_CAST, MOVIE_CREW, MOVIE_IMAGES,
+        MOVIE_DETAIL, MOVIE_RELATED, MOVIE_CAST, MOVIE_CREW, MOVIE_IMAGES,
         PERSON_DETAIL, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW,
         NONE;
 
@@ -1771,7 +1771,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         public boolean showUpNavigation() {
             switch (this) {
                 case MOVIE_DETAIL:
-                case RELATED:
+                case MOVIE_RELATED:
                 case MOVIE_CAST:
                 case MOVIE_CREW:
                 case MOVIE_IMAGES:
@@ -2015,7 +2015,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
-            case RELATED:
+            case MOVIE_RELATED:
             case MOVIE_IMAGES:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
@@ -2032,7 +2032,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
-            case RELATED:
+            case MOVIE_RELATED:
             case MOVIE_IMAGES:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {

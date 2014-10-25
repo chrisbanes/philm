@@ -238,8 +238,8 @@ public class PinnedSectionListView extends ListView {
         if (visible) {
             if (mShadowDrawable == null) {
                 mShadowDrawable = new GradientDrawable(Orientation.TOP_BOTTOM,
-                        new int[]{Color.parseColor("#ffa0a0a0"), Color.parseColor("#50a0a0a0"),
-                                Color.parseColor("#00a0a0a0")});
+                        new int[]{Color.parseColor("#ff333333"), Color.parseColor("#50333333"),
+                                Color.parseColor("#00333333")});
                 mShadowHeight = (int) (8 * getResources().getDisplayMetrics().density);
             }
         } else {

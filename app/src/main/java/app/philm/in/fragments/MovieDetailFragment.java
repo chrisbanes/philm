@@ -21,10 +21,9 @@ import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,10 +55,8 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
 import app.philm.in.util.ActivityTransitions;
 import app.philm.in.model.PhilmMovieVideo;
-import app.philm.in.util.ColorValueAnimator;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
-import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.BackdropImageView;
 import app.philm.in.view.CheatSheet;
@@ -113,7 +110,11 @@ public class MovieDetailFragment extends BaseDetailFragment
                                     primary.getTitleTextColor(),
                                     primary.getBodyTextColor());
 
+                            mBackdropImageView.setScrimColor(scheme.secondaryAccent);
+
                             getCallbacks().updateColorScheme(scheme);
+
+                            getToolbar().setBackgroundDrawable(null);
                         }
                     }
                 });
@@ -309,32 +310,54 @@ public class MovieDetailFragment extends BaseDetailFragment
     @Override
     public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount,
                          int totalItemCount) {
-        if (visibleItemCount > 0 && firstVisibleItem == 0 &&
-                absListView.getItemAtPosition(0) == DetailItemType.BACKDROP_SPACING) {
-            final View firstView = absListView.getChildAt(0);
 
-            if (firstView.getBottom() > absListView.getPaddingTop()) {
-                final int y = absListView.getPaddingTop() - firstView.getTop();
-                final float percent = y / (float) firstView.getHeight();
+        if (absListView.getItemAtPosition(0) == DetailItemType.BACKDROP_SPACING) {
+            final Toolbar toolbar = getToolbar();
 
-                if (mFadeActionBar && hasCallbacks()) {
-                    getCallbacks().setHeaderScrollValue(percent);
-                }
+            if (visibleItemCount > 0 && firstVisibleItem == 0) {
+                final View firstView = absListView.getChildAt(0);
 
                 if (mBackdropImageView != null) {
                     mBackdropImageView.setVisibility(View.VISIBLE);
-                    mBackdropImageView.offsetBackdrop(Math.round(-y * PARALLAX_FRICTION));
+                }
+                toolbar.setVisibility(View.VISIBLE);
+
+                if (firstView.getBottom() > absListView.getPaddingTop()) {
+                    final int y = absListView.getPaddingTop() - firstView.getTop();
+                    final float percent = y / (float) firstView.getHeight();
+
+                    if (mBackdropImageView != null) {
+                        mBackdropImageView.offsetBackdrop(Math.round(-y * PARALLAX_FRICTION));
+                        mBackdropImageView.setScrimAlpha(percent);
+                    }
+
+                    if (mFadeActionBar && hasCallbacks()) {
+                        getCallbacks().setHeaderScrollValue(percent);
+                    }
+
+                    if (toolbar.getTop() != 0) {
+                        toolbar.offsetTopAndBottom(-toolbar.getTop());
+                    }
+                } else {
+                    final int targetTop = firstView.getBottom() - toolbar.getHeight();
+                    toolbar.offsetTopAndBottom(targetTop - toolbar.getTop());
+
+                    if (mFadeActionBar && hasCallbacks()) {
+                        getCallbacks().setHeaderScrollValue(1f);
+                    }
                 }
                 return;
+            } else {
+                toolbar.setVisibility(View.INVISIBLE);
+
+                if (mBackdropImageView != null) {
+                    mBackdropImageView.setVisibility(View.INVISIBLE);
+                }
             }
         }
 
-
         if (mFadeActionBar && hasCallbacks()) {
             getCallbacks().setHeaderScrollValue(1f);
-        }
-        if (mBackdropImageView != null) {
-            mBackdropImageView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -1050,11 +1073,6 @@ public class MovieDetailFragment extends BaseDetailFragment
             } else {
                 button.setContentDescription(getString(toCheckDesc));
             }
-        }
-
-        @Override
-        public boolean isItemViewTypePinned(int viewType) {
-            return viewType == DetailItemType.TITLE.getViewType();
         }
     }
 }

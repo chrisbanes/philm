@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,10 +72,12 @@ public class AndroidDisplay implements Display {
     private final DrawerLayout mDrawerLayout;
 
     private ColorScheme mColorScheme;
-    private final int mColorPrimaryDark;
+    private int mColorPrimaryDark;
 
     private Toolbar mToolbar;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private int mToolbarBackgroundAlpha = 255;
 
     public AndroidDisplay(ActionBarActivity activity,
             DrawerLayout drawerLayout) {
@@ -331,11 +334,10 @@ public class AndroidDisplay implements Display {
             return;
         }
 
-        if (mToolbar != null) {
-            mToolbar.setBackgroundColor(colorScheme.primaryAccent);
-        }
-
         mColorScheme = colorScheme;
+
+        setToolbarBackground(mColorScheme.primaryAccent);
+        mColorPrimaryDark = mColorScheme.secondaryAccent;
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {
@@ -360,12 +362,18 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void setActionBarAlpha(float alpha) {
-        final int alphaInt = Math.round(255 * alpha);
+        mToolbarBackgroundAlpha = Math.round(alpha * 255);
         if (mToolbar != null) {
-            mToolbar.getBackground().mutate().setAlpha(alphaInt);
+            Drawable d = mToolbar.getBackground();
+            if (d != null) {
+                d.mutate().setAlpha(mToolbarBackgroundAlpha);
+            }
         }
+    }
 
-        final int statusBarColor = ColorUtils.blendColors(mColorPrimaryDark, 0, alpha);
+    @Override
+    public void setStatusBarColor(float scroll) {
+        final int statusBarColor = ColorUtils.blendColors(mColorPrimaryDark, 0, scroll);
         if (mDrawerLayout != null) {
             mDrawerLayout.setStatusBarBackgroundColor(statusBarColor);
         } else if (Build.VERSION.SDK_INT >= 21) {
@@ -378,7 +386,7 @@ public class AndroidDisplay implements Display {
         mToolbar = (Toolbar) toolbar;
 
         if (mColorScheme != null) {
-            mToolbar.setBackgroundColor(mColorScheme.primaryAccent);
+            setToolbarBackground(mColorScheme.primaryAccent);
         }
 
         if (mDrawerLayout != null) {
@@ -396,6 +404,16 @@ public class AndroidDisplay implements Display {
             } else {
                 mDrawerToggle = null;
                 mDrawerLayout.setDrawerListener(null);
+            }
+        }
+    }
+
+    private void setToolbarBackground(int color) {
+        if (mToolbar != null) {
+            mToolbar.setBackgroundColor(mColorScheme.primaryAccent);
+            Drawable drawable = mToolbar.getBackground();
+            if (drawable != null) {
+                drawable.mutate().setAlpha(mToolbarBackgroundAlpha);
             }
         }
     }

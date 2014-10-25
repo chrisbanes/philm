@@ -108,6 +108,8 @@ public interface Display {
 
     public void setActionBarAlpha(float alpha);
 
+    public void setStatusBarColor(float scroll);
+
     public void setSupportActionBar(Object toolbar);
 
     public boolean onOptionsItemSelected(MenuItem item);

@@ -18,15 +18,25 @@ package app.philm.in.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 
+import app.philm.in.util.ColorUtils;
+
 public class BackdropImageView extends PhilmImageView {
 
+    private static final int MAX_SCRIM_ALPHA = 180;
+
+    private int mScrimColor = Color.BLACK;
     private int mOffset;
+
+    private final Paint mScrimPaint;
 
     public BackdropImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mScrimPaint = new Paint();
     }
 
     public void offsetBackdrop(int offset) {
@@ -36,6 +46,16 @@ public class BackdropImageView extends PhilmImageView {
         }
     }
 
+    public void setScrimAlpha(float darkness) {
+        mScrimPaint.setColor(
+                ColorUtils.modifyAlpha(mScrimColor,(int) (MAX_SCRIM_ALPHA * darkness)));
+        ViewCompat.postInvalidateOnAnimation(this);
+    }
+
+    public void setScrimColor(int scrimColor) {
+        mScrimColor = scrimColor;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (mOffset != 0) {
@@ -43,6 +63,7 @@ public class BackdropImageView extends PhilmImageView {
             canvas.translate(0f, mOffset);
             canvas.clipRect(0f, 0f, canvas.getWidth(), canvas.getHeight() + mOffset);
             super.onDraw(canvas);
+            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mScrimPaint);
             canvas.restore();
         } else {
             super.onDraw(canvas);

@@ -27,7 +27,9 @@ import app.philm.in.util.ColorUtils;
 
 public class BackdropImageView extends PhilmImageView {
 
+    private static final int MIN_SCRIM_ALPHA = 20;
     private static final int MAX_SCRIM_ALPHA = 180;
+    private static final int SCRIM_ALPHA_DIFF = MAX_SCRIM_ALPHA - MIN_SCRIM_ALPHA;
 
     private int mScrimColor = Color.BLACK;
     private int mOffset;
@@ -47,13 +49,14 @@ public class BackdropImageView extends PhilmImageView {
     }
 
     public void setScrimAlpha(float darkness) {
-        mScrimPaint.setColor(
-                ColorUtils.modifyAlpha(mScrimColor,(int) (MAX_SCRIM_ALPHA * darkness)));
+        mScrimPaint.setColor(ColorUtils.modifyAlpha(mScrimColor,
+                MIN_SCRIM_ALPHA + (int) (SCRIM_ALPHA_DIFF * darkness)));
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
     public void setScrimColor(int scrimColor) {
         mScrimColor = scrimColor;
+        setScrimAlpha(MIN_SCRIM_ALPHA);
     }
 
     @Override

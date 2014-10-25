@@ -40,7 +40,7 @@
                     android:id="@+id/card_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:addStatesFromChildren="true"
                     android:paddingBottom="@dimen/spacing_major"
                     >

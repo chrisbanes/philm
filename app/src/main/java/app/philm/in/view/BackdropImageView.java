@@ -31,6 +31,7 @@ public class BackdropImageView extends PhilmImageView {
     private static final int MAX_SCRIM_ALPHA = 180;
     private static final int SCRIM_ALPHA_DIFF = MAX_SCRIM_ALPHA - MIN_SCRIM_ALPHA;
 
+    private float mScrimDarkness;
     private int mScrimColor = Color.BLACK;
     private int mOffset;
 
@@ -49,18 +50,25 @@ public class BackdropImageView extends PhilmImageView {
     }
 
     public void setScrimAlpha(float darkness) {
-        mScrimPaint.setColor(ColorUtils.modifyAlpha(mScrimColor,
-                MIN_SCRIM_ALPHA + (int) (SCRIM_ALPHA_DIFF * darkness)));
-        ViewCompat.postInvalidateOnAnimation(this);
+        if (mScrimDarkness != darkness) {
+            mScrimDarkness = darkness;
+            ViewCompat.postInvalidateOnAnimation(this);
+        }
     }
 
     public void setScrimColor(int scrimColor) {
-        mScrimColor = scrimColor;
-        setScrimAlpha(MIN_SCRIM_ALPHA);
+        if (mScrimColor != scrimColor) {
+            mScrimColor = scrimColor;
+            ViewCompat.postInvalidateOnAnimation(this);
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        // Update the scrim paint
+        mScrimPaint.setColor(ColorUtils.modifyAlpha(mScrimColor,
+                MIN_SCRIM_ALPHA + (int) (SCRIM_ALPHA_DIFF * mScrimDarkness)));
+
         if (mOffset != 0) {
             canvas.save();
             canvas.translate(0f, mOffset);
@@ -70,6 +78,7 @@ public class BackdropImageView extends PhilmImageView {
             canvas.restore();
         } else {
             super.onDraw(canvas);
+            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mScrimPaint);
         }
     }
 }

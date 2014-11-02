@@ -49,8 +49,12 @@ public class MovieSectionedListAdapter extends BasePhilmSectionedListAdapter<Phi
         PhilmMovie movie = item.getItem();
 
         final TextView title = (TextView) view.findViewById(R.id.textview_title);
-        title.setText(mActivity.getString(R.string.movie_title_year,
-                movie.getTitle(), movie.getYear()));
+        if (movie.getYear() > 0) {
+            title.setText(mActivity.getString(R.string.movie_title_year,
+                    movie.getTitle(), movie.getYear()));
+        } else {
+            title.setText(movie.getTitle());
+        }
 
         final TextView ratingTextView = (TextView) view.findViewById(R.id.textview_subtitle_1);
         ratingTextView.setText(mActivity.getString(R.string.movie_rating_votes,

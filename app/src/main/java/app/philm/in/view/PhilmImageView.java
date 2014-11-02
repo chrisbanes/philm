@@ -63,7 +63,9 @@ public class PhilmImageView extends ImageView {
 
     public PhilmImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        PhilmApplication.from(context).inject(this);
+        if (!isInEditMode()) {
+            PhilmApplication.from(context).inject(this);
+        }
     }
 
     public void setAvatarMode(boolean avatarMode) {

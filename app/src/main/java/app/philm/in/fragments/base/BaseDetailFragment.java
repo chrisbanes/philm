@@ -199,43 +199,15 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
                 final View.OnClickListener seeMoreClickListener,
                 final BaseAdapter adapter) {
 
-            if (layout.getWidth() == 0) {
-                layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                    @Override
-                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                            int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                        layout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateDetailGrid(layout, cardLayout, seeMoreClickListener, adapter);
-                            }
-                        });
-                        layout.removeOnLayoutChangeListener(this);
-                    }
-                });
-                return;
-            }
-
             final ViewRecycler viewRecycler = new ViewRecycler(layout);
             viewRecycler.recycleViews();
 
             if (!adapter.isEmpty()) {
-                final int numItems = layout.getWidth() / mListView.getResources()
-                        .getDimensionPixelSize(R.dimen.detail_card_item_width);
+                final int numItems = getResources().getInteger(R.integer.detail_card_max_items);
                 final int adapterCount = adapter.getCount();
-                final int gridSpacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
 
                 for (int i = 0; i < Math.min(numItems, adapterCount); i++) {
                     View view = adapter.getView(i, viewRecycler.getRecycledView(), layout);
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
-
-                    if (lp.weight > .1f && adapterCount < numItems) {
-                        lp.weight = 0f;
-                        lp.width = layout.getWidth() / numItems;
-                    }
-
-                    lp.rightMargin = i < (numItems - 1) ? gridSpacing : 0;
-
                     layout.addView(view);
                 }
 

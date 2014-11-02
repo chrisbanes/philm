@@ -391,7 +391,7 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
             imageView.loadPoster(credit);
 
-            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
+            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle_1);
             if (!TextUtils.isEmpty(credit.getJob())) {
                 subTitle.setText(credit.getJob());
                 subTitle.setVisibility(View.VISIBLE);
@@ -406,7 +406,7 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
         }
 
         protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_2line;
+            return R.layout.item_movie_detail_list_2line;
         }
     }
 }

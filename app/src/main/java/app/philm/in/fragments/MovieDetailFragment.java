@@ -510,10 +510,16 @@ public class MovieDetailFragment extends BaseDetailFragment
             final PhilmMovie movie = getItem(position);
 
             final TextView title = (TextView) view.findViewById(R.id.textview_title);
-            title.setText(movie.getTitle());
+            if (movie.getYear() > 0) {
+                title.setText(getString(R.string.movie_title_year,
+                        movie.getTitle(), movie.getYear()));
+            } else {
+                title.setText(movie.getTitle());
+            }
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
+            imageView.setAvatarMode(false);
             imageView.loadPoster(movie);
 
             view.setOnClickListener(mItemOnClickListener);
@@ -523,7 +529,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_1line;
+            return R.layout.item_movie_detail_list_1line;
         }
     }
 
@@ -611,9 +617,10 @@ public class MovieDetailFragment extends BaseDetailFragment
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
+            imageView.setAvatarMode(true);
             imageView.loadProfile(credit.getPerson());
 
-            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle);
+            TextView subTitle = (TextView) view.findViewById(R.id.textview_subtitle_1);
             if (subTitle != null) {
                 if (!TextUtils.isEmpty(credit.getJob())) {
                     subTitle.setText(credit.getJob());
@@ -630,7 +637,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_2line;
+            return R.layout.item_movie_detail_list_2line;
         }
     }
 

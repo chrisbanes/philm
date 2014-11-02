@@ -18,32 +18,28 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:paddingLeft="@dimen/spacing_minor"
-             android:paddingTop="@dimen/spacing_minor"
-             android:paddingRight="@dimen/spacing_minor"
-        >
+             android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:layout_marginBottom="@dimen/spacing_minor"
+            android:layout_marginLeft="@dimen/spacing_minor"
+            android:layout_marginRight="@dimen/spacing_minor">
 
         <LinearLayout
+                android:id="@+id/card_content_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_major"
-                >
+                android:orientation="vertical">
 
             <FrameLayout
                     android:id="@+id/card_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:background="?attr/selectableItemBackground"
                     android:addStatesFromChildren="true"
-                    android:paddingBottom="@dimen/spacing_major"
-                    >
+                    android:padding="@dimen/spacing_major">
 
                 <TextView
                         android:id="@+id/textview_see_more"
@@ -53,7 +49,7 @@
                         android:visibility="gone"
                         android:layout_gravity="right|center_vertical"
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        />
+                        android:textColor="?attr/colorAccent" />
 
                 <TextView
                         android:id="@+id/textview_title"
@@ -61,16 +57,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/spacing_micro"
                         android:layout_gravity="left|center_vertical"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             </FrameLayout>
-
-            <LinearLayout
-                    android:id="@+id/card_content_holder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
 
         </LinearLayout>
 

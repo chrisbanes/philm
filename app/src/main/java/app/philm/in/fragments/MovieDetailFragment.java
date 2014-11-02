@@ -110,7 +110,9 @@ public class MovieDetailFragment extends BaseDetailFragment
                                     primary.getTitleTextColor(),
                                     primary.getBodyTextColor());
 
-                            mBackdropImageView.setScrimColor(scheme.secondaryAccent);
+                            if (mBackdropImageView != null) {
+                                mBackdropImageView.setScrimColor(scheme.secondaryAccent);
+                            }
 
                             getCallbacks().updateColorScheme(scheme);
                         }
@@ -333,12 +335,12 @@ public class MovieDetailFragment extends BaseDetailFragment
                         getCallbacks().setHeaderScrollValue(percent);
                     }
 
-                    if (toolbar.getTop() != 0) {
-                        toolbar.offsetTopAndBottom(-toolbar.getTop());
+                    if (toolbar.getTranslationY() != 0) {
+                        toolbar.setTranslationY(0f);
                     }
                 } else {
                     final int targetTop = firstView.getBottom() - toolbar.getHeight();
-                    toolbar.offsetTopAndBottom(targetTop - toolbar.getTop());
+                    toolbar.setTranslationY(targetTop);
 
                     if (mFadeActionBar && hasCallbacks()) {
                         getCallbacks().setHeaderScrollValue(1f);

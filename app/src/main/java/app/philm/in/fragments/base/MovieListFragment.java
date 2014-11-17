@@ -47,8 +47,8 @@ public abstract class MovieListFragment extends BasePhilmMovieListFragment<ListV
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
-            if (item.getType() == ListItem.TYPE_ITEM) {
-                getCallbacks().showMovieDetail(item.getItem(),
+            if (item.getListType() == ListItem.TYPE_ITEM) {
+                getCallbacks().showMovieDetail(item.getListItem(),
                         ActivityTransitions.scaleUpAnimation(v));
             }
         }

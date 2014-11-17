@@ -50,8 +50,8 @@ public abstract class BaseMovieCreditListFragment
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (hasCallbacks()) {
             ListItem<PhilmMovieCredit> item = (ListItem<PhilmMovieCredit>) l.getItemAtPosition(position);
-            if (item.getType() == ListItem.TYPE_ITEM) {
-                PhilmMovieCredit cast = item.getItem();
+            if (item.getListType() == ListItem.TYPE_ITEM) {
+                PhilmMovieCredit cast = item.getListItem();
                 if (cast != null && cast.getPerson() != null) {
                     getCallbacks().showPersonDetail(cast.getPerson(),
                             ActivityTransitions.scaleUpAnimation(v));

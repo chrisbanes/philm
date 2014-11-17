@@ -46,7 +46,7 @@ public class MovieSectionedListAdapter extends BasePhilmSectionedListAdapter<Phi
 
     @Override
     protected void bindView(int position, View view, ListItem<PhilmMovie> item) {
-        PhilmMovie movie = item.getItem();
+        PhilmMovie movie = item.getListItem();
 
         final TextView title = (TextView) view.findViewById(R.id.textview_title);
         if (movie.getYear() > 0) {

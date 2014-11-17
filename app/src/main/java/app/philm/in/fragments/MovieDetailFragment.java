@@ -644,7 +644,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     private class MovieTrailersAdapter extends BaseAdapter {
-
         private final LayoutInflater mInflater;
         private final View.OnClickListener mOnClickListener;
 

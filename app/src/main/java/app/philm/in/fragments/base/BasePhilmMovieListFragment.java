@@ -221,8 +221,8 @@ public abstract class BasePhilmMovieListFragment<E extends AbsListView>
                         final int index = checkedItems.keyAt(i);
                         ListItem<PhilmMovie> listItem =
                                 (ListItem<PhilmMovie>) listView.getItemAtPosition(index);
-                        if (listItem.getType() == ListItem.TYPE_ITEM) {
-                            movies.add(listItem.getItem());
+                        if (listItem.getListType() == ListItem.TYPE_ITEM) {
+                            movies.add(listItem.getListItem());
                         }
                     }
                 }

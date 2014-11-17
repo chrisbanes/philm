@@ -35,7 +35,7 @@ public class MovieCreditSectionedListAdapter extends BasePhilmSectionedListAdapt
 
     @Override
     protected void bindView(int position, View view, ListItem<PhilmMovieCredit> item) {
-        PhilmMovieCredit credit = item.getItem();
+        PhilmMovieCredit credit = item.getListItem();
 
         final TextView nameTextView = (TextView) view.findViewById(R.id.textview_title);
         nameTextView.setText(credit.getPerson().getName());

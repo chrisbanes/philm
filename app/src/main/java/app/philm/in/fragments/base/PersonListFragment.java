@@ -48,8 +48,8 @@ public abstract class PersonListFragment
     public void onListItemClick(ListView l, View v, int position, long id) {
         if (hasCallbacks()) {
             ListItem<PhilmPerson> item = (ListItem<PhilmPerson>) l.getItemAtPosition(position);
-            if (item.getType() == ListItem.TYPE_ITEM) {
-                getCallbacks().showPersonDetail(item.getItem(),
+            if (item.getListType() == ListItem.TYPE_ITEM) {
+                getCallbacks().showPersonDetail(item.getListItem(),
                         ActivityTransitions.scaleUpAnimation(v));
             }
         }

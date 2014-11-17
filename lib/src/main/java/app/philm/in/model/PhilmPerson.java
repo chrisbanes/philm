@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class PhilmPerson extends PhilmModel {
+public class PhilmPerson extends PhilmModel<PhilmPerson> {
 
     Integer tmdbId;
     String name;

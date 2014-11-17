@@ -35,7 +35,7 @@ public class PersonSectionedListAdapter extends BasePhilmSectionedListAdapter<Ph
 
     @Override
     protected void bindView(int position, View view, ListItem<PhilmPerson> item) {
-        PhilmPerson person = item.getItem();
+        PhilmPerson person = item.getListItem();
 
         final TextView nameTextView = (TextView) view.findViewById(R.id.textview_title);
         nameTextView.setText(person.getName());

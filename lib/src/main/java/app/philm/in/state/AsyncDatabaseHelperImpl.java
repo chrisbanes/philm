@@ -29,6 +29,7 @@ import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.network.BackgroundCallRunnable;
 import app.philm.in.util.BackgroundExecutor;
+import app.philm.in.util.PhilmCollections;
 
 public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
 
@@ -139,23 +140,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
             public Void doDatabaseCall(DatabaseHelper dbHelper) {
-                Map<Long, PhilmMovie> dbItemsMap = new ArrayMap<>();
-                for (PhilmMovie movie : dbHelper.getLibrary()) {
-                    dbItemsMap.put(movie.getDbId(), movie);
-                }
-
-                // Now lets remove the items from the mapAll, leaving only those not in the library
-                for (PhilmMovie movie : library) {
-                    dbItemsMap.remove(movie.getDbId());
-                }
-
-                // Anything left in the dbItemsMap needs removing from the db
-                if (!dbItemsMap.isEmpty()) {
-                    dbHelper.delete(dbItemsMap.values());
-                }
-
-                // Now persist the correct list
-                dbHelper.put(library);
+                merge(dbHelper, dbHelper.getLibrary(), library);
 
                 return null;
             }
@@ -167,24 +152,7 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
         mExecutor.execute(new DatabaseBackgroundRunnable<Void>() {
             @Override
             public Void doDatabaseCall(DatabaseHelper dbHelper) {
-                Map<Long, PhilmMovie> dbItemsMap = new ArrayMap<>();
-                for (PhilmMovie movie : dbHelper.getWatchlist()) {
-                    dbItemsMap.put(movie.getDbId(), movie);
-                }
-
-                // Now lets remove the items from the mapAll, leaving only those not in the watchlist
-                for (PhilmMovie movie : watchlist) {
-                    dbItemsMap.remove(movie.getDbId());
-                }
-
-                // Anything left in the dbItemsMap needs removing from the db
-                if (!dbItemsMap.isEmpty()) {
-                    dbHelper.delete(dbItemsMap.values());
-                }
-
-                // Now persist the correct list
-                dbHelper.put(watchlist);
-
+                merge(dbHelper, dbHelper.getWatchlist(), watchlist);
                 return null;
             }
         });
@@ -234,4 +202,28 @@ public class AsyncDatabaseHelperImpl implements AsyncDatabaseHelper {
 
     }
 
+    private static void merge(DatabaseHelper dbHelper,
+                              List<PhilmMovie> databaseItems,
+                              List<PhilmMovie> newItems) {
+        if (!PhilmCollections.isEmpty(databaseItems)) {
+            Map<Long, PhilmMovie> dbItemsMap = new ArrayMap<>();
+            for (PhilmMovie movie : databaseItems) {
+                dbItemsMap.put(movie.getDbId(), movie);
+            }
+
+            // Now lets remove the items from the mapAll, leaving only those
+            // not in the watchlist
+            for (PhilmMovie movie : newItems) {
+                dbItemsMap.remove(movie.getDbId());
+            }
+
+            // Anything left in the dbItemsMap needs removing from the db
+            if (!dbItemsMap.isEmpty()) {
+                dbHelper.delete(dbItemsMap.values());
+            }
+        }
+
+        // Now persist the correct list
+        dbHelper.put(newItems);
+    }
 }

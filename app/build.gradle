@@ -25,15 +25,15 @@ def buildTime() {
 }
 
 def versionMajor = 0
-def versionMinor = 4
-def versionPatch = 1
-def versionBuild = 0 // bump for dogfood builds, public betas, etc.
+def versionMinor = 5
+def versionPatch = 0
+def versionBuild = 1 // bump for dogfood builds, public betas, etc.
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.0.2"
+        compileSdkVersion 21
+        buildToolsVersion "21.0.2"
 
-    defaultConfig {
+        defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         minSdkVersion 14

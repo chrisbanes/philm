@@ -21,8 +21,10 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -229,6 +231,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
             return;
         }
 
+        setSelectedTab(tabIndex);
+
         View selectedChild = mTabStrip.getChildAt(tabIndex);
         if (selectedChild != null) {
             int targetScrollX = selectedChild.getLeft() + positionOffset;
@@ -239,6 +243,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
             }
 
             scrollTo(targetScrollX, 0);
+        }
+    }
+
+    private void setSelectedTab(int position) {
+        for (int i = 0; i < mTabStrip.getChildCount(); i++) {
+            mTabStrip.getChildAt(i).setActivated(position == i);
         }
     }
 
@@ -286,7 +296,6 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 mViewPagerPageChangeListener.onPageSelected(position);
             }
         }
-
     }
 
     private class TabClickListener implements View.OnClickListener {

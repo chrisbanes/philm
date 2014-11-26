@@ -176,7 +176,7 @@
 
     <style name="TextAppearance.Philm.Tab" parent="TextAppearance.AppCompat.Body2">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">@color/tab_text</item>
     </style>
 
     <style name="Widget.Philm.Toolbar" parent="Widget.AppCompat.Toolbar">

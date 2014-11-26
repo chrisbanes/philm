@@ -33,7 +33,8 @@ public class BackdropImageView extends PhilmImageView {
 
     private float mScrimDarkness;
     private int mScrimColor = Color.BLACK;
-    private int mOffset;
+    private int mScrollOffset;
+    private int mImageOffset;
 
     private final Paint mScrimPaint;
 
@@ -42,17 +43,23 @@ public class BackdropImageView extends PhilmImageView {
         mScrimPaint = new Paint();
     }
 
-    public void offsetBackdrop(int offset) {
-        if (offset != mOffset) {
-            mOffset = offset;
+    public void setScrollOffset(int offset) {
+        if (offset != mScrollOffset) {
+            mScrollOffset = offset;
+            mImageOffset = -offset / 2;
+            mScrimDarkness = Math.abs(offset/ (float) getHeight());
+            offsetTopAndBottom(offset - getTop());
+
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
 
-    public void setScrimAlpha(float darkness) {
-        if (mScrimDarkness != darkness) {
-            mScrimDarkness = darkness;
-            ViewCompat.postInvalidateOnAnimation(this);
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        if (mScrollOffset != 0) {
+            offsetTopAndBottom(mScrollOffset - getTop());
         }
     }
 
@@ -69,10 +76,10 @@ public class BackdropImageView extends PhilmImageView {
         mScrimPaint.setColor(ColorUtils.modifyAlpha(mScrimColor,
                 MIN_SCRIM_ALPHA + (int) (SCRIM_ALPHA_DIFF * mScrimDarkness)));
 
-        if (mOffset != 0) {
+        if (mImageOffset != 0) {
             canvas.save();
-            canvas.translate(0f, mOffset);
-            canvas.clipRect(0f, 0f, canvas.getWidth(), canvas.getHeight() + mOffset);
+            canvas.translate(0f, mImageOffset);
+            canvas.clipRect(0f, 0f, canvas.getWidth(), canvas.getHeight() + mImageOffset + 1);
             super.onDraw(canvas);
             canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mScrimPaint);
             canvas.restore();

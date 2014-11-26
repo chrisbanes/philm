@@ -71,11 +71,7 @@ public class MovieDetailFragment extends BaseDetailFragment
         AbsListView.OnScrollListener {
 
     private static final Date DATE = new Date();
-
-    private static final float PARALLAX_FRICTION = 0.5f;
-
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
-
     private static final String KEY_QUERY_MOVIE_ID = "movie_id";
 
     private final PhilmImageView.Listener mPosterListener = new PhilmImageView.Listener() {
@@ -317,42 +313,26 @@ public class MovieDetailFragment extends BaseDetailFragment
             if (visibleItemCount > 0 && firstVisibleItem == 0) {
                 final View firstView = absListView.getChildAt(0);
 
+                final int toolbarHeight = toolbar.getHeight();
+                final int y = -firstView.getTop();
+                final float percent = y / (float) firstView.getHeight();
+
                 if (mBackdropImageView != null) {
                     mBackdropImageView.setVisibility(View.VISIBLE);
-                }
-                toolbar.setVisibility(View.VISIBLE);
 
-                if (firstView.getBottom() > absListView.getPaddingTop()) {
-                    final int y = absListView.getPaddingTop() - firstView.getTop();
-                    final float percent = y / (float) firstView.getHeight();
-
-                    if (mBackdropImageView != null) {
-                        mBackdropImageView.offsetBackdrop(Math.round(-y * PARALLAX_FRICTION));
-                        mBackdropImageView.setScrimAlpha(percent);
-                    }
-
-                    if (mFadeActionBar && hasCallbacks()) {
-                        getCallbacks().setHeaderScrollValue(percent);
-                    }
-
-                    if (toolbar.getTranslationY() != 0) {
-                        toolbar.setTranslationY(0f);
-                    }
-                } else {
-                    final int targetTop = firstView.getBottom() - toolbar.getHeight();
-                    toolbar.setTranslationY(targetTop);
-
-                    if (mFadeActionBar && hasCallbacks()) {
-                        getCallbacks().setHeaderScrollValue(1f);
+                    if (firstView.getBottom() > toolbarHeight) {
+                        mBackdropImageView.setScrollOffset(-y);
+                    } else {
+                        mBackdropImageView.setScrollOffset(
+                                -(mBackdropImageView.getHeight() - toolbarHeight));
                     }
                 }
+
+                if (mFadeActionBar && hasCallbacks()) {
+                    getCallbacks().setHeaderScrollValue(percent);
+                }
+
                 return;
-            } else {
-                toolbar.setVisibility(View.INVISIBLE);
-
-                if (mBackdropImageView != null) {
-                    mBackdropImageView.setVisibility(View.INVISIBLE);
-                }
             }
         }
 

@@ -44,6 +44,7 @@
 
     <dimen name="movie_detail_fanart_height">224dp</dimen>
 
+    <dimen name="movie_detail_pinned_elevation">6dp</dimen>
     <dimen name="movie_detail_title_textsize">26dp</dimen>
     <dimen name="movie_detail_tagline_textsize">16dp</dimen>
     <dimen name="movie_detail_summary_textsize">16dp</dimen>

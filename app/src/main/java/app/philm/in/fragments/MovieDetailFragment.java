@@ -59,6 +59,7 @@ import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.BackdropImageView;
+import app.philm.in.view.BackdropToolbarLayout;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailCardLayout;
@@ -106,8 +107,8 @@ public class MovieDetailFragment extends BaseDetailFragment
                                     primary.getTitleTextColor(),
                                     primary.getBodyTextColor());
 
-                            if (mBackdropImageView != null) {
-                                mBackdropImageView.setScrimColor(scheme.secondaryAccent);
+                            if (mBackdropToolbarLayout != null) {
+                                mBackdropToolbarLayout.setScrimColor(scheme.secondaryAccent);
                             }
 
                             getCallbacks().updateColorScheme(scheme);
@@ -129,7 +130,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private PhilmMovie mMovie;
 
-    private BackdropImageView mBackdropImageView;
+    private BackdropToolbarLayout mBackdropToolbarLayout;
 
     private boolean mFadeActionBar;
 
@@ -167,9 +168,9 @@ public class MovieDetailFragment extends BaseDetailFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mBackdropImageView = (BackdropImageView) view.findViewById(R.id.imageview_fanart);
-        if (mBackdropImageView != null) {
-            mBackdropImageView.setOnClickListener(this);
+        mBackdropToolbarLayout = (BackdropToolbarLayout) view.findViewById(R.id.backdrop_toolbar);
+        if (mBackdropToolbarLayout != null) {
+            mBackdropToolbarLayout.getImageView().setOnClickListener(this);
         }
 
         getListView().setOnScrollListener(this);
@@ -317,23 +318,22 @@ public class MovieDetailFragment extends BaseDetailFragment
                 final int y = -firstView.getTop();
                 final float percent = y / (float) firstView.getHeight();
 
-                if (mBackdropImageView != null) {
-                    mBackdropImageView.setVisibility(View.VISIBLE);
+                if (mBackdropToolbarLayout != null) {
+                    mBackdropToolbarLayout.setVisibility(View.VISIBLE);
 
                     if (firstView.getBottom() > toolbarHeight) {
-                        mBackdropImageView.setScrollOffset(-y);
+                        mBackdropToolbarLayout.setScrollOffset(percent);
                     } else {
-                        mBackdropImageView.setScrollOffset(
-                                -(mBackdropImageView.getHeight() - toolbarHeight));
+                        mBackdropToolbarLayout.setScrollOffset(1f - (toolbarHeight / (float) mBackdropToolbarLayout.getHeight()));
                     }
                 }
 
                 if (mFadeActionBar && hasCallbacks()) {
                     getCallbacks().setHeaderScrollValue(percent);
                 }
-
-                return;
             }
+
+            return;
         }
 
         if (mFadeActionBar && hasCallbacks()) {
@@ -361,14 +361,18 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         mItems.clear();
 
-        if (!hasBigPosterView() && mBackdropImageView != null) {
+        if (!hasBigPosterView() && mBackdropToolbarLayout != null) {
             if (mMovie.hasBackdropUrl()) {
                 mItems.add(DetailItemType.BACKDROP_SPACING);
-                mBackdropImageView.setVisibility(View.VISIBLE);
-                mBackdropImageView.loadBackdrop(mMovie);
+                mBackdropToolbarLayout.setVisibility(View.VISIBLE);
+                mBackdropToolbarLayout.getImageView().loadBackdrop(mMovie);
             } else {
-                mBackdropImageView.setVisibility(View.GONE);
+                mBackdropToolbarLayout.setVisibility(View.GONE);
             }
+        }
+
+        if (mBackdropToolbarLayout != null) {
+            mBackdropToolbarLayout.setTitle(mMovie.getTitle());
         }
 
         mItems.add(DetailItemType.TITLE);
@@ -948,9 +952,9 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         private void bindTitle(final View view) {
-            final TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
-            titleTextView.setText(getString(R.string.movie_title_year,
-                    mMovie.getTitle(), mMovie.getYear()));
+//            final TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
+//            titleTextView.setText(getString(R.string.movie_title_year,
+//                    mMovie.getTitle(), mMovie.getYear()));
 
             final TextView taglineTextView = (TextView) view.findViewById(R.id.textview_tagline);
             taglineTextView.setText(mMovie.getTagline());
@@ -969,7 +973,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             final ColorScheme scheme = getColorScheme();
             if (scheme != null) {
                 view.setBackgroundColor(scheme.primaryAccent);
-                titleTextView.setTextColor(scheme.primaryText);
+                //titleTextView.setTextColor(scheme.primaryText);
                 taglineTextView.setTextColor(scheme.primaryText);
             }
         }

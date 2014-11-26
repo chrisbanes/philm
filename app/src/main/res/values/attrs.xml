@@ -80,4 +80,12 @@
         <attr name="android:textAppearance" />
     </declare-styleable>
 
+    <declare-styleable name="BackdropToolbarLayout">
+        <attr name="titleInitialLeft" format="reference|dimension" />
+        <attr name="titleInitialRight" format="reference|dimension" />
+        <attr name="titleFinalLeft" format="reference|dimension" />
+        <attr name="titleInitialTextSize" format="reference|dimension" />
+        <attr name="titleFinalTextSize" format="reference|dimension" />
+    </declare-styleable>
+
 </resources>

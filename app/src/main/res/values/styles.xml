@@ -101,7 +101,7 @@
 
     <style name="Widget.Philm.Movie.Detail.Tagline" parent="android:Widget">
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
-        <item name="android:maxLines">2</item>
+        <item name="android:maxLines">4</item>
         <item name="android:ellipsize">end</item>
     </style>
 

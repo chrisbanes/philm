@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <app.philm.in.view.BackdropImageView
+            android:id="@+id/imageview_fanart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/movie_detail_fanart_height"
+            android:scaleType="centerCrop"
+            android:background="?attr/colorPrimary" />
+
+    <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
+            style="@style/Widget.Philm.Toolbar.Transparent" />
+
+    <app.philm.in.view.AutofitTextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:maxLines="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse" />
+
+</merge>

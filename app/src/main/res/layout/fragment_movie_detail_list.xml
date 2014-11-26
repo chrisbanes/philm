@@ -17,24 +17,21 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_height="match_parent"
              android:layout_width="match_parent">
 
     <include layout="@layout/include_fragment_detail_list"/>
 
-    <app.philm.in.view.BackdropImageView
-            android:id="@+id/imageview_fanart"
+    <app.philm.in.view.BackdropToolbarLayout
+            android:id="@+id/backdrop_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/movie_detail_fanart_height"
-            android:scaleType="centerCrop"
+            android:layout_height="wrap_content"
             android:elevation="@dimen/movie_detail_pinned_elevation"
-            android:background="?attr/colorPrimary" />
-
-    <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            android:elevation="@dimen/movie_detail_pinned_elevation"
-            style="@style/Widget.Philm.Toolbar.Transparent" />
+            app:titleInitialLeft="16dp"
+            app:titleInitialRight="16dp"
+            app:titleFinalLeft="64dp"
+            app:titleInitialTextSize="32sp"
+            app:titleFinalTextSize="16sp"/>
 
 </FrameLayout>

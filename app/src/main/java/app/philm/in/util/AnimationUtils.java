@@ -201,6 +201,10 @@ public class AnimationUtils {
         }
     }
 
+    public static float interpolate(float startValue, float endValue, float progress) {
+        return startValue + ((endValue - startValue) * progress);
+    }
+
     /**
      * Starts cross-fade animation using TransitionDrawable. Nothing will happen if "from" and "to"
      * are the same.

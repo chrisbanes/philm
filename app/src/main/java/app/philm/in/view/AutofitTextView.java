@@ -130,15 +130,11 @@ public class AutofitTextView extends FontTextView {
      * {@inheritDoc}
      */
     @Override
-    public float getTextSize() {
-        return mMaxTextSize;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void setTextSize(int unit, float size) {
+        if (!mSizeToFit) {
+            super.setTextSize(unit, size);
+        }
+
         Context context = getContext();
         Resources r = Resources.getSystem();
 

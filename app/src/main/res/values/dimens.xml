@@ -68,4 +68,7 @@
 
     <dimen name="movie_discover_tab_height">48dp</dimen>
 
+    <dimen name="movie_backdrop_title_left_initial">16dp</dimen>
+    <dimen name="movie_backdrop_title_left_final">64dp</dimen>
+
 </resources>

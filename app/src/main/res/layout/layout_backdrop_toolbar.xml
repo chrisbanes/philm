@@ -13,16 +13,12 @@
             android:id="@+id/toolbar"
             android:layout_height="?attr/actionBarSize"
             android:layout_width="match_parent"
-            style="@style/Widget.Philm.Toolbar.Transparent" />
+            style="@style/Widget.Philm.Toolbar.Transparent">
 
-    <app.philm.in.view.AutofitTextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse" />
+        <View android:id="@+id/dummy"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" />
+
+    </android.support.v7.widget.Toolbar>
 
 </merge>

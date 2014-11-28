@@ -316,7 +316,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
                 final int toolbarHeight = toolbar.getHeight();
                 final int y = -firstView.getTop();
-                final float percent = y / (float) firstView.getHeight();
+                final float percent = y / (float) (firstView.getHeight() - toolbar.getHeight());
 
                 if (mBackdropToolbarLayout != null) {
                     mBackdropToolbarLayout.setVisibility(View.VISIBLE);
@@ -324,7 +324,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     if (firstView.getBottom() > toolbarHeight) {
                         mBackdropToolbarLayout.setScrollOffset(percent);
                     } else {
-                        mBackdropToolbarLayout.setScrollOffset(1f - (toolbarHeight / (float) mBackdropToolbarLayout.getHeight()));
+                        mBackdropToolbarLayout.setScrollOffset(1f);
                     }
                 }
 

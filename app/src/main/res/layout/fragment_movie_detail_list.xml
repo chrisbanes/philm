@@ -28,9 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/movie_detail_pinned_elevation"
-            app:titleInitialLeft="16dp"
-            app:titleInitialRight="16dp"
-            app:titleFinalLeft="64dp"
+            app:titleInitialMargin="16dp"
             app:titleInitialTextSize="32sp"
             app:titleFinalTextSize="16sp"/>
 

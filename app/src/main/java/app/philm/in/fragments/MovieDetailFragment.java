@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -70,6 +71,8 @@ import app.philm.in.view.RatingBarLayout;
 public class MovieDetailFragment extends BaseDetailFragment
         implements MovieController.MovieDetailUi, View.OnClickListener,
         AbsListView.OnScrollListener {
+
+    public static final String POSTER_TRANSITION_NAME = "poster";
 
     private static final Date DATE = new Date();
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
@@ -192,6 +195,11 @@ public class MovieDetailFragment extends BaseDetailFragment
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -962,6 +970,8 @@ public class MovieDetailFragment extends BaseDetailFragment
             PhilmImageView posterImageView = (PhilmImageView)
                     view.findViewById(R.id.imageview_poster);
 
+            ViewCompat.setTransitionName(posterImageView, POSTER_TRANSITION_NAME);
+
             if (hasBigPosterView()) {
                 // Hide small poster if there's a big poster imageview
                 posterImageView.setVisibility(View.GONE);
@@ -976,6 +986,19 @@ public class MovieDetailFragment extends BaseDetailFragment
                 //titleTextView.setTextColor(scheme.primaryText);
                 taglineTextView.setTextColor(scheme.primaryText);
             }
+
+            view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View v) {
+                    getActivity().supportStartPostponedEnterTransition();
+                    v.removeOnAttachStateChangeListener(this);
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View v) {
+                    v.removeOnAttachStateChangeListener(this);
+                }
+            });
         }
 
         private void bindTrailers(View view) {

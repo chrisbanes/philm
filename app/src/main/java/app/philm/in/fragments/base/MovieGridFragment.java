@@ -18,6 +18,7 @@ package app.philm.in.fragments.base;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import app.philm.in.R;
 import app.philm.in.adapters.MovieGridAdapter;
+import app.philm.in.fragments.MovieDetailFragment;
 import app.philm.in.model.ListItem;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.util.ActivityTransitions;
@@ -55,8 +57,11 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
         if (hasCallbacks()) {
             ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
             if (item.getListType() == ListItem.TYPE_ITEM) {
-                getCallbacks().showMovieDetail(item.getListItem(),
-                        ActivityTransitions.scaleUpAnimation(v));
+                Bundle b = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        getActivity(),
+                        v.findViewById(R.id.imageview_poster),
+                        MovieDetailFragment.POSTER_TRANSITION_NAME).toBundle();
+                getCallbacks().showMovieDetail(item.getListItem(), b);
             }
         }
     }

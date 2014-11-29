@@ -20,6 +20,8 @@
     <style name="Platform.Theme.Philm" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <item name="android:windowSharedElementEnterTransition">@transition/movie_detail</item>
     </style>
 
     <style name="Platform.Theme.Philm.Dark" parent="Theme.AppCompat.NoActionBar">

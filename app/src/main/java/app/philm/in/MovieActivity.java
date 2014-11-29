@@ -29,6 +29,7 @@ public class MovieActivity extends BasePhilmActivity {
     protected void handleIntent(Intent intent, Display display) {
         if (!display.hasMainFragment()) {
             display.showMovieDetailFragment(intent.getStringExtra(Display.PARAM_ID));
+            supportPostponeEnterTransition();
         }
     }
 }

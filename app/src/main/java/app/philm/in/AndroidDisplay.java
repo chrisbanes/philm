@@ -254,7 +254,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void finishActivity() {
-        mActivity.finish();
+        mActivity.supportFinishAfterTransition();
     }
 
     @Override

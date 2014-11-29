@@ -18,7 +18,7 @@ package app.philm.in.model;
 
 import app.philm.in.util.TextUtils;
 
-public abstract class PhilmModel {
+public abstract class PhilmModel<C> implements ListItem<C> {
 
     public static final int TYPE_TMDB = 1;
     public static final int TYPE_IMDB = 2;
@@ -45,4 +45,18 @@ public abstract class PhilmModel {
         return traktVersion;
     }
 
+    @Override
+    public int getListType() {
+        return ListItem.TYPE_ITEM;
+    }
+
+    @Override
+    public C getListItem() {
+        return (C) this;
+    }
+
+    @Override
+    public int getListSectionTitle() {
+        return 0;
+    }
 }

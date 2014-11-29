@@ -16,7 +16,6 @@
 
 package app.philm.in.fragments.base;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -39,8 +38,6 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
     private ViewPager mViewPager;
     private TabPagerAdapter mAdapter;
     private SlidingTabLayout mSlidingTabStrip;
-
-    private final Rect mChildrenInsets = new Rect();
 
     private int mCurrentItem;
 
@@ -68,23 +65,6 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
                 final Fragment fragment = mAdapter.getItem(pos);
                 if (fragment instanceof ListFragment) {
                     ((ListFragment) fragment).smoothScrollTo(0);
-                }
-            }
-        });
-
-        mSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.primary_accent_color));
-        mSlidingTabStrip.setDividerColors(getResources().getColor(R.color.primary_accent_color_dark_10));
-
-        mSlidingTabStrip.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                final int h = bottom - top;
-                mChildrenInsets.top = h;
-                propogateAdditionalInsetsToChildren(mChildrenInsets);
-
-                if (h > 0) {
-                    v.removeOnLayoutChangeListener(this);
                 }
             }
         });
@@ -117,12 +97,6 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(SAVE_SELECTED_TAB, mCurrentItem);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void populateInsets(Rect insets) {
-        ((ViewGroup.MarginLayoutParams) mSlidingTabStrip.getLayoutParams()).topMargin = insets.top;
-        mSlidingTabStrip.setPadding(insets.left, 0, insets.right, 0);
     }
 
     protected ViewPager getViewPager() {
@@ -161,13 +135,7 @@ public abstract class BasePhilmTabFragment extends BasePhilmMovieFragment {
 
         @Override
         public final Fragment getItem(int position) {
-            final Fragment fragment = mFragments.get(position);
-
-            if (fragment instanceof InsetAwareFragment) {
-                ((InsetAwareFragment) fragment).setAdditionalInsets(mChildrenInsets);
-            }
-
-            return fragment;
+            return mFragments.get(position);
         }
 
         @Override

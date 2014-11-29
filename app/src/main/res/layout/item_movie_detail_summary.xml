@@ -16,17 +16,14 @@
   ~ limitations under the License.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_minor"
-    android:paddingLeft="@dimen/spacing_major"
-    android:paddingRight="@dimen/spacing_major">
 
-    <app.philm.in.view.ExpandingTextView
+<app.philm.in.view.ExpandingTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/textview_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/spacing_minor"
+        android:paddingLeft="@dimen/spacing_major"
+        android:paddingRight="@dimen/spacing_major"
+        android:paddingBottom="@dimen/spacing_minor"
         style="@style/Widget.Philm.Movie.Detail.Summary" />
-
-</FrameLayout>

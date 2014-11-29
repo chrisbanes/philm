@@ -16,7 +16,9 @@
 
 package app.philm.in;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import app.philm.in.model.ColorScheme;
 
@@ -101,5 +103,11 @@ public interface Display {
     public void playYoutubeVideo(String id);
 
     public void setColorScheme(ColorScheme colorScheme);
+
+    public boolean toggleDrawer();
+
+    public void setStatusBarColor(float scroll);
+
+    public void setSupportActionBar(Object toolbar, boolean handleBackground);
 
 }

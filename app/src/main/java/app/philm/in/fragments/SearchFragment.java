@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,7 +32,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 import java.lang.reflect.Method;
@@ -358,7 +358,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
         }
 
         protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_1line;
+            return R.layout.item_movie_detail_list_1line;
         }
     }
 
@@ -409,7 +409,12 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
             final PhilmMovie item = getItem(position);
 
             final TextView title = (TextView) view.findViewById(R.id.textview_title);
-            title.setText(item.getTitle());
+            if (item.getYear() > 0) {
+                title.setText(getString(R.string.movie_title_year,
+                        item.getTitle(), item.getYear()));
+            } else {
+                title.setText(item.getTitle());
+            }
 
             final PhilmImageView imageView =
                     (PhilmImageView) view.findViewById(R.id.imageview_poster);
@@ -422,7 +427,7 @@ public class SearchFragment extends BaseDetailFragment implements MovieControlle
         }
 
         protected int getLayoutId() {
-            return R.layout.item_movie_detail_grid_item_1line;
+            return R.layout.item_movie_detail_list_1line;
         }
     }
 

@@ -18,7 +18,8 @@ package app.philm.in.model;
 
 import com.google.common.base.Preconditions;
 
-public class PhilmMovieCredit extends PhilmModel implements Comparable<PhilmMovieCredit> {
+public class PhilmMovieCredit extends PhilmModel<PhilmMovieCredit>
+        implements Comparable<PhilmMovieCredit> {
 
     private static int ORDER_DIRECTOR = 0;
     private static int ORDER_WRITER = 1;

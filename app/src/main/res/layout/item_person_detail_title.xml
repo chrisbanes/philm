@@ -38,12 +38,6 @@
             android:gravity="bottom">
 
         <app.philm.in.view.FontTextView
-                android:id="@+id/textview_title"
-                style="@style/Widget.Philm.Person.Detail.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        <app.philm.in.view.FontTextView
                 android:id="@+id/textview_subtitle_1"
                 style="@style/Widget.Philm.Person.Detail.Subtitle"
                 android:layout_width="wrap_content"

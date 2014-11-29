@@ -28,6 +28,7 @@ import java.io.File;
 import javax.inject.Singleton;
 
 import app.philm.in.qualifiers.ApplicationContext;
+import app.philm.in.qualifiers.FilesDirectory;
 import dagger.Module;
 import dagger.Provides;
 
@@ -52,7 +53,7 @@ public class ContextProvider {
         return AccountManager.get(mApplicationContext);
     }
 
-    @Provides
+    @Provides @FilesDirectory
     public File providePrivateFileDirectory() {
         return mApplicationContext.getFilesDir();
     }

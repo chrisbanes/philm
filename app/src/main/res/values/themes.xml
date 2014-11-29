@@ -18,69 +18,43 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.Base.Philm" parent="android:Theme.Holo.Light">
-        <item name="android:windowActionBarOverlay">true</item>
+    <style name="Platform.Theme.Philm" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="Platform.Theme.Philm.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="Base.Theme.Philm" parent="Platform.Theme.Philm">
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="Theme.Base.Dark.Philm" parent="android:Theme.Holo">
-        <item name="android:windowActionBarOverlay">true</item>
+    <style name="Base.Theme.Philm.Dark" parent="Platform.Theme.Philm.Dark">
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="Theme.Philm" parent="Theme.Base.Philm">
-        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar</item>
-
-        <item name="android:editTextBackground">@drawable/philmcolor_edit_text_holo_light</item>
-
-        <item name="android:autoCompleteTextViewStyle">
-            @style/Widget.Philm.AutoCompleteTextView
-        </item>
-
-        <item name="android:textColorHighlight">@color/primary_accent_color_translucent</item>
-        <item name="android:textSelectHandleLeft">
-            @drawable/philmcolor_text_select_handle_left
-        </item>
-        <item name="android:textSelectHandleRight">
-            @drawable/philmcolor_text_select_handle_right
-        </item>
-        <item name="android:textSelectHandle">@drawable/philmcolor_text_select_handle_middle</item>
-
-        <item name="android:listChoiceIndicatorMultiple">
-            @drawable/philmcolor_btn_check_holo_light
-        </item>
-        <item name="android:listChoiceIndicatorSingle">
-            @drawable/philmcolor_btn_radio_holo_light
-        </item>
-        <item name="android:listChoiceBackgroundIndicator">
-            @drawable/philmcolor_list_selector_holo_light
-        </item>
-        <item name="android:activatedBackgroundIndicator">
-            @drawable/philmcolor_activated_background_holo_light
-        </item>
-        <item name="android:fastScrollThumbDrawable">
-            @drawable/philmcolor_fastscroll_thumb_holo
-        </item>
-
-        <item name="android:dropDownSpinnerStyle">@style/Widget.Philm.Spinner</item>
+    <style name="Theme.Philm" parent="Base.Theme.Philm">
+        <item name="android:textColorHighlight">@color/primary_color_translucent</item>
 
         <item name="android:progressBarStyleHorizontal">@style/Widget.Philm.ProgressBar</item>
-
         <item name="android:ratingBarStyle">@style/Widget.Philm.RatingBar</item>
 
         <item name="grey_shade">@color/light_gray</item>
-        <item name="default_inset_color">@color/chrome_background</item>
+
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/primary_color_dark</item>
+        <item name="colorAccent">@color/accent_color</item>
+    </style>
+
+    <style name="Theme.Philm.Images" parent="Base.Theme.Philm.Dark">
+        <item name="android:windowBackground">@android:color/black</item>
     </style>
 
     <style name="Theme.Philm.Framed" parent="Theme.Philm">
-        <item name="android:actionBarStyle">@style/Widget.Philm.ActionBar.Solid</item>
-        <item name="android:windowActionBarOverlay">false</item>
-    </style>
-
-    <style name="Theme.Philm.Images" parent="Theme.Base.Dark.Philm">
-        <item name="android:actionBarStyle">@style/Widget.Philm.Dark.ActionBar</item>
-        <item name="default_inset_color">@color/translucent_black_dark</item>
-        <item name="android:windowBackground">@android:color/black</item>
+        <item name="windowActionBarOverlay">false</item>
     </style>
 
 </resources>

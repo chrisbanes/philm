@@ -16,14 +16,13 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<app.philm.in.view.InsetsLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:divider="?android:attr/dividerVertical"
-              android:showDividers="middle"
               android:clickable="true"
-              android:background="@color/drawer_background">
+              android:fitsSystemWindows="true"
+              android:background="?android:attr/colorBackground">
 
     <include layout="@layout/include_drawer_add_account" />
 
@@ -33,6 +32,9 @@
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="0px"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:divider="@null"
+            android:paddingTop="@dimen/spacing_minor"
+            android:paddingBottom="@dimen/spacing_minor"/>
 
-</LinearLayout>
+</app.philm.in.view.InsetsLinearLayout>

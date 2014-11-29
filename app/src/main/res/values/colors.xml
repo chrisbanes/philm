@@ -23,13 +23,10 @@
     <color name="light_gray">#FFDDDDDD</color>
     <color name="mid_gray">#FFAAAAAA</color>
 
-    <color name="primary_accent_color_light_10">#ff53CF64</color>
-    <color name="primary_accent_color_translucent">#9939b54a</color>
-    <color name="primary_accent_color">#FF39b54a</color>
-    <color name="primary_accent_color_dark_10">#FF209C31</color>
-    <color name="primary_accent_color_dark_20">#FF068217</color>
-    <color name="primary_accent_color_dark_30">#FF006900</color>
-    <color name="primary_accent_color_dark_40">#FF004F00</color>
+    <color name="primary_color_translucent">#998BC34A</color>
+    <color name="primary_color">#8BC34A</color>
+    <color name="primary_color_dark">#689F38</color>
+    <color name="accent_color">#FF4081</color>
 
     <color name="drawer_background">#FFDDDDDD</color>
     <color name="chrome_background">#E6E6E6E6</color>

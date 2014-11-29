@@ -16,6 +16,7 @@
 
 package app.philm.in.state.mappers;
 
+import com.uwetrottmann.tmdb.entities.CastMember;
 import com.uwetrottmann.tmdb.entities.Credits;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import app.philm.in.model.PhilmPerson;
 import app.philm.in.state.MoviesState;
 
 @Singleton
-public class TmdbCastEntityMapper extends BaseEntityMapper<Credits.CastMember, PhilmPerson> {
+public class TmdbCastEntityMapper extends BaseEntityMapper<CastMember, PhilmPerson> {
 
     @Inject
     public TmdbCastEntityMapper(MoviesState state) {
@@ -38,7 +39,7 @@ public class TmdbCastEntityMapper extends BaseEntityMapper<Credits.CastMember, P
     }
 
     @Override
-    public PhilmPerson map(Credits.CastMember entity) {
+    public PhilmPerson map(CastMember entity) {
         PhilmPerson item = getEntity(String.valueOf(entity.id));
 
         if (item == null) {
@@ -53,9 +54,9 @@ public class TmdbCastEntityMapper extends BaseEntityMapper<Credits.CastMember, P
         return item;
     }
 
-    public List<PhilmMovieCredit> mapCredits(List<Credits.CastMember> entities) {
+    public List<PhilmMovieCredit> mapCredits(List<CastMember> entities) {
         final ArrayList<PhilmMovieCredit> credits = new ArrayList<>(entities.size());
-        for (Credits.CastMember entity : entities) {
+        for (CastMember entity : entities) {
             credits.add(new PhilmMovieCredit(map(entity), entity.character, entity.order));
         }
         Collections.sort(credits);

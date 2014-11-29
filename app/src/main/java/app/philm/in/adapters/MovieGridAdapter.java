@@ -76,7 +76,7 @@ public class MovieGridAdapter extends BaseAdapter {
             view = mLayoutInflater.inflate(R.layout.item_grid_movie, viewGroup, false);
         }
 
-        final PhilmMovie movie = getItem(position).getItem();
+        final PhilmMovie movie = getItem(position).getListItem();
 
         final TextView title = (TextView) view.findViewById(R.id.textview_title);
         title.setText(movie.getTitle());

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2014 Chris Banes
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingTop="@dimen/spacing_minor"
+    android:paddingBottom="@dimen/spacing_minor"
+    android:paddingLeft="@dimen/spacing_major"
+    android:paddingRight="@dimen/spacing_major">
+
+    <app.philm.in.view.PhilmImageView
+          android:id="@+id/imageview_poster"
+          android:layout_width="@dimen/movie_list_small_image_width"
+          android:layout_height="@dimen/movie_list_small_image_width"
+          android:layout_gravity="center_vertical" />
+
+    <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:layout_marginLeft="56dp"
+          android:layout_gravity="center_vertical">
+
+        <app.philm.in.view.FontTextView
+              android:id="@+id/textview_title"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              style="@style/Widget.Philm.Movie.List.Title" />
+
+        <app.philm.in.view.FontTextView
+              android:id="@+id/textview_subtitle_1"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/Widget.Philm.Movie.List.Subtitle" />
+
+    </LinearLayout>
+
+</FrameLayout>

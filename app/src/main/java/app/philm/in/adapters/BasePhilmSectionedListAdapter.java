@@ -77,13 +77,13 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
         View view = convertView;
 
         if (view == null) {
-            final int layout = item.getType() == ListItem.TYPE_ITEM
+            final int layout = item.getListType() == ListItem.TYPE_ITEM
                     ? mViewLayoutId
                     : mPinnedViewLayoutId;
             view = mLayoutInflater.inflate(layout, viewGroup, false);
         }
 
-        switch (item.getType()) {
+        switch (item.getListType()) {
             case ListItem.TYPE_ITEM:
                 bindView(position, view, item);
                 break;
@@ -98,7 +98,7 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
     protected abstract void bindView(int position, View view, ListItem<T> item);
 
     protected void bindPinnedView(int position, View view, ListItem<T> item) {
-        ((TextView) view).setText(item.getSectionTitle());
+        ((TextView) view).setText(item.getListSectionTitle());
     }
 
     @Override
@@ -108,7 +108,7 @@ abstract class BasePhilmSectionedListAdapter<T> extends BaseAdapter
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).getType();
+        return getItem(position).getListType();
     }
 
     @Override

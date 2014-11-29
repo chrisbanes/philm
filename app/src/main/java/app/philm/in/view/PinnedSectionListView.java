@@ -19,6 +19,7 @@ package app.philm.in.view;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -36,6 +37,7 @@ import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.AbsListView;
 import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
@@ -46,6 +48,8 @@ import app.philm.in.BuildConfig;
  * ListView, which is capable to pin section views at its top while the rest is still scrolled.
  */
 public class PinnedSectionListView extends ListView {
+
+    private static final TypedValue sTypedValue = new TypedValue();
 
     //-- inner classes
 
@@ -212,7 +216,7 @@ public class PinnedSectionListView extends ListView {
     private void initView() {
         setOnScrollListener(mOnScrollListener);
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        initShadow(false);
+        initShadow(true);
 
         mPinnedPaint = new Paint();
         mPinnedPaint.setColor(getThemeBackgroundColor());
@@ -234,8 +238,7 @@ public class PinnedSectionListView extends ListView {
         if (visible) {
             if (mShadowDrawable == null) {
                 mShadowDrawable = new GradientDrawable(Orientation.TOP_BOTTOM,
-                        new int[]{Color.parseColor("#ffa0a0a0"), Color.parseColor("#50a0a0a0"),
-                                Color.parseColor("#00a0a0a0")});
+                        new int[]{0xff888888, 0x50888888, 0x0});
                 mShadowHeight = (int) (8 * getResources().getDisplayMetrics().density);
             }
         } else {
@@ -247,14 +250,12 @@ public class PinnedSectionListView extends ListView {
     }
 
     private int getThemeBackgroundColor() {
-        final TypedValue value = new TypedValue();
-        getContext().getTheme()
-                .resolveAttribute(android.R.attr.colorBackground,  value, true);
-        switch (value.type) {
+        getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, sTypedValue, true);
+        switch (sTypedValue.type) {
             case TypedValue.TYPE_REFERENCE:
-                return getResources().getColor(value.resourceId);
+                return getResources().getColor(sTypedValue.resourceId);
             default:
-                return value.data;
+                return sTypedValue.data;
         }
     }
 
@@ -262,7 +263,6 @@ public class PinnedSectionListView extends ListView {
      * Create shadow wrapper with a pinned view for a view at given position
      */
     void createPinnedShadow(int position) {
-
         // try to recycle shadow
         PinnedSection pinnedShadow = mRecycleSection;
         mRecycleSection = null;
@@ -272,7 +272,24 @@ public class PinnedSectionListView extends ListView {
             pinnedShadow = new PinnedSection();
         }
         // request new view using recycled view, if such
-        View pinnedView = getAdapter().getView(position, pinnedShadow.view, PinnedSectionListView.this);
+        View pinnedView;
+
+        final int childIndex = position - getFirstVisiblePosition();
+        final View sectionView = getChildAt(childIndex);
+
+        if (sectionView != null) {
+            Bitmap b = Bitmap.createBitmap(sectionView.getWidth(),
+                    sectionView.getHeight(),
+                    Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(b);
+            c.drawColor(getThemeBackgroundColor());
+            sectionView.draw(c);
+
+            pinnedView = new ImageView(getContext());
+            ((ImageView) pinnedView).setImageBitmap(b);
+        } else {
+            pinnedView = getAdapter().getView(position, null, PinnedSectionListView.this);
+        }
 
         // read layout parameters
         LayoutParams layoutParams = (LayoutParams) pinnedView.getLayoutParams();

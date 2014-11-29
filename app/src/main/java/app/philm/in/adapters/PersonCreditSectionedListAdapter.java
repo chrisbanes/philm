@@ -48,7 +48,7 @@ public class PersonCreditSectionedListAdapter
 
     @Override
     protected void bindView(int position, View view, ListItem<PhilmPersonCredit> item) {
-        PhilmPersonCredit credit = item.getItem();
+        PhilmPersonCredit credit = item.getListItem();
 
         final TextView nameTextView = (TextView) view.findViewById(R.id.textview_title);
         nameTextView.setText(credit.getTitle());

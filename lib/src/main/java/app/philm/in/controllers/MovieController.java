@@ -236,7 +236,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     @Subscribe
     public void onMovieUserRatingChanged(MoviesState.MovieUserRatingChangedEvent event) {
-        populateUiFromQueryType(MovieQueryType.DETAIL);
+        populateUiFromQueryType(MovieQueryType.MOVIE_DETAIL);
     }
 
     @Subscribe
@@ -250,7 +250,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         if (watching != null && watching.movie != null) {
             fetchDetailMovieIfNeeded(0, watching.movie.getImdbId());
         }
-        populateUiFromQueryType(MovieQueryType.DETAIL);
+        populateUiFromQueryType(MovieQueryType.MOVIE_DETAIL);
     }
 
     @Subscribe
@@ -329,10 +329,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             }
 
-            case DETAIL:
+            //case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
-            case RELATED:
+            case MOVIE_RELATED:
             case MOVIE_IMAGES: {
                 final PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
@@ -408,7 +408,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                     case WATCHLIST:
                         fetchWatchlist(getId(ui));
                         break;
-                    case DETAIL:
+                    case MOVIE_DETAIL:
                         fetchDetailMovie(getId(ui), ui.getRequestParameter());
                         break;
                     case POPULAR:
@@ -749,6 +749,14 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 return MovieController.this.getUiTitle(ui);
             }
 
+            @Override
+            public void setHeaderScrollValue(float scrollPercentage) {
+                Display display = getDisplay();
+                if (display != null) {
+                    getDisplay().setStatusBarColor(scrollPercentage);
+                }
+            }
+
             private boolean canFetchNextPage(MoviesState.PaginatedResult<?> paginatedResult) {
                 return paginatedResult != null && paginatedResult.page < paginatedResult.totalPages;
             }
@@ -781,7 +789,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case WATCHLIST:
                 fetchWatchlistIfNeeded(callingId);
                 break;
-            case DETAIL:
+            case MOVIE_DETAIL:
                 fetchDetailMovieIfNeeded(callingId, ui.getRequestParameter());
                 break;
             case NOW_PLAYING:
@@ -793,7 +801,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case RECOMMENDED:
                 fetchRecommendedIfNeeded(callingId);
                 break;
-            case RELATED:
+            case MOVIE_RELATED:
                 fetchRelatedIfNeeded(callingId, ui.getRequestParameter());
                 subtitle = mStringFetcher.getString(R.string.related_movies);
                 break;
@@ -914,16 +922,16 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         fetchDetailMovieIfNeeded(callingId, movie, false);
     }
 
-    private <T> List<ListItem<T>> createListItemList(final List<T> items) {
+    private <T extends ListItem<T>> List<ListItem<T>> createListItemList(final List<T> items) {
         Preconditions.checkNotNull(items, "items cannot be null");
         ArrayList<ListItem<T>> listItems = new ArrayList<>(items.size());
-        for (T item : items) {
-            listItems.add(new ListItem<T>(item));
+        for (ListItem<T> item : items) {
+            listItems.add(item);
         }
         return listItems;
     }
 
-    private <T, F extends Filter<T>> List<ListItem<T>> createSectionedListItemList(
+    private <T extends ListItem<T>, F extends Filter<T>> List<ListItem<T>> createSectionedListItemList(
             final List<T> items,
             final List<F> sections,
             List<F> sectionProcessingOrder) {
@@ -946,15 +954,13 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             List<ListItem<T>> sectionItems = null;
 
             for (Iterator<T> i = movies.iterator(); i.hasNext(); ) {
-                T movie = i.next();
-                if (movie != null && filter.isFiltered(movie)) {
+                T item = i.next();
+                if (item != null && filter.isFiltered(item)) {
                     if (sectionItems == null) {
                         sectionItems = new ArrayList<>();
-                        // Now add Title
-                        String title = mStringFetcher.getString(filter.getSectionTitle());
-                        sectionItems.add(new ListItem<T>(title));
+                        sectionItems.add(filter);
                     }
-                    sectionItems.add(new ListItem<T>(movie));
+                    sectionItems.add(item);
                     i.remove();
                 }
             }
@@ -1403,8 +1409,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         List<PhilmMovie> items = null;
 
-        List<MovieFilter> sections = null;
-        List<MovieFilter> sectionProcessingOrder = null;
+        List<MovieFilter> sections = queryType.getSections();
+        List<MovieFilter> sectionProcessingOrder = queryType.getSectionsProcessingOrder();
 
         switch (queryType) {
             case TRENDING:
@@ -1421,10 +1427,6 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 break;
             case WATCHLIST:
                 items = mMoviesState.getWatchlist();
-                sections = Arrays.asList(MovieFilter.UPCOMING, MovieFilter.SOON,
-                        MovieFilter.RELEASED, MovieFilter.SEEN);
-                sectionProcessingOrder = Arrays.asList(MovieFilter.UPCOMING, MovieFilter.SOON,
-                        MovieFilter.SEEN, MovieFilter.RELEASED);
                 break;
             case SEARCH_MOVIES:
                 MoviesState.SearchResult searchResult = mMoviesState.getSearchResult();
@@ -1447,7 +1449,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             case RECOMMENDED:
                 items = mMoviesState.getRecommended();
                 break;
-            case RELATED:
+            case MOVIE_RELATED:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
                     items = movie.getRelated();
@@ -1619,14 +1621,9 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
     }
 
-    public interface Filter<T> {
-
+    public interface Filter<T> extends ListItem<T> {
         boolean isFiltered(T item);
-
         void sortListItems(List<ListItem<T>> items);
-
-        int getSectionTitle();
-
     }
 
     public static enum MovieFilter implements Filter<PhilmMovie> {
@@ -1717,7 +1714,7 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         }
 
         @Override
-        public int getSectionTitle() {
+        public int getListSectionTitle() {
             switch (this) {
                 case UPCOMING:
                     return R.string.filter_upcoming;
@@ -1730,14 +1727,31 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
             }
             return 0;
         }
+
+        @Override
+        public PhilmMovie getListItem() {
+            return null;
+        }
+
+        @Override
+        public int getListType() {
+            return ListItem.TYPE_SECTION;
+        }
     }
 
     public static enum MovieQueryType {
         TRENDING, POPULAR, LIBRARY, WATCHLIST, NOW_PLAYING, UPCOMING, RECOMMENDED, DISCOVER,
         SEARCH, SEARCH_MOVIES, SEARCH_PEOPLE,
-        DETAIL, RELATED, MOVIE_CAST, MOVIE_CREW, MOVIE_IMAGES,
+        MOVIE_DETAIL, MOVIE_RELATED, MOVIE_CAST, MOVIE_CREW, MOVIE_IMAGES,
         PERSON_DETAIL, PERSON_CREDITS_CAST, PERSON_CREDITS_CREW,
         NONE;
+
+        private static final List<MovieFilter> WATCHLIST_SECTIONS_DISPLAY = Arrays.asList(
+                MovieFilter.UPCOMING, MovieFilter.SOON,
+                MovieFilter.RELEASED, MovieFilter.SEEN);
+        private static final List<MovieFilter> WATCHLIST_SECTIONS_PROCESSING = Arrays.asList(
+                MovieFilter.UPCOMING, MovieFilter.SOON,
+                MovieFilter.SEEN, MovieFilter.RELEASED);
 
         public boolean requireLogin() {
             switch (this) {
@@ -1762,8 +1776,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
         public boolean showUpNavigation() {
             switch (this) {
-                case DETAIL:
-                case RELATED:
+                case MOVIE_DETAIL:
+                case MOVIE_RELATED:
                 case MOVIE_CAST:
                 case MOVIE_CREW:
                 case MOVIE_IMAGES:
@@ -1776,6 +1790,22 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
                 default:
                     return false;
             }
+        }
+
+        public List<MovieFilter> getSections() {
+            switch (this) {
+                case WATCHLIST:
+                    return WATCHLIST_SECTIONS_DISPLAY;
+            }
+            return null;
+        }
+
+        public List<MovieFilter> getSectionsProcessingOrder() {
+            switch (this) {
+                case WATCHLIST:
+                    return WATCHLIST_SECTIONS_PROCESSING;
+            }
+            return null;
         }
     }
 
@@ -1948,6 +1978,8 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
         void playTrailer(PhilmMovieVideo trailer);
 
         String getUiTitle();
+
+        void setHeaderScrollValue(float alpha);
     }
 
     private class LibraryDbLoadCallback implements AsyncDatabaseHelper.Callback<List<PhilmMovie>> {
@@ -2002,10 +2034,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private ColorScheme getColorSchemeForUi(MovieUi ui) {
         switch (ui.getMovieQueryType()) {
-            case DETAIL:
+            case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
-            case RELATED:
+            case MOVIE_RELATED:
             case MOVIE_IMAGES:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {
@@ -2019,10 +2051,10 @@ public class MovieController extends BaseUiController<MovieController.MovieUi,
 
     private void recordColorSchemeFromUi(MovieUi ui, ColorScheme scheme) {
         switch (ui.getMovieQueryType()) {
-            case DETAIL:
+            case MOVIE_DETAIL:
             case MOVIE_CAST:
             case MOVIE_CREW:
-            case RELATED:
+            case MOVIE_RELATED:
             case MOVIE_IMAGES:
                 PhilmMovie movie = mMoviesState.getMovie(ui.getRequestParameter());
                 if (movie != null) {

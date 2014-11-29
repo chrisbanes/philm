@@ -18,7 +18,7 @@ package app.philm.in.model;
 
 import com.uwetrottmann.tmdb.entities.Video;
 
-public class PhilmMovieVideo extends PhilmModel {
+public class PhilmMovieVideo extends PhilmModel<PhilmMovieVideo> {
 
     private static final String SOURCE_YOUTUBE = "youtube";
 

@@ -26,7 +26,7 @@ import android.graphics.drawable.BitmapDrawable;
 public class TintingBitmapDrawable extends BitmapDrawable {
 
 
-    public static TintingBitmapDrawable createFromStateList(Resources res, int drawableId,
+    public static TintingBitmapDrawable createFromStateListResource(Resources res, int drawableId,
             int colorStateId) {
         TintingBitmapDrawable d = new TintingBitmapDrawable(res,
                 BitmapFactory.decodeResource(res, drawableId, null));
@@ -36,9 +36,21 @@ public class TintingBitmapDrawable extends BitmapDrawable {
 
     public static TintingBitmapDrawable createFromColorResource(Resources res, int drawableId,
             int colorId) {
+        return createFromColor(res, drawableId, res.getColor(colorId));
+    }
+
+    public static TintingBitmapDrawable createFromColor(Resources res, int drawableId, int color) {
         TintingBitmapDrawable d = new TintingBitmapDrawable(res,
                 BitmapFactory.decodeResource(res, drawableId, null));
-        d.setDefaultColor(res.getColor(colorId));
+        d.setDefaultColor(color);
+        return d;
+    }
+
+    public static TintingBitmapDrawable createFromStateList(Resources res, int drawableId,
+            ColorStateList colorStateList) {
+        TintingBitmapDrawable d = new TintingBitmapDrawable(res,
+                BitmapFactory.decodeResource(res, drawableId, null));
+        d.setTint(colorStateList);
         return d;
     }
 

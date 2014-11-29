@@ -19,21 +19,26 @@ package app.philm.in;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextUtils;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
@@ -58,29 +63,32 @@ import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.model.ColorScheme;
-import app.philm.in.util.PhilmTypefaceSpan;
-import app.philm.in.view.FontTextView;
-import app.philm.in.view.InsetFrameLayout;
+import app.philm.in.util.ColorUtils;
 
 public class AndroidDisplay implements Display {
 
-    private final FragmentActivity mActivity;
-    private final ActionBarDrawerToggle mActionBarDrawerToggle;
+    private static final TypedValue sTypedValue = new TypedValue();
+
+    private final ActionBarActivity mActivity;
     private final DrawerLayout mDrawerLayout;
-    private final InsetFrameLayout mInsetFrameLayout;
-    private final PhilmTypefaceSpan mDefaultTitleSpan;
 
     private ColorScheme mColorScheme;
+    private int mColorPrimaryDark;
 
-    public AndroidDisplay(FragmentActivity activity,
-            ActionBarDrawerToggle actionBarDrawerToggle,
-            DrawerLayout drawerLayout,
-            InsetFrameLayout insetFrameLayout) {
+    private Toolbar mToolbar;
+    private boolean mCanChangeToolbarBackground;
+
+    public AndroidDisplay(ActionBarActivity activity,
+            DrawerLayout drawerLayout) {
         mActivity = Preconditions.checkNotNull(activity, "activity cannot be null");
-        mActionBarDrawerToggle = actionBarDrawerToggle;
         mDrawerLayout = drawerLayout;
-        mInsetFrameLayout = insetFrameLayout;
-        mDefaultTitleSpan = new PhilmTypefaceSpan(activity, FontTextView.FONT_ROBOTO_CONDENSED);
+
+        mActivity.getTheme().resolveAttribute(R.attr.colorPrimaryDark, sTypedValue, true);
+        mColorPrimaryDark = sTypedValue.data;
+
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setStatusBarBackgroundColor(mColorPrimaryDark);
+        }
     }
 
     @Override
@@ -172,9 +180,22 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void closeDrawerLayout() {
-        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
         }
+    }
+
+    @Override
+    public boolean toggleDrawer() {
+        if (mDrawerLayout != null) {
+            if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -196,35 +217,27 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void showUpNavigation(boolean show) {
-        if (mActionBarDrawerToggle != null) {
-            mActionBarDrawerToggle.setDrawerIndicatorEnabled(!show);
-        } else {
-            mActivity.getActionBar().setDisplayHomeAsUpEnabled(show);
-            mActivity.getActionBar().setHomeButtonEnabled(true);
+        final ActionBar ab = mActivity.getSupportActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+            ab.setHomeAsUpIndicator(show ? R.drawable.ic_back : R.drawable.ic_menu);
         }
     }
 
     @Override
     public void setActionBarTitle(CharSequence title) {
-        ActionBar ab = mActivity.getActionBar();
+        ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
-            if (mColorScheme != null) {
-                ab.setTitle(convertToCondensed(title, mColorScheme.primaryText));
-            } else {
-                ab.setTitle(convertToCondensed(title));
-            }
+            ab.setTitle(title);
         }
     }
 
     @Override
     public void setActionBarSubtitle(CharSequence title) {
-        ActionBar ab = mActivity.getActionBar();
+        ActionBar ab = mActivity.getSupportActionBar();
         if (ab != null) {
-            if (mColorScheme != null) {
-                ab.setSubtitle(convertToCondensed(title, mColorScheme.secondaryText));
-            } else {
-                ab.setSubtitle(convertToCondensed(title));
-            }
+            ab.setSubtitle(title);
         }
     }
 
@@ -323,26 +336,8 @@ public class AndroidDisplay implements Display {
 
         mColorScheme = colorScheme;
 
-        if (mInsetFrameLayout != null) {
-            if (colorScheme != null) {
-                mInsetFrameLayout.setInsetBackgroundColor(colorScheme.primaryAccent);
-            } else {
-                mInsetFrameLayout.resetInsetBackground();
-            }
-        }
-
-        final ActionBar ab = mActivity.getActionBar();
-        if (ab != null) {
-            CharSequence title = ab.getTitle();
-            if (!TextUtils.isEmpty(title)) {
-                setActionBarTitle(title);
-            }
-
-            CharSequence subtitle = ab.getSubtitle();
-            if (!TextUtils.isEmpty(subtitle)) {
-                setActionBarSubtitle(subtitle);
-            }
-        }
+        setToolbarBackground(mColorScheme.primaryAccent);
+        mColorPrimaryDark = mColorScheme.secondaryAccent;
     }
 
     private void showFragmentFromDrawer(Fragment fragment) {
@@ -365,25 +360,37 @@ public class AndroidDisplay implements Display {
         ActivityCompat.startActivity(mActivity, intent, options);
     }
 
-    private CharSequence convertToCondensed(final CharSequence string) {
-        if (TextUtils.isEmpty(string)) {
-            return string;
+    @Override
+    public void setStatusBarColor(float scroll) {
+        final int statusBarColor = ColorUtils.blendColors(mColorPrimaryDark, 0, scroll);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setStatusBarBackgroundColor(statusBarColor);
+        } else if (Build.VERSION.SDK_INT >= 21) {
+            mActivity.getWindow().setStatusBarColor(statusBarColor);
         }
-
-        SpannableString s = new SpannableString(string);
-        s.setSpan(mDefaultTitleSpan, 0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        return s;
     }
 
-    private CharSequence convertToCondensed(final CharSequence string, int color) {
-        if (TextUtils.isEmpty(string)) {
-            return string;
+    @Override
+    public void setSupportActionBar(Object toolbar, boolean handleBackground) {
+        mToolbar = (Toolbar) toolbar;
+        mCanChangeToolbarBackground = handleBackground;
+
+        if (mColorScheme != null) {
+            setToolbarBackground(mColorScheme.primaryAccent);
         }
 
-        SpannableString s = new SpannableString(string);
-        s.setSpan(new PhilmTypefaceSpan(mActivity, FontTextView.FONT_ROBOTO_CONDENSED, color),
-                0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        return s;
+        if (mDrawerLayout != null && mToolbar != null) {
+            final ActionBar ab = mActivity.getSupportActionBar();
+            if (ab != null) {
+                ab.setDisplayHomeAsUpEnabled(true);
+                ab.setHomeButtonEnabled(true);
+            }
+        }
     }
 
+    private void setToolbarBackground(int color) {
+        if (mCanChangeToolbarBackground && mToolbar != null) {
+            mToolbar.setBackgroundColor(color);
+        }
+    }
 }

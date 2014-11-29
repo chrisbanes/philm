@@ -19,7 +19,7 @@ package app.philm.in.tasks;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import com.uwetrottmann.tmdb.entities.ResultsPage;
+import com.uwetrottmann.tmdb.entities.MovieResultsPage;
 
 import app.philm.in.state.MoviesState;
 import retrofit.RetrofitError;
@@ -33,7 +33,7 @@ public class FetchTmdbSearchMoviesRunnable extends BaseTmdbPaginatedMovieRunnabl
     }
 
     @Override
-    public ResultsPage doBackgroundCall() throws RetrofitError {
+    public MovieResultsPage doBackgroundCall() throws RetrofitError {
         return getTmdbClient().searchService().movie(
                 mQuery,
                 getPage(),

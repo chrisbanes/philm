@@ -19,16 +19,17 @@ package app.philm.in;
 import com.crashlytics.android.Crashlytics;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -36,74 +37,38 @@ import android.view.Window;
 import java.util.HashSet;
 
 import app.philm.in.controllers.MainController;
-import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.view.InsetFrameLayout;
 
-public abstract class BasePhilmActivity extends FragmentActivity
-        implements MainController.HostCallbacks, InsetFrameLayout.OnInsetsCallback {
+public abstract class BasePhilmActivity extends ActionBarActivity
+        implements MainController.HostCallbacks {
 
     private MainController mMainController;
     private Display mDisplay;
 
-    private ActionBarDrawerToggle mDrawerToggle;
-
-    private HashSet<OnActivityInsetsCallback> mInsetCallbacks;
-
-    private Rect mInsets;
-
     private View mCardContainer;
-
-    private InsetFrameLayout mInsetFrameLayout;
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Request Progress Bar in Action Bar
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         super.onCreate(savedInstanceState);
 
         Crashlytics.start(this);
 
-        // Request Progress Bar in Action Bar
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         setContentView(getContentViewLayoutId());
 
         mCardContainer = findViewById(R.id.card_container);
-
-        mInsetFrameLayout = (InsetFrameLayout) findViewById(R.id.fl_insets);
-        if (mInsetFrameLayout != null) {
-            mInsetFrameLayout.setOnInsetsCallback(this);
-        }
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (mDrawerLayout != null) {
-            mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer,
-                    R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
-            mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-            final ActionBar ab = getActionBar();
-            if (ab != null) {
-                ab.setDisplayHomeAsUpEnabled(true);
-                ab.setHomeButtonEnabled(true);
-            }
-        }
 
         // Let SuperCardToast restore itself
         SuperCardToast.onRestoreState(savedInstanceState, this);
 
         mMainController = PhilmApplication.from(this).getMainController();
-
-        mDisplay = new AndroidDisplay(this, mDrawerToggle, mDrawerLayout, mInsetFrameLayout);
+        mDisplay = new AndroidDisplay(this, mDrawerLayout);
 
         handleIntent(getIntent(), getDisplay());
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (mDrawerToggle != null) {
-            mDrawerToggle.syncState();
-        }
     }
 
     @Override
@@ -131,10 +96,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (getMainController().onHomeButtonPressed()) {
@@ -159,14 +120,6 @@ public abstract class BasePhilmActivity extends FragmentActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (mDrawerToggle != null) {
-            mDrawerToggle.onConfigurationChanged(newConfig);
-        }
     }
 
     @Override
@@ -202,54 +155,8 @@ public abstract class BasePhilmActivity extends FragmentActivity
         mDisplay = null;
     }
 
-    public void addInsetChangedCallback(OnActivityInsetsCallback callback) {
-        if (mInsetCallbacks == null) {
-            mInsetCallbacks = new HashSet<>();
-        }
-        mInsetCallbacks.add(callback);
-
-        if (mInsets != null) {
-            callback.onInsetsChanged(mInsets);
-        }
-    }
-
-    public void removeInsetChangedCallback(OnActivityInsetsCallback callback) {
-        if (mInsetCallbacks != null) {
-            mInsetCallbacks.remove(callback);
-        }
-    }
-
-    @Override
-    public void onInsetsChanged(Rect insets) {
-        mInsets = insets;
-
-        if (mCardContainer != null) {
-            mCardContainer.setPadding(0, insets.top, 0, 0);
-        }
-
-        if (!PhilmCollections.isEmpty(mInsetCallbacks)) {
-            for (OnActivityInsetsCallback callback : mInsetCallbacks) {
-                callback.onInsetsChanged(insets);
-            }
-        }
-    }
-
-    public void setInsetTopAlpha(float alpha) {
-        if (mInsetFrameLayout != null) {
-            mInsetFrameLayout.setTopInsetAlpha(IntUtils.anchor(Math.round(alpha * 255), 0, 255));
-        }
-    }
-
-    public void resetInsets() {
-        setInsetTopAlpha(255);
-    }
-
     public static interface OnActivityInsetsCallback {
         public void onInsetsChanged(Rect insets);
-    }
-
-    protected ActionBarDrawerToggle getDrawerToggle() {
-        return mDrawerToggle;
     }
 
     protected DrawerLayout getDrawerLayout() {
@@ -264,8 +171,17 @@ public abstract class BasePhilmActivity extends FragmentActivity
         return R.layout.activity_main;
     }
 
-    protected Display getDisplay() {
+    public Display getDisplay() {
         return mDisplay;
     }
 
+    @Override
+    public final void setSupportActionBar(@Nullable Toolbar toolbar) {
+        super.setSupportActionBar(toolbar);
+    }
+
+    public void setSupportActionBar(@Nullable Toolbar toolbar, boolean handleBackground) {
+        setSupportActionBar(toolbar);
+        getDisplay().setSupportActionBar(toolbar, handleBackground);
+    }
 }

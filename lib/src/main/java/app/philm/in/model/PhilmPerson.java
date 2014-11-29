@@ -16,14 +16,16 @@
 
 package app.philm.in.model;
 
+import com.uwetrottmann.tmdb.entities.CastMember;
 import com.uwetrottmann.tmdb.entities.Credits;
+import com.uwetrottmann.tmdb.entities.CrewMember;
 import com.uwetrottmann.tmdb.entities.Person;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class PhilmPerson extends PhilmModel {
+public class PhilmPerson extends PhilmModel<PhilmPerson> {
 
     Integer tmdbId;
     String name;
@@ -41,14 +43,14 @@ public class PhilmPerson extends PhilmModel {
     transient List<PhilmPersonCredit> crewCredits;
     transient boolean fetchedCredits;
 
-    public void setFromTmdb(Credits.CrewMember tmdbCrewMember) {
+    public void setFromTmdb(CrewMember tmdbCrewMember) {
         tmdbId = tmdbCrewMember.id;
         name = tmdbCrewMember.name;
         pictureUrl = tmdbCrewMember.profile_path;
         pictureType = TYPE_TMDB;
     }
 
-    public void setFromTmdb(Credits.CastMember tmdbCastMember) {
+    public void setFromTmdb(CastMember tmdbCastMember) {
         tmdbId = tmdbCastMember.id;
         name = tmdbCastMember.name;
         pictureUrl = tmdbCastMember.profile_path;

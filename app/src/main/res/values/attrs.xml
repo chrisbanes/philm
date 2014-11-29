@@ -48,10 +48,6 @@
         <attr name="title" />
     </declare-styleable>
 
-    <declare-styleable name="DrawInsetsFrameLayout">
-        <attr name="insetBackground" format="reference|color" />
-    </declare-styleable>
-
     <declare-styleable name="ForegroundLinearLayout">
         <attr name="android:foreground" />
         <attr name="android:foregroundGravity" />
@@ -59,7 +55,6 @@
 
     <declare-styleable name="PhilmTheme">
         <attr name="grey_shade" format="color|reference" />
-        <attr name="default_inset_color" format="color|reference" />
     </declare-styleable>
 
     <declare-styleable name="ExpandingTextView">
@@ -76,6 +71,19 @@
     <declare-styleable name="FloatLabelLayout">
         <attr name="floatLabelTextAppearance" format="reference" />
         <attr name="floatLabelSidePadding" format="reference|dimension" />
+    </declare-styleable>
+    
+    <declare-styleable name="SlidingTabLayout">
+        <attr name="selectedColor" format="color" />
+        <attr name="indicatorHeight" format="reference|dimension" />
+        <attr name="dividerColor" format="color" />
+        <attr name="android:textAppearance" />
+    </declare-styleable>
+
+    <declare-styleable name="BackdropToolbarLayout">
+        <attr name="titleInitialMargin" format="reference|dimension" />
+        <attr name="titleInitialTextSize" format="reference|dimension" />
+        <attr name="titleFinalTextSize" format="reference|dimension" />
     </declare-styleable>
 
 </resources>

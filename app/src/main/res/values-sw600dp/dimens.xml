@@ -17,7 +17,7 @@
 
 <resources>
 
-    <dimen name="drawer_side_menu_width">300dp</dimen>
+    <dimen name="drawer_side_menu_width">400dp</dimen>
     <dimen name="drawer_user_text_size">16dp</dimen>
     <dimen name="drawer_movie_checkin_poster_width">68dp</dimen>
     <!-- Should be movie_detail_poster_width * 1.6 -->
@@ -35,7 +35,7 @@
     <!-- Should be movie_detail_poster_width * 1.6 -->
     <dimen name="movie_detail_poster_height">160dp</dimen>
 
-    <dimen name="movie_detail_fanart_height">250dp</dimen>
+    <dimen name="movie_detail_fanart_height">276dp</dimen>
 
     <dimen name="movie_detail_title_textsize">32dp</dimen>
     <dimen name="movie_detail_tagline_textsize">18dp</dimen>

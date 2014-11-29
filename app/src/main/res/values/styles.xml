@@ -16,21 +16,7 @@
 
 <resources>
 
-    <style name="Widget.Philm.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@null</item>
-        <item name="android:indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
-    </style>
-
-    <style name="Widget.Philm.Dark.ActionBar" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">@null</item>
-        <item name="android:indeterminateProgressStyle">@style/Widget.Philm.ActionBar.Progress</item>
-    </style>
-
-    <style name="Widget.Philm.ActionBar.Solid" parent="Widget.Philm.ActionBar">
-        <item name="android:background">?attr/default_inset_color</item>
-    </style>
-
-    <style name="Widget.Philm.ActionBar.Progress" parent="@android:style/Widget.Holo.Light.ProgressBar">
+    <style name="Widget.Philm.ActionBar.Progress" parent="Widget.AppCompat.ProgressBar">
         <item name="android:minHeight">36dip</item>
         <item name="android:maxHeight">36dip</item>
     </style>
@@ -80,11 +66,12 @@
     </style>
 
     <style name="Widget.Philm.Movie.List.SectionHeader" parent="android:Widget">
-        <item name="font">roboto_condensed_bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">@dimen/spacing_major</item>
-        <item name="android:background">@color/primary_accent_color</item>
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="Widget.Philm.Movie.Login.Title" parent="android:Widget">
@@ -107,32 +94,27 @@
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Title" parent="android:Widget">
-        <item name="font">roboto_condensed</item>
-        <item name="android:textSize">@dimen/movie_detail_title_textsize</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Tagline" parent="android:Widget">
-        <item name="font">roboto_condensed</item>
-        <item name="android:textSize">@dimen/movie_detail_tagline_textsize</item>
-        <item name="android:maxLines">2</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:maxLines">4</item>
         <item name="android:ellipsize">end</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.SectionHeader" parent="android:Widget">
-        <item name="font">roboto_condensed</item>
         <item name="android:textSize">18dp</item>
         <item name="android:padding">@dimen/spacing_micro</item>
         <item name="android:paddingLeft">@dimen/spacing_major</item>
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Summary" parent="android:Widget">
-        <item name="font">roboto_slab</item>
-        <item name="android:textSize">@dimen/movie_detail_summary_textsize</item>
-        <item name="android:padding">@dimen/spacing_minor</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
         <item name="collapsed_maxLines">@integer/default_summary_maxlines</item>
     </style>
 
@@ -147,25 +129,7 @@
     </style>
 
     <style name="Widget.Philm.Movie.Detail.Rating.Description" parent="android:Widget">
-        <item name="font">roboto_condensed_bold</item>
-        <item name="android:textSize">22dp</item>
-    </style>
-
-    <style name="Widget.Philm.Account.Drawer.Fullname" parent="android:Widget">
-        <item name="font">roboto_condensed_bold</item>
-        <item name="android:textSize">@dimen/drawer_user_text_size</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:shadowColor">@android:color/black</item>
-        <item name="android:shadowDx">1.2</item>
-        <item name="android:shadowDy">1.2</item>
-        <item name="android:shadowRadius">1</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="Widget.Philm.Account.Drawer.Username"
-           parent="Widget.Philm.Account.Drawer.Fullname">
-        <item name="font">roboto_condensed</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
     </style>
 
     <style name="Widget.Philm.Movie.Drawer.Checkin.Header" parent="android:Widget">
@@ -178,7 +142,7 @@
     </style>
 
     <style name="Widget.Philm.Movie.Drawer.AddAccount" parent="android:Widget">
-        <item name="font">roboto_condensed_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">18dp</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
@@ -193,15 +157,8 @@
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
-    <style name="Widget.Philm.Spinner" parent="android:Widget.Holo.Light.Spinner">
-        <item name="android:background">@drawable/philmcolor_spinner_background_holo_light</item>
-        <item name="android:dropDownSelector">
-            @drawable/philmcolor_list_selector_holo_light
-        </item>
-    </style>
-
     <style name="Widget.Philm.ProgressBar" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
-        <item name="spb_color">@color/primary_accent_color</item>
+        <item name="spb_color">?attr/colorPrimary</item>
         <item name="android:minHeight">4dp</item>
         <item name="android:maxHeight">4dp</item>
     </style>
@@ -211,16 +168,25 @@
         <item name="android:indeterminateDrawable">@drawable/philmcolor_ratingbar_full_holo_light</item>
     </style>
 
-    <style name="Widget.Philm.AutoCompleteTextView"
-           parent="android:Widget.Holo.Light.AutoCompleteTextView">
-        <item name="android:dropDownSelector">@drawable/philmcolor_list_selector_holo_light</item>
-        <item name="android:background">@drawable/philmcolor_edit_text_holo_light</item>
-    </style>
-
     <style name="TextAppearance.Philm.FloatLabel" parent="android:Widget">
         <item name="android:textColor">@color/float_label</item>
         <item name="android:textSize">11sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.Philm.Tab" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/tab_text</item>
+    </style>
+
+    <style name="Widget.Philm.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+
+    <style name="Widget.Philm.Toolbar.Transparent">
+        <item name="android:background">@null</item>
     </style>
 
 </resources>

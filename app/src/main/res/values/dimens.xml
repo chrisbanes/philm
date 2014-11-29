@@ -22,13 +22,14 @@
     <dimen name="spacing_major">16dp</dimen>
     <dimen name="spacing_massive">24dp</dimen>
 
-    <dimen name="drawer_side_menu_width">240dp</dimen>
+    <dimen name="drawer_login_height">180dp</dimen>
+    <dimen name="drawer_side_menu_width">304dp</dimen>
     <dimen name="drawer_user_text_size">14dp</dimen>
     <dimen name="drawer_movie_checkin_poster_width">56dp</dimen>
     <!-- Should be movie_detail_poster_width * 1.6 -->
     <dimen name="drawer_movie_checkin_poster_height">90dp</dimen>
-    <dimen name="drawer_account_avatar_width">44dp</dimen>
-    <dimen name="drawer_account_avatar_height">44dp</dimen>
+    <dimen name="drawer_account_avatar_width">56dp</dimen>
+    <dimen name="drawer_account_avatar_height">56dp</dimen>
 
     <dimen name="movie_detail_login_title_textsize">26dp</dimen>
 
@@ -36,14 +37,15 @@
     <dimen name="movie_grid_item_width">100dp</dimen>
     <dimen name="movie_grid_item_height">170dp</dimen>
 
-    <dimen name="movie_detail_poster_width">96dp</dimen>
+    <dimen name="movie_detail_poster_width">64dp</dimen>
     <!-- Should be movie_detail_poster_width * 1.6 -->
-    <dimen name="movie_detail_poster_height">152dp</dimen>
+    <dimen name="movie_detail_poster_height">102dp</dimen>
 
     <dimen name="movie_detail_ratingbar_height">120dp</dimen>
 
-    <dimen name="movie_detail_fanart_height">160dp</dimen>
+    <dimen name="movie_detail_fanart_height">224dp</dimen>
 
+    <dimen name="movie_detail_pinned_elevation">6dp</dimen>
     <dimen name="movie_detail_title_textsize">26dp</dimen>
     <dimen name="movie_detail_tagline_textsize">16dp</dimen>
     <dimen name="movie_detail_summary_textsize">16dp</dimen>
@@ -66,5 +68,8 @@
     <dimen name="movie_list_small_item_height">72dp</dimen>
 
     <dimen name="movie_discover_tab_height">48dp</dimen>
+
+    <dimen name="movie_backdrop_title_left_initial">16dp</dimen>
+    <dimen name="movie_backdrop_title_left_final">64dp</dimen>
 
 </resources>

@@ -16,11 +16,12 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/menu_filter"
           android:title="@string/menu_filter"
-          android:showAsAction="ifRoom"
+          app:showAsAction="ifRoom"
           android:visible="false"
           android:icon="@drawable/ic_action_filter">
         <menu>
@@ -47,6 +48,6 @@
 
     <item android:id="@+id/menu_refresh"
           android:title="@string/menu_refresh"
-          android:showAsAction="never"/>
+          app:showAsAction="never"/>
 
 </menu>

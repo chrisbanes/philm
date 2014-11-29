@@ -16,12 +16,25 @@
   ~ limitations under the License.
   -->
 
-<Button xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:paddingTop="@dimen/spacing_minor"
-        android:paddingBottom="@dimen/spacing_minor"
-        android:paddingLeft="@dimen/spacing_major"
-        android:paddingRight="@dimen/spacing_major"
-        style="?android:buttonBarButtonStyle"/>
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackground">
+
+    <ImageView
+            android:id="@+id/imageview_drawer_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_gravity="center_vertical"/>
+
+    <TextView
+            android:id="@+id/imageview_drawer_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="72dp"
+            android:layout_marginRight="16dp"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
+
+ </FrameLayout>

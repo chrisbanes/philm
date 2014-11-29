@@ -17,8 +17,8 @@
 package app.philm.in.fragments.base;
 
 
-import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,12 +36,13 @@ import app.philm.in.Constants;
 import app.philm.in.R;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.PhilmImageView;
+import app.philm.in.view.PinnedSectionListView;
 import app.philm.in.view.ViewRecycler;
 
 public abstract class BaseDetailFragment extends BasePhilmMovieFragment
         implements AdapterView.OnItemClickListener{
 
-    private ListView mListView;
+    private PinnedSectionListView mListView;
     private ListAdapter mAdapter;
 
     private TextView mEmptyView;
@@ -59,7 +60,7 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
 
         mAdapter = createListAdapter();
 
-        mListView = (ListView) view.findViewById(android.R.id.list);
+        mListView = (PinnedSectionListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
@@ -92,7 +93,6 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
     }
 
     protected void onBigPosterClicked() {
-
     }
 
     @Override
@@ -104,14 +104,9 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
     }
 
-    @Override
-    public void populateInsets(Rect insets) {
-        getListView().setPadding(insets.left, insets.top, insets.right, insets.bottom);
-    }
-
     protected abstract ListAdapter createListAdapter();
 
-    protected ListView getListView() {
+    protected PinnedSectionListView getListView() {
         return mListView;
     }
 
@@ -133,7 +128,8 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
 
     }
 
-    protected abstract class BaseDetailAdapter<E extends DetailType> extends BaseAdapter {
+    protected abstract class BaseDetailAdapter<E extends DetailType> extends BaseAdapter
+            implements PinnedSectionListView.PinnedSectionListAdapter {
 
         private List<E> mListItems;
 
@@ -203,43 +199,15 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
                 final View.OnClickListener seeMoreClickListener,
                 final BaseAdapter adapter) {
 
-            if (layout.getWidth() == 0) {
-                layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                    @Override
-                    public void onLayoutChange(View v, int left, int top, int right, int bottom,
-                            int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                        layout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                populateDetailGrid(layout, cardLayout, seeMoreClickListener, adapter);
-                            }
-                        });
-                        layout.removeOnLayoutChangeListener(this);
-                    }
-                });
-                return;
-            }
-
             final ViewRecycler viewRecycler = new ViewRecycler(layout);
             viewRecycler.recycleViews();
 
             if (!adapter.isEmpty()) {
-                final int numItems = layout.getWidth() / mListView.getResources()
-                        .getDimensionPixelSize(R.dimen.detail_card_item_width);
+                final int numItems = getResources().getInteger(R.integer.detail_card_max_items);
                 final int adapterCount = adapter.getCount();
-                final int gridSpacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
 
                 for (int i = 0; i < Math.min(numItems, adapterCount); i++) {
                     View view = adapter.getView(i, viewRecycler.getRecycledView(), layout);
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
-
-                    if (lp.weight > .1f && adapterCount < numItems) {
-                        lp.weight = 0f;
-                        lp.width = layout.getWidth() / numItems;
-                    }
-
-                    lp.rightMargin = i < (numItems - 1) ? gridSpacing : 0;
-
                     layout.addView(view);
                 }
 
@@ -265,6 +233,11 @@ public abstract class BaseDetailFragment extends BasePhilmMovieFragment
                     return;
                 }
             }
+        }
+
+        @Override
+        public boolean isItemViewTypePinned(int viewType) {
+            return false;
         }
     }
 

@@ -17,9 +17,7 @@
 package app.philm.in.fragments.base;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
@@ -45,26 +43,22 @@ public abstract class MovieGridFragment extends BasePhilmMovieListFragment<GridV
     }
 
     @Override
-    public void onListItemClick(GridView l, View v, int position, long id) {
-        if (hasCallbacks()) {
-            ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
-            if (item.getType() == ListItem.TYPE_ITEM) {
-                getCallbacks().showMovieDetail(item.getItem(),
-                        ActivityTransitions.scaleUpAnimation(v));
-            }
-        }
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final int spacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
+        getListView().setPadding(spacing, spacing, spacing, spacing);
     }
 
     @Override
-    public void populateInsets(Rect insets) {
-        super.populateInsets(insets);
-
-        final int spacing = getResources().getDimensionPixelSize(R.dimen.movie_grid_spacing);
-        getListView().setPadding(
-                insets.left + spacing,
-                insets.top + spacing,
-                insets.right + spacing,
-                insets.bottom + spacing);
+    public void onListItemClick(GridView l, View v, int position, long id) {
+        if (hasCallbacks()) {
+            ListItem<PhilmMovie> item = (ListItem<PhilmMovie>) l.getItemAtPosition(position);
+            if (item.getListType() == ListItem.TYPE_ITEM) {
+                getCallbacks().showMovieDetail(item.getListItem(),
+                        ActivityTransitions.scaleUpAnimation(v));
+            }
+        }
     }
 
     @Override

@@ -16,23 +16,32 @@
   ~ limitations under the License.
   -->
 
-<app.philm.in.view.ForegroundLinearLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:id="@+id/layout_add_account"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:padding="@dimen/spacing_minor"
-      android:foreground="?android:attr/selectableItemBackground">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_add_account"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/drawer_login_height"
+    android:background="?attr/colorAccent">
 
-    <app.philm.in.view.FontTextView
-          android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
-          android:text="@string/account_login"
-          android:drawableLeft="@drawable/ic_btn_user"
-          android:gravity="center_vertical"
-          android:drawablePadding="@dimen/spacing_minor"
-          style="@style/Widget.Philm.Movie.Drawer.AddAccount" />
+    <ImageView
+        android:id="@+id/imageview_drawer_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_login"
+        android:layout_marginLeft="16dp" />
 
-</app.philm.in.view.ForegroundLinearLayout>
+    <TextView
+        android:id="@+id/imageview_drawer_title"
+        style="@style/Widget.Philm.Movie.Drawer.AddAccount"
+        android:textColor="?android:attr/textColorPrimaryInverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/account_login" />
+
+</FrameLayout>
+
 
 

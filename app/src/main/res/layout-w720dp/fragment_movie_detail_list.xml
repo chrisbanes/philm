@@ -35,6 +35,12 @@
 
         <include layout="@layout/include_fragment_detail_list" />
 
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                style="@style/Widget.Philm.Toolbar.Transparent" />
+
     </FrameLayout>
 
 </LinearLayout>

@@ -19,10 +19,11 @@ package app.philm.in.fragments;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import android.app.Fragment;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
@@ -42,7 +43,6 @@ import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
 import app.philm.in.drawable.RoundedAvatarDrawable;
 import app.philm.in.drawable.TintingBitmapDrawable;
-import app.philm.in.fragments.base.InsetAwareFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.WatchingMovie;
@@ -50,7 +50,7 @@ import app.philm.in.util.TextUtils;
 import app.philm.in.view.PhilmImageView;
 import app.philm.in.view.StringManager;
 
-public class SideMenuFragment extends InsetAwareFragment implements MainController.SideMenuUi,
+public class SideMenuFragment extends Fragment implements MainController.SideMenuUi,
         View.OnClickListener, AdapterView.OnItemClickListener {
 
     private static final float CHECKIN_BACKDROP_DARKEN = 0.65f;
@@ -63,8 +63,8 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
     private SideMenuItemAdapter mAdapter;
 
     private View mAddAccountLayout;
+    private View mProfileLayout;
 
-    private View mProfileInfoLayout;
     private TextView mFullnameTextView;
     private TextView mUsernameTextView;
     private ImageView mAvatarImageView;
@@ -93,8 +93,8 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         mAddAccountLayout = view.findViewById(R.id.layout_add_account);
         mAddAccountLayout.setOnClickListener(this);
 
-        mProfileInfoLayout = view.findViewById(R.id.layout_profile_inner);
-        mProfileInfoLayout.setOnClickListener(this);
+        mProfileLayout = view.findViewById(R.id.layout_profile);
+
         mUsernameTextView = (TextView) view.findViewById(R.id.textview_username);
         mFullnameTextView = (TextView) view.findViewById(R.id.textview_fullname);
         mAvatarImageView = (ImageView) view.findViewById(R.id.imageview_account_avatar);
@@ -149,14 +149,14 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
     public void showAddAccountButton() {
         mUserProfile = null;
         mAddAccountLayout.setVisibility(View.VISIBLE);
-        mProfileInfoLayout.setVisibility(View.GONE);
+        mProfileLayout.setVisibility(View.GONE);
     }
 
     @Override
     public void showUserProfile(PhilmUserProfile profile) {
         mUserProfile = profile;
         mAddAccountLayout.setVisibility(View.GONE);
-        mProfileInfoLayout.setVisibility(View.VISIBLE);
+        mProfileLayout.setVisibility(View.VISIBLE);
 
         Picasso.with(getActivity())
                 .load(profile.getAvatarUrl())
@@ -215,13 +215,9 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         }
     }
 
-    @Override
-    public void populateInsets(Rect insets) {
-        getView().setPadding(insets.left, insets.top, 0, 0);
-        mListView.setPadding(0, 0, 0, insets.bottom);
-    }
-
     private class SideMenuItemAdapter extends BaseAdapter {
+
+        private final LayoutInflater mInflater = LayoutInflater.from(getActivity());
 
         @Override
         public int getCount() {
@@ -241,15 +237,15 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         @Override
         public View getView(int position, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = getLayoutInflater(null)
-                        .inflate(R.layout.simple_list_item_activated, viewGroup, false);
+                view = mInflater.inflate(R.layout.item_drawer, viewGroup, false);
             }
 
             final SideMenuItem item = getItem(position);
-            final TextView textView = (TextView) view.findViewById(android.R.id.text1);
+            final TextView textView = (TextView) view.findViewById(R.id.imageview_drawer_title);
             textView.setText(StringManager.getStringResId(item));
 
-            textView.setCompoundDrawablesWithIntrinsicBounds(getIcon(item), null, null, null);
+            final ImageView iconView = (ImageView) view.findViewById(R.id.imageview_drawer_icon);
+            iconView.setImageDrawable(getIcon(item, textView.getTextColors()));
 
             return view;
         }
@@ -281,7 +277,7 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
         }
     };
 
-    Drawable getIcon(SideMenuItem item) {
+    Drawable getIcon(SideMenuItem item, ColorStateList colorStateList) {
         Drawable d = mIcons.get(item);
 
         if (d != null) {
@@ -290,20 +286,20 @@ public class SideMenuFragment extends InsetAwareFragment implements MainControll
 
         switch (item) {
             case DISCOVER:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_movie, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_movie, colorStateList);
                 break;
             case LIBRARY:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_collection, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_collection, colorStateList);
                 break;
             case WATCHLIST:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_watchlist, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_watchlist, colorStateList);
                 break;
             case SEARCH:
-                d = TintingBitmapDrawable.createFromColorResource(
-                        getResources(), R.drawable.ic_btn_search, R.color.grey_45);
+                d = TintingBitmapDrawable.createFromStateList(getResources(),
+                        R.drawable.ic_btn_search, colorStateList);
                 break;
         }
 

@@ -16,7 +16,9 @@
 
 package app.philm.in.tasks;
 
+import com.uwetrottmann.tmdb.entities.PersonCastCredit;
 import com.uwetrottmann.tmdb.entities.PersonCredits;
+import com.uwetrottmann.tmdb.entities.PersonCrewCredit;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +52,7 @@ public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCred
         if (person != null) {
             if (!PhilmCollections.isEmpty(result.cast)) {
                 List<PhilmPersonCredit> credits = new ArrayList<>();
-                for (PersonCredits.CastCredit credit : result.cast) {
+                for (PersonCastCredit credit : result.cast) {
                     credits.add(new PhilmPersonCredit(credit));
                 }
                 Collections.sort(credits, PhilmPersonCredit.COMPARATOR_SORT_DATE);
@@ -59,7 +61,7 @@ public class FetchTmdbPersonCreditsRunnable extends BaseMovieRunnable<PersonCred
 
             if (!PhilmCollections.isEmpty(result.crew)) {
                 List<PhilmPersonCredit> credits = new ArrayList<>();
-                for (PersonCredits.CrewCredit credit : result.crew) {
+                for (PersonCrewCredit credit : result.crew) {
                     credits.add(new PhilmPersonCredit(credit));
                 }
                 Collections.sort(credits, PhilmPersonCredit.COMPARATOR_SORT_DATE);

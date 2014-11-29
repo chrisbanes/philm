@@ -142,7 +142,7 @@
     </style>
 
     <style name="Widget.Philm.Movie.Drawer.AddAccount" parent="android:Widget">
-        <item name="font">roboto_condensed_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">18dp</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>

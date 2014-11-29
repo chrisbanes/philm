@@ -22,6 +22,7 @@
     <dimen name="spacing_major">16dp</dimen>
     <dimen name="spacing_massive">24dp</dimen>
 
+    <dimen name="drawer_login_height">180dp</dimen>
     <dimen name="drawer_side_menu_width">304dp</dimen>
     <dimen name="drawer_user_text_size">14dp</dimen>
     <dimen name="drawer_movie_checkin_poster_width">56dp</dimen>

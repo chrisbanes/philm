@@ -209,9 +209,6 @@ public class PersonDetailFragment extends BaseDetailFragment implements MovieCon
                 imageView.loadProfile(mPerson);
             }
 
-            final TextView title = (TextView) view.findViewById(R.id.textview_title);
-            title.setText(mPerson.getName());
-
             final TextView subtitle1 = (TextView) view.findViewById(R.id.textview_subtitle_1);
             if (mPerson.getDateOfBirth() != null) {
                 if (!TextUtils.isEmpty(mPerson.getPlaceOfBirth())) {

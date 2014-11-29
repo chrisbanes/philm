@@ -331,8 +331,11 @@ public class MovieDetailFragment extends BaseDetailFragment
                 if (mFadeActionBar && hasCallbacks()) {
                     getCallbacks().setHeaderScrollValue(percent);
                 }
+            } else {
+                if (mBackdropToolbarLayout != null) {
+                    mBackdropToolbarLayout.setScrollOffset(1f);
+                }
             }
-
             return;
         }
 
@@ -362,12 +365,9 @@ public class MovieDetailFragment extends BaseDetailFragment
         mItems.clear();
 
         if (!hasBigPosterView() && mBackdropToolbarLayout != null) {
+            mItems.add(DetailItemType.BACKDROP_SPACING);
             if (mMovie.hasBackdropUrl()) {
-                mItems.add(DetailItemType.BACKDROP_SPACING);
-                mBackdropToolbarLayout.setVisibility(View.VISIBLE);
                 mBackdropToolbarLayout.getImageView().loadBackdrop(mMovie);
-            } else {
-                mBackdropToolbarLayout.setVisibility(View.GONE);
             }
         }
 

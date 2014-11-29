@@ -16,23 +16,25 @@
   ~ limitations under the License.
   -->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:internal="http://schemas.android.com/apk/res-auto">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:internal="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <app.philm.in.view.FontTextView
-          android:id="@android:id/empty"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:gravity="center"
-          android:padding="@dimen/spacing_minor"
-          internal:font="roboto_condensed" />
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/spacing_minor"
+        internal:font="roboto_condensed" />
 
     <app.philm.in.view.PinnedSectionListView
-          android:id="@android:id/list"
-          android:layout_height="match_parent"
-          android:layout_width="match_parent"
-          android:drawSelectorOnTop="true"
-          android:divider="@null"
-          android:dividerHeight="0px" />
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:dividerHeight="0px"
+        android:drawSelectorOnTop="true" />
 
-</merge>
+</FrameLayout>

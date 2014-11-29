@@ -128,14 +128,16 @@ public class BackdropToolbarLayout extends FrameLayout {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        canvas.save();
-        float x = -mCurrentTextBounds.left + mTextLeft;
-        float y = -mCurrentTextBounds.top + mTextTop;
-        if (mScale != 1f) {
-            canvas.scale(mScale, mScale, x, y);
+        if (mTitle != null) {
+            canvas.save();
+            float x = -mCurrentTextBounds.left + mTextLeft;
+            float y = -mCurrentTextBounds.top + mTextTop;
+            if (mScale != 1f) {
+                canvas.scale(mScale, mScale, x, y);
+            }
+            canvas.drawText(mTitle, x, y, mTextPaint);
+            canvas.restore();
         }
-        canvas.drawText(mTitle, x, y, mTextPaint);
-        canvas.restore();
     }
 
     private void setInterpolatedTextSize(float textSize) {

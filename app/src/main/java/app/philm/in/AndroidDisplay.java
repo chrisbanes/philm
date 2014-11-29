@@ -30,6 +30,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -76,7 +77,6 @@ public class AndroidDisplay implements Display {
 
     private Toolbar mToolbar;
     private boolean mCanChangeToolbarBackground;
-    private ActionBarDrawerToggle mDrawerToggle;
 
     public AndroidDisplay(ActionBarActivity activity,
             DrawerLayout drawerLayout) {
@@ -180,7 +180,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void closeDrawerLayout() {
-        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
         }
     }
@@ -221,6 +221,7 @@ public class AndroidDisplay implements Display {
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
+            ab.setHomeAsUpIndicator(show ? R.drawable.ic_back : R.drawable.ic_menu);
         }
     }
 
@@ -378,21 +379,11 @@ public class AndroidDisplay implements Display {
             setToolbarBackground(mColorScheme.primaryAccent);
         }
 
-        if (mDrawerLayout != null) {
-            if (mToolbar != null) {
-                mDrawerToggle = new ActionBarDrawerToggle(mActivity, mDrawerLayout, mToolbar,
-                        R.string.drawer_open_content_desc, R.string.drawer_closed_content_desc);
-                mDrawerLayout.setDrawerListener(mDrawerToggle);
-                mDrawerToggle.syncState();
-
-                final ActionBar ab = mActivity.getSupportActionBar();
-                if (ab != null) {
-                    ab.setDisplayHomeAsUpEnabled(true);
-                    ab.setHomeButtonEnabled(true);
-                }
-            } else {
-                mDrawerToggle = null;
-                mDrawerLayout.setDrawerListener(null);
+        if (mDrawerLayout != null && mToolbar != null) {
+            final ActionBar ab = mActivity.getSupportActionBar();
+            if (ab != null) {
+                ab.setDisplayHomeAsUpEnabled(true);
+                ab.setHomeButtonEnabled(true);
             }
         }
     }
@@ -400,25 +391,6 @@ public class AndroidDisplay implements Display {
     private void setToolbarBackground(int color) {
         if (mCanChangeToolbarBackground && mToolbar != null) {
             mToolbar.setBackgroundColor(color);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPostCreate() {
-        if (mDrawerToggle != null) {
-            mDrawerToggle.syncState();
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration configuration) {
-        if (mDrawerToggle != null) {
-            mDrawerToggle.onConfigurationChanged(configuration);
         }
     }
 }

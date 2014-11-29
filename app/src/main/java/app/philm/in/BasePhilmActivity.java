@@ -72,14 +72,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (mDisplay != null) {
-            mDisplay.onPostCreate();
-        }
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent, getDisplay());
@@ -104,10 +96,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDisplay != null && mDisplay.onOptionsItemSelected(item)) {
-            return true;
-        }
-
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (getMainController().onHomeButtonPressed()) {
@@ -132,14 +120,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (mDisplay != null) {
-            mDisplay.onConfigurationChanged(newConfig);
-        }
     }
 
     @Override

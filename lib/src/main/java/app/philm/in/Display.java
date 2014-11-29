@@ -110,10 +110,4 @@ public interface Display {
 
     public void setSupportActionBar(Object toolbar, boolean handleBackground);
 
-    public boolean onOptionsItemSelected(MenuItem item);
-
-    public void onPostCreate();
-
-    public void onConfigurationChanged(Configuration configuration);
-
 }

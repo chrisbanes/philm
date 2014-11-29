@@ -16,12 +16,13 @@
   ~ limitations under the License.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_height="match_parent"
-             android:layout_width="match_parent">
-
-    <include layout="@layout/include_fragment_detail_list" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include layout="@layout/include_toolbar" />
 
-</FrameLayout>
+    <include layout="@layout/include_fragment_detail_list" />
+
+</LinearLayout>

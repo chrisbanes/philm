@@ -28,9 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/movie_detail_pinned_elevation"
-            app:titleInitialMargin="16dp"
-            app:titleInitialTextSize="32sp"
-            app:titleFinalTextSize="16sp"
+            app:collapsedTextSize="16dp"
+            app:expandedTextSize="32sp"
+            app:expandedMargin="16sp"
             android:textColor="?android:attr/textColorPrimaryInverse">
 
         <app.philm.in.view.BackdropImageView

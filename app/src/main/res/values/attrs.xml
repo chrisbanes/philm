@@ -84,6 +84,7 @@
         <attr name="titleInitialMargin" format="reference|dimension" />
         <attr name="titleInitialTextSize" format="reference|dimension" />
         <attr name="titleFinalTextSize" format="reference|dimension" />
+        <attr name="android:textColor" />
     </declare-styleable>
 
 </resources>

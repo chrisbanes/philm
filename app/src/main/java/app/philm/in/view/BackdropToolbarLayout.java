@@ -24,11 +24,12 @@ import android.graphics.Rect;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import app.philm.in.R;
@@ -37,31 +38,36 @@ import static app.philm.in.util.AnimationUtils.interpolate;
 
 public class BackdropToolbarLayout extends FrameLayout {
 
+    private static final float DEFAULT_MIN_TEXT_SIZE = 32f;
+
     private static final Rect TEMP_RECT = new Rect();
 
     private Toolbar mToolbar;
     private View mDummyView;
-    private BackdropImageView mBackdropImageView;
 
     private float mScrollOffset;
 
     private final Rect mToolbarContentBounds;
     private final Rect mCurrentTextBounds;
 
+    private final float mMinTextSize;
+
     private float mInitialTitleMargin;
     private float mRequestedInitialTitleTextSize;
-    private float mTitleInitialTextSize;
+
+    private float mInitialTitleTextSize;
     private float mRequestedFinalTitleTextSize;
-    private float mTitleFinalTextSize;
+    private float mFinalTitleTextSize;
 
     private float mInitialTop;
     private float mFinalTop;
 
     private String mTitle;
 
+    private String mTitleToDraw;
+
     private float mTextLeft;
     private float mTextTop;
-    private float mTextSize;
 
     private float mScale;
 
@@ -78,11 +84,11 @@ public class BackdropToolbarLayout extends FrameLayout {
     public BackdropToolbarLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        LayoutInflater.from(context).inflate(R.layout.layout_backdrop_toolbar, this, true);
+        mTextPaint = new TextPaint();
+        mTextPaint.setAntiAlias(true);
 
-        mBackdropImageView = (BackdropImageView) findViewById(R.id.imageview_fanart);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mDummyView = mToolbar.findViewById(R.id.dummy);
+        mMinTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_MIN_TEXT_SIZE,
+                getResources().getDisplayMetrics());
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BackdropToolbarLayout);
 
@@ -92,17 +98,26 @@ public class BackdropToolbarLayout extends FrameLayout {
                 R.styleable.BackdropToolbarLayout_titleInitialTextSize, 0);
         mRequestedFinalTitleTextSize = a.getDimensionPixelSize(
                 R.styleable.BackdropToolbarLayout_titleFinalTextSize, 0);
+        mTextPaint.setColor(a.getColor(
+                R.styleable.BackdropToolbarLayout_android_textColor, Color.WHITE));
 
         a.recycle();
 
         mCurrentTextBounds = new Rect();
         mToolbarContentBounds = new Rect();
 
-        mTextPaint = new TextPaint();
-        mTextPaint.setColor(Color.WHITE);
-        mTextPaint.setAntiAlias(true);
-
         setWillNotDraw(false);
+    }
+
+    @Override
+    public void addView(View child, int index, ViewGroup.LayoutParams params) {
+        super.addView(child, index, params);
+
+        if (child instanceof Toolbar) {
+            mToolbar = (Toolbar) child;
+            mDummyView = new View(getContext());
+            mToolbar.addView(mDummyView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        }
     }
 
     public void setScrollOffset(float offset) {
@@ -114,44 +129,53 @@ public class BackdropToolbarLayout extends FrameLayout {
 
     private void calculateOffsets() {
         final float offset = mScrollOffset;
-        final int offsetPx = (int) ((getHeight() - mToolbar.getHeight()) * offset);
-        mBackdropImageView.setScrollOffset(-offsetPx);
 
         mTextTop = interpolate(mInitialTop, mFinalTop, offset);
         mTextLeft = interpolate(mInitialTitleMargin, mToolbarContentBounds.left, offset);
-        setInterpolatedTextSize(interpolate(mTitleInitialTextSize, mTitleFinalTextSize, offset));
+        setInterpolatedTextSize(interpolate(mInitialTitleTextSize, mFinalTitleTextSize, offset));
 
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
     private void calculateTextBounds() {
-        mTitleInitialTextSize = getSingleLineTextSize(mTitle, mTextPaint,
+        mInitialTitleTextSize = getSingleLineTextSize(mTitle, mTextPaint,
                 getWidth() - (mInitialTitleMargin * 2f), 0f,
                 mRequestedInitialTitleTextSize, 0.5f, getResources().getDisplayMetrics());
-        mTextPaint.setTextSize(mTitleInitialTextSize);
-        mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
+
+        if (mInitialTitleTextSize < mMinTextSize) {
+            mInitialTitleTextSize = mMinTextSize;
+            mTextPaint.setTextSize(mInitialTitleTextSize);
+
+            mTitleToDraw = TextUtils.ellipsize(mTitle, mTextPaint,
+                    getWidth() - (mInitialTitleMargin * 2f),
+                    TextUtils.TruncateAt.END).toString();
+        } else {
+            mTitleToDraw = mTitle;
+            mTextPaint.setTextSize(mInitialTitleTextSize);
+        }
+        mTextPaint.getTextBounds(mTitleToDraw, 0, mTitleToDraw.length(), TEMP_RECT);
         mInitialTop = getHeight() - TEMP_RECT.height() - mInitialTitleMargin;
 
-        mTitleFinalTextSize = getSingleLineTextSize(mTitle, mTextPaint,
+        mFinalTitleTextSize = getSingleLineTextSize(mTitleToDraw, mTextPaint,
                 mToolbarContentBounds.width(),
                 0f, mRequestedFinalTitleTextSize, 0.5f, getResources().getDisplayMetrics());
-        mTextPaint.setTextSize(mTitleFinalTextSize);
-        mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
+        mTextPaint.setTextSize(mFinalTitleTextSize);
+        mTextPaint.getTextBounds(mTitleToDraw, 0, mTitleToDraw.length(), TEMP_RECT);
         mFinalTop = mToolbarContentBounds.centerY() - (TEMP_RECT.height() / 2f);
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
 
-        if (mTitle != null) {
+        if (mTitleToDraw != null) {
             canvas.save();
             float x = -mCurrentTextBounds.left + mTextLeft;
             float y = -mCurrentTextBounds.top + mTextTop;
             if (mScale != 1f) {
                 canvas.scale(mScale, mScale, x, y);
             }
-            canvas.drawText(mTitle, x, y, mTextPaint);
+            canvas.drawText(mTitleToDraw, x, y, mTextPaint);
             canvas.restore();
         }
     }
@@ -159,16 +183,15 @@ public class BackdropToolbarLayout extends FrameLayout {
     private void setInterpolatedTextSize(float textSize) {
         final int pxSize = Math.round(textSize);
 
-        if (pxSize == mTitleFinalTextSize || pxSize == mTitleInitialTextSize || pxSize % 16 == 0) {
-            mTextSize = textSize;
-            mTextPaint.setTextSize(mTextSize);
+        if (pxSize == mFinalTitleTextSize || pxSize == mInitialTitleTextSize || pxSize % 16 == 0) {
+            mTextPaint.setTextSize(textSize);
             mScale = 1f;
         } else {
-            mScale = textSize / mTextSize;
+            mScale = textSize / mTextPaint.getTextSize();
         }
 
-        if (mTitle != null) {
-            mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), mCurrentTextBounds);
+        if (mTitleToDraw != null) {
+            mTextPaint.getTextBounds(mTitleToDraw, 0, mTitleToDraw.length(), mCurrentTextBounds);
             mCurrentTextBounds.left *= mScale;
             mCurrentTextBounds.top *= mScale;
             mCurrentTextBounds.right *= mScale;
@@ -193,14 +216,6 @@ public class BackdropToolbarLayout extends FrameLayout {
                 calculateOffsets();
             }
         }
-    }
-
-    public void setScrimColor(int scrimColor) {
-        mBackdropImageView.setScrimColor(scrimColor);
-    }
-
-    public BackdropImageView getImageView() {
-        return mBackdropImageView;
     }
 
     public void setTitle(String title) {

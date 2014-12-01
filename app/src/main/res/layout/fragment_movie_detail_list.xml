@@ -30,6 +30,22 @@
             android:elevation="@dimen/movie_detail_pinned_elevation"
             app:titleInitialMargin="16dp"
             app:titleInitialTextSize="32sp"
-            app:titleFinalTextSize="16sp"/>
+            app:titleFinalTextSize="16sp"
+            android:textColor="?android:attr/textColorPrimaryInverse">
+
+        <app.philm.in.view.BackdropImageView
+                android:id="@+id/imageview_fanart"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/movie_detail_fanart_height"
+                android:scaleType="centerCrop"
+                android:background="?attr/colorPrimary" />
+
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_width="match_parent"
+                style="@style/Widget.Philm.Toolbar.Transparent" />
+
+    </app.philm.in.view.BackdropToolbarLayout>
 
 </FrameLayout>

@@ -107,8 +107,8 @@ public class MovieDetailFragment extends BaseDetailFragment
                                     primary.getTitleTextColor(),
                                     primary.getBodyTextColor());
 
-                            if (mBackdropToolbarLayout != null) {
-                                mBackdropToolbarLayout.setScrimColor(scheme.secondaryAccent);
+                            if (mBackdropImageView != null) {
+                                mBackdropImageView.setScrimColor(scheme.secondaryAccent);
                             }
 
                             getCallbacks().updateColorScheme(scheme);
@@ -131,6 +131,7 @@ public class MovieDetailFragment extends BaseDetailFragment
     private PhilmMovie mMovie;
 
     private BackdropToolbarLayout mBackdropToolbarLayout;
+    private BackdropImageView mBackdropImageView;
 
     private boolean mFadeActionBar;
 
@@ -169,8 +170,10 @@ public class MovieDetailFragment extends BaseDetailFragment
         super.onViewCreated(view, savedInstanceState);
 
         mBackdropToolbarLayout = (BackdropToolbarLayout) view.findViewById(R.id.backdrop_toolbar);
-        if (mBackdropToolbarLayout != null) {
-            mBackdropToolbarLayout.getImageView().setOnClickListener(this);
+
+        mBackdropImageView = (BackdropImageView) view.findViewById(R.id.imageview_fanart);
+        if (mBackdropImageView != null) {
+            mBackdropImageView.setOnClickListener(this);
         }
 
         getListView().setOnScrollListener(this);
@@ -318,29 +321,33 @@ public class MovieDetailFragment extends BaseDetailFragment
                 final int y = -firstView.getTop();
                 final float percent = y / (float) (firstView.getHeight() - toolbar.getHeight());
 
-                if (mBackdropToolbarLayout != null) {
-                    mBackdropToolbarLayout.setVisibility(View.VISIBLE);
-
-                    if (firstView.getBottom() > toolbarHeight) {
-                        mBackdropToolbarLayout.setScrollOffset(percent);
-                    } else {
-                        mBackdropToolbarLayout.setScrollOffset(1f);
-                    }
+                if (firstView.getBottom() > toolbarHeight) {
+                    setBackdropOffset(percent);
+                } else {
+                    setBackdropOffset(1f);
                 }
 
                 if (mFadeActionBar && hasCallbacks()) {
                     getCallbacks().setHeaderScrollValue(percent);
                 }
             } else {
-                if (mBackdropToolbarLayout != null) {
-                    mBackdropToolbarLayout.setScrollOffset(1f);
-                }
+                setBackdropOffset(1f);
             }
             return;
         }
 
         if (mFadeActionBar && hasCallbacks()) {
             getCallbacks().setHeaderScrollValue(1f);
+        }
+    }
+
+    private void setBackdropOffset(float offset) {
+        if (mBackdropToolbarLayout != null) {
+            mBackdropToolbarLayout.setScrollOffset(offset);
+        }
+        if (mBackdropImageView != null) {
+            mBackdropImageView.setScrollOffset(
+                    (int) ((getToolbar().getHeight() - mBackdropImageView.getHeight()) * offset));
         }
     }
 
@@ -364,10 +371,10 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         mItems.clear();
 
-        if (!hasBigPosterView() && mBackdropToolbarLayout != null) {
+        if (!hasBigPosterView() && mBackdropImageView != null) {
             mItems.add(DetailItemType.BACKDROP_SPACING);
             if (mMovie.hasBackdropUrl()) {
-                mBackdropToolbarLayout.getImageView().loadBackdrop(mMovie);
+                mBackdropImageView.loadBackdrop(mMovie);
             }
         }
 

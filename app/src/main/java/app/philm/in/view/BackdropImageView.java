@@ -43,7 +43,7 @@ public class BackdropImageView extends PhilmImageView {
         mScrimPaint = new Paint();
     }
 
-    void setScrollOffset(int offset) {
+    public void setScrollOffset(int offset) {
         if (offset != mScrollOffset) {
             mScrollOffset = offset;
             mImageOffset = -offset / 2;
@@ -63,7 +63,7 @@ public class BackdropImageView extends PhilmImageView {
         }
     }
 
-    void setScrimColor(int scrimColor) {
+    public void setScrimColor(int scrimColor) {
         if (mScrimColor != scrimColor) {
             mScrimColor = scrimColor;
             ViewCompat.postInvalidateOnAnimation(this);

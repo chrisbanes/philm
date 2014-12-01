@@ -35,7 +35,7 @@ import android.widget.FrameLayout;
 
 import app.philm.in.R;
 
-public class BackdropToolbarLayout extends FrameLayout {
+public class CollapsingTitleLayout extends FrameLayout {
 
     private static final float DEFAULT_MIN_TEXT_SIZE = 12f; // 12dp
 
@@ -83,15 +83,15 @@ public class BackdropToolbarLayout extends FrameLayout {
 
     private final TextPaint mTextPaint;
 
-    public BackdropToolbarLayout(Context context) {
+    public CollapsingTitleLayout(Context context) {
         this(context, null);
     }
 
-    public BackdropToolbarLayout(Context context, AttributeSet attrs) {
+    public CollapsingTitleLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public BackdropToolbarLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CollapsingTitleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         mTextPaint = new TextPaint();
@@ -100,21 +100,21 @@ public class BackdropToolbarLayout extends FrameLayout {
         mMinTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_MIN_TEXT_SIZE,
                 getResources().getDisplayMetrics());
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BackdropToolbarLayout);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CollapsingTitleLayout);
 
         mExpandedMargin = a.getDimensionPixelSize(
-                R.styleable.BackdropToolbarLayout_expandedMargin, 0);
+                R.styleable.CollapsingTitleLayout_expandedMargin, 0);
         mRequestedExpandedTitleTextSize = a.getDimensionPixelSize(
-                R.styleable.BackdropToolbarLayout_expandedTextSize, 0);
+                R.styleable.CollapsingTitleLayout_expandedTextSize, 0);
         mRequestedCollapsedTitleTextSize = a.getDimensionPixelSize(
-                R.styleable.BackdropToolbarLayout_collapsedTextSize, 0);
+                R.styleable.CollapsingTitleLayout_collapsedTextSize, 0);
         mTextPaint.setColor(a.getColor(
-                R.styleable.BackdropToolbarLayout_android_textColor, Color.WHITE));
+                R.styleable.CollapsingTitleLayout_android_textColor, Color.WHITE));
 
         final int defaultMinTextSize = (int) TypedValue
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_MIN_TEXT_SIZE,
                         getResources().getDisplayMetrics());
-        mMinTextSize = a.getDimensionPixelSize(R.styleable.BackdropToolbarLayout_minTextSize,
+        mMinTextSize = a.getDimensionPixelSize(R.styleable.CollapsingTitleLayout_minTextSize,
                 defaultMinTextSize);
 
         a.recycle();
@@ -137,6 +137,13 @@ public class BackdropToolbarLayout extends FrameLayout {
         }
     }
 
+    /**
+     * Set the value indicating the current scroll value. This decides how much of the
+     * background will be displayed, as well as the title metrics/positioning.
+     *
+     * A value of {@code 0.0} indicates that the layout is fully expanded.
+     * A value of {@code 1.0} indicates that the layout is fully collapsed.
+     */
     public void setScrollOffset(float offset) {
         if (offset != mScrollOffset) {
             mScrollOffset = offset;
@@ -180,10 +187,16 @@ public class BackdropToolbarLayout extends FrameLayout {
 
     @Override
     public void draw(Canvas canvas) {
+        final int saveCount = canvas.save();
+
+        final int toolbarHeight = mToolbar.getHeight();
+        canvas.clipRect(0, 0, canvas.getWidth(),
+                interpolate(canvas.getHeight(), toolbarHeight, mScrollOffset));
+
+        // Now call super and let it draw the background, etc
         super.draw(canvas);
 
         if (mTitleToDraw != null) {
-            canvas.save();
             float x = -mDrawnTextBounds.left + mTextLeft;
             float y = -mDrawnTextBounds.top + mTextTop;
 
@@ -199,8 +212,9 @@ public class BackdropToolbarLayout extends FrameLayout {
             }
 
             canvas.drawText(mTitleToDraw, x, y, mTextPaint);
-            canvas.restore();
         }
+
+        canvas.restoreToCount(saveCount);
     }
 
     private void setInterpolatedTextSize(final float textSize) {

@@ -59,7 +59,7 @@ import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.BackdropImageView;
-import app.philm.in.view.BackdropToolbarLayout;
+import app.philm.in.view.CollapsingTitleLayout;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
 import app.philm.in.view.MovieDetailCardLayout;
@@ -130,7 +130,7 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private PhilmMovie mMovie;
 
-    private BackdropToolbarLayout mBackdropToolbarLayout;
+    private CollapsingTitleLayout mCollapsingTitleLayout;
     private BackdropImageView mBackdropImageView;
 
     private boolean mFadeActionBar;
@@ -169,7 +169,7 @@ public class MovieDetailFragment extends BaseDetailFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mBackdropToolbarLayout = (BackdropToolbarLayout) view.findViewById(R.id.backdrop_toolbar);
+        mCollapsingTitleLayout = (CollapsingTitleLayout) view.findViewById(R.id.backdrop_toolbar);
 
         mBackdropImageView = (BackdropImageView) view.findViewById(R.id.imageview_fanart);
         if (mBackdropImageView != null) {
@@ -342,8 +342,8 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     private void setBackdropOffset(float offset) {
-        if (mBackdropToolbarLayout != null) {
-            mBackdropToolbarLayout.setScrollOffset(offset);
+        if (mCollapsingTitleLayout != null) {
+            mCollapsingTitleLayout.setScrollOffset(offset);
         }
         if (mBackdropImageView != null) {
             mBackdropImageView.setScrollOffset(
@@ -378,8 +378,8 @@ public class MovieDetailFragment extends BaseDetailFragment
             }
         }
 
-        if (mBackdropToolbarLayout != null) {
-            mBackdropToolbarLayout.setTitle(mMovie.getTitle());
+        if (mCollapsingTitleLayout != null) {
+            mCollapsingTitleLayout.setTitle(mMovie.getTitle());
         }
 
         mItems.add(DetailItemType.TITLE);

@@ -80,7 +80,7 @@
         <attr name="android:textAppearance" />
     </declare-styleable>
 
-    <declare-styleable name="BackdropToolbarLayout">
+    <declare-styleable name="CollapsingTitleLayout">
         <attr name="expandedMargin" format="reference|dimension" />
         <attr name="expandedTextSize" format="reference|dimension" />
         <attr name="collapsedTextSize" format="reference|dimension" />

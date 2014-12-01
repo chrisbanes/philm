@@ -23,7 +23,7 @@
 
     <include layout="@layout/include_fragment_detail_list"/>
 
-    <app.philm.in.view.BackdropToolbarLayout
+    <app.philm.in.view.CollapsingTitleLayout
             android:id="@+id/backdrop_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,6 +46,6 @@
                 android:layout_width="match_parent"
                 style="@style/Widget.Philm.Toolbar.Transparent" />
 
-    </app.philm.in.view.BackdropToolbarLayout>
+    </app.philm.in.view.CollapsingTitleLayout>
 
 </FrameLayout>

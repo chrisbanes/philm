@@ -18,10 +18,12 @@ package app.philm.in.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextPaint;
@@ -38,6 +40,10 @@ import app.philm.in.R;
 public class CollapsingTitleLayout extends FrameLayout {
 
     private static final float DEFAULT_MIN_TEXT_SIZE = 12f; // 12dp
+
+    // Pre-JB-MR2 doesn't support HW accelerated canvas scaled text so we will workaround it
+    // by using our own texture
+    private static final boolean USE_SCALING_TEXTURE = Build.VERSION.SDK_INT < 18;
 
     private static final boolean DEBUG_DRAW = false;
     private static final Paint DEBUG_DRAW_PAINT;
@@ -72,8 +78,9 @@ public class CollapsingTitleLayout extends FrameLayout {
     private float mCollapsedTop;
 
     private String mTitle;
-
     private String mTitleToDraw;
+    private boolean mUseTexture;
+    private Bitmap mExpandedTitleTexture;
 
     private float mTextLeft;
     private float mTextRight;
@@ -82,6 +89,7 @@ public class CollapsingTitleLayout extends FrameLayout {
     private float mScale;
 
     private final TextPaint mTextPaint;
+    private Paint mTexturePaint;
 
     public CollapsingTitleLayout(Context context) {
         this(context, null);
@@ -183,6 +191,9 @@ public class CollapsingTitleLayout extends FrameLayout {
         mTextPaint.setTextSize(mCollapsedTitleTextSize);
         mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
         mCollapsedTop = mToolbarContentBounds.centerY() - (TEMP_RECT.height() / 2f);
+
+        // The bounds have changed so we need to clear the texture
+        clearTexture();
     }
 
     @Override
@@ -197,8 +208,14 @@ public class CollapsingTitleLayout extends FrameLayout {
         super.draw(canvas);
 
         if (mTitleToDraw != null) {
-            float x = -mDrawnTextBounds.left + mTextLeft;
-            float y = -mDrawnTextBounds.top + mTextTop;
+            float x = mTextLeft;
+            float y = mTextTop;
+
+            if (!mUseTexture) {
+                // If we're not drawing a texture, we need to properly offset the text
+                x -= mDrawnTextBounds.left;
+                y -= mDrawnTextBounds.top;
+            }
 
             if (DEBUG_DRAW) {
                 // Just a debug tool, which drawn a Magneta rect in the text bounds
@@ -211,7 +228,12 @@ public class CollapsingTitleLayout extends FrameLayout {
                 canvas.scale(mScale, mScale, x, y);
             }
 
-            canvas.drawText(mTitleToDraw, x, y, mTextPaint);
+            if (mUseTexture && mExpandedTitleTexture != null) {
+                // If we should use a texture, draw it instead of text
+                canvas.drawBitmap(mExpandedTitleTexture, x, y, mTexturePaint);
+            } else {
+                canvas.drawText(mTitleToDraw, x, y, mTextPaint);
+            }
         }
 
         canvas.restoreToCount(saveCount);
@@ -220,8 +242,8 @@ public class CollapsingTitleLayout extends FrameLayout {
     private void setInterpolatedTextSize(final float textSize) {
         if (mTitle == null) return;
 
-        if (isCloseToDecimal(textSize) || isClose(textSize, mCollapsedTitleTextSize)
-                || isClose(textSize, mExpandedTitleTextSize) || mTitleToDraw == null) {
+        if (isClose(textSize, mCollapsedTitleTextSize) || isClose(textSize, mExpandedTitleTextSize)
+                || mTitleToDraw == null) {
             // If the text size is 'close' to being a decimal, then we use this as a sync-point.
             // We disable our manual scaling and set the paint's text size.
             mTextPaint.setTextSize(textSize);
@@ -239,9 +261,18 @@ public class CollapsingTitleLayout extends FrameLayout {
             // As we've changed the text size (and possibly the text) we'll re-measure the text
             mTextPaint.getTextBounds(mTitleToDraw, 0, mTitleToDraw.length(), mTextPaintBounds);
             mDrawnTextBounds.set(mTextPaintBounds);
+
+            if (USE_SCALING_TEXTURE && isClose(textSize, mExpandedTitleTextSize)) {
+                ensureExpandedTexture();
+            }
+            mUseTexture = false;
         } else {
             // We're not close to a decimal so use our canvas scaling method
-            mScale = textSize / mTextPaint.getTextSize();
+            if (mExpandedTitleTexture != null) {
+                mScale = textSize / mExpandedTitleTextSize;
+            } else {
+                mScale = textSize / mTextPaint.getTextSize();
+            }
 
             // Because we're scaling using canvas, we need to update the drawn text bounds too
             mDrawnTextBounds.set(mTextPaintBounds);
@@ -249,9 +280,28 @@ public class CollapsingTitleLayout extends FrameLayout {
             mDrawnTextBounds.top *= mScale;
             mDrawnTextBounds.right *= mScale;
             mDrawnTextBounds.bottom *= mScale;
+
+            mUseTexture = USE_SCALING_TEXTURE;
         }
 
         ViewCompat.postInvalidateOnAnimation(this);
+    }
+
+    private void ensureExpandedTexture() {
+        if (mExpandedTitleTexture != null) return;
+
+        mExpandedTitleTexture = Bitmap.createBitmap(mTextPaintBounds.width(),
+                mTextPaintBounds.height(), Bitmap.Config.ARGB_8888);
+
+        Canvas c = new Canvas(mExpandedTitleTexture);
+        c.drawText(mTitleToDraw, -mTextPaintBounds.left, -mTextPaintBounds.top, mTextPaint);
+
+        if (mTexturePaint == null) {
+            // Make sure we have a paint
+            mTexturePaint = new Paint();
+            mTexturePaint.setAntiAlias(true);
+            mTexturePaint.setFilterBitmap(true);
+        }
     }
 
     @Override
@@ -279,12 +329,21 @@ public class CollapsingTitleLayout extends FrameLayout {
         if (title == null || !title.equals(mTitle)) {
             mTitle = title;
 
+            clearTexture();
+
             if (getHeight() > 0) {
                 // If we've already been laid out, calculate everything now otherwise we'll wait
                 // until a layout
                 calculateTextBounds();
                 calculateOffsets();
             }
+        }
+    }
+
+    private void clearTexture() {
+        if (mExpandedTitleTexture != null) {
+            mExpandedTitleTexture.recycle();
+            mExpandedTitleTexture = null;
         }
     }
 
@@ -309,15 +368,6 @@ public class CollapsingTitleLayout extends FrameLayout {
         } else {
             return mid;
         }
-    }
-
-    /**
-     * Returns true if {@code value} is 'close' to it's closest decimal value. Close is currently
-     * defined as it's difference being < 0.01.
-     */
-    private static boolean isCloseToDecimal(float value) {
-        final float absValue = Math.abs(value);
-        return Math.abs(absValue - Math.round(absValue)) < 0.01f;
     }
 
     /**

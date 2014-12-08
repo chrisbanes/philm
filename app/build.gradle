@@ -6,7 +6,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.0'
+        classpath 'com.android.tools.build:gradle:1.0.0-rc1'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.+'
     }
@@ -30,10 +30,10 @@ def versionPatch = 0
 def versionBuild = 0 // bump for dogfood builds, public betas, etc.
 
 android {
-        compileSdkVersion 21
-        buildToolsVersion "21.0.2"
+    compileSdkVersion 21
+    buildToolsVersion "21.0.2"
 
-        defaultConfig {
+    defaultConfig {
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         minSdkVersion 14
@@ -54,13 +54,13 @@ android {
 
     buildTypes {
         debug {
-            runProguard false
+            minifyEnabled false
             versionNameSuffix "-debug"
         }
 
         release {
-            runProguard false
-            proguardFile getDefaultProguardFile('proguard-android.txt')
+            minifyEnabled false
+            shrinkResources true
             signingConfig signingConfigs.release
         }
     }

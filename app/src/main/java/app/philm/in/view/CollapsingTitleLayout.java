@@ -39,11 +39,6 @@ import app.philm.in.R;
 
 public class CollapsingTitleLayout extends FrameLayout {
 
-    private static final int[] TEXT_APPEARANCE_ATTRS = {
-            android.R.attr.textColor,
-            android.R.attr.textSize
-    };
-
     // Pre-JB-MR2 doesn't support HW accelerated canvas scaled text so we will workaround it
     // by using our own texture
     private static final boolean USE_SCALING_TEXTURE = Build.VERSION.SDK_INT < 18;

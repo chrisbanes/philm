@@ -39,7 +39,10 @@ import app.philm.in.R;
 
 public class CollapsingTitleLayout extends FrameLayout {
 
-    private static final float DEFAULT_MIN_TEXT_SIZE = 12f; // 12dp
+    private static final int[] TEXT_APPEARANCE_ATTRS = {
+            android.R.attr.textColor,
+            android.R.attr.textSize
+    };
 
     // Pre-JB-MR2 doesn't support HW accelerated canvas scaled text so we will workaround it
     // by using our own texture
@@ -66,13 +69,13 @@ public class CollapsingTitleLayout extends FrameLayout {
     private final Rect mTextPaintBounds;
     private final Rect mDrawnTextBounds;
 
-    private float mMinTextSize;
+    private float mExpandedMarginLeft;
+    private float mExpandedMarginRight;
+    private float mExpandedMarginBottom;
 
-    private float mExpandedMargin;
-    private float mRequestedExpandedTitleTextSize;
-    private float mExpandedTitleTextSize;
-    private float mRequestedCollapsedTitleTextSize;
-    private float mCollapsedTitleTextSize;
+    private int mRequestedExpandedTitleTextSize;
+    private int mExpandedTitleTextSize;
+    private int mCollapsedTitleTextSize;
 
     private float mExpandedTop;
     private float mCollapsedTop;
@@ -105,25 +108,47 @@ public class CollapsingTitleLayout extends FrameLayout {
         mTextPaint = new TextPaint();
         mTextPaint.setAntiAlias(true);
 
-        mMinTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_MIN_TEXT_SIZE,
-                getResources().getDisplayMetrics());
-
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CollapsingTitleLayout);
 
-        mExpandedMargin = a.getDimensionPixelSize(
-                R.styleable.CollapsingTitleLayout_expandedMargin, 0);
-        mRequestedExpandedTitleTextSize = a.getDimensionPixelSize(
-                R.styleable.CollapsingTitleLayout_expandedTextSize, 0);
-        mRequestedCollapsedTitleTextSize = a.getDimensionPixelSize(
-                R.styleable.CollapsingTitleLayout_collapsedTextSize, 0);
-        mTextPaint.setColor(a.getColor(
-                R.styleable.CollapsingTitleLayout_android_textColor, Color.WHITE));
+        mExpandedMarginLeft = mExpandedMarginRight = mExpandedMarginBottom =
+                a.getDimensionPixelSize(R.styleable.CollapsingTitleLayout_expandedMargin, 0);
 
-        final int defaultMinTextSize = (int) TypedValue
-                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_MIN_TEXT_SIZE,
-                        getResources().getDisplayMetrics());
-        mMinTextSize = a.getDimensionPixelSize(R.styleable.CollapsingTitleLayout_minTextSize,
-                defaultMinTextSize);
+        final boolean isRtl = ViewCompat.getLayoutDirection(this)
+                == ViewCompat.LAYOUT_DIRECTION_RTL;
+        if (a.hasValue(R.styleable.CollapsingTitleLayout_expandedMarginStart)) {
+            final int marginStart = a.getDimensionPixelSize(
+                    R.styleable.CollapsingTitleLayout_expandedMarginStart, 0);
+            if (isRtl) {
+                mExpandedMarginRight = marginStart;
+            } else {
+                mExpandedMarginLeft = marginStart;
+            }
+        }
+        if (a.hasValue(R.styleable.CollapsingTitleLayout_expandedMarginEnd)) {
+            final int marginEnd = a.getDimensionPixelSize(
+                    R.styleable.CollapsingTitleLayout_expandedMarginEnd, 0);
+            if (isRtl) {
+                mExpandedMarginLeft = marginEnd;
+            } else {
+                mExpandedMarginRight = marginEnd;
+            }
+        }
+        if (a.hasValue(R.styleable.CollapsingTitleLayout_expandedMarginBottom)) {
+            mExpandedMarginBottom = a.getDimensionPixelSize(
+                    R.styleable.CollapsingTitleLayout_expandedMarginBottom, 0);
+        }
+
+        final int tp = a.getResourceId(R.styleable.CollapsingTitleLayout_android_textAppearance,
+                android.R.style.TextAppearance);
+        setTextAppearance(tp);
+
+        if (a.hasValue(R.styleable.CollapsingTitleLayout_collapsedTextSize)) {
+            mCollapsedTitleTextSize = a.getDimensionPixelSize(
+                    R.styleable.CollapsingTitleLayout_collapsedTextSize, 0);
+        }
+
+        mRequestedExpandedTitleTextSize = a.getDimensionPixelSize(
+                R.styleable.CollapsingTitleLayout_expandedTextSize, mCollapsedTitleTextSize);
 
         a.recycle();
 
@@ -132,6 +157,18 @@ public class CollapsingTitleLayout extends FrameLayout {
         mToolbarContentBounds = new Rect();
 
         setWillNotDraw(false);
+    }
+
+    public void setTextAppearance(int resId) {
+        TypedArray atp = getContext().obtainStyledAttributes(resId,
+                R.styleable.CollapsingTextAppearance);
+        mTextPaint.setColor(atp.getColor(
+                R.styleable.CollapsingTextAppearance_android_textColor, Color.WHITE));
+        mCollapsedTitleTextSize = atp.getDimensionPixelSize(
+                R.styleable.CollapsingTextAppearance_android_textSize, 0);
+        atp.recycle();
+
+        recalculate();
     }
 
     @Override
@@ -162,9 +199,9 @@ public class CollapsingTitleLayout extends FrameLayout {
     private void calculateOffsets() {
         final float offset = mScrollOffset;
 
-        mTextLeft = interpolate(mExpandedMargin, mToolbarContentBounds.left, offset);
+        mTextLeft = interpolate(mExpandedMarginLeft, mToolbarContentBounds.left, offset);
         mTextTop = interpolate(mExpandedTop, mCollapsedTop, offset);
-        mTextRight = interpolate(getWidth() - mExpandedMargin, mToolbarContentBounds.right, offset);
+        mTextRight = interpolate(getWidth() - mExpandedMarginRight, mToolbarContentBounds.right, offset);
 
         setInterpolatedTextSize(interpolate(mExpandedTitleTextSize,
                 mCollapsedTitleTextSize, offset));
@@ -175,22 +212,20 @@ public class CollapsingTitleLayout extends FrameLayout {
     private void calculateTextBounds() {
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
 
-        // First, let's calculate the expanded text size so that it fit within the bounds
-        // We make sure this value is at least our minimum text size
-        mExpandedTitleTextSize = Math.max(mMinTextSize,
-                getSingleLineTextSize(mTitle, mTextPaint, getWidth() - (mExpandedMargin * 2f), 0f,
-                        mRequestedExpandedTitleTextSize, 0.5f, metrics));
-        mTextPaint.setTextSize(mExpandedTitleTextSize);
-        mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
-        mExpandedTop = getHeight() - TEMP_RECT.height() - mExpandedMargin;
-
         // We then calculate the collapsed text size, using the same logic
-        mCollapsedTitleTextSize = Math.max(mMinTextSize,
-                getSingleLineTextSize(mTitle, mTextPaint, mToolbarContentBounds.width(), 0f,
-                        mRequestedCollapsedTitleTextSize, 0.5f, metrics));
         mTextPaint.setTextSize(mCollapsedTitleTextSize);
         mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
         mCollapsedTop = mToolbarContentBounds.centerY() - (TEMP_RECT.height() / 2f);
+
+        // First, let's calculate the expanded text size so that it fit within the bounds
+        // We make sure this value is at least our minimum text size
+        mExpandedTitleTextSize = (int) Math.max(mCollapsedTitleTextSize,
+                getSingleLineTextSize(mTitle, mTextPaint,
+                        getWidth() - mExpandedMarginLeft -mExpandedMarginRight, 0f,
+                        mRequestedExpandedTitleTextSize, 0.5f, metrics));
+        mTextPaint.setTextSize(mExpandedTitleTextSize);
+        mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
+        mExpandedTop = getHeight() - TEMP_RECT.height() - mExpandedMarginBottom;
 
         // The bounds have changed so we need to clear the texture
         clearTexture();
@@ -315,6 +350,12 @@ public class CollapsingTitleLayout extends FrameLayout {
 
         if (changed && mTitle != null) {
             // If we've changed and we have a title, re-calculate everything!
+            recalculate();
+        }
+    }
+
+    private void recalculate() {
+        if (getHeight() > 0) {
             calculateTextBounds();
             calculateOffsets();
         }
@@ -334,8 +375,7 @@ public class CollapsingTitleLayout extends FrameLayout {
             if (getHeight() > 0) {
                 // If we've already been laid out, calculate everything now otherwise we'll wait
                 // until a layout
-                calculateTextBounds();
-                calculateOffsets();
+                recalculate();
             }
         }
     }

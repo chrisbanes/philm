@@ -63,7 +63,7 @@
     </declare-styleable>
 
     <declare-styleable name="AutofitTextView">
-        <attr name="minTextSize" />
+        <attr name="minTextSize" format="reference" />
         <attr name="precision" format="float|reference" />
         <attr name="sizeToFit" format="boolean|reference" />
     </declare-styleable>
@@ -82,9 +82,16 @@
 
     <declare-styleable name="CollapsingTitleLayout">
         <attr name="expandedMargin" format="reference|dimension" />
+        <attr name="expandedMarginStart" format="reference|dimension" />
+        <attr name="expandedMarginBottom" format="reference|dimension" />
+        <attr name="expandedMarginEnd" format="reference|dimension" />
         <attr name="expandedTextSize" format="reference|dimension" />
         <attr name="collapsedTextSize" format="reference|dimension" />
-        <attr name="minTextSize" format="reference|dimension" />
+        <attr name="android:textAppearance" />
+    </declare-styleable>
+
+    <declare-styleable name="CollapsingTextAppearance">
+        <attr name="android:textSize" />
         <attr name="android:textColor" />
     </declare-styleable>
 

@@ -53,16 +53,12 @@ public class CollapsingTitleLayout extends FrameLayout {
         }
     }
 
-    private static final Rect TEMP_RECT = new Rect();
-
     private Toolbar mToolbar;
     private View mDummyView;
 
     private float mScrollOffset;
 
     private final Rect mToolbarContentBounds;
-    private final Rect mTextPaintBounds;
-    private final Rect mDrawnTextBounds;
 
     private float mExpandedMarginLeft;
     private float mExpandedMarginRight;
@@ -147,8 +143,6 @@ public class CollapsingTitleLayout extends FrameLayout {
 
         a.recycle();
 
-        mTextPaintBounds = new Rect();
-        mDrawnTextBounds = new Rect();
         mToolbarContentBounds = new Rect();
 
         setWillNotDraw(false);
@@ -209,8 +203,9 @@ public class CollapsingTitleLayout extends FrameLayout {
 
         // We then calculate the collapsed text size, using the same logic
         mTextPaint.setTextSize(mCollapsedTitleTextSize);
-        mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
-        mCollapsedTop = mToolbarContentBounds.centerY() - (TEMP_RECT.height() / 2f);
+        float textHeight = mTextPaint.descent() - mTextPaint.ascent();
+        float textOffset = (textHeight / 2) - mTextPaint.descent();
+        mCollapsedTop = mToolbarContentBounds.centerY() + textOffset;
 
         // First, let's calculate the expanded text size so that it fit within the bounds
         // We make sure this value is at least our minimum text size
@@ -218,9 +213,7 @@ public class CollapsingTitleLayout extends FrameLayout {
                 getSingleLineTextSize(mTitle, mTextPaint,
                         getWidth() - mExpandedMarginLeft -mExpandedMarginRight, 0f,
                         mRequestedExpandedTitleTextSize, 0.5f, metrics));
-        mTextPaint.setTextSize(mExpandedTitleTextSize);
-        mTextPaint.getTextBounds(mTitle, 0, mTitle.length(), TEMP_RECT);
-        mExpandedTop = getHeight() - TEMP_RECT.height() - mExpandedMarginBottom;
+        mExpandedTop = getHeight() - mExpandedMarginBottom;
 
         // The bounds have changed so we need to clear the texture
         clearTexture();
@@ -241,17 +234,21 @@ public class CollapsingTitleLayout extends FrameLayout {
             float x = mTextLeft;
             float y = mTextTop;
 
-            if (!mUseTexture) {
-                // If we're not drawing a texture, we need to properly offset the text
-                x -= mDrawnTextBounds.left;
-                y -= mDrawnTextBounds.top;
-            }
+            final float ascent = mTextPaint.ascent() * mScale;
+            final float descent = mTextPaint.descent() * mScale;
+            final float h = descent - ascent;
 
             if (DEBUG_DRAW) {
                 // Just a debug tool, which drawn a Magneta rect in the text bounds
-                canvas.drawRect(mTextLeft, mTextTop, mTextRight,
-                        mTextTop + mDrawnTextBounds.height(),
+                canvas.drawRect(mTextLeft,
+                        y - h + descent,
+                        mTextRight,
+                        y + descent,
                         DEBUG_DRAW_PAINT);
+            }
+
+            if (mUseTexture) {
+                y = y - h + descent;
             }
 
             if (mScale != 1f) {
@@ -281,16 +278,12 @@ public class CollapsingTitleLayout extends FrameLayout {
 
             // We also use this as an opportunity to ellipsize the string
             final CharSequence title = TextUtils.ellipsize(mTitle, mTextPaint,
-                    (mTextRight - mTextLeft),
+                    mTextRight - mTextLeft,
                     TextUtils.TruncateAt.END);
             if (title != mTitleToDraw) {
                 // If the title has changed, turn it into a string
                 mTitleToDraw = title.toString();
             }
-
-            // As we've changed the text size (and possibly the text) we'll re-measure the text
-            mTextPaint.getTextBounds(mTitleToDraw, 0, mTitleToDraw.length(), mTextPaintBounds);
-            mDrawnTextBounds.set(mTextPaintBounds);
 
             if (USE_SCALING_TEXTURE && isClose(textSize, mExpandedTitleTextSize)) {
                 ensureExpandedTexture();
@@ -304,13 +297,6 @@ public class CollapsingTitleLayout extends FrameLayout {
                 mScale = textSize / mTextPaint.getTextSize();
             }
 
-            // Because we're scaling using canvas, we need to update the drawn text bounds too
-            mDrawnTextBounds.set(mTextPaintBounds);
-            mDrawnTextBounds.left *= mScale;
-            mDrawnTextBounds.top *= mScale;
-            mDrawnTextBounds.right *= mScale;
-            mDrawnTextBounds.bottom *= mScale;
-
             mUseTexture = USE_SCALING_TEXTURE;
         }
 
@@ -320,11 +306,13 @@ public class CollapsingTitleLayout extends FrameLayout {
     private void ensureExpandedTexture() {
         if (mExpandedTitleTexture != null) return;
 
-        mExpandedTitleTexture = Bitmap.createBitmap(mTextPaintBounds.width(),
-                mTextPaintBounds.height(), Bitmap.Config.ARGB_8888);
+        int w = (int) (getWidth() - mExpandedMarginLeft - mExpandedMarginRight);
+        int h = (int) (mTextPaint.descent() - mTextPaint.ascent());
+
+        mExpandedTitleTexture = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 
         Canvas c = new Canvas(mExpandedTitleTexture);
-        c.drawText(mTitleToDraw, -mTextPaintBounds.left, -mTextPaintBounds.top, mTextPaint);
+        c.drawText(mTitleToDraw, 0, h - mTextPaint.descent(), mTextPaint);
 
         if (mTexturePaint == null) {
             // Make sure we have a paint

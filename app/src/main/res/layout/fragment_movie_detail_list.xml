@@ -29,9 +29,8 @@
             android:layout_height="wrap_content"
             android:elevation="@dimen/movie_detail_pinned_elevation"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:expandedTextSize="32dp"
-            app:expandedMargin="16dp"
-            android:textColor="?android:attr/textColorPrimaryInverse">
+            app:expandedTextSize="40dp"
+            app:expandedMargin="16dp">
 
         <app.philm.in.view.BackdropImageView
                 android:id="@+id/imageview_fanart"

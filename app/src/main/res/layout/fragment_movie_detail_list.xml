@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:elevation="@dimen/movie_detail_pinned_elevation"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:expandedTextSize="40dp"
+            app:expandedTextSize="56dp"
             app:expandedMargin="16dp">
 
         <app.philm.in.view.BackdropImageView

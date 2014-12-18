@@ -33,6 +33,8 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 
 import app.philm.in.R;
@@ -84,6 +86,8 @@ public class CollapsingTitleLayout extends FrameLayout {
 
     private final TextPaint mTextPaint;
     private Paint mTexturePaint;
+
+    private Interpolator mTextSizeInterpolator;
 
     public CollapsingTitleLayout(Context context) {
         this(context, null);
@@ -141,6 +145,11 @@ public class CollapsingTitleLayout extends FrameLayout {
         mRequestedExpandedTitleTextSize = a.getDimensionPixelSize(
                 R.styleable.CollapsingTitleLayout_expandedTextSize, mCollapsedTitleTextSize);
 
+        final int interpolatorId = a
+                .getResourceId(R.styleable.CollapsingTitleLayout_textSizeInterpolator,
+                        android.R.anim.accelerate_interpolator);
+        mTextSizeInterpolator = AnimationUtils.loadInterpolator(context, interpolatorId);
+
         a.recycle();
 
         mToolbarContentBounds = new Rect();
@@ -187,13 +196,16 @@ public class CollapsingTitleLayout extends FrameLayout {
 
     private void calculateOffsets() {
         final float offset = mScrollOffset;
+        final float textSizeOffset = mTextSizeInterpolator != null
+                ? mTextSizeInterpolator.getInterpolation(mScrollOffset)
+                : offset;
 
         mTextLeft = interpolate(mExpandedMarginLeft, mToolbarContentBounds.left, offset);
         mTextTop = interpolate(mExpandedTop, mCollapsedTop, offset);
         mTextRight = interpolate(getWidth() - mExpandedMarginRight, mToolbarContentBounds.right, offset);
 
-        setInterpolatedTextSize(interpolate(mExpandedTitleTextSize,
-                mCollapsedTitleTextSize, offset));
+        setInterpolatedTextSize(
+                interpolate(mExpandedTitleTextSize, mCollapsedTitleTextSize, textSizeOffset));
 
         ViewCompat.postInvalidateOnAnimation(this);
     }

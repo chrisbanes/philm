@@ -88,6 +88,7 @@
         <attr name="expandedTextSize" format="reference|dimension" />
         <attr name="collapsedTextSize" format="reference|dimension" />
         <attr name="android:textAppearance" />
+        <attr name="textSizeInterpolator" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="CollapsingTextAppearance">

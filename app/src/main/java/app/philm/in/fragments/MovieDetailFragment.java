@@ -135,6 +135,8 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private boolean mFadeActionBar;
 
+
+
     private final ArrayList<DetailItemType> mItems = new ArrayList<>();
 
     public static MovieDetailFragment create(String movieId) {
@@ -706,6 +708,11 @@ public class MovieDetailFragment extends BaseDetailFragment
         private boolean mCheckinButtonVisible;
         private boolean mCancelCheckinButtonVisible;
 
+        private RelatedMoviesAdapter mRelatedMoviesAdapter;
+        private MovieCastAdapter mMovieCastAdapter;
+        private MovieCrewAdapter mMovieCrewAdapter;
+        private MovieTrailersAdapter mMovieTrailersAdapter;
+
         @Override
         public int getViewTypeCount() {
             return DetailItemType.values().length;
@@ -809,8 +816,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                 }
             };
 
-            MovieCastAdapter adapter = new MovieCastAdapter(LayoutInflater.from(getActivity()));
-
             MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
             cardLayout.setTitle(R.string.cast_movies);
 
@@ -818,7 +823,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     (ViewGroup) view.findViewById(R.id.card_content),
                     cardLayout,
                     seeMoreClickListener,
-                    adapter);
+                    getMovieCastAdapter());
         }
 
         private void bindCrew(View view) {
@@ -835,8 +840,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                 }
             };
 
-            MovieCrewAdapter adapter = new MovieCrewAdapter(LayoutInflater.from(getActivity()));
-
             MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
             cardLayout.setTitle(R.string.crew_movies);
 
@@ -844,7 +847,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     (ViewGroup) view.findViewById(R.id.card_content),
                     cardLayout,
                     seeMoreClickListener,
-                    adapter);
+                    getMovieCrewAdapter());
         }
 
         private void bindDetails(View view) {
@@ -945,9 +948,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                 }
             };
 
-            RelatedMoviesAdapter adapter = new RelatedMoviesAdapter(
-                    LayoutInflater.from(getActivity()));
-
             MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
             cardLayout.setTitle(R.string.related_movies);
 
@@ -955,7 +955,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     (ViewGroup) view.findViewById(R.id.card_content),
                     cardLayout,
                     seeMoreClickListener,
-                    adapter);
+                    getRelatedMoviesAdapter());
         }
 
         private void bindSummary(final View view) {
@@ -995,14 +995,11 @@ public class MovieDetailFragment extends BaseDetailFragment
                 Log.d(LOG_TAG, "bindTrailers");
             }
 
-            MovieTrailersAdapter adapter = new MovieTrailersAdapter(
-                    LayoutInflater.from(getActivity()));
-
             populateDetailGrid(
                     (ViewGroup) view.findViewById(R.id.card_content),
                     (MovieDetailCardLayout) view,
                     null,
-                    adapter);
+                    getMovieTrailersAdapter());
         }
 
         private void bindBackdropSpacing(View view) {
@@ -1075,6 +1072,34 @@ public class MovieDetailFragment extends BaseDetailFragment
             } else {
                 button.setContentDescription(getString(toCheckDesc));
             }
+        }
+
+        private RelatedMoviesAdapter getRelatedMoviesAdapter() {
+            if (mRelatedMoviesAdapter == null) {
+                mRelatedMoviesAdapter = new RelatedMoviesAdapter(LayoutInflater.from(getActivity()));
+            }
+            return mRelatedMoviesAdapter;
+        }
+
+        private MovieCastAdapter getMovieCastAdapter() {
+            if (mMovieCastAdapter == null) {
+                mMovieCastAdapter = new MovieCastAdapter(LayoutInflater.from(getActivity()));
+            }
+            return mMovieCastAdapter;
+        }
+
+        private MovieCrewAdapter getMovieCrewAdapter() {
+            if (mMovieCrewAdapter == null) {
+                mMovieCrewAdapter = new MovieCrewAdapter(LayoutInflater.from(getActivity()));
+            }
+            return mMovieCrewAdapter;
+        }
+
+        private MovieTrailersAdapter getMovieTrailersAdapter() {
+            if (mMovieTrailersAdapter == null) {
+                mMovieTrailersAdapter = new MovieTrailersAdapter(LayoutInflater.from(getActivity()));
+            }
+            return mMovieTrailersAdapter;
         }
     }
 

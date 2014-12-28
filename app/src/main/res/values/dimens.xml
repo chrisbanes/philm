@@ -41,7 +41,7 @@
     <!-- Should be movie_detail_poster_width * 1.6 -->
     <dimen name="movie_detail_poster_height">102dp</dimen>
 
-    <dimen name="movie_detail_ratingbar_height">120dp</dimen>
+    <dimen name="movie_detail_ratingbar_height">144dp</dimen>
 
     <dimen name="movie_detail_fanart_height">224dp</dimen>
 

@@ -317,13 +317,17 @@ public class MovieDetailFragment extends BaseDetailFragment
             if (visibleItemCount > 0 && firstVisibleItem == 0) {
                 final View firstView = absListView.getChildAt(0);
 
+                mCollapsingTitleLayout.setVisibility(View.VISIBLE);
+
                 final int toolbarHeight = toolbar.getHeight();
                 final int y = -firstView.getTop();
                 final float percent = y / (float) (firstView.getHeight() - toolbar.getHeight());
 
                 if (firstView.getBottom() > toolbarHeight) {
+                    mCollapsingTitleLayout.setTranslationY(0);
                     setBackdropOffset(percent);
                 } else {
+                    mCollapsingTitleLayout.setTranslationY(firstView.getBottom() - toolbarHeight);
                     setBackdropOffset(1f);
                 }
 
@@ -332,6 +336,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                 }
             } else {
                 setBackdropOffset(1f);
+                mCollapsingTitleLayout.setVisibility(View.GONE);
             }
             return;
         }

@@ -25,24 +25,19 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="112dp"
-        android:minHeight="?attr/actionBarSize"
-        style="@style/Widget.Philm.Toolbar">
+        android:layout_height="?attr/actionBarSize"
+        style="@style/Widget.Philm.Toolbar" />
 
-        <app.philm.in.view.SlidingTabLayout
-            android:id="@+id/viewpager_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/movie_discover_tab_height"
-            android:layout_gravity="bottom"
-            android:background="?attr/colorPrimary"
-            android:textAppearance="@style/TextAppearance.Philm.Tab"
-            app:dividerColor="#30FFFFFF"
-            app:indicatorHeight="2dp"
-            android:layout_marginBottom="4dp"
-            app:selectedColor="?attr/colorAccent"
-            android:fadingEdgeLength="@dimen/spacing_minor"/>
-
-    </android.support.v7.widget.Toolbar>
+    <app.philm.in.view.SlidingTabLayout
+        android:id="@+id/viewpager_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/movie_discover_tab_height"
+        android:background="?attr/colorPrimary"
+        android:textAppearance="@style/TextAppearance.Philm.Tab"
+        app:indicatorHeight="2dp"
+        app:contentInsetStart="56dp"
+        app:selectedColor="?attr/colorAccent"
+        android:fadingEdgeLength="@dimen/spacing_minor"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"

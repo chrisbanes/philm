@@ -29,6 +29,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
@@ -100,9 +101,10 @@ public class SlidingTabLayout extends HorizontalScrollView {
         mTabViewTextAppearance = a.getResourceId(
                 R.styleable.SlidingTabLayout_android_textAppearance, 0);
 
-        if (a.hasValue(R.styleable.SlidingTabLayout_dividerColor)) {
-            mTabStrip.setDividerColor(a.getColor(R.styleable.SlidingTabLayout_dividerColor, 0));
-        }
+        mTitleOffset = a.getDimensionPixelSize(R.styleable.SlidingTabLayout_contentInsetStart,
+                mTitleOffset);
+
+        mTabStrip.setPadding(mTitleOffset, 0, 0, 0);
 
         a.recycle();
     }
@@ -179,6 +181,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
         int padding = (int) (TAB_VIEW_PADDING_DIPS * getResources().getDisplayMetrics().density);
         textView.setPadding(padding, padding, padding, padding);
 
+        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
         return textView;
     }
 
@@ -236,12 +241,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
         View selectedChild = mTabStrip.getChildAt(tabIndex);
         if (selectedChild != null) {
             int targetScrollX = selectedChild.getLeft() +
-                    Math.round(positionOffset * selectedChild.getWidth());
-
-            if (tabIndex > 0 || positionOffset > 0) {
-                // If we're not at the first child and are mid-scroll, make sure we obey the offset
-                targetScrollX -= mTitleOffset;
-            }
+                    Math.round(positionOffset * selectedChild.getWidth()) - mTitleOffset;
 
             scrollTo(targetScrollX, 0);
         }

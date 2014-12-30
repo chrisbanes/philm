@@ -78,6 +78,7 @@
         <attr name="indicatorHeight" format="reference|dimension" />
         <attr name="dividerColor" format="color" />
         <attr name="android:textAppearance" />
+        <attr name="contentInsetStart" />
     </declare-styleable>
 
     <declare-styleable name="CollapsingTitleLayout">

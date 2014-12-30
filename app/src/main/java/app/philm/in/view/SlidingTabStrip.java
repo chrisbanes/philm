@@ -26,14 +26,9 @@ import android.widget.LinearLayout;
 class SlidingTabStrip extends LinearLayout {
 
     private static final int DEFAULT_INDICATOR_HEIGHT_DIPS = 4;
-    private static final int DEFAULT_DIVIDER_THICKNESS_DIPS = 1;
-    private static final float DEFAULT_DIVIDER_HEIGHT = 0.5f;
 
     private int mSelectedIndicatorHeight;
     private final Paint mSelectedIndicatorPaint;
-
-    private final Paint mDividerPaint;
-    private final float mDividerHeight;
 
     private int mSelectedPosition;
     private float mSelectionOffset;
@@ -49,10 +44,6 @@ class SlidingTabStrip extends LinearLayout {
         final float density = getResources().getDisplayMetrics().density;
         mSelectedIndicatorHeight = (int) (DEFAULT_INDICATOR_HEIGHT_DIPS * density);
         mSelectedIndicatorPaint = new Paint();
-
-        mDividerHeight = DEFAULT_DIVIDER_HEIGHT;
-        mDividerPaint = new Paint();
-        mDividerPaint.setStrokeWidth((int) (DEFAULT_DIVIDER_THICKNESS_DIPS * density));
     }
 
     void setSelectedIndicatorColor(int color) {
@@ -62,11 +53,6 @@ class SlidingTabStrip extends LinearLayout {
 
     void setSelectedIndicatorHeight(int height) {
         mSelectedIndicatorHeight = height;
-        invalidate();
-    }
-
-    void setDividerColor(int color) {
-        mDividerPaint.setColor(color);
         invalidate();
     }
 
@@ -80,7 +66,6 @@ class SlidingTabStrip extends LinearLayout {
     protected void onDraw(Canvas canvas) {
         final int height = getHeight();
         final int childCount = getChildCount();
-        final int dividerHeightPx = (int) (Math.min(Math.max(0f, mDividerHeight), 1f) * height);
 
         // Thick colored underline below the current selection
         if (childCount > 0) {
@@ -99,14 +84,6 @@ class SlidingTabStrip extends LinearLayout {
 
             canvas.drawRect(left, height - mSelectedIndicatorHeight, right,
                     height, mSelectedIndicatorPaint);
-        }
-
-        // Vertical separators between the titles
-        final int separatorTop = (height - dividerHeightPx) / 2;
-        for (int i = 0; i < childCount - 1; i++) {
-            View child = getChildAt(i);
-            canvas.drawLine(child.getRight(), separatorTop, child.getRight(),
-                    separatorTop + dividerHeightPx, mDividerPaint);
         }
     }
 

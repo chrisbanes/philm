@@ -225,17 +225,18 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
     }
 
-    private void scrollToTab(int tabIndex, int positionOffset) {
+    private void scrollToTab(int tabIndex, float positionOffset) {
         final int tabStripChildCount = mTabStrip.getChildCount();
         if (tabStripChildCount == 0 || tabIndex < 0 || tabIndex >= tabStripChildCount) {
             return;
         }
 
-        setSelectedTab(tabIndex);
+        setSelectedTab(tabIndex, positionOffset);
 
         View selectedChild = mTabStrip.getChildAt(tabIndex);
         if (selectedChild != null) {
-            int targetScrollX = selectedChild.getLeft() + positionOffset;
+            int targetScrollX = selectedChild.getLeft() +
+                    Math.round(positionOffset * selectedChild.getWidth());
 
             if (tabIndex > 0 || positionOffset > 0) {
                 // If we're not at the first child and are mid-scroll, make sure we obey the offset
@@ -246,7 +247,9 @@ public class SlidingTabLayout extends HorizontalScrollView {
         }
     }
 
-    private void setSelectedTab(int position) {
+    private void setSelectedTab(int position, float positionOffset) {
+        position = Math.round(position + positionOffset);
+
         for (int i = 0; i < mTabStrip.getChildCount(); i++) {
             mTabStrip.getChildAt(i).setActivated(position == i);
         }
@@ -264,11 +267,8 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
             mTabStrip.onViewPagerPageChanged(position, positionOffset);
 
-            View selectedTitle = mTabStrip.getChildAt(position);
-            int extraOffset = (selectedTitle != null)
-                    ? (int) (positionOffset * selectedTitle.getWidth())
-                    : 0;
-            scrollToTab(position, extraOffset);
+
+            scrollToTab(position, positionOffset);
 
             if (mViewPagerPageChangeListener != null) {
                 mViewPagerPageChangeListener.onPageScrolled(position, positionOffset,

@@ -170,8 +170,7 @@
 
     <style name="TextAppearance.Philm.FloatLabel" parent="android:Widget">
         <item name="android:textColor">@color/float_label</item>
-        <item name="android:textSize">11sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="TextAppearance.Philm.Tab" parent="TextAppearance.AppCompat.Body2">

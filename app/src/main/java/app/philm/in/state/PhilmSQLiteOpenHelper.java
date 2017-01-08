@@ -18,8 +18,6 @@ package app.philm.in.state;
 
 import com.google.common.base.Preconditions;
 
-import com.crashlytics.android.Crashlytics;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -100,7 +98,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         try {
             cupboard().withDatabase(getWritableDatabase()).put(movie);
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            // Crashlytics.logException(e);
         }
     }
 
@@ -110,7 +108,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         try {
             cupboard().withDatabase(getWritableDatabase()).put(movies);
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            // Crashlytics.logException(e);
         }
     }
 
@@ -129,7 +127,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
             }
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            // Crashlytics.logException(e);
         } finally {
             if (db != null) {
                 db.endTransaction();
@@ -147,7 +145,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
                     .withSelection("username = ?", username)
                     .get();
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            // Crashlytics.logException(e);
             return null;
         }
     }
@@ -158,7 +156,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         try {
             cupboard().withDatabase(getWritableDatabase()).put(profile);
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            // Crashlytics.logException(e);
         }
     }
 
@@ -168,7 +166,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
         try {
             cupboard().withDatabase(getWritableDatabase()).delete(profile);
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            // Crashlytics.logException(e);
         }
     }
 
@@ -196,7 +194,7 @@ public class PhilmSQLiteOpenHelper extends SQLiteOpenHelper implements DatabaseH
                 Log.d(LOG_TAG, "deleteAllPhilmMovies. Deleted " + numDeleted + " rows.");
             }
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            // Crashlytics.logException(e);
         }
     }
 

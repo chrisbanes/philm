@@ -16,24 +16,21 @@
 
 package app.philm.in.network;
 
-import android.util.Log;
-
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
+import com.jakewharton.retrofit.Ok3Client;
 import com.uwetrottmann.tmdb.Tmdb;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import app.philm.in.Constants;
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 import retrofit.RestAdapter;
-import retrofit.client.OkClient;
 
 public class PhilmTmdb extends Tmdb {
 
     private static final String TAG = "PhilmTmdb";
+
+    private static final int CACHE_SIZE = 10 * 1024 * 1024;
 
     private final File mCacheLocation;
 
@@ -46,20 +43,14 @@ public class PhilmTmdb extends Tmdb {
         RestAdapter.Builder b = super.newRestAdapterBuilder();
 
         if (mCacheLocation != null) {
-            OkHttpClient client = new OkHttpClient();
+            File cacheDir = new File(mCacheLocation, "tmdb_requests");
+            Cache cache = new Cache(cacheDir, CACHE_SIZE);
 
-            try {
-                File cacheDir = new File(mCacheLocation, UUID.randomUUID().toString());
-                Cache cache = new Cache(cacheDir, 1024);
-                client.setCache(cache);
-            } catch (IOException e) {
-                Log.e(TAG, "Could not use OkHttp Cache", e);
-            }
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .cache(cache)
+                    .build();
 
-            client.setConnectTimeout(Constants.CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-            client.setReadTimeout(Constants.READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-
-            b.setClient(new OkClient(client));
+            b.setClient(new Ok3Client(client));
         }
 
         return b;

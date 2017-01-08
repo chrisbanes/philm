@@ -16,7 +16,6 @@
 
 package app.philm.in;
 
-import com.crashlytics.android.Crashlytics;
 import com.github.johnpersano.supertoasts.SuperCardToast;
 
 import android.content.Intent;
@@ -54,8 +53,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         super.onCreate(savedInstanceState);
-
-        Crashlytics.start(this);
 
         setContentView(getContentViewLayoutId());
 

@@ -122,10 +122,6 @@
 
         <receiver android:name=".AlarmReceiver" />
 
-        <meta-data
-                android:name="com.crashlytics.ApiKey"
-                android:value="0c0bf3d0b7b5aeff1ce7c8ca71710cc3b836ff47"/>
-
     </application>
 
 </manifest>

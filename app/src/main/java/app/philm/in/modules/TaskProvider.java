@@ -62,7 +62,6 @@ import dagger.Module;
                 FetchTmdbRelatedMoviesRunnable.class,
                 FetchTmdbNowPlayingRunnable.class,
                 FetchTmdbPopularRunnable.class,
-                FetchTmdbRelatedMoviesRunnable.class,
                 FetchTmdbSearchMoviesRunnable.class,
                 FetchTmdbUpcomingRunnable.class,
                 FetchTraktDetailMovieRunnable.class,

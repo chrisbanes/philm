@@ -39,7 +39,7 @@ public class MovieDetailInfoLayout extends LinearLayout implements Target {
 
     public MovieDetailInfoLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.include_movie_detail_info, this, true);
+        LayoutInflater.from(context).inflate(R.layout.item_movie_detail_details_line, this, true);
 
         mTitleTextView = (TextView) findViewById(android.R.id.text1);
         mContentTextView = (TextView) findViewById(android.R.id.text2);

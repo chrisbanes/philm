@@ -16,24 +16,28 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:baselineAligned="false">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <app.philm.in.view.PhilmImageView
-        android:id="@+id/imageview_poster"
-        android:layout_width="@dimen/movie_detail_poster_width"
-        android:layout_height="@dimen/movie_detail_poster_height"
-        android:cropToPadding="true"
-        android:scaleType="centerCrop" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false">
 
-    <app.philm.in.view.AutofitTextView
-        android:id="@+id/textview_tagline"
-        style="@style/Widget.Philm.Movie.Detail.Tagline"
-        android:layout_width="0px"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:padding="@dimen/spacing_major" />
+        <app.philm.in.view.PhilmImageView
+            android:id="@+id/imageview_poster"
+            android:layout_width="@dimen/movie_detail_poster_width"
+            android:layout_height="@dimen/movie_detail_poster_height"
+            android:cropToPadding="true"
+            android:scaleType="centerCrop" />
 
-</LinearLayout>
+        <app.philm.in.view.AutofitTextView
+            android:id="@+id/textview_tagline"
+            style="@style/Widget.Philm.Movie.Detail.Tagline"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="@dimen/spacing_major" />
+
+    </LinearLayout>
+
+</layout>

@@ -16,51 +16,55 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/spacing_major"
-    android:paddingRight="@dimen/spacing_major"
-    android:paddingTop="@dimen/spacing_minor"
-    style="?android:buttonBarStyle">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageButton
-          android:id="@+id/btn_checkin"
-          android:layout_width="0px"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:contentDescription="@string/movie_checkin"
-          android:visibility="gone"
-          style="?android:attr/borderlessButtonStyle" />
+    <LinearLayout
+        style="?android:buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_major"
+        android:paddingRight="@dimen/spacing_major"
+        android:paddingTop="@dimen/spacing_minor">
 
-    <ImageButton
-          android:id="@+id/btn_cancel_checkin"
-          android:layout_width="0px"
-          android:layout_height="match_parent"
-          android:layout_weight="1"
-          android:contentDescription="@string/movie_checkin_cancel"
-          android:visibility="gone"
-          style="?android:attr/borderlessButtonStyle" />
+        <ImageButton
+            android:id="@+id/btn_checkin"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/movie_checkin"
+            android:visibility="gone" />
 
-    <app.philm.in.view.CheckableImageButton
-        android:id="@+id/btn_seen"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle" />
+        <ImageButton
+            android:id="@+id/btn_cancel_checkin"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/movie_checkin_cancel"
+            android:visibility="gone" />
 
-    <app.philm.in.view.CheckableImageButton
-        android:id="@+id/btn_collection"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle" />
+        <app.philm.in.view.CheckableImageButton
+            android:id="@+id/btn_seen"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-    <app.philm.in.view.CheckableImageButton
-        android:id="@+id/btn_watchlist"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        style="?android:attr/borderlessButtonStyle" />
+        <app.philm.in.view.CheckableImageButton
+            android:id="@+id/btn_collection"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-</LinearLayout>
+        <app.philm.in.view.CheckableImageButton
+            android:id="@+id/btn_watchlist"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</layout>

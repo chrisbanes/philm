@@ -18,7 +18,12 @@ package app.philm.in.fragments;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,12 +33,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.genius.groupie.Group;
+import com.genius.groupie.GroupAdapter;
+import com.genius.groupie.Item;
+import com.genius.groupie.NestedGroup;
 import com.google.common.base.Preconditions;
 import com.squareup.picasso.Picasso;
 
@@ -47,8 +54,13 @@ import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
+import app.philm.in.databinding.ItemMovieDetailButtonsBinding;
+import app.philm.in.databinding.ItemMovieDetailDetailsLineBinding;
+import app.philm.in.databinding.ItemMovieDetailRatingBinding;
+import app.philm.in.databinding.ItemMovieDetailSummaryBinding;
+import app.philm.in.databinding.ItemMovieDetailTitleBinding;
 import app.philm.in.drawable.DrawableTintUtils;
-import app.philm.in.fragments.base.BaseDetailFragment;
+import app.philm.in.fragments.base.BasePhilmMovieFragment;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
@@ -57,18 +69,14 @@ import app.philm.in.util.ActivityTransitions;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
-import app.philm.in.view.BackdropImageView;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
-import app.philm.in.view.CollapsingTitleLayout;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;
-import app.philm.in.view.RatingBarLayout;
 
-public class MovieDetailFragment extends BaseDetailFragment
-        implements MovieController.MovieDetailUi, View.OnClickListener,
-        AbsListView.OnScrollListener {
+public class MovieDetailFragment extends BasePhilmMovieFragment
+        implements MovieController.MovieDetailUi, View.OnClickListener {
 
     private static final Date DATE = new Date();
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
@@ -80,7 +88,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             imageView.setVisibility(View.VISIBLE);
 
             if (getColorScheme() == null) {
-                Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(Palette palette) {
                         Palette.Swatch primary = palette.getVibrantSwatch();
@@ -106,8 +114,9 @@ public class MovieDetailFragment extends BaseDetailFragment
                                     primary.getTitleTextColor(),
                                     primary.getBodyTextColor());
 
-                            if (mBackdropImageView != null) {
-                                mBackdropImageView.setScrimColor(scheme.secondaryAccent);
+                            if (mCollapsingToolbarLayout != null) {
+                                mCollapsingToolbarLayout
+                                        .setContentScrimColor(scheme.secondaryAccent);
                             }
 
                             getCallbacks().updateColorScheme(scheme);
@@ -129,16 +138,21 @@ public class MovieDetailFragment extends BaseDetailFragment
 
     private PhilmMovie mMovie;
 
-    private CollapsingTitleLayout mCollapsingTitleLayout;
-    private BackdropImageView mBackdropImageView;
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private PhilmImageView mBackdropImageView;
 
-    private boolean mFadeActionBar;
+    private RecyclerView mRecyclerView;
 
+    private GroupAdapter mAdapter;
 
+    private boolean mRatingCircleEnabled;
+    private boolean mCollectionButtonEnabled;
+    private boolean mWatchlistButtonEnabled;
+    private boolean mWatchedButtonEnabled;
+    private boolean mCheckinButtonVisible;
+    private boolean mCancelCheckinButtonVisible;
 
-    private final ArrayList<DetailItemType> mItems = new ArrayList<>();
-
-    public static MovieDetailFragment create(String movieId) {
+    public static MovieDetailFragment create(@NonNull String movieId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(movieId), "movieId cannot be empty");
 
         Bundle bundle = new Bundle();
@@ -156,8 +170,6 @@ public class MovieDetailFragment extends BaseDetailFragment
         PhilmApplication.from(getActivity()).inject(this);
 
         setHasOptionsMenu(true);
-
-        mFadeActionBar = getResources().getBoolean(R.bool.movie_detail_fade_action_bar);
     }
 
     @Override
@@ -170,14 +182,15 @@ public class MovieDetailFragment extends BaseDetailFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mCollapsingTitleLayout = (CollapsingTitleLayout) view.findViewById(R.id.backdrop_toolbar);
+        mCollapsingToolbarLayout = (CollapsingToolbarLayout)
+                view.findViewById(R.id.collapsing_toolbar_layout);
 
-        mBackdropImageView = (BackdropImageView) view.findViewById(R.id.imageview_fanart);
+        mBackdropImageView = (PhilmImageView) view.findViewById(R.id.imageview_fanart);
         if (mBackdropImageView != null) {
             mBackdropImageView.setOnClickListener(this);
         }
 
-        getListView().setOnScrollListener(this);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
     }
 
     @Override
@@ -199,15 +212,6 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    public void onPause() {
-        if (hasCallbacks()) {
-            getCallbacks().setHeaderScrollValue(1f);
-        }
-
-        super.onPause();
-    }
-
-    @Override
     public void setMovie(PhilmMovie movie) {
         mMovie = movie;
         populateUi();
@@ -216,12 +220,13 @@ public class MovieDetailFragment extends BaseDetailFragment
     @Override
     public void setButtonsEnabled(boolean watched, boolean collection, boolean watchlist,
             boolean checkin, boolean cancelCheckin) {
-        getListAdapter().setButtonsEnabled(watched, collection, watchlist, checkin, cancelCheckin);
+        // TODO
     }
 
     @Override
     public void setRateCircleEnabled(final boolean enabled) {
-        getListAdapter().setRateCircleEnabled(enabled);
+        // TODO
+        //getListAdapter().setRateCircleEnabled(enabled);
     }
 
     @Override
@@ -235,24 +240,8 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    protected DetailAdapter getListAdapter() {
-        return (DetailAdapter) super.getListAdapter();
-    }
-
-    @Override
     public boolean isModal() {
         return false;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Log.d(LOG_TAG, "onItemClick. Pos: " + position);
-
-        if (getListAdapter().getItem(position) == DetailItemType.BACKDROP_SPACING) {
-            if (hasCallbacks()) {
-                getCallbacks().showMovieImages(mMovie);
-            }
-        }
     }
 
     @Override
@@ -297,77 +286,12 @@ public class MovieDetailFragment extends BaseDetailFragment
     }
 
     @Override
-    protected void onBigPosterClicked() {
-        if (hasCallbacks()) {
-            getCallbacks().showMovieImages(mMovie);
-        }
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView absListView, int i) {
-        // NO-OP
-    }
-
-    @Override
-    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount,
-                         int totalItemCount) {
-
-        if (absListView.getItemAtPosition(0) == DetailItemType.BACKDROP_SPACING) {
-            final Toolbar toolbar = getToolbar();
-
-            if (visibleItemCount > 0 && firstVisibleItem == 0) {
-                final View firstView = absListView.getChildAt(0);
-
-                mCollapsingTitleLayout.setVisibility(View.VISIBLE);
-
-                final int toolbarHeight = toolbar.getHeight();
-                final int y = -firstView.getTop();
-                final float percent = y / (float) (firstView.getHeight() - toolbar.getHeight());
-
-                if (firstView.getBottom() > toolbarHeight) {
-                    mCollapsingTitleLayout.setTranslationY(0);
-                    setBackdropOffset(percent);
-                } else {
-                    mCollapsingTitleLayout.setTranslationY(firstView.getBottom() - toolbarHeight);
-                    setBackdropOffset(1f);
-                }
-
-                if (mFadeActionBar && hasCallbacks()) {
-                    getCallbacks().setHeaderScrollValue(percent);
-                }
-            } else {
-                setBackdropOffset(1f);
-                mCollapsingTitleLayout.setVisibility(View.GONE);
-            }
-            return;
-        }
-
-        if (mFadeActionBar && hasCallbacks()) {
-            getCallbacks().setHeaderScrollValue(1f);
-        }
-    }
-
-    private void setBackdropOffset(float offset) {
-        if (mCollapsingTitleLayout != null) {
-            mCollapsingTitleLayout.setScrollOffset(offset);
-        }
-        if (mBackdropImageView != null) {
-            mBackdropImageView.setScrollOffset(
-                    (int) ((getToolbar().getHeight() - mBackdropImageView.getHeight()) * offset));
-        }
-    }
-
-    @Override
-    protected DetailAdapter createListAdapter() {
-        return new DetailAdapter();
-    }
-
-    @Override
     protected void onColorSchemeChanged(ColorScheme colorScheme) {
-        DetailAdapter adapter = getListAdapter();
-        if (adapter != null) {
-            adapter.onColorSchemeChanged();
-        }
+        // TODO
+//        DetailAdapter adapter = getListAdapter();
+//        if (adapter != null) {
+//            adapter.onColorSchemeChanged();
+//        }
     }
 
     private void populateUi() {
@@ -375,59 +299,348 @@ public class MovieDetailFragment extends BaseDetailFragment
             return;
         }
 
-        mItems.clear();
-
-        if (!hasBigPosterView() && mBackdropImageView != null) {
-            mItems.add(DetailItemType.BACKDROP_SPACING);
+        if (mBackdropImageView != null) {
             if (mMovie.hasBackdropUrl()) {
                 mBackdropImageView.loadBackdrop(mMovie);
             }
         }
 
-        if (mCollapsingTitleLayout != null) {
-            mCollapsingTitleLayout.setTitle(mMovie.getTitle());
+        if (mCollapsingToolbarLayout != null) {
+            mCollapsingToolbarLayout.setTitle(mMovie.getTitle());
         }
 
-        mItems.add(DetailItemType.TITLE);
-        mItems.add(DetailItemType.BUTTONS);
+        mAdapter = new GroupAdapter();
+
+        mAdapter.add(new TitleItem());
+        mAdapter.add(new ButtonsItem());
 
         if (!TextUtils.isEmpty(mMovie.getOverview())) {
-            mItems.add(DetailItemType.SUMMARY);
+            mAdapter.add(new SummaryItem());
         }
 
-        mItems.add(DetailItemType.RATING);
-        mItems.add(DetailItemType.DETAILS);
+        mAdapter.add(new RatingItem());
+        mAdapter.add(new DetailsGroup());
 
-        if (!PhilmCollections.isEmpty(mMovie.getTrailers())) {
-            mItems.add(DetailItemType.TRAILERS);
-        }
+//
+//        if (!PhilmCollections.isEmpty(mMovie.getTrailers())) {
+//            mItems.add(DetailItemType.TRAILERS);
+//        }
+//
+//        if (!PhilmCollections.isEmpty(mMovie.getCast())) {
+//            mItems.add(DetailItemType.CAST);
+//        }
+//
+//        if (!PhilmCollections.isEmpty(mMovie.getCrew())) {
+//            mItems.add(DetailItemType.CREW);
+//        }
+//
+//        if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
+//            mItems.add(DetailItemType.RELATED);
+//        }
 
-        if (!PhilmCollections.isEmpty(mMovie.getCast())) {
-            mItems.add(DetailItemType.CAST);
-        }
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),
+                mAdapter.getSpanCount());
+        layoutManager.setSpanSizeLookup(mAdapter.getSpanSizeLookup());
+        mRecyclerView.setLayoutManager(layoutManager);
 
-        if (!PhilmCollections.isEmpty(mMovie.getCrew())) {
-            mItems.add(DetailItemType.CREW);
-        }
-
-        if (!PhilmCollections.isEmpty(mMovie.getRelated())) {
-            mItems.add(DetailItemType.RELATED);
-        }
-
-        if (hasBigPosterView()) {
-            getBigPosterView().loadPoster(mMovie, mPosterListener);
-        }
-
-        getListAdapter().setItems(mItems);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private enum DetailItemType implements DetailType {
-        BACKDROP_SPACING(R.layout.item_movie_backdrop_spacing),
-        TITLE(R.layout.item_movie_detail_title),
-        BUTTONS(R.layout.item_movie_detail_buttons),
-        DETAILS(R.layout.item_movie_detail_details),
-        RATING(R.layout.item_movie_detail_rating),
-        SUMMARY(R.layout.item_movie_detail_summary),
+    class TitleItem extends Item<ItemMovieDetailTitleBinding> {
+        @Override
+        public int getLayout() {
+            return R.layout.item_movie_detail_title;
+        }
+
+        @Override
+        public void bind(ItemMovieDetailTitleBinding viewBinding, int position) {
+            viewBinding.textviewTagline.setText(mMovie.getTagline());
+            viewBinding.imageviewPoster.loadPoster(mMovie, mPosterListener);
+
+            final ColorScheme scheme = getColorScheme();
+            if (scheme != null) {
+                viewBinding.getRoot().setBackgroundColor(scheme.primaryAccent);
+                viewBinding.textviewTagline.setTextColor(scheme.primaryText);
+            }
+        }
+    }
+
+    class ButtonsItem extends Item<ItemMovieDetailButtonsBinding> {
+        @Override
+        public int getLayout() {
+            return R.layout.item_movie_detail_buttons;
+        }
+
+        @Override
+        public void bind(ItemMovieDetailButtonsBinding viewBinding, int position) {
+            CheckableImageButton seenButton = viewBinding.btnSeen;
+            seenButton.setEnabled(mWatchedButtonEnabled);
+            seenButton.setOnClickListener(MovieDetailFragment.this);
+            CheatSheet.setup(seenButton);
+            updateButtonState(seenButton, mMovie.isWatched(), R.string.action_mark_seen,
+                    R.string.action_mark_unseen);
+            if (seenButton.getDrawable() == null) {
+                seenButton.setImageDrawable(
+                        DrawableTintUtils.createFromColorRes(getContext(),
+                                R.drawable.ic_btn_seen, R.color.default_button));
+            }
+
+            CheckableImageButton watchlistButton = viewBinding.btnWatchlist;
+            watchlistButton.setEnabled(mWatchlistButtonEnabled);
+            watchlistButton.setOnClickListener(MovieDetailFragment.this);
+            CheatSheet.setup(watchlistButton);
+            updateButtonState(watchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
+                    R.string.action_remove_watchlist);
+            if (watchlistButton.getDrawable() == null) {
+                watchlistButton.setImageDrawable(
+                        DrawableTintUtils.createFromColorRes(getContext(),
+                                R.drawable.ic_btn_watchlist, R.color.default_button));
+            }
+
+            CheckableImageButton collectionButton = viewBinding.btnCollection;
+            collectionButton.setEnabled(mCollectionButtonEnabled);
+            collectionButton.setOnClickListener(MovieDetailFragment.this);
+            CheatSheet.setup(collectionButton);
+            updateButtonState(collectionButton, mMovie.inCollection(),
+                    R.string.action_add_collection,
+                    R.string.action_remove_collection);
+            if (collectionButton.getDrawable() == null) {
+                collectionButton.setImageDrawable(
+                        DrawableTintUtils.createFromColorRes(getContext(),
+                                R.drawable.ic_btn_collection, R.color.default_button));
+            }
+
+            ImageButton checkinButton = viewBinding.btnCheckin;
+            checkinButton.setOnClickListener(MovieDetailFragment.this);
+            checkinButton.setVisibility(mCheckinButtonVisible ? View.VISIBLE : View.GONE);
+            CheatSheet.setup(checkinButton);
+            if (mCheckinButtonVisible && checkinButton.getDrawable() == null) {
+                checkinButton.setImageDrawable(
+                        DrawableTintUtils.createFromColorRes(getContext(),
+                                R.drawable.ic_btn_checkin, R.color.default_button));
+            }
+
+            ImageButton cancelCheckinButton = viewBinding.btnCancelCheckin;
+            cancelCheckinButton.setOnClickListener(MovieDetailFragment.this);
+            cancelCheckinButton.setVisibility(mCancelCheckinButtonVisible
+                    ? View.VISIBLE : View.GONE);
+            CheatSheet.setup(cancelCheckinButton);
+            if (mCancelCheckinButtonVisible && cancelCheckinButton.getDrawable() == null) {
+                cancelCheckinButton.setImageDrawable(
+                        DrawableTintUtils.createFromColorRes(getContext(),
+                                R.drawable.ic_btn_checkin, android.R.color.holo_red_dark));
+            }
+        }
+
+        private void updateButtonState(CheckableImageButton button, final boolean checked,
+                final int toCheckDesc, final int toUncheckDesc) {
+            button.setChecked(checked);
+            if (checked) {
+                button.setContentDescription(getString(toUncheckDesc));
+            } else {
+                button.setContentDescription(getString(toCheckDesc));
+            }
+        }
+    }
+
+    class SummaryItem extends Item<ItemMovieDetailSummaryBinding> {
+        @Override
+        public int getLayout() {
+            return R.layout.item_movie_detail_summary;
+        }
+
+        @Override
+        public void bind(ItemMovieDetailSummaryBinding viewBinding, int position) {
+            viewBinding.textviewSummary.setText(mMovie.getOverview());
+        }
+    }
+
+    class RatingItem extends Item<ItemMovieDetailRatingBinding> {
+        @Override
+        public int getLayout() {
+            return R.layout.item_movie_detail_rating;
+        }
+
+        @Override
+        public void bind(ItemMovieDetailRatingBinding viewBinding, int position) {
+            viewBinding.ratingBarLayout.setRatingCircleEnabled(mRatingCircleEnabled);
+
+            if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
+                viewBinding.ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
+            } else {
+                viewBinding.ratingBarLayout.showRatePrompt();
+            }
+            viewBinding.ratingBarLayout.setRatingGlobalPercentage(mMovie.getAverageRatingPercent());
+            viewBinding.ratingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
+            viewBinding.ratingBarLayout.setRatingCircleClickListener(MovieDetailFragment.this);
+
+            final ColorScheme scheme = getColorScheme();
+            if (scheme != null) {
+                viewBinding.ratingBarLayout.setColorScheme(scheme);
+            }
+        }
+    }
+
+    class DetailsGroup extends NestedGroup {
+        private final ArrayList<Group> mItems = new ArrayList<>();
+
+        DetailsGroup() {
+            if (mMovie.getRuntime() > 0) {
+                mItems.add(new RuntimeDetailsItem());
+            }
+            if (!TextUtils.isEmpty(mMovie.getCertification())) {
+                mItems.add(new CertificationDetailsItem());
+            }
+            if (!TextUtils.isEmpty(mMovie.getGenres())) {
+                mItems.add(new GenreDetailsItem());
+            }
+            if (mMovie.getReleasedTime() > 0) {
+                mItems.add(new ReleasedDetailsItem());
+            }
+            if (mMovie.getBudget() > 0) {
+                mItems.add(new BudgetDetailsItem());
+            }
+            if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {
+                mItems.add(new MainLanguageDetailsItem());
+            }
+        }
+
+        @Override
+        public Group getGroup(int position) {
+            return mItems.get(position);
+        }
+
+        @Override
+        public int getGroupCount() {
+            return mItems.size();
+        }
+
+        @Override
+        public int getPosition(Group group) {
+            return mItems.indexOf(group);
+        }
+    }
+
+    private abstract class SingleDetailsItem extends Item<ItemMovieDetailDetailsLineBinding> {
+        @Override
+        public int getLayout() {
+            return R.layout.item_movie_detail_details_line;
+        }
+
+        @Override
+        public void bind(ItemMovieDetailDetailsLineBinding viewBinding, int position) {
+            TextView left = (TextView) viewBinding.getRoot().findViewById(android.R.id.text1);
+            left.setText(getTitleString());
+
+            TextView right = (TextView) viewBinding.getRoot().findViewById(android.R.id.text2);
+            right.setText(getContentString());
+        }
+
+        @StringRes
+        protected abstract int getTitleString();
+
+        protected abstract String getContentString();
+    }
+
+    class RuntimeDetailsItem extends SingleDetailsItem {
+        @Override
+        protected int getTitleString() {
+            return R.string.movie_details_runtime;
+        }
+
+        @Override
+        protected String getContentString() {
+            return getString(R.string.movie_details_runtime_content, mMovie.getRuntime());
+        }
+    }
+
+    class CertificationDetailsItem extends SingleDetailsItem {
+        @Override
+        protected int getTitleString() {
+            return R.string.movie_details_certification;
+        }
+
+        @Override
+        protected String getContentString() {
+            return mMovie.getCertification();
+        }
+    }
+
+    class GenreDetailsItem extends SingleDetailsItem {
+        @Override
+        protected int getTitleString() {
+            return R.string.movie_details_genres;
+        }
+
+        @Override
+        protected String getContentString() {
+            return mMovie.getGenres();
+        }
+    }
+
+    class ReleasedDetailsItem extends SingleDetailsItem {
+
+        @Override
+        public void bind(ItemMovieDetailDetailsLineBinding viewBinding, int position) {
+            super.bind(viewBinding, position);
+
+//            final String countryCode = mMovie.getReleasedCountryCode();
+//            if (!TextUtils.isEmpty(countryCode)) {
+//                loadFlagImage(countryCode, viewBinding.layoutInfoReleased);
+//            }
+        }
+
+        @Override
+        protected int getTitleString() {
+            return R.string.movie_details_released;
+        }
+
+        @Override
+        protected String getContentString() {
+            DATE.setTime(mMovie.getReleasedTime());
+            return mMediumDateFormatter.format(DATE);
+        }
+
+        private void loadFlagImage(final String countryCode, final MovieDetailInfoLayout layout) {
+            final String flagUrl = mFlagUrlProvider.getCountryFlagUrl(countryCode);
+            final int width = getResources()
+                    .getDimensionPixelSize(R.dimen.movie_detail_flag_width);
+            final int height = getResources()
+                    .getDimensionPixelSize(R.dimen.movie_detail_flag_height);
+
+            final String url = ImageHelper.getResizedUrl(flagUrl, width, height);
+
+            Picasso.with(getActivity())
+                    .load(url)
+                    .into(layout);
+        }
+    }
+
+    class BudgetDetailsItem extends SingleDetailsItem {
+        @Override
+        protected int getTitleString() {
+            return R.string.movie_details_budget;
+        }
+
+        @Override
+        protected String getContentString() {
+            return getString(R.string.movie_details_budget_content, mMovie.getBudget());
+        }
+    }
+
+    class MainLanguageDetailsItem extends SingleDetailsItem {
+        @Override
+        protected int getTitleString() {
+            return R.string.movie_details_language;
+        }
+
+        @Override
+        protected String getContentString() {
+            return mMovie.getMainLanguageTitle();
+        }
+    }
+
+    private enum DetailItemType {
         TRAILERS(R.layout.item_movie_detail_trailers),
         RELATED(R.layout.item_movie_detail_generic_card),
         CAST(R.layout.item_movie_detail_generic_card),
@@ -435,16 +648,14 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         private final int mLayoutId;
 
-        private DetailItemType(int layoutId) {
+        DetailItemType(int layoutId) {
             mLayoutId = layoutId;
         }
 
-        @Override
         public int getLayoutId() {
             return mLayoutId;
         }
 
-        @Override
         public int getViewType() {
             switch (this) {
                 case RELATED:
@@ -455,11 +666,6 @@ public class MovieDetailFragment extends BaseDetailFragment
                     return ordinal();
             }
         }
-
-        @Override
-        public boolean isEnabled() {
-            return this == BACKDROP_SPACING;
-        }
     }
 
     private class RelatedMoviesAdapter extends BaseAdapter {
@@ -469,7 +675,6 @@ public class MovieDetailFragment extends BaseDetailFragment
 
         RelatedMoviesAdapter(LayoutInflater inflater) {
             mInflater = inflater;
-
             mItemOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -699,32 +904,35 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
     }
 
-    private class DetailAdapter extends BaseDetailAdapter<DetailItemType> {
-        private boolean mRatingCircleEnabled;
-        private boolean mCollectionButtonEnabled;
-        private boolean mWatchlistButtonEnabled;
-        private boolean mWatchedButtonEnabled;
-        private boolean mCheckinButtonVisible;
-        private boolean mCancelCheckinButtonVisible;
-
+    private class DetailAdapter extends BaseAdapter {
         private RelatedMoviesAdapter mRelatedMoviesAdapter;
         private MovieCastAdapter mMovieCastAdapter;
         private MovieCrewAdapter mMovieCrewAdapter;
         private MovieTrailersAdapter mMovieTrailersAdapter;
 
         @Override
-        public int getViewTypeCount() {
-            return DetailItemType.values().length;
+        public int getCount() {
+            return 0;
         }
 
-        void setButtonsEnabled(boolean watched, boolean collection, boolean watchlist,
-                boolean checkin, boolean cancelCheckin) {
-            mWatchedButtonEnabled = watched;
-            mCollectionButtonEnabled = collection;
-            mWatchlistButtonEnabled = watchlist;
-            mCheckinButtonVisible = checkin;
-            mCancelCheckinButtonVisible = cancelCheckin;
-            // No need to rebind here as setMovie will be called after
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return null;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return DetailItemType.values().length;
         }
 
         void setRateCircleEnabled(boolean enabled) {
@@ -733,72 +941,8 @@ public class MovieDetailFragment extends BaseDetailFragment
         }
 
         public void onColorSchemeChanged() {
-            rebindView(DetailItemType.TITLE);
-            rebindView(DetailItemType.RATING);
-        }
-
-        private void bindButtons(final View view) {
-            CheckableImageButton seenButton =
-                    (CheckableImageButton) view.findViewById(R.id.btn_seen);
-            seenButton.setEnabled(mWatchedButtonEnabled);
-            seenButton.setOnClickListener(MovieDetailFragment.this);
-            CheatSheet.setup(seenButton);
-            updateButtonState(seenButton, mMovie.isWatched(), R.string.action_mark_seen,
-                    R.string.action_mark_unseen);
-            if (seenButton.getDrawable() == null) {
-                seenButton.setImageDrawable(
-                        DrawableTintUtils.createFromColorRes(getContext(),
-                                R.drawable.ic_btn_seen, R.color.default_button));
-            }
-
-            CheckableImageButton watchlistButton =
-                    (CheckableImageButton) view.findViewById(R.id.btn_watchlist);
-            watchlistButton.setEnabled(mWatchlistButtonEnabled);
-            watchlistButton.setOnClickListener(MovieDetailFragment.this);
-            CheatSheet.setup(watchlistButton);
-            updateButtonState(watchlistButton, mMovie.inWatchlist(), R.string.action_add_watchlist,
-                    R.string.action_remove_watchlist);
-            if (watchlistButton.getDrawable() == null) {
-                watchlistButton.setImageDrawable(
-                        DrawableTintUtils.createFromColorRes(getContext(),
-                                R.drawable.ic_btn_watchlist, R.color.default_button));
-            }
-
-            CheckableImageButton collectionButton =
-                    (CheckableImageButton) view.findViewById(R.id.btn_collection);
-            collectionButton.setEnabled(mCollectionButtonEnabled);
-            collectionButton.setOnClickListener(MovieDetailFragment.this);
-            CheatSheet.setup(collectionButton);
-            updateButtonState(collectionButton, mMovie.inCollection(),
-                    R.string.action_add_collection,
-                    R.string.action_remove_collection);
-            if (collectionButton.getDrawable() == null) {
-                collectionButton.setImageDrawable(
-                        DrawableTintUtils.createFromColorRes(getContext(),
-                                R.drawable.ic_btn_collection, R.color.default_button));
-            }
-
-            ImageButton checkinButton = (ImageButton) view.findViewById(R.id.btn_checkin);
-            checkinButton.setOnClickListener(MovieDetailFragment.this);
-            checkinButton.setVisibility(mCheckinButtonVisible ? View.VISIBLE : View.GONE);
-            CheatSheet.setup(checkinButton);
-            if (mCheckinButtonVisible && checkinButton.getDrawable() == null) {
-                checkinButton.setImageDrawable(
-                        DrawableTintUtils.createFromColorRes(getContext(),
-                                R.drawable.ic_btn_checkin, R.color.default_button));
-            }
-
-            ImageButton cancelCheckinButton = (ImageButton) view
-                    .findViewById(R.id.btn_cancel_checkin);
-            cancelCheckinButton.setOnClickListener(MovieDetailFragment.this);
-            cancelCheckinButton.setVisibility(mCancelCheckinButtonVisible
-                    ? View.VISIBLE : View.GONE);
-            CheatSheet.setup(cancelCheckinButton);
-            if (mCancelCheckinButtonVisible && cancelCheckinButton.getDrawable() == null) {
-                cancelCheckinButton.setImageDrawable(
-                        DrawableTintUtils.createFromColorRes(getContext(),
-                                R.drawable.ic_btn_checkin, android.R.color.holo_red_dark));
-            }
+            //rebindView(DetailItemType.TITLE);
+            //rebindView(DetailItemType.RATING);
         }
 
         private void bindCast(View view) {
@@ -818,11 +962,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
             cardLayout.setTitle(R.string.cast_movies);
 
-            populateDetailGrid(
-                    (ViewGroup) view.findViewById(R.id.card_content),
-                    cardLayout,
-                    seeMoreClickListener,
-                    getMovieCastAdapter());
+//            populateDetailGrid(
+//                    (ViewGroup) view.findViewById(R.id.card_content),
+//                    cardLayout,
+//                    seeMoreClickListener,
+//                    getMovieCastAdapter());
         }
 
         private void bindCrew(View view) {
@@ -842,95 +986,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
             cardLayout.setTitle(R.string.crew_movies);
 
-            populateDetailGrid(
-                    (ViewGroup) view.findViewById(R.id.card_content),
-                    cardLayout,
-                    seeMoreClickListener,
-                    getMovieCrewAdapter());
-        }
-
-        private void bindDetails(View view) {
-            MovieDetailInfoLayout runtimeLayout = (MovieDetailInfoLayout) view
-                    .findViewById(R.id.layout_info_runtime);
-            MovieDetailInfoLayout certificationLayout = (MovieDetailInfoLayout)
-                    view.findViewById(R.id.layout_info_certification);
-            MovieDetailInfoLayout genreLayout = (MovieDetailInfoLayout) view
-                    .findViewById(R.id.layout_info_genres);
-            MovieDetailInfoLayout releasedInfoLayout = (MovieDetailInfoLayout) view
-                    .findViewById(R.id.layout_info_released);
-            MovieDetailInfoLayout budgetInfoLayout = (MovieDetailInfoLayout) view
-                    .findViewById(R.id.layout_info_budget);
-            MovieDetailInfoLayout languageLayout = (MovieDetailInfoLayout) view
-                    .findViewById(R.id.layout_info_language);
-
-            if (mMovie.getRuntime() > 0) {
-                runtimeLayout.setContentText(
-                        getString(R.string.movie_details_runtime_content, mMovie.getRuntime()));
-                runtimeLayout.setVisibility(View.VISIBLE);
-            } else {
-                runtimeLayout.setVisibility(View.GONE);
-            }
-
-            if (!TextUtils.isEmpty(mMovie.getCertification())) {
-                certificationLayout.setContentText(mMovie.getCertification());
-                certificationLayout.setVisibility(View.VISIBLE);
-            } else {
-                certificationLayout.setVisibility(View.GONE);
-            }
-
-            if (!TextUtils.isEmpty(mMovie.getGenres())) {
-                genreLayout.setContentText(mMovie.getGenres());
-                genreLayout.setVisibility(View.VISIBLE);
-            } else {
-                genreLayout.setVisibility(View.GONE);
-            }
-
-            if (mMovie.getReleasedTime() > 0) {
-                DATE.setTime(mMovie.getReleasedTime());
-                releasedInfoLayout.setContentText(mMediumDateFormatter.format(DATE));
-                releasedInfoLayout.setVisibility(View.VISIBLE);
-
-                final String countryCode = mMovie.getReleasedCountryCode();
-                if (!TextUtils.isEmpty(countryCode)) {
-                    loadFlagImage(countryCode, releasedInfoLayout);
-                }
-            } else {
-                releasedInfoLayout.setVisibility(View.GONE);
-            }
-
-            if (mMovie.getBudget() > 0) {
-                budgetInfoLayout.setContentText(
-                        getString(R.string.movie_details_budget_content, mMovie.getBudget()));
-                budgetInfoLayout.setVisibility(View.VISIBLE);
-            } else {
-                budgetInfoLayout.setVisibility(View.GONE);
-            }
-
-            if (!TextUtils.isEmpty(mMovie.getMainLanguageTitle())) {
-                languageLayout.setContentText(mMovie.getMainLanguageTitle());
-                languageLayout.setVisibility(View.VISIBLE);
-            } else {
-                languageLayout.setVisibility(View.GONE);
-            }
-        }
-
-        private void bindRating(View view) {
-            RatingBarLayout ratingBarLayout = (RatingBarLayout) view;
-            ratingBarLayout.setRatingCircleEnabled(mRatingCircleEnabled);
-
-            if (mMovie.getUserRatingAdvanced() != PhilmMovie.NOT_SET) {
-                ratingBarLayout.showUserRating(mMovie.getUserRatingAdvanced());
-            } else {
-                ratingBarLayout.showRatePrompt();
-            }
-            ratingBarLayout.setRatingGlobalPercentage(mMovie.getAverageRatingPercent());
-            ratingBarLayout.setRatingGlobalVotes(mMovie.getAverageRatingVotes());
-            ratingBarLayout.setRatingCircleClickListener(MovieDetailFragment.this);
-
-            final ColorScheme scheme = getColorScheme();
-            if (scheme != null) {
-                ratingBarLayout.setColorScheme(scheme);
-            }
+//            populateDetailGrid(
+//                    (ViewGroup) view.findViewById(R.id.card_content),
+//                    cardLayout,
+//                    seeMoreClickListener,
+//                    getMovieCrewAdapter());
         }
 
         private void bindRelated(View view) {
@@ -950,43 +1010,11 @@ public class MovieDetailFragment extends BaseDetailFragment
             MovieDetailCardLayout cardLayout = (MovieDetailCardLayout) view;
             cardLayout.setTitle(R.string.related_movies);
 
-            populateDetailGrid(
-                    (ViewGroup) view.findViewById(R.id.card_content),
-                    cardLayout,
-                    seeMoreClickListener,
-                    getRelatedMoviesAdapter());
-        }
-
-        private void bindSummary(final View view) {
-            TextView summary = (TextView) view.findViewById(R.id.textview_summary);
-            summary.setText(mMovie.getOverview());
-        }
-
-        private void bindTitle(final View view) {
-//            final TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
-//            titleTextView.setText(getString(R.string.movie_title_year,
-//                    mMovie.getTitle(), mMovie.getYear()));
-
-            final TextView taglineTextView = (TextView) view.findViewById(R.id.textview_tagline);
-            taglineTextView.setText(mMovie.getTagline());
-
-            PhilmImageView posterImageView = (PhilmImageView)
-                    view.findViewById(R.id.imageview_poster);
-
-            if (hasBigPosterView()) {
-                // Hide small poster if there's a big poster imageview
-                posterImageView.setVisibility(View.GONE);
-            } else {
-                posterImageView.setVisibility(View.VISIBLE);
-                posterImageView.loadPoster(mMovie, mPosterListener);
-            }
-
-            final ColorScheme scheme = getColorScheme();
-            if (scheme != null) {
-                view.setBackgroundColor(scheme.primaryAccent);
-                //titleTextView.setTextColor(scheme.primaryText);
-                taglineTextView.setTextColor(scheme.primaryText);
-            }
+//            populateDetailGrid(
+//                    (ViewGroup) view.findViewById(R.id.card_content),
+//                    cardLayout,
+//                    seeMoreClickListener,
+//                    getRelatedMoviesAdapter());
         }
 
         private void bindTrailers(View view) {
@@ -994,41 +1022,20 @@ public class MovieDetailFragment extends BaseDetailFragment
                 Log.d(LOG_TAG, "bindTrailers");
             }
 
-            populateDetailGrid(
-                    (ViewGroup) view.findViewById(R.id.card_content),
-                    (MovieDetailCardLayout) view,
-                    null,
-                    getMovieTrailersAdapter());
+//            populateDetailGrid(
+//                    (ViewGroup) view.findViewById(R.id.card_content),
+//                    (MovieDetailCardLayout) view,
+//                    null,
+//                    getMovieTrailersAdapter());
         }
 
-        private void bindBackdropSpacing(View view) {
-            final int backdropHeight = getResources()
-                    .getDimensionPixelSize(R.dimen.movie_detail_fanart_height);
-            view.getLayoutParams().height = backdropHeight - getListView().getPaddingTop();
-        }
 
-        @Override
         protected void bindView(final DetailItemType item, final View view) {
             if (Constants.DEBUG) {
                 Log.d(LOG_TAG, "bindView. Item: " + item.name());
             }
 
             switch (item) {
-                case TITLE:
-                    bindTitle(view);
-                    break;
-                case BUTTONS:
-                    bindButtons(view);
-                    break;
-                case SUMMARY:
-                    bindSummary(view);
-                    break;
-                case DETAILS:
-                    bindDetails(view);
-                    break;
-                case RATING:
-                    bindRating(view);
-                    break;
                 case RELATED:
                     bindRelated(view);
                     break;
@@ -1041,36 +1048,9 @@ public class MovieDetailFragment extends BaseDetailFragment
                 case CREW:
                     bindCrew(view);
                     break;
-                case BACKDROP_SPACING:
-                    bindBackdropSpacing(view);
-                    break;
             }
 
             view.setTag(item);
-        }
-
-        private void loadFlagImage(final String countryCode, final MovieDetailInfoLayout layout) {
-            final String flagUrl = mFlagUrlProvider.getCountryFlagUrl(countryCode);
-            final int width = getResources()
-                    .getDimensionPixelSize(R.dimen.movie_detail_flag_width);
-            final int height = getResources()
-                    .getDimensionPixelSize(R.dimen.movie_detail_flag_height);
-
-            final String url = ImageHelper.getResizedUrl(flagUrl, width, height);
-
-            Picasso.with(getActivity())
-                    .load(url)
-                    .into(layout);
-        }
-
-        private void updateButtonState(CheckableImageButton button, final boolean checked,
-                final int toCheckDesc, final int toUncheckDesc) {
-            button.setChecked(checked);
-            if (checked) {
-                button.setContentDescription(getString(toUncheckDesc));
-            } else {
-                button.setContentDescription(getString(toCheckDesc));
-            }
         }
 
         private RelatedMoviesAdapter getRelatedMoviesAdapter() {

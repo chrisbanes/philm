@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
   ~ Copyright 2014 Chris Banes
   ~
@@ -16,35 +15,43 @@
   ~ limitations under the License.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_height="match_parent"
-             android:layout_width="match_parent">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <include layout="@layout/include_fragment_detail_list"/>
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <app.philm.in.view.CollapsingTitleLayout
-            android:id="@+id/backdrop_toolbar"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="@dimen/movie_detail_pinned_elevation"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-            app:expandedTextSize="56dp"
-            app:expandedMargin="16dp">
+            android:layout_height="wrap_content">
 
-        <app.philm.in.view.BackdropImageView
+            <app.philm.in.view.PhilmImageView
                 android:id="@+id/imageview_fanart"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/movie_detail_fanart_height"
                 android:scaleType="centerCrop"
-                android:background="?attr/colorPrimary" />
+                app:layout_collapseMode="parallax" />
 
-        <android.support.v7.widget.Toolbar
+            <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:layout_height="?attr/actionBarSize"
+                style="@style/Widget.Philm.Toolbar.Transparent"
                 android:layout_width="match_parent"
-                style="@style/Widget.Philm.Toolbar.Transparent" />
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin" />
 
-    </app.philm.in.view.CollapsingTitleLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-</FrameLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>

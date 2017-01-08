@@ -16,10 +16,13 @@
   ~ limitations under the License.
   -->
 
-<app.philm.in.view.RatingBarLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rating_bar_layout"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/movie_detail_ratingbar_height"
-    android:paddingTop="@dimen/spacing_major"
-    android:paddingBottom="@dimen/spacing_major"/>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <app.philm.in.view.RatingBarLayout
+        android:id="@+id/rating_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/movie_detail_ratingbar_height"
+        android:paddingBottom="@dimen/spacing_major"
+        android:paddingTop="@dimen/spacing_major" />
+
+</layout>

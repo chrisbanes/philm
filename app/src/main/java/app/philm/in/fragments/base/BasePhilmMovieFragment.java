@@ -19,12 +19,13 @@ package app.philm.in.fragments.base;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
 
+import com.google.common.base.Objects;
+
 import app.philm.in.PhilmApplication;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.network.NetworkError;
 import app.philm.in.view.StringManager;
-
 
 public abstract class BasePhilmMovieFragment extends BasePhilmFragment
         implements MovieController.MovieUi {
@@ -94,9 +95,8 @@ public abstract class BasePhilmMovieFragment extends BasePhilmFragment
 
     @Override
     public void setColorScheme(ColorScheme colorScheme) {
-        if (mColorScheme != colorScheme) {
+        if (!Objects.equal(mColorScheme, colorScheme)) {
             mColorScheme = colorScheme;
-
             onColorSchemeChanged(colorScheme);
         }
     }

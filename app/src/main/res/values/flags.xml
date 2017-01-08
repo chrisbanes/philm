@@ -16,8 +16,6 @@
   -->
 
 <resources>
-
-    <bool name="movie_detail_fade_action_bar">true</bool>
     <bool name="use_action_bar_drawer_toggle">true</bool>
 
 </resources>

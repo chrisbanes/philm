@@ -43,7 +43,6 @@ public class ExpandingTextView extends FontTextView implements View.OnClickListe
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ExpandingTextView, 0 , defStyle);
         mCollapsedMaxLines = a.getInt(R.styleable.ExpandingTextView_collapsed_maxLines, 8);
-        mExpanded = a.getBoolean(R.styleable.ExpandingTextView_expanded, false);
         a.recycle();
 
         if (mExpanded) {

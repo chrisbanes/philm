@@ -58,7 +58,6 @@
     </declare-styleable>
 
     <declare-styleable name="ExpandingTextView">
-        <attr name="expanded" format="boolean|reference" />
         <attr name="collapsed_maxLines" format="integer|reference" />
     </declare-styleable>
 

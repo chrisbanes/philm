@@ -173,15 +173,9 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="TextAppearance.Philm.Tab" parent="TextAppearance.AppCompat.Body2">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/tab_text</item>
-    </style>
-
     <style name="Widget.Philm.Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="contentInsetStart">24dp</item>
     </style>
 

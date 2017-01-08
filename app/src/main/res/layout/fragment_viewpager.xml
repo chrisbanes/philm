@@ -24,25 +24,25 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/Widget.Philm.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        style="@style/Widget.Philm.Toolbar" />
-
-    <app.philm.in.view.SlidingTabLayout
-        android:id="@+id/viewpager_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/movie_discover_tab_height"
-        android:background="?attr/colorPrimary"
-        android:textAppearance="@style/TextAppearance.Philm.Tab"
-        app:indicatorHeight="2dp"
-        app:contentInsetStart="56dp"
-        app:selectedColor="?attr/colorAccent"
-        android:fadingEdgeLength="@dimen/spacing_minor"/>
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0px"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/viewpager_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

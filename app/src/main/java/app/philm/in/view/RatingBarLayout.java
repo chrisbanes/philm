@@ -16,11 +16,14 @@
 
 package app.philm.in.view;
 
+import static android.support.v4.graphics.ColorUtils.blendARGB;
+
 import com.google.common.base.Objects;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +33,6 @@ import android.widget.TextView;
 import app.philm.in.R;
 import app.philm.in.drawable.PercentageDrawable;
 import app.philm.in.model.ColorScheme;
-import app.philm.in.util.ColorUtils;
 import app.philm.in.util.TextUtils;
 
 public class RatingBarLayout extends FrameLayout implements ColorSchemable {
@@ -171,27 +173,27 @@ public class RatingBarLayout extends FrameLayout implements ColorSchemable {
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 final float currentValue = 1f - (Float) valueAnimator.getAnimatedValue();
 
-                leftRatingBarBackground.setColor(ColorUtils.blendColors(
-                        leftRatingBarColor, scheme.primaryAccent, currentValue));
-                rightRatingBarBackground.setColor(ColorUtils.blendColors(
-                        rightRatingBarColor, scheme.primaryAccent, currentValue));
+                leftRatingBarBackground.setColor(
+                        blendARGB(leftRatingBarColor, scheme.primaryAccent, currentValue));
+                rightRatingBarBackground.setColor(
+                        blendARGB(rightRatingBarColor, scheme.primaryAccent, currentValue));
 
-                mRatingGlobalPercentageTextView.setTextColor(ColorUtils.blendColors(
-                        ratingPercTextColor, scheme.primaryText, currentValue));
-                mRatingGlobalPercentageLabelTextView.setTextColor(ColorUtils.blendColors(
-                        ratingPercLabelColor, scheme.primaryText, currentValue));
+                mRatingGlobalPercentageTextView.setTextColor(
+                        blendARGB(ratingPercTextColor, scheme.primaryText, currentValue));
+                mRatingGlobalPercentageLabelTextView.setTextColor(
+                        blendARGB(ratingPercLabelColor, scheme.primaryText, currentValue));
 
-                mRatingGlobalVotesTextView.setTextColor(ColorUtils.blendColors(
-                        ratingVotesTextColor, scheme.primaryText, currentValue));
-                mRatingGlobalVotesLabelTextView.setTextColor(ColorUtils.blendColors(
-                        ratingVotesLabelColor, scheme.primaryText, currentValue));
+                mRatingGlobalVotesTextView.setTextColor(
+                        blendARGB(ratingVotesTextColor, scheme.primaryText, currentValue));
+                mRatingGlobalVotesLabelTextView.setTextColor(
+                        blendARGB(ratingVotesLabelColor, scheme.primaryText, currentValue));
 
-                percentageDrawable.setForegroundCircleColor(ColorUtils
-                        .blendColors(circleForegroundColor, scheme.secondaryAccent, currentValue));
-                percentageDrawable.setArcColor(ColorUtils
-                        .blendColors(circleArcColor, scheme.tertiaryAccent, currentValue));
-                percentageDrawable.setTextColor(ColorUtils
-                        .blendColors(circleTextColor, scheme.tertiaryAccent, currentValue));
+                percentageDrawable.setForegroundCircleColor(
+                        blendARGB(circleForegroundColor, scheme.secondaryAccent, currentValue));
+                percentageDrawable.setArcColor(
+                        blendARGB(circleArcColor, scheme.tertiaryAccent, currentValue));
+                percentageDrawable.setTextColor(
+                        blendARGB(circleTextColor, scheme.tertiaryAccent, currentValue));
             }
         });
         mColorSchemeAnimator.start();

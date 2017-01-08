@@ -16,16 +16,17 @@
 
 package app.philm.in.fragments;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import android.app.Fragment;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.util.ArrayMap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,13 +37,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MainController;
 import app.philm.in.controllers.MainController.MainControllerUiCallbacks;
 import app.philm.in.controllers.MainController.SideMenuItem;
-import app.philm.in.drawable.RoundedAvatarDrawable;
-import app.philm.in.drawable.TintingBitmapDrawable;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmUserProfile;
 import app.philm.in.model.WatchingMovie;
@@ -264,7 +266,9 @@ public class SideMenuFragment extends Fragment implements MainController.SideMen
 
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            mAvatarImageView.setImageDrawable(new RoundedAvatarDrawable(bitmap));
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+            d.setCircular(true);
+            mAvatarImageView.setImageDrawable(d);
         }
 
         @Override
@@ -279,30 +283,27 @@ public class SideMenuFragment extends Fragment implements MainController.SideMen
 
     Drawable getIcon(SideMenuItem item, ColorStateList colorStateList) {
         Drawable d = mIcons.get(item);
-
         if (d != null) {
             return d;
         }
 
         switch (item) {
             case DISCOVER:
-                d = TintingBitmapDrawable.createFromStateList(getResources(),
-                        R.drawable.ic_btn_movie, colorStateList);
+                d = ContextCompat.getDrawable(getContext(), R.drawable.ic_btn_movie);
                 break;
             case LIBRARY:
-                d = TintingBitmapDrawable.createFromStateList(getResources(),
-                        R.drawable.ic_btn_collection, colorStateList);
+                d = ContextCompat.getDrawable(getContext(), R.drawable.ic_btn_collection);
                 break;
             case WATCHLIST:
-                d = TintingBitmapDrawable.createFromStateList(getResources(),
-                        R.drawable.ic_btn_watchlist, colorStateList);
+                d = ContextCompat.getDrawable(getContext(), R.drawable.ic_btn_watchlist);
                 break;
             case SEARCH:
-                d = TintingBitmapDrawable.createFromStateList(getResources(),
-                        R.drawable.ic_btn_search, colorStateList);
+                d = ContextCompat.getDrawable(getContext(), R.drawable.ic_btn_search);
                 break;
         }
 
+        d = DrawableCompat.wrap(d.mutate());
+        DrawableCompat.setTintList(d, colorStateList);
         mIcons.put(item, d);
         return d;
     }

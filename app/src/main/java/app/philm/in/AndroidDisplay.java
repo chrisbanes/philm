@@ -16,12 +16,9 @@
 
 package app.philm.in;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
+import static android.support.v4.graphics.ColorUtils.blendARGB;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,16 +26,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.MenuItem;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 import app.philm.in.fragments.AboutFragment;
 import app.philm.in.fragments.CancelCheckinMovieFragment;
@@ -63,7 +60,6 @@ import app.philm.in.fragments.SearchFragment;
 import app.philm.in.fragments.TrendingMoviesFragment;
 import app.philm.in.fragments.WatchlistMoviesFragment;
 import app.philm.in.model.ColorScheme;
-import app.philm.in.util.ColorUtils;
 
 public class AndroidDisplay implements Display {
 
@@ -362,7 +358,7 @@ public class AndroidDisplay implements Display {
 
     @Override
     public void setStatusBarColor(float scroll) {
-        final int statusBarColor = ColorUtils.blendColors(mColorPrimaryDark, 0, scroll);
+        final int statusBarColor = ColorUtils.blendARGB(mColorPrimaryDark, 0, scroll);
         if (mDrawerLayout != null) {
             mDrawerLayout.setStatusBarBackgroundColor(statusBarColor);
         } else if (Build.VERSION.SDK_INT >= 21) {

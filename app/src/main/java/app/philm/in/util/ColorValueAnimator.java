@@ -19,6 +19,7 @@ package app.philm.in.util;
 import com.google.common.base.Preconditions;
 
 import android.animation.ValueAnimator;
+import android.support.v4.graphics.ColorUtils;
 import android.view.View;
 
 import java.util.Arrays;
@@ -63,10 +64,7 @@ public class ColorValueAnimator {
                 final float currentValue = 1f - valueAnimator.getAnimatedFraction();
 
                 for (int i = 0, z = colors.length; i < z ; i++) {
-                    colors[i] = ColorUtils.blendColors(
-                            current[i],
-                            target[i],
-                            currentValue);
+                    colors[i] = ColorUtils.blendARGB(current[i], target[i], currentValue);
                 }
 
                 listener.onUpdateColor(colors);

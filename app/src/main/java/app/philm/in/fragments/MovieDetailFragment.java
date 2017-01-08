@@ -48,7 +48,7 @@ import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.drawable.TintingBitmapDrawable;
+import app.philm.in.drawable.DrawableTintUtils;
 import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
@@ -748,7 +748,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     R.string.action_mark_unseen);
             if (seenButton.getDrawable() == null) {
                 seenButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateListResource(getResources(),
+                        DrawableTintUtils.createFromColorRes(getContext(),
                                 R.drawable.ic_btn_seen, R.color.default_button));
             }
 
@@ -761,7 +761,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     R.string.action_remove_watchlist);
             if (watchlistButton.getDrawable() == null) {
                 watchlistButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateListResource(getResources(),
+                        DrawableTintUtils.createFromColorRes(getContext(),
                                 R.drawable.ic_btn_watchlist, R.color.default_button));
             }
 
@@ -775,7 +775,7 @@ public class MovieDetailFragment extends BaseDetailFragment
                     R.string.action_remove_collection);
             if (collectionButton.getDrawable() == null) {
                 collectionButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateListResource(getResources(),
+                        DrawableTintUtils.createFromColorRes(getContext(),
                                 R.drawable.ic_btn_collection, R.color.default_button));
             }
 
@@ -785,7 +785,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             CheatSheet.setup(checkinButton);
             if (mCheckinButtonVisible && checkinButton.getDrawable() == null) {
                 checkinButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromStateListResource(getResources(),
+                        DrawableTintUtils.createFromColorRes(getContext(),
                                 R.drawable.ic_btn_checkin, R.color.default_button));
             }
 
@@ -797,7 +797,7 @@ public class MovieDetailFragment extends BaseDetailFragment
             CheatSheet.setup(cancelCheckinButton);
             if (mCancelCheckinButtonVisible && cancelCheckinButton.getDrawable() == null) {
                 cancelCheckinButton.setImageDrawable(
-                        TintingBitmapDrawable.createFromColorResource(getResources(),
+                        DrawableTintUtils.createFromColorRes(getContext(),
                                 R.drawable.ic_btn_checkin, android.R.color.holo_red_dark));
             }
         }

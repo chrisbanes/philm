@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
-import app.philm.in.drawable.TintingBitmapDrawable;
+import app.philm.in.drawable.DrawableTintUtils;
 import app.philm.in.fragments.base.BasePhilmMovieDialogFragment;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.network.NetworkError;
@@ -50,7 +50,7 @@ public class CancelCheckinMovieFragment extends BasePhilmMovieDialogFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.movie_checkin_cancel);
-        builder.setIcon(TintingBitmapDrawable.createFromColorResource(getResources(),
+        builder.setIcon(DrawableTintUtils.createFromColorRes(getContext(),
                 R.drawable.ic_btn_checkin, android.R.color.holo_red_dark));
         builder.setView(layout);
         builder.setPositiveButton(android.R.string.ok, this);

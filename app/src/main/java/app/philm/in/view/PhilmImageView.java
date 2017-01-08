@@ -16,28 +16,30 @@
 
 package app.philm.in.view;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.squareup.picasso.Target;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
 
 import javax.inject.Inject;
 
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
-import app.philm.in.drawable.RoundedAvatarDrawable;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieVideo;
 import app.philm.in.model.PhilmPerson;
@@ -418,7 +420,9 @@ public class PhilmImageView extends ImageView {
 
     void setImageBitmapImpl(final Bitmap bitmap) {
         if (mAvatarMode) {
-            setImageDrawable(new RoundedAvatarDrawable(bitmap));
+            RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+            d.setCircular(true);
+            setImageDrawable(d);
         } else {
             setImageBitmap(bitmap);
         }
@@ -432,10 +436,13 @@ public class PhilmImageView extends ImageView {
         }
     }
 
-    void setImageResourceImpl(int resId) {
+    void setImageResourceImpl(@DrawableRes int resId) {
         if (mAvatarMode) {
-            BitmapDrawable d = (BitmapDrawable) getResources().getDrawable(resId);
-            setImageDrawable(new RoundedAvatarDrawable(d.getBitmap()));
+            BitmapDrawable d = (BitmapDrawable) ContextCompat.getDrawable(getContext(), resId);
+            RoundedBitmapDrawable rd = RoundedBitmapDrawableFactory.create(
+                    getResources(), d.getBitmap());
+            rd.setCircular(true);
+            setImageDrawable(rd);
         } else {
             setImageResource(resId);
         }

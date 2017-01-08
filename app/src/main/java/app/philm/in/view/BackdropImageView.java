@@ -20,10 +20,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-
-import app.philm.in.util.ColorUtils;
 
 public class BackdropImageView extends PhilmImageView {
 
@@ -73,7 +72,7 @@ public class BackdropImageView extends PhilmImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         // Update the scrim paint
-        mScrimPaint.setColor(ColorUtils.modifyAlpha(mScrimColor,
+        mScrimPaint.setColor(ColorUtils.setAlphaComponent(mScrimColor,
                 MIN_SCRIM_ALPHA + (int) (SCRIM_ALPHA_DIFF * mScrimDarkness)));
 
         if (mImageOffset != 0) {

@@ -16,11 +16,7 @@
 
 package app.philm.in.fragments.base;
 
-import android.graphics.Rect;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import app.philm.in.PhilmApplication;

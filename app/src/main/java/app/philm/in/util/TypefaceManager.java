@@ -16,12 +16,12 @@
 
 package app.philm.in.util;
 
-import com.google.common.base.Preconditions;
-
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.util.LruCache;
+
+import com.google.common.base.Preconditions;
 
 public class TypefaceManager {
 

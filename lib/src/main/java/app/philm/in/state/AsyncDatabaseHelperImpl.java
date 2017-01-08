@@ -16,9 +16,9 @@
 
 package app.philm.in.state;
 
-import com.google.common.base.Preconditions;
-
 import android.support.v4.util.ArrayMap;
+
+import com.google.common.base.Preconditions;
 
 import java.util.Collection;
 import java.util.Collections;

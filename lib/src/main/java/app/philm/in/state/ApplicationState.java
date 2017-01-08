@@ -16,12 +16,11 @@
 
 package app.philm.in.state;
 
+import android.support.v4.util.ArrayMap;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-
 import com.squareup.otto.Bus;
-
-import android.support.v4.util.ArrayMap;
 
 import java.util.HashSet;
 import java.util.List;

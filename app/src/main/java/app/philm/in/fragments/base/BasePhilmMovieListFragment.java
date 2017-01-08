@@ -16,8 +16,6 @@
 
 package app.philm.in.fragments.base;
 
-import com.google.common.base.Preconditions;
-
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -25,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AbsListView;
+
+import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.HashSet;

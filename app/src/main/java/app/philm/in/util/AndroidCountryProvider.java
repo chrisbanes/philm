@@ -16,11 +16,11 @@
 
 package app.philm.in.util;
 
-import com.google.common.base.Preconditions;
-
 import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import com.google.common.base.Preconditions;
 
 import java.util.Locale;
 

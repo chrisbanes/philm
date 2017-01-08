@@ -16,14 +16,18 @@
 
 package app.philm.in.controllers;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-
-import com.jakewharton.trakt.enumerations.Rating;
-import com.squareup.otto.Subscribe;
+import static app.philm.in.util.TimeUtils.isAfterThreshold;
+import static app.philm.in.util.TimeUtils.isBeforeThreshold;
+import static app.philm.in.util.TimeUtils.isInFuture;
+import static app.philm.in.util.TimeUtils.isInPast;
 
 import android.os.Bundle;
 import android.support.v4.util.ArrayMap;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.jakewharton.trakt.enumerations.Rating;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,11 +98,6 @@ import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.PhilmPreferences;
 import app.philm.in.util.StringFetcher;
 import app.philm.in.util.TextUtils;
-
-import static app.philm.in.util.TimeUtils.isAfterThreshold;
-import static app.philm.in.util.TimeUtils.isBeforeThreshold;
-import static app.philm.in.util.TimeUtils.isInFuture;
-import static app.philm.in.util.TimeUtils.isInPast;
 
 @Singleton
 public class MovieController extends BaseUiController<MovieController.MovieUi,

@@ -16,11 +16,11 @@
 
 package app.philm.in.account;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,10 +16,7 @@
 
 package app.philm.in.fragments;
 
-import com.google.common.base.Preconditions;
-
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -28,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+
+import com.google.common.base.Preconditions;
 
 import java.util.List;
 

@@ -30,7 +30,6 @@ import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.network.NetworkError;
-import app.philm.in.view.StringManager;
 
 
 public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>

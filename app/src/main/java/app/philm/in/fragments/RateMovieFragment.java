@@ -16,8 +16,6 @@
 
 package app.philm.in.fragments;
 
-import com.google.common.base.Preconditions;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -28,6 +26,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.google.common.base.Preconditions;
 
 import app.philm.in.R;
 import app.philm.in.controllers.MovieController;

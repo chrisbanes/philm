@@ -17,10 +17,10 @@
 package app.philm.in.fragments;
 
 
-import com.google.common.base.Preconditions;
-
 import android.os.Bundle;
 import android.text.TextUtils;
+
+import com.google.common.base.Preconditions;
 
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.MovieListFragment;

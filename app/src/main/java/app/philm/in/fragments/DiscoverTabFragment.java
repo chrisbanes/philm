@@ -16,13 +16,12 @@
 
 package app.philm.in.fragments;
 
-import com.google.common.base.Preconditions;
-
 import android.support.v4.app.Fragment;
+
+import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 
-import app.philm.in.R;
 import app.philm.in.controllers.MovieController;
 import app.philm.in.fragments.base.BasePhilmTabFragment;
 import app.philm.in.view.StringManager;

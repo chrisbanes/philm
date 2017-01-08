@@ -16,9 +16,9 @@
 
 package app.philm.in.modules.library;
 
-import com.squareup.otto.Bus;
-
 import android.content.Context;
+
+import com.squareup.otto.Bus;
 
 import java.util.concurrent.Executors;
 

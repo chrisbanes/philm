@@ -16,14 +16,14 @@
 
 package app.philm.in.adapters;
 
-import com.google.common.base.Objects;
-
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.google.common.base.Objects;
 
 import java.util.List;
 

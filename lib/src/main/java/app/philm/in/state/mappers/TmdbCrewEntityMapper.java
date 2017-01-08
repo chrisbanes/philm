@@ -16,7 +16,6 @@
 
 package app.philm.in.state.mappers;
 
-import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.CrewMember;
 
 import java.util.ArrayList;

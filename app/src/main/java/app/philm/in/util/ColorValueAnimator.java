@@ -16,11 +16,11 @@
 
 package app.philm.in.util;
 
-import com.google.common.base.Preconditions;
-
 import android.animation.ValueAnimator;
 import android.support.v4.graphics.ColorUtils;
 import android.view.View;
+
+import com.google.common.base.Preconditions;
 
 import java.util.Arrays;
 

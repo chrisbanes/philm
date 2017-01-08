@@ -17,24 +17,18 @@
 package app.philm.in;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import java.util.HashSet;
-
 import app.philm.in.controllers.MainController;
-import app.philm.in.util.PhilmCollections;
 
 public abstract class BasePhilmActivity extends ActionBarActivity
         implements MainController.HostCallbacks {

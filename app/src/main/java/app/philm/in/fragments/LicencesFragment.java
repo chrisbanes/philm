@@ -24,7 +24,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import app.philm.in.PhilmApplication;
-import app.philm.in.R;
 import app.philm.in.controllers.AboutController;
 
 public class LicencesFragment extends Fragment implements AboutController.AboutOpenSourcesUi {

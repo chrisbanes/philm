@@ -16,10 +16,6 @@
 
 package app.philm.in.fragments;
 
-import com.google.common.base.Preconditions;
-
-import com.squareup.picasso.Picasso;
-
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
@@ -38,6 +34,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.common.base.Preconditions;
+import com.squareup.picasso.Picasso;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,15 +52,15 @@ import app.philm.in.fragments.base.BaseDetailFragment;
 import app.philm.in.model.ColorScheme;
 import app.philm.in.model.PhilmMovie;
 import app.philm.in.model.PhilmMovieCredit;
-import app.philm.in.util.ActivityTransitions;
 import app.philm.in.model.PhilmMovieVideo;
+import app.philm.in.util.ActivityTransitions;
 import app.philm.in.util.FlagUrlProvider;
 import app.philm.in.util.ImageHelper;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.view.BackdropImageView;
-import app.philm.in.view.CollapsingTitleLayout;
 import app.philm.in.view.CheatSheet;
 import app.philm.in.view.CheckableImageButton;
+import app.philm.in.view.CollapsingTitleLayout;
 import app.philm.in.view.MovieDetailCardLayout;
 import app.philm.in.view.MovieDetailInfoLayout;
 import app.philm.in.view.PhilmImageView;

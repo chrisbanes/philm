@@ -17,7 +17,6 @@
 package app.philm.in.state.mappers;
 
 import com.uwetrottmann.tmdb.entities.CastMember;
-import com.uwetrottmann.tmdb.entities.Credits;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -17,7 +17,6 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.entities.RatingResponse;
 import com.jakewharton.trakt.enumerations.Rating;
 import com.jakewharton.trakt.services.RateService;

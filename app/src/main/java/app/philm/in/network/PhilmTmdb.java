@@ -20,7 +20,6 @@ import com.jakewharton.retrofit.Ok3Client;
 import com.uwetrottmann.tmdb.Tmdb;
 
 import java.io.File;
-import java.util.UUID;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;

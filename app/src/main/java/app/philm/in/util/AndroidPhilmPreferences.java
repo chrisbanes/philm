@@ -16,9 +16,9 @@
 
 package app.philm.in.util;
 
-import com.google.common.base.Preconditions;
-
 import android.content.SharedPreferences;
+
+import com.google.common.base.Preconditions;
 
 public class AndroidPhilmPreferences implements PhilmPreferences {
 

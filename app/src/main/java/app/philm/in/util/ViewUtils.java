@@ -16,9 +16,9 @@
 
 package app.philm.in.util;
 
-import com.google.common.base.Preconditions;
-
 import android.widget.TextView;
+
+import com.google.common.base.Preconditions;
 
 public class ViewUtils {
 

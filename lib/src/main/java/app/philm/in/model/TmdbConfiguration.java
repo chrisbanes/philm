@@ -18,7 +18,6 @@ package app.philm.in.model;
 
 
 import com.google.common.base.Preconditions;
-
 import com.uwetrottmann.tmdb.entities.Configuration;
 
 import java.util.List;

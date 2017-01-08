@@ -17,7 +17,6 @@
 package app.philm.in.model;
 
 import com.uwetrottmann.tmdb.entities.CastMember;
-import com.uwetrottmann.tmdb.entities.Credits;
 import com.uwetrottmann.tmdb.entities.CrewMember;
 import com.uwetrottmann.tmdb.entities.Person;
 

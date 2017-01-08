@@ -19,7 +19,6 @@ package app.philm.in.tasks;
 
 import com.uwetrottmann.tmdb.entities.CastMember;
 import com.uwetrottmann.tmdb.entities.Credits;
-import com.uwetrottmann.tmdb.entities.PersonCastCredit;
 
 import java.util.Collections;
 import java.util.Comparator;

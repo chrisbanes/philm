@@ -16,8 +16,6 @@
 
 package app.philm.in;
 
-import static android.support.v4.graphics.ColorUtils.blendARGB;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;

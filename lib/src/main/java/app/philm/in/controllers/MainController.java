@@ -16,11 +16,10 @@
 
 package app.philm.in.controllers;
 
-import com.google.common.base.Preconditions;
-
-import com.squareup.otto.Subscribe;
-
 import android.content.Intent;
+
+import com.google.common.base.Preconditions;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

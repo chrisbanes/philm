@@ -16,13 +16,13 @@
 
 package app.philm.in.util;
 
-import com.google.common.base.Preconditions;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+
+import com.google.common.base.Preconditions;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

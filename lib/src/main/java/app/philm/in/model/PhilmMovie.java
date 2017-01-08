@@ -16,9 +16,10 @@
 
 package app.philm.in.model;
 
+import static app.philm.in.util.TimeUtils.isPastThreshold;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.entities.Images;
 import com.jakewharton.trakt.entities.Ratings;
 import com.jakewharton.trakt.enumerations.Rating;
@@ -42,8 +43,6 @@ import app.philm.in.util.CountryProvider;
 import app.philm.in.util.IntUtils;
 import app.philm.in.util.PhilmCollections;
 import app.philm.in.util.TextUtils;
-
-import static app.philm.in.util.TimeUtils.isPastThreshold;
 
 public class PhilmMovie extends PhilmModel<PhilmMovie> {
 

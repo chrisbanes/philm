@@ -28,7 +28,6 @@ import app.philm.in.Constants;
 import app.philm.in.Display;
 import app.philm.in.state.BaseState;
 import app.philm.in.util.Logger;
-import app.philm.in.util.TextUtils;
 
 abstract class BaseUiController<U extends BaseUiController.Ui<UC>, UC>
         extends BaseController {

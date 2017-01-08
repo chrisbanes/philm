@@ -16,9 +16,9 @@
 
 package app.philm.in;
 
-import com.google.common.base.Preconditions;
-
 import android.content.Context;
+
+import com.google.common.base.Preconditions;
 
 import app.philm.in.util.StringFetcher;
 

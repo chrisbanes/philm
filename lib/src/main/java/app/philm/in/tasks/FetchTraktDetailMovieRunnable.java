@@ -17,7 +17,6 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.entities.Movie;
 
 import app.philm.in.model.PhilmModel;

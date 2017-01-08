@@ -18,7 +18,6 @@ package app.philm.in.tasks;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-
 import com.uwetrottmann.tmdb.entities.MovieResultsPage;
 
 import app.philm.in.state.MoviesState;

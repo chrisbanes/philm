@@ -17,7 +17,6 @@
 package app.philm.in.tasks;
 
 import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.entities.CheckinResponse;
 import com.jakewharton.trakt.entities.Share;
 import com.jakewharton.trakt.services.MovieService;

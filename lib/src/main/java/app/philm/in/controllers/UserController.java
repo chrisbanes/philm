@@ -18,14 +18,11 @@ package app.philm.in.controllers;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-
 import com.jakewharton.trakt.Trakt;
 import com.jakewharton.trakt.entities.NewAccount;
 import com.jakewharton.trakt.entities.Response;
 import com.jakewharton.trakt.entities.Settings;
 import com.squareup.otto.Subscribe;
-
-import android.content.Intent;
 
 import java.util.List;
 import java.util.regex.Pattern;

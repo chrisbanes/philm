@@ -16,12 +16,9 @@
 
 package app.philm.in.fragments.base;
 
-
-import com.github.johnpersano.supertoasts.SuperCardToast;
-import com.github.johnpersano.supertoasts.SuperToast;
-import com.github.johnpersano.supertoasts.util.Style;
-
+import android.support.annotation.StringRes;
 import android.support.v4.app.DialogFragment;
+import android.widget.Toast;
 
 import app.philm.in.PhilmApplication;
 import app.philm.in.R;
@@ -35,7 +32,7 @@ public abstract class BasePhilmMovieDialogFragment extends DialogFragment
         implements MovieController.MovieUi {
 
     private MovieController.MovieUiCallbacks mCallbacks;
-    private SuperCardToast mToast;
+    private Toast mToast;
 
     @Override
     public void onResume() {
@@ -62,21 +59,19 @@ public abstract class BasePhilmMovieDialogFragment extends DialogFragment
 
     @Override
     public void showError(NetworkError error) {
-        showToast(StringManager.getStringResId(error), Style.getStyle(Style.RED));
+        showToast(StringManager.getStringResId(error));
     }
 
     protected final void cancelToast() {
         if (mToast != null) {
-            mToast.dismiss();
+            mToast.cancel();
         }
     }
 
-    protected final void showToast(int text, Style style) {
+    protected final void showToast(@StringRes int text) {
         cancelToast();
 
-        mToast = SuperCardToast.create(
-                getActivity(), getText(text), SuperToast.Duration.MEDIUM, style);
-        mToast.setIcon(SuperToast.Icon.Dark.INFO, SuperToast.IconPosition.LEFT);
+        mToast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
         mToast.show();
     }
 

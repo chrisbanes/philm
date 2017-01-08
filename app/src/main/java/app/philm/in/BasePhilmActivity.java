@@ -16,8 +16,6 @@
 
 package app.philm.in;
 
-import com.github.johnpersano.supertoasts.SuperCardToast;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -58,9 +56,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
 
         mCardContainer = findViewById(R.id.card_container);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        // Let SuperCardToast restore itself
-        SuperCardToast.onRestoreState(savedInstanceState, this);
 
         mMainController = PhilmApplication.from(this).getMainController();
         mDisplay = new AndroidDisplay(this, mDrawerLayout);
@@ -117,12 +112,6 @@ public abstract class BasePhilmActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        SuperCardToast.onSaveState(outState);
     }
 
     @Override

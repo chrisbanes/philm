@@ -16,15 +16,13 @@
 
 package app.philm.in.fragments.base;
 
-import com.github.johnpersano.supertoasts.SuperCardToast;
-import com.github.johnpersano.supertoasts.SuperToast;
-import com.github.johnpersano.supertoasts.util.Style;
-
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import app.philm.in.Constants;
 import app.philm.in.PhilmApplication;
@@ -43,7 +41,7 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
 
     private MovieController.MovieUiCallbacks mCallbacks;
 
-    private SuperCardToast mToast;
+    private Toast mToast;
 
     private int mFirstVisiblePosition;
     private int mFirstVisiblePositionTop;
@@ -160,16 +158,14 @@ public abstract class BaseMovieControllerListFragment<E extends AbsListView, T>
 
     protected final void cancelToast() {
         if (mToast != null) {
-            mToast.dismiss();
+            mToast.cancel();
         }
     }
 
-    protected final void showToast(int text, Style style) {
+    protected final void showToast(@StringRes int text) {
         cancelToast();
 
-        mToast = SuperCardToast.create(getActivity(), getText(text),
-                SuperToast.Duration.MEDIUM, style);
-        mToast.setIcon(SuperToast.Icon.Dark.INFO, SuperToast.IconPosition.LEFT);
+        mToast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
         mToast.show();
     }
 
